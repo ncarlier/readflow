@@ -2,11 +2,14 @@ create table schema_version (
   version text not null
 );
 
+
 create table users (
   id serial not null,
   username text not null unique,
+  enabled bool not null default 't',
   last_login_at timestamp with time zone,
   created_at timestamp with time zone not null default now(),
+  updated_at timestamp with time zone null,
 
   primary key (id)
 );

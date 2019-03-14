@@ -11,6 +11,7 @@ import (
 // DB is the global database structure
 type DB interface {
 	Close() error
+	UserRepository
 	ArticleRepository
 }
 
@@ -29,7 +30,7 @@ func Configure(conn string) (DB, error) {
 		if err != nil {
 			return nil, err
 		}
-		log.Info().Str("component", "store").Str("uri", u.String()).Msg("using Postgre database")
+		log.Info().Str("component", "store").Str("uri", u.String()).Msg("using PostgreSQL database")
 	default:
 		return nil, fmt.Errorf("unsuported database: %s", datastore)
 	}

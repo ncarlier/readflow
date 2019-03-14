@@ -7,11 +7,14 @@ var DatabaseSQLMigration = map[string]string{
   version text not null
 );
 
+
 create table users (
   id serial not null,
   username text not null unique,
+  enabled bool not null default 't',
   last_login_at timestamp with time zone,
   created_at timestamp with time zone not null default now(),
+  updated_at timestamp with time zone null,
 
   primary key (id)
 );
@@ -84,5 +87,5 @@ create table rules (
 }
 
 var DatabaseSQLMigrationChecksums = map[string]string{
-	"db_migration_1": "665b35b19bffae3908aa3317e2b98a8bfd46262f0e7e37744cba81833cb356e1",
+	"db_migration_1": "1bca823b5202b58b197f8409e5b60f4b5724c094e50c6c9ad6d51ca1b82207f6",
 }

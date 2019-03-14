@@ -10,7 +10,7 @@ func Nil(t *testing.T, actual interface{}, message string) {
 		message = "Nil assertion failed"
 	}
 	if actual != nil {
-		t.Fatalf("%s - actual: %s", message, actual)
+		t.Fatalf("%s - actual: %v", message, actual)
 	}
 }
 
@@ -20,7 +20,7 @@ func NotNil(t *testing.T, actual interface{}, message string) {
 		message = "Not nil assertion failed"
 	}
 	if actual == nil {
-		t.Fatalf("%s - actual: nil", message)
+		t.Fatalf("%s - actual: %v", message, actual)
 	}
 }
 
@@ -30,7 +30,7 @@ func Equal(t *testing.T, expected interface{}, actual interface{}, message strin
 		message = "Equal assertion failed"
 	}
 	if actual != expected {
-		t.Fatalf("%s - expected: %s, actual: %s", message, expected, actual)
+		t.Fatalf("%s - expected: %v, actual: %v", message, expected, actual)
 	}
 }
 
@@ -40,7 +40,7 @@ func NotEqual(t *testing.T, expected interface{}, actual interface{}, message st
 		message = "Not equal assertion failed"
 	}
 	if actual == expected {
-		t.Fatalf("%s - unexpected: %s, actual: %s", message, expected, actual)
+		t.Fatalf("%s - unexpected: %v, actual: %v", message, expected, actual)
 	}
 }
 
