@@ -12,6 +12,7 @@ import (
 type DB interface {
 	Close() error
 	UserRepository
+	CategoryRepository
 	ArticleRepository
 }
 
