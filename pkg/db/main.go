@@ -14,6 +14,7 @@ type DB interface {
 	UserRepository
 	CategoryRepository
 	ArticleRepository
+	APIKeyRepository
 }
 
 // Configure the data store regarding the datasource URI

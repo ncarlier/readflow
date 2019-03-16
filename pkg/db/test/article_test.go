@@ -72,6 +72,6 @@ func TestGetArticlesByUserID(t *testing.T) {
 
 	articles, err := testDB.GetArticlesByUserID(*user.ID)
 	assert.Nil(t, err, "error should be nil")
-	assert.NotNil(t, articles, "feed shouldn't be nil")
+	assert.NotNil(t, articles, "articles shouldn't be nil")
 	assert.True(t, len(articles) >= 0, "articles shouldn't be empty")
 }

@@ -3,7 +3,6 @@ package model
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/brianvoe/gofakeit"
@@ -56,7 +55,7 @@ func (ab *ArticleBuilder) Build() *Article {
 		payload += *ab.article.HTML
 	}
 	ab.article.Hash = tooling.Hash(payload)
-	log.Println(ab.article)
+	// log.Println(ab.article)
 	return ab.article
 }
 
