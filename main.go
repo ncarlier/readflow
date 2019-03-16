@@ -12,6 +12,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ncarlier/reader/pkg/service"
+
+	"github.com/ncarlier/reader/pkg/db"
+
 	"github.com/ncarlier/reader/pkg/api"
 	"github.com/ncarlier/reader/pkg/config"
 	"github.com/ncarlier/reader/pkg/logger"
@@ -29,11 +33,21 @@ func main() {
 		return
 	}
 
+	// Configure the logger
 	level := "info"
 	if *conf.Debug {
 		level = "debug"
 	}
 	logger.Configure(level, true, nil)
+
+	// Configure the DB
+	_db, err := db.Configure(*conf.DB)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Could not configure Database")
+	}
+
+	// Init service registry
+	service.InitRegistry(_db)
 
 	log.Debug().Msg("Starting Nunux Reader server...")
 

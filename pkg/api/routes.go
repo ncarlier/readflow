@@ -28,6 +28,12 @@ var routes = Routes{
 		index,
 	},
 	Route{
+		[]string{"POST"},
+		"/articles",
+		false,
+		articles,
+	},
+	Route{
 		[]string{"GET", "POST"},
 		"/graphql",
 		true,

@@ -9,6 +9,22 @@ import (
 	"github.com/ncarlier/reader/pkg/tooling"
 )
 
+// ArticleForm API structure definition
+type ArticleForm struct {
+	Title       string     `json:"title,omitempty"`
+	Text        *string    `json:"text,omitempty"`
+	HTML        *string    `json:"html,omitempty"`
+	URL         *string    `json:"url,omitempty"`
+	Image       *string    `json:"image,omitempty"`
+	PublishedAt *time.Time `json:"published_at,omitempty"`
+}
+
+// Articles structure definition
+type Articles struct {
+	Articles []*Article
+	Errors   []error
+}
+
 // Article structure definition
 type Article struct {
 	ID          *uint32    `json:"id,omitempty"`
@@ -94,8 +110,12 @@ func (ab *ArticleBuilder) Title(title string) *ArticleBuilder {
 	return ab
 }
 
-// Text set article text
-func (ab *ArticleBuilder) Text(text string) *ArticleBuilder {
-	ab.article.Text = &text
+// Form set article content using Form object
+func (ab *ArticleBuilder) Form(form *ArticleForm) *ArticleBuilder {
+	ab.article.Text = form.Text
+	ab.article.HTML = form.HTML
+	ab.article.URL = form.URL
+	ab.article.Image = form.Image
+	ab.article.PublishedAt = form.PublishedAt
 	return ab
 }
