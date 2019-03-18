@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/ncarlier/reader/pkg/constant"
-
 	"github.com/ncarlier/reader/pkg/model"
 )
 
@@ -21,11 +20,20 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleFor
 
 		// TODO validate article!
 
+		reg.logger.Debug().Uint32(
+			"uid", userID,
+		).Str("title", article.Title).Msg("creating article...")
 		article, err := reg.db.CreateOrUpdateArticle(*article)
 		if err != nil {
 			result.Errors = append(result.Errors, err)
+			reg.logger.Info().Err(err).Uint32(
+				"uid", userID,
+			).Str("title", art.Title).Msg("unable to create article")
 		} else {
 			result.Articles = append(result.Articles, article)
+			reg.logger.Debug().Uint32(
+				"uid", userID,
+			).Str("title", article.Title).Uint32("id", *article.ID).Msg("article created")
 		}
 	}
 	var err error

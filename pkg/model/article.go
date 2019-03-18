@@ -112,6 +112,7 @@ func (ab *ArticleBuilder) Title(title string) *ArticleBuilder {
 
 // Form set article content using Form object
 func (ab *ArticleBuilder) Form(form *ArticleForm) *ArticleBuilder {
+	ab.article.Title = form.Title
 	ab.article.Text = form.Text
 	ab.article.HTML = form.HTML
 	ab.article.URL = form.URL

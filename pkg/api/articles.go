@@ -36,7 +36,11 @@ func articles(conf *config.Config) http.Handler {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		if len(articles.Errors) > 0 {
-			w.WriteHeader(http.StatusPartialContent)
+			if len(articles.Articles) > 0 {
+				w.WriteHeader(http.StatusPartialContent)
+			} else {
+				w.WriteHeader(http.StatusBadRequest)
+			}
 		} else {
 			w.WriteHeader(http.StatusCreated)
 		}
