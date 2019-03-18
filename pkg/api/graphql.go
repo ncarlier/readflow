@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/graphql-go/graphql"
+	"github.com/graphql-go/handler"
 	"github.com/ncarlier/reader/pkg/config"
 	"github.com/ncarlier/reader/pkg/schema"
-	"github.com/rs/zerolog/log"
 )
 
 // graphqlHandler is the handler for GraphQL requets.
@@ -15,15 +15,16 @@ func graphqlHandler(conf *config.Config) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		query := r.URL.Query().Get("query")
-		log.Debug().Str("query", query).Msg("GraphQL request")
+		opts := handler.NewRequestOptions(r)
+		params := graphql.Params{
+			Schema:         schema.Root,
+			RequestString:  opts.Query,
+			VariableValues: opts.Variables,
+			OperationName:  opts.OperationName,
+			Context:        ctx,
+		}
 
-		result := graphql.Do(graphql.Params{
-			Schema:        schema.Schema,
-			RequestString: query,
-			Context:       ctx,
-		})
-
+		result := graphql.Do(params)
 		if len(result.Errors) > 0 {
 			http.Error(w, result.Errors[0].Error(), http.StatusBadRequest)
 			return

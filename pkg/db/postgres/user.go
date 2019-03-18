@@ -67,6 +67,40 @@ func (pg *DB) CreateOrUpdateUser(user model.User) (*model.User, error) {
 	return pg.createUser(user)
 }
 
+// GetUserByID returns a user by its ID from DB
+func (pg *DB) GetUserByID(id uint32) (*model.User, error) {
+	row := pg.db.QueryRow(`
+		SELECT
+			id,
+			username,
+			enabled,
+			last_login_at,
+			created_at,
+			updated_at
+		FROM users
+		WHERE id = $1`,
+		id,
+	)
+
+	result := model.User{}
+
+	err := row.Scan(
+		&result.ID,
+		&result.Username,
+		&result.Enabled,
+		&result.LastLoginAt,
+		&result.CreatedAt,
+		&result.UpdatedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 // GetUserByUsername returns user by its username from DB
 func (pg *DB) GetUserByUsername(username string) (*model.User, error) {
 	row := pg.db.QueryRow(`
