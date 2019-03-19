@@ -99,7 +99,7 @@ func (pg *DB) GetAPIKeyByToken(token string) (*model.APIKey, error) {
 }
 
 // GetAPIKeyByUserIDAndAlias returns API key of an user by its alias
-func (pg *DB) GetAPIKeyByUserIDAndAlias(userID uint32, alias string) (*model.APIKey, error) {
+func (pg *DB) GetAPIKeyByUserIDAndAlias(userID uint, alias string) (*model.APIKey, error) {
 	row := pg.db.QueryRow(`
 		SELECT
 			id,
@@ -135,7 +135,7 @@ func (pg *DB) GetAPIKeyByUserIDAndAlias(userID uint32, alias string) (*model.API
 }
 
 // GetAPIKeysByUserID returns api-keys of an user from DB
-func (pg *DB) GetAPIKeysByUserID(userID uint32) ([]model.APIKey, error) {
+func (pg *DB) GetAPIKeysByUserID(userID uint) ([]model.APIKey, error) {
 	rows, err := pg.db.Query(`
 		SELECT
 			id,

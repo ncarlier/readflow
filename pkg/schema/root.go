@@ -8,17 +8,30 @@ import (
 // Root is the root schema
 var Root graphql.Schema
 
-var queryType = graphql.NewObject(
+var rootQuery = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Query",
 		Fields: graphql.Fields{
-			"me": meQueryField,
+			"me":         meQueryField,
+			"categories": categoriesQueryField,
 		},
-	})
+	},
+)
+
+var rootMutation = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "Mutation",
+		Fields: graphql.Fields{
+			"createOrUpdateCategory": createOrUpdateCategoryMutationField,
+			"deleteCategory":         deleteCategoryMutationField,
+		},
+	},
+)
 
 func init() {
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
-		Query: queryType,
+		Query:    rootQuery,
+		Mutation: rootMutation,
 	})
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to create schema")

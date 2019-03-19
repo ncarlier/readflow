@@ -141,7 +141,7 @@ func (pg *DB) CreateOrUpdateArticle(article model.Article) (*model.Article, erro
 }
 
 // GetArticlesByUserID returns user's articles from DB
-func (pg *DB) GetArticlesByUserID(userID uint32) ([]model.Article, error) {
+func (pg *DB) GetArticlesByUserID(userID uint) ([]model.Article, error) {
 	rows, err := pg.db.Query(fmt.Sprintf(`
 		SELECT %s
 		FROM articles
@@ -169,7 +169,7 @@ func (pg *DB) GetArticlesByUserID(userID uint32) ([]model.Article, error) {
 }
 
 // GetArticleByID returns an article by its ID from DB
-func (pg *DB) GetArticleByID(id uint32) (*model.Article, error) {
+func (pg *DB) GetArticleByID(id uint) (*model.Article, error) {
 	row := pg.db.QueryRow(fmt.Sprintf(`
 		SELECT %s
 		FROM articles

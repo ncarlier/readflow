@@ -68,7 +68,7 @@ func (pg *DB) CreateOrUpdateUser(user model.User) (*model.User, error) {
 }
 
 // GetUserByID returns a user by its ID from DB
-func (pg *DB) GetUserByID(id uint32) (*model.User, error) {
+func (pg *DB) GetUserByID(id uint) (*model.User, error) {
 	row := pg.db.QueryRow(`
 		SELECT
 			id,

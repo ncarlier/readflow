@@ -7,7 +7,7 @@ import (
 	"github.com/ncarlier/reader/pkg/model"
 )
 
-func assertCategoryExists(t *testing.T, userID *uint32, title string) *model.Category {
+func assertCategoryExists(t *testing.T, userID *uint, title string) *model.Category {
 	category, err := testDB.GetCategoryByUserIDAndTitle(*userID, title)
 	assert.Nil(t, err, "error on getting category by user and title should be nil")
 	if category != nil {
@@ -35,14 +35,25 @@ func TestCreateOrUpdateCategory(t *testing.T) {
 	// Assert user exists
 	user := assertUserExists(t, "test-002")
 
-	assertCategoryExists(t, user.ID, title)
+	// Create category
+	category := assertCategoryExists(t, user.ID, title)
+
+	title = "My updated category"
+	category.Title = title
+
+	// Update category
+	category, err := testDB.CreateOrUpdateCategory(*category)
+	assert.Nil(t, err, "error on update category should be nil")
+	assert.NotNil(t, category, "category shouldn't be nil")
+	assert.NotNil(t, category.ID, "category ID shouldn't be nil")
+	assert.Equal(t, title, category.Title, "")
 }
 
 func TestDeleteCategory(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	title := "My test category"
+	title := "My updated category"
 
 	// Assert user exists
 	user := assertUserExists(t, "test-002")
@@ -50,10 +61,14 @@ func TestDeleteCategory(t *testing.T) {
 	// Assert category exists
 	category := assertCategoryExists(t, user.ID, title)
 
-	err := testDB.DeleteCategory(*category)
-	assert.Nil(t, err, "error on delete should be nil")
-
 	categories, err := testDB.GetCategoriesByUserID(*user.ID)
 	assert.Nil(t, err, "error should be nil")
-	assert.True(t, len(categories) == 0, "categories should be empty")
+	assert.True(t, len(categories) > 0, "categories should not be empty")
+
+	err = testDB.DeleteCategory(*category)
+	assert.Nil(t, err, "error on delete should be nil")
+
+	category, err = testDB.GetCategoryByUserIDAndTitle(*user.ID, title)
+	assert.Nil(t, err, "error should be nil")
+	assert.True(t, category == nil, "category should be nil")
 }

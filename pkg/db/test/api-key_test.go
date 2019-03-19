@@ -7,7 +7,7 @@ import (
 	"github.com/ncarlier/reader/pkg/model"
 )
 
-func assertAPIKeyExists(t *testing.T, userID uint32, alias string) *model.APIKey {
+func assertAPIKeyExists(t *testing.T, userID uint, alias string) *model.APIKey {
 	apiKey, err := testDB.GetAPIKeyByUserIDAndAlias(userID, alias)
 	assert.Nil(t, err, "error on getting apiKey by user and alias should be nil")
 	if apiKey != nil {

@@ -27,9 +27,9 @@ type Articles struct {
 
 // Article structure definition
 type Article struct {
-	ID          *uint32    `json:"id,omitempty"`
-	UserID      uint32     `json:"user_id,omitempty"`
-	CategoryID  *uint32    `json:"category_id,omitempty"`
+	ID          *uint      `json:"id,omitempty"`
+	UserID      uint       `json:"user_id,omitempty"`
+	CategoryID  *uint      `json:"category_id,omitempty"`
 	Title       string     `json:"title,omitempty"`
 	Text        *string    `json:"text,omitempty"`
 	HTML        *string    `json:"html,omitempty"`
@@ -93,13 +93,13 @@ func (ab *ArticleBuilder) Random() *ArticleBuilder {
 }
 
 // UserID set article user ID
-func (ab *ArticleBuilder) UserID(userID uint32) *ArticleBuilder {
+func (ab *ArticleBuilder) UserID(userID uint) *ArticleBuilder {
 	ab.article.UserID = userID
 	return ab
 }
 
 // CategoryID set article category ID
-func (ab *ArticleBuilder) CategoryID(categoryID uint32) *ArticleBuilder {
+func (ab *ArticleBuilder) CategoryID(categoryID uint) *ArticleBuilder {
 	ab.article.CategoryID = &categoryID
 	return ab
 }

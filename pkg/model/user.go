@@ -4,7 +4,7 @@ import "time"
 
 // User structure definition
 type User struct {
-	ID          *uint32    `json:"id,omitempty"`
+	ID          *uint      `json:"id,omitempty"`
 	Username    string     `json:"username,omitempty"`
 	Enabled     bool       `json:"enabled,omitempty"`
 	LastLoginAt *time.Time `json:"last_login_at,omitempty"`

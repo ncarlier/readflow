@@ -5,8 +5,13 @@ import (
 	"errors"
 	"time"
 
+	"github.com/ncarlier/reader/pkg/constant"
 	"github.com/ncarlier/reader/pkg/model"
 )
+
+func getCurrentUserFromContext(ctx context.Context) uint {
+	return ctx.Value(constant.UserID).(uint)
+}
 
 // GetOrRegisterUser get an existing user or creates new one
 func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*model.User, error) {
@@ -57,23 +62,27 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 		).Msg("unable to register user")
 		return nil, err
 	}
-	reg.logger.Debug().Uint32(
+	reg.logger.Debug().Uint(
 		"uid", *user.ID,
 	).Str("username", username).Msg("user registered")
 	return user, nil
 }
 
-// GetUserByID get an user by its ID
-func (reg *Registry) GetUserByID(ctx context.Context, id uint32) (*model.User, error) {
-	reg.logger.Debug().Uint32(
-		"id", id,
+// GetCurrentUser get current user
+func (reg *Registry) GetCurrentUser(ctx context.Context) (*model.User, error) {
+	uid := getCurrentUserFromContext(ctx)
+	reg.logger.Debug().Uint(
+		"id", uid,
 	).Msg("getting user...")
 
 	// Try to fetch existing user...
-	user, err := reg.db.GetUserByID(id)
-	if err != nil {
-		reg.logger.Info().Err(err).Uint32(
-			"id", id,
+	user, err := reg.db.GetUserByID(uid)
+	if err != nil || user == nil {
+		if user == nil {
+			err = errors.New("user not found")
+		}
+		reg.logger.Info().Err(err).Uint(
+			"id", uid,
 		).Msg("unable to find user")
 		return nil, err
 	}

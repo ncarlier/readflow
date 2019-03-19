@@ -9,8 +9,8 @@ import (
 
 // APIKey structure definition
 type APIKey struct {
-	ID          *uint32    `json:"id,omitempty"`
-	UserID      uint32     `json:"user_id,omitempty"`
+	ID          *uint      `json:"id,omitempty"`
+	UserID      uint       `json:"user_id,omitempty"`
 	Alias       string     `json:"alias,omitempty"`
 	Token       string     `json:"token,omitempty"`
 	LastUsageAt *time.Time `json:"last_usage_at,omitempty"`
@@ -37,7 +37,7 @@ func (ab *APIKeyBuilder) Build() *APIKey {
 }
 
 // UserID set apiKey user ID
-func (ab *APIKeyBuilder) UserID(userID uint32) *APIKeyBuilder {
+func (ab *APIKeyBuilder) UserID(userID uint) *APIKeyBuilder {
 	ab.apiKey.UserID = userID
 	return ab
 }

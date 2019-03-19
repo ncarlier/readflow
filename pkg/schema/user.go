@@ -1,10 +1,7 @@
 package schema
 
 import (
-	"fmt"
-
 	"github.com/graphql-go/graphql"
-	"github.com/ncarlier/reader/pkg/constant"
 	"github.com/ncarlier/reader/pkg/service"
 )
 
@@ -31,13 +28,9 @@ var meQueryField = &graphql.Field{
 }
 
 func meResolver(p graphql.ResolveParams) (interface{}, error) {
-	uid := p.Context.Value(constant.UserID).(uint32)
-	user, err := service.Lookup().GetUserByID(p.Context, uid)
+	user, err := service.Lookup().GetCurrentUser(p.Context)
 	if err != nil {
 		return nil, err
-	}
-	if user == nil {
-		return nil, fmt.Errorf("User not found: %d", uid)
 	}
 	return user, nil
 }

@@ -65,8 +65,40 @@ func (pg *DB) CreateOrUpdateCategory(category model.Category) (*model.Category, 
 	return pg.createCategory(category)
 }
 
+// GetCategoryByID returns a category from the DB
+func (pg *DB) GetCategoryByID(id uint) (*model.Category, error) {
+	row := pg.db.QueryRow(`
+		SELECT
+			id,
+			user_id,
+			title,
+			created_at,
+			updated_at
+		FROM categories
+		WHERE id = $1`,
+		id,
+	)
+
+	result := model.Category{}
+
+	err := row.Scan(
+		&result.ID,
+		&result.UserID,
+		&result.Title,
+		&result.CreatedAt,
+		&result.UpdatedAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 // GetCategoryByUserIDAndTitle returns a category of an user form the DB
-func (pg *DB) GetCategoryByUserIDAndTitle(userID uint32, title string) (*model.Category, error) {
+func (pg *DB) GetCategoryByUserIDAndTitle(userID uint, title string) (*model.Category, error) {
 	row := pg.db.QueryRow(`
 		SELECT
 			id,
@@ -98,7 +130,7 @@ func (pg *DB) GetCategoryByUserIDAndTitle(userID uint32, title string) (*model.C
 }
 
 // GetCategoriesByUserID returns categories of an user from DB
-func (pg *DB) GetCategoriesByUserID(userID uint32) ([]model.Category, error) {
+func (pg *DB) GetCategoriesByUserID(userID uint) ([]model.Category, error) {
 	rows, err := pg.db.Query(`
 		SELECT
 			id,
@@ -143,9 +175,9 @@ func (pg *DB) GetCategoriesByUserID(userID uint32) ([]model.Category, error) {
 func (pg *DB) DeleteCategory(category model.Category) error {
 	result, err := pg.db.Exec(`
 		DELETE FROM categories
-			WHERE ID=$1
+			WHERE id=$1 AND user_id=$2
 		`,
-		category.ID,
+		category.ID, category.UserID,
 	)
 	if err != nil {
 		return err
