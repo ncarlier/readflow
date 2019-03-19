@@ -4,6 +4,7 @@ import "github.com/ncarlier/reader/pkg/model"
 
 // APIKeyRepository is the repository interface to manage API keys
 type APIKeyRepository interface {
+	GetAPIKeyByID(id uint) (*model.APIKey, error)
 	GetAPIKeyByToken(token string) (*model.APIKey, error)
 	GetAPIKeyByUserIDAndAlias(userID uint, alias string) (*model.APIKey, error)
 	GetAPIKeysByUserID(userID uint) ([]model.APIKey, error)

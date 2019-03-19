@@ -14,6 +14,7 @@ var rootQuery = graphql.NewObject(
 		Fields: graphql.Fields{
 			"me":         meQueryField,
 			"categories": categoriesQueryField,
+			"apiKeys":    apiKeysQueryField,
 		},
 	},
 )
@@ -24,6 +25,8 @@ var rootMutation = graphql.NewObject(
 		Fields: graphql.Fields{
 			"createOrUpdateCategory": createOrUpdateCategoryMutationField,
 			"deleteCategory":         deleteCategoryMutationField,
+			"createOrUpdateAPIKey":   createOrUpdateAPIKeyMutationField,
+			"deleteAPIKey":           deleteAPIKeyMutationField,
 		},
 	},
 )
