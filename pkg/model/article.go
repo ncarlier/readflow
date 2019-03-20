@@ -47,6 +47,22 @@ func (a Article) String() string {
 	return string(result)
 }
 
+// ArticlesPageRequest request structure for a paginated list of articles
+type ArticlesPageRequest struct {
+	Limit       uint
+	AfterCursor *uint
+	Category    *uint
+	SortOrder   string
+}
+
+// ArticlesPageResponse response structure for a paginated list of articles
+type ArticlesPageResponse struct {
+	TotalCount uint
+	EndCursor  uint
+	HasNext    bool
+	Entries    []*Article
+}
+
 // ArticleBuilder is a builder to create an Article
 type ArticleBuilder struct {
 	article *Article

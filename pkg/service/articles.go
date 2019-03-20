@@ -41,3 +41,17 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleFor
 	}
 	return &result, err
 }
+
+// GetArticles get articles
+func (reg *Registry) GetArticles(ctx context.Context, req model.ArticlesPageRequest) (*model.ArticlesPageResponse, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	result, err := reg.db.GetPaginatedArticlesByUserID(uid, req)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Msg("unable to get articles")
+		return nil, err
+	}
+	return result, nil
+}

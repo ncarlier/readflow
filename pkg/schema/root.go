@@ -14,6 +14,7 @@ var rootQuery = graphql.NewObject(
 		Fields: graphql.Fields{
 			"me":         meQueryField,
 			"categories": categoriesQueryField,
+			"articles":   articlesQueryField,
 			"apiKeys":    apiKeysQueryField,
 		},
 	},

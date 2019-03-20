@@ -1,7 +1,6 @@
 package model
 
 import (
-	"log"
 	"time"
 
 	"github.com/ncarlier/reader/pkg/tooling"
@@ -32,7 +31,6 @@ func NewAPIKeyBuilder() APIKeyBuilder {
 // Build creates the apiKey
 func (ab *APIKeyBuilder) Build() *APIKey {
 	ab.apiKey.Token, _ = tooling.NewUUID()
-	log.Println(ab.apiKey)
 	return ab.apiKey
 }
 

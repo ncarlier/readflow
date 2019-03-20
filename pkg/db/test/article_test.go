@@ -63,15 +63,22 @@ func TestDeleteArticle(t *testing.T) {
 	assert.True(t, article == nil, "article should be nil")
 }
 
-func TestGetArticlesByUserID(t *testing.T) {
+func TestGetPaginatedArticlesByUserID(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Assert user exists
 	user := assertUserExists(t, "test-003")
 
-	articles, err := testDB.GetArticlesByUserID(*user.ID)
+	// Page request
+	req := model.ArticlesPageRequest{
+		Limit: 2,
+	}
+
+	res, err := testDB.GetPaginatedArticlesByUserID(*user.ID, req)
 	assert.Nil(t, err, "error should be nil")
-	assert.NotNil(t, articles, "articles shouldn't be nil")
-	assert.True(t, len(articles) >= 0, "articles shouldn't be empty")
+	assert.NotNil(t, res, "response shouldn't be nil")
+	assert.True(t, res.TotalCount >= 0, "total count should be a positive integer")
+	assert.True(t, !res.HasNext, "we should only have one page")
+	assert.True(t, len(res.Entries) >= 0, "entries shouldn't be empty")
 }

@@ -140,34 +140,6 @@ func (pg *DB) CreateOrUpdateArticle(article model.Article) (*model.Article, erro
 	return pg.createArticle(article)
 }
 
-// GetArticlesByUserID returns user's articles from DB
-func (pg *DB) GetArticlesByUserID(userID uint) ([]model.Article, error) {
-	rows, err := pg.db.Query(fmt.Sprintf(`
-		SELECT %s
-		FROM articles
-		WHERE user_id=$1
-		ORDER BY created_at DESC`, articleColumns), userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var result []model.Article
-
-	for rows.Next() {
-		article := &model.Article{}
-		if err := mapRowsToArticle(rows, article); err != nil {
-			return nil, err
-		}
-		result = append(result, *article)
-	}
-	err = rows.Err()
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
 // GetArticleByID returns an article by its ID from DB
 func (pg *DB) GetArticleByID(id uint) (*model.Article, error) {
 	row := pg.db.QueryRow(fmt.Sprintf(`

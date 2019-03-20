@@ -14,3 +14,11 @@ func ConvGQLStringToUint(id interface{}) (uint, bool) {
 	}
 	return uint(ui64), true
 }
+
+// ConvGQLIntToUint converts GraphQL int to unsigned integer
+func ConvGQLIntToUint(val interface{}) (uint, bool) {
+	if iVal, ok := val.(int); ok {
+		return uint(iVal), true
+	}
+	return 0, false
+}
