@@ -17,6 +17,7 @@ var rootQuery = graphql.NewObject(
 			"articles":   articlesQueryField,
 			"article":    articleQueryField,
 			"apiKeys":    apiKeysQueryField,
+			"archivers":  archiversQueryField,
 		},
 	},
 )
@@ -30,6 +31,8 @@ var rootMutation = graphql.NewObject(
 			"updateArticleStatus":    updateArticleStatusMutationField,
 			"createOrUpdateAPIKey":   createOrUpdateAPIKeyMutationField,
 			"deleteAPIKey":           deleteAPIKeyMutationField,
+			"createOrUpdateArchiver": createOrUpdateArchiverMutationField,
+			"deleteArchiver":         deleteArchiverMutationField,
 		},
 	},
 )

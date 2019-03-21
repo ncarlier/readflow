@@ -71,6 +71,21 @@ create table api_keys (
   foreign key (user_id) references users(id) on delete cascade
 );
 
+create table archivers (
+  id serial not null,
+  user_id int not null,
+  alias text not null,
+  is_default bool not null default 'f',
+  provider text not null,
+  config json not null,
+  created_at timestamp with time zone not null default now(),
+  updated_at timestamp with time zone null,
+
+  primary key (id),
+  unique (user_id, alias),
+  foreign key (user_id) references users(id) on delete cascade
+);
+
 create table rules (
   id serial not null,
   user_id int not null,
@@ -87,5 +102,5 @@ create table rules (
 }
 
 var DatabaseSQLMigrationChecksums = map[string]string{
-	"db_migration_1": "1bca823b5202b58b197f8409e5b60f4b5724c094e50c6c9ad6d51ca1b82207f6",
+	"db_migration_1": "f9de1aa313218c4b4092864372e3c341191c03f114ef97661e990a480768033b",
 }
