@@ -1,6 +1,7 @@
 module github.com/ncarlier/reader
 
 require (
+	github.com/Masterminds/squirrel v1.1.0
 	github.com/brianvoe/gofakeit v3.17.0+incompatible
 	github.com/certifi/gocertifi v0.0.0-20190105021004-abcd57078448 // indirect
 	github.com/getsentry/raven-go v0.2.0

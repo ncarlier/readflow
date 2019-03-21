@@ -4,28 +4,32 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/ncarlier/reader/pkg/model"
 )
 
-const articleColumns = `
-	id,
-	user_id,
-	category_id,
-	title,
-	text,
-	html,
-	url,
-	image,
-	hash,
-	status,
-	published_at,
-	created_at,
-	updated_at
-`
+var articleColumns = []string{
+	"id",
+	"user_id",
+	"category_id",
+	"title",
+	"text",
+	"html",
+	"url",
+	"image",
+	"hash",
+	"status",
+	"published_at",
+	"created_at",
+	"updated_at",
+}
 
-func mapRowToArticle(row *sql.Row, article *model.Article) error {
-	return row.Scan(
+func mapRowToArticle(row *sql.Row) (*model.Article, error) {
+	article := &model.Article{}
+
+	err := row.Scan(
 		&article.ID,
 		&article.UserID,
 		&article.CategoryID,
@@ -40,6 +44,12 @@ func mapRowToArticle(row *sql.Row, article *model.Article) error {
 		&article.CreatedAt,
 		&article.UpdatedAt,
 	)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+	return article, nil
 }
 
 func mapRowsToArticle(rows *sql.Rows, article *model.Article) error {
@@ -75,7 +85,7 @@ func (pg *DB) createArticle(article model.Article) (*model.Article, error) {
 				published_at
 			) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 			RETURNING %s
-		`, articleColumns),
+		`, strings.Join(articleColumns, ",")),
 		article.UserID,
 		article.CategoryID,
 		article.Title,
@@ -87,17 +97,12 @@ func (pg *DB) createArticle(article model.Article) (*model.Article, error) {
 		article.Status,
 		article.PublishedAt,
 	)
-	result := &model.Article{}
-
-	if err := mapRowToArticle(row, result); err != nil {
-		return nil, err
-	}
-	return result, nil
+	return mapRowToArticle(row)
 }
 
 func (pg *DB) updateArticle(article model.Article) (*model.Article, error) {
 	row := pg.db.QueryRow(fmt.Sprintf(`
-		UPDATE article SET
+		UPDATE articles SET
 			category_id = $3,
 			title = $4,
 			text = $5,
@@ -110,7 +115,7 @@ func (pg *DB) updateArticle(article model.Article) (*model.Article, error) {
 			updated_at=NOW()
 			WHERE id=$1 AND user_id=$2
 			RETURNING %s
-		`, articleColumns),
+		`, strings.Join(articleColumns, ",")),
 		article.ID,
 		article.UserID,
 		article.CategoryID,
@@ -123,13 +128,7 @@ func (pg *DB) updateArticle(article model.Article) (*model.Article, error) {
 		article.Status,
 		article.PublishedAt,
 	)
-
-	result := &model.Article{}
-
-	if err := mapRowToArticle(row, result); err != nil {
-		return nil, err
-	}
-	return result, nil
+	return mapRowToArticle(row)
 }
 
 // CreateOrUpdateArticle creates or updates a article into the DB
@@ -142,21 +141,12 @@ func (pg *DB) CreateOrUpdateArticle(article model.Article) (*model.Article, erro
 
 // GetArticleByID returns an article by its ID from DB
 func (pg *DB) GetArticleByID(id uint) (*model.Article, error) {
-	row := pg.db.QueryRow(fmt.Sprintf(`
-		SELECT %s
-		FROM articles
-		WHERE id = $1`, articleColumns),
-		id,
-	)
+	query, args, _ := pg.psql.Select(articleColumns...).From(
+		"articles",
+	).Where(sq.Eq{"id": id}).ToSql()
+	row := pg.db.QueryRow(query, args...)
 
-	result := &model.Article{}
-	err := mapRowToArticle(row, result)
-	if err == sql.ErrNoRows {
-		return nil, nil
-	} else if err != nil {
-		return nil, err
-	}
-	return result, nil
+	return mapRowToArticle(row)
 }
 
 // DeleteArticle remove an article from the DB

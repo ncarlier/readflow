@@ -34,6 +34,15 @@ func TestCreateOrUpdateArticle(t *testing.T) {
 
 	newArticle := assertNewArticle(t, article)
 	assert.Equal(t, article.Title, newArticle.Title, "")
+	assert.Equal(t, "unread", newArticle.Status, "article status should be unread")
+
+	// Update article
+	newArticle.Status = "read"
+	updatedArticle, err := testDB.CreateOrUpdateArticle(*newArticle)
+	assert.Nil(t, err, "error should be nil")
+	assert.True(t, updatedArticle != nil, "article should not be nil")
+	assert.Equal(t, "read", updatedArticle.Status, "article status should be read")
+	assert.NotEqual(t, newArticle.UpdatedAt, updatedArticle.UpdatedAt, "")
 }
 
 func TestDeleteArticle(t *testing.T) {
@@ -72,7 +81,7 @@ func TestGetPaginatedArticlesByUserID(t *testing.T) {
 
 	// Page request
 	req := model.ArticlesPageRequest{
-		Limit: 2,
+		Limit: 20,
 	}
 
 	res, err := testDB.GetPaginatedArticlesByUserID(*user.ID, req)

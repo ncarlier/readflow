@@ -49,6 +49,7 @@ func (a Article) String() string {
 
 // ArticlesPageRequest request structure for a paginated list of articles
 type ArticlesPageRequest struct {
+	Status      *string
 	Limit       uint
 	AfterCursor *uint
 	Category    *uint
@@ -93,6 +94,7 @@ func (ab *ArticleBuilder) Build() *Article {
 
 // Random fill article with random data
 func (ab *ArticleBuilder) Random() *ArticleBuilder {
+	gofakeit.Seed(0)
 	ab.article.Title = gofakeit.Sentence(3)
 	text := gofakeit.Paragraph(2, 2, 5, ".")
 	ab.article.Text = &text

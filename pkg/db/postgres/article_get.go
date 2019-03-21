@@ -1,55 +1,30 @@
 package postgres
 
 import (
-	"fmt"
 	"strings"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/ncarlier/reader/pkg/model"
 )
 
-func orderByQueryPart(sortOrder string) string {
-	return fmt.Sprintf("\nORDER BY id %s", strings.ToUpper(sortOrder))
-}
-
-func whereQueryPart(req *model.ArticlesPageRequest) string {
-	result := "user_id=$1"
-	if req.Category != nil {
-		result += " AND category_id=$2"
-	}
-	if req.AfterCursor != nil {
-		var part string
-		if req.SortOrder == "asc" {
-			part = " AND id > $%d"
-		} else {
-			part = " AND id < $%d"
-		}
-		idx := 2
-		if req.Category != nil {
-			idx = 3
-		}
-		result += fmt.Sprintf(part, idx)
-	}
-	return result
-}
-
 // CountArticlesByUserID returns total nb of articles of an user from the DB
 func (pg *DB) CountArticlesByUserID(uid uint, req model.ArticlesPageRequest) (uint, error) {
-	query := fmt.Sprintf(
-		"SELECT count(*) FROM articles WHERE %s",
-		whereQueryPart(&model.ArticlesPageRequest{
-			Category: req.Category,
-		}),
-	)
-	var count uint
-	args := []interface{}{uid}
+	counter := pg.psql.Select("count(*)").From(
+		"articles",
+	).Where(sq.Eq{"user_id": uid})
+
 	if req.Category != nil {
-		args = append(args, req.Category)
+		counter = counter.Where(sq.Eq{"category_id": *req.Category})
 	}
-	err := pg.db.QueryRow(
-		query,
-		args...,
-	).Scan(&count)
-	if err != nil {
+
+	if req.Status != nil {
+		counter = counter.Where(sq.Eq{"status": *req.Status})
+	}
+
+	query, args, _ := counter.ToSql()
+
+	var count uint
+	if err := pg.db.QueryRow(query, args...).Scan(&count); err != nil {
 		return 0, err
 	}
 	return count, nil
@@ -67,26 +42,31 @@ func (pg *DB) GetPaginatedArticlesByUserID(uid uint, req model.ArticlesPageReque
 		HasNext:    false,
 	}
 
-	query := fmt.Sprintf(
-		"SELECT %s FROM articles WHERE %s ORDER BY id %s LIMIT %d",
-		articleColumns,
-		whereQueryPart(&req),
-		strings.ToUpper(req.SortOrder),
-		req.Limit+1,
-	)
+	selectBuilder := pg.psql.Select(articleColumns...).From(
+		"articles",
+	).Where(sq.Eq{"user_id": uid})
 
-	args := []interface{}{uid}
 	if req.Category != nil {
-		args = append(args, req.Category)
-	}
-	if req.AfterCursor != nil {
-		args = append(args, req.AfterCursor)
+		selectBuilder = selectBuilder.Where(sq.Eq{"category_id": *req.Category})
 	}
 
-	rows, err := pg.db.Query(
-		query,
-		args...,
-	)
+	if req.Status != nil {
+		selectBuilder = selectBuilder.Where(sq.Eq{"status": *req.Status})
+	}
+
+	if req.AfterCursor != nil {
+		if req.SortOrder == "asc" {
+			selectBuilder = selectBuilder.Where(sq.Gt{"id": *req.AfterCursor})
+		} else {
+			selectBuilder = selectBuilder.Where(sq.Lt{"id": *req.AfterCursor})
+		}
+	}
+
+	selectBuilder = selectBuilder.OrderBy("id " + strings.ToUpper(req.SortOrder))
+	selectBuilder = selectBuilder.Limit(uint64(req.Limit + 1))
+
+	query, args, _ := selectBuilder.ToSql()
+	rows, err := pg.db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}

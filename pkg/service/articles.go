@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/ncarlier/reader/pkg/model"
@@ -30,7 +31,7 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleFor
 			).Str("title", art.Title).Msg("unable to create article")
 		} else {
 			result.Articles = append(result.Articles, article)
-			reg.logger.Debug().Uint(
+			reg.logger.Info().Uint(
 				"uid", uid,
 			).Str("title", article.Title).Uint("id", *article.ID).Msg("article created")
 		}
@@ -54,4 +55,47 @@ func (reg *Registry) GetArticles(ctx context.Context, req model.ArticlesPageRequ
 		return nil, err
 	}
 	return result, nil
+}
+
+// GetArticle get article
+func (reg *Registry) GetArticle(ctx context.Context, id uint) (*model.Article, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	article, err := reg.db.GetArticleByID(id)
+	if err != nil || article == nil || article.UserID != uid {
+		if err == nil {
+			err = errors.New("article not found")
+		}
+		reg.logger.Debug().Err(err).Uint(
+			"uid", uid,
+		).Uint("id", id).Msg("unable to get article")
+		return nil, err
+	}
+
+	return article, nil
+}
+
+// UpdateArticleStatus update article status
+func (reg *Registry) UpdateArticleStatus(ctx context.Context, id uint, status string) (*model.Article, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	article, err := reg.GetArticle(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	article.Status = status
+	article, err = reg.db.CreateOrUpdateArticle(*article)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Uint("id", id).Msg("unable to update article")
+		return nil, err
+	}
+	// TODO maybe too verbose... debug level is maybe an option here
+	reg.logger.Info().Uint(
+		"uid", uid,
+	).Uint("id", *article.ID).Str("status", article.Status).Msg("article status updated")
+
+	return article, nil
 }

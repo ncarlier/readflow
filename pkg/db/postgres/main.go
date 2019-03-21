@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"net/url"
 
+	sq "github.com/Masterminds/squirrel"
 	// PosgreSQL driver
 	_ "github.com/lib/pq"
 )
 
 // DB is Database backed by PostgreSQL
 type DB struct {
-	db *sql.DB
+	db   *sql.DB
+	psql sq.StatementBuilderType
 }
 
 // NewPostgreSQL creates a Database backed by PostgreSQL
@@ -31,7 +33,8 @@ func NewPostgreSQL(conn *url.URL) (*DB, error) {
 	Migrate(db)
 
 	return &DB{
-		db: db,
+		db:   db,
+		psql: sq.StatementBuilder.PlaceholderFormat(sq.Dollar),
 	}, nil
 }
 

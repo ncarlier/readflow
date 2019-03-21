@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"errors"
+
 	"github.com/graphql-go/graphql"
 	"github.com/ncarlier/reader/pkg/model"
 	"github.com/ncarlier/reader/pkg/service"
@@ -117,6 +119,10 @@ var articlesQueryField = &graphql.Field{
 			Description: "filter entries by this category",
 			Type:        graphql.Int,
 		},
+		"status": &graphql.ArgumentConfig{
+			Description: "filter entries by this status",
+			Type:        articleStatus,
+		},
 		"sortOrder": &graphql.ArgumentConfig{
 			Description:  "sorting order of the entries",
 			Type:         sortOrder,
@@ -140,12 +146,17 @@ func articlesResolver(p graphql.ResolveParams) (interface{}, error) {
 	if val, ok := tooling.ConvGQLIntToUint(p.Args["afterCursor"]); ok {
 		afterCursor = &val
 	}
+	var status *string
+	if val, ok := p.Args["status"].(string); ok {
+		status = &val
+	}
 
 	pageRequest := model.ArticlesPageRequest{
 		Limit:       limit,
 		SortOrder:   sortOrder,
 		AfterCursor: afterCursor,
 		Category:    category,
+		Status:      status,
 	}
 
 	articles, err := service.Lookup().GetArticles(p.Context, pageRequest)
@@ -153,4 +164,57 @@ func articlesResolver(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 	return articles, nil
+}
+
+var articleQueryField = &graphql.Field{
+	Type: articleType,
+	Args: graphql.FieldConfigArgument{
+		"id": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
+	},
+	Resolve: articleResolver,
+}
+
+func articleResolver(p graphql.ResolveParams) (interface{}, error) {
+	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	if !ok {
+		return nil, errors.New("invalid article ID")
+	}
+
+	article, err := service.Lookup().GetArticle(p.Context, id)
+	if err != nil {
+		return nil, err
+	}
+	return article, nil
+}
+
+// MUTATIONS
+
+var updateArticleStatusMutationField = &graphql.Field{
+	Type:        articleType,
+	Description: "updadet article status (read or unread)",
+	Args: graphql.FieldConfigArgument{
+		"id": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
+		"status": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(articleStatus),
+		},
+	},
+	Resolve: updateArticleStatusResolver,
+}
+
+func updateArticleStatusResolver(p graphql.ResolveParams) (interface{}, error) {
+	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	if !ok {
+		return nil, errors.New("invalid article ID")
+	}
+	status, _ := p.Args["status"].(string)
+
+	article, err := service.Lookup().UpdateArticleStatus(p.Context, id, status)
+	if err != nil {
+		return nil, err
+	}
+	return article, nil
 }
