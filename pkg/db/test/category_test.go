@@ -32,11 +32,8 @@ func TestCreateOrUpdateCategory(t *testing.T) {
 
 	title := "My test category"
 
-	// Assert user exists
-	user := assertUserExists(t, "test-002")
-
 	// Create category
-	category := assertCategoryExists(t, user.ID, title)
+	category := assertCategoryExists(t, testUser.ID, title)
 
 	title = "My updated category"
 	category.Title = title
@@ -55,20 +52,17 @@ func TestDeleteCategory(t *testing.T) {
 
 	title := "My updated category"
 
-	// Assert user exists
-	user := assertUserExists(t, "test-002")
-
 	// Assert category exists
-	category := assertCategoryExists(t, user.ID, title)
+	category := assertCategoryExists(t, testUser.ID, title)
 
-	categories, err := testDB.GetCategoriesByUserID(*user.ID)
+	categories, err := testDB.GetCategoriesByUserID(*testUser.ID)
 	assert.Nil(t, err, "error should be nil")
 	assert.True(t, len(categories) > 0, "categories should not be empty")
 
 	err = testDB.DeleteCategory(*category)
 	assert.Nil(t, err, "error on delete should be nil")
 
-	category, err = testDB.GetCategoryByUserIDAndTitle(*user.ID, title)
+	category, err = testDB.GetCategoryByUserIDAndTitle(*testUser.ID, title)
 	assert.Nil(t, err, "error should be nil")
 	assert.True(t, category == nil, "category should be nil")
 }

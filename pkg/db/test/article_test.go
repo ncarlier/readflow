@@ -19,15 +19,13 @@ func TestCreateOrUpdateArticle(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	// Assert user exists
-	user := assertUserExists(t, "test-003")
 	// Assert category exists
-	category := assertCategoryExists(t, user.ID, "My test category")
+	category := assertCategoryExists(t, testUser.ID, "My test category")
 
 	// Create article test case
 	builder := model.NewArticleBuilder()
 	article := builder.UserID(
-		*user.ID,
+		*testUser.ID,
 	).CategoryID(
 		*category.ID,
 	).Random().Build()
@@ -49,15 +47,13 @@ func TestDeleteArticle(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	// Assert user exists
-	user := assertUserExists(t, "test-003")
 	// Assert category exists
-	category := assertCategoryExists(t, user.ID, "My test category")
+	category := assertCategoryExists(t, testUser.ID, "My test category")
 
 	// Create article test case
 	builder := model.NewArticleBuilder()
 	article := builder.UserID(
-		*user.ID,
+		*testUser.ID,
 	).CategoryID(
 		*category.ID,
 	).Random().Build()
@@ -76,15 +72,12 @@ func TestGetPaginatedArticlesByUserID(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	// Assert user exists
-	user := assertUserExists(t, "test-003")
-
 	// Page request
 	req := model.ArticlesPageRequest{
 		Limit: 20,
 	}
 
-	res, err := testDB.GetPaginatedArticlesByUserID(*user.ID, req)
+	res, err := testDB.GetPaginatedArticlesByUserID(*testUser.ID, req)
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, res, "response shouldn't be nil")
 	assert.True(t, res.TotalCount >= 0, "total count should be a positive integer")

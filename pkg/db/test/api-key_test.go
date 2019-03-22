@@ -31,10 +31,7 @@ func TestCreateOrUpdateAPIKey(t *testing.T) {
 
 	alias := "My test apiKey"
 
-	// Assert user exists
-	user := assertUserExists(t, "test-004")
-
-	assertAPIKeyExists(t, *user.ID, alias)
+	assertAPIKeyExists(t, *testUser.ID, alias)
 }
 
 func TestDeleteAPIKey(t *testing.T) {
@@ -43,11 +40,8 @@ func TestDeleteAPIKey(t *testing.T) {
 
 	alias := "My apiKey"
 
-	// Assert user exists
-	user := assertUserExists(t, "test-004")
-
 	// Assert apiKey exists
-	apiKey := assertAPIKeyExists(t, *user.ID, alias)
+	apiKey := assertAPIKeyExists(t, *testUser.ID, alias)
 
 	err := testDB.DeleteAPIKey(*apiKey)
 	assert.Nil(t, err, "error on delete should be nil")
@@ -61,10 +55,7 @@ func TestGetAPIKeysByUserID(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	// Assert user exists
-	user := assertUserExists(t, "test-004")
-
-	apiKeys, err := testDB.GetAPIKeysByUserID(*user.ID)
+	apiKeys, err := testDB.GetAPIKeysByUserID(*testUser.ID)
 	assert.Nil(t, err, "error should be nil")
 	assert.NotNil(t, apiKeys, "apiKeys shouldn't be nil")
 	assert.True(t, len(apiKeys) >= 0, "apiKeys shouldn't be empty")
