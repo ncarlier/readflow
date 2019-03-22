@@ -8,7 +8,7 @@ import (
 )
 
 func assertArchiverExists(t *testing.T, archiver model.Archiver) *model.Archiver {
-	result, err := testDB.GetArchiverByUserIDAndAlias(*archiver.UserID, archiver.Alias)
+	result, err := testDB.GetArchiverByUserIDAndAlias(*archiver.UserID, &archiver.Alias)
 	assert.Nil(t, err, "error on getting archiver by user and title should be nil")
 	if result != nil {
 		id := *result.ID
@@ -57,9 +57,11 @@ func TestDeleteArchiver(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
+	alias := "My archiver"
+
 	// Assert archiver exists
 	archiver := &model.Archiver{
-		Alias:    "My archiver",
+		Alias:    alias,
 		UserID:   testUser.ID,
 		Provider: "test",
 		Config:   "{\"foo\": \"bar\"}",
@@ -73,7 +75,7 @@ func TestDeleteArchiver(t *testing.T) {
 	err = testDB.DeleteArchiver(*archiver)
 	assert.Nil(t, err, "error on delete should be nil")
 
-	archiver, err = testDB.GetArchiverByUserIDAndAlias(*testUser.ID, "My archiver")
+	archiver, err = testDB.GetArchiverByUserIDAndAlias(*testUser.ID, &alias)
 	assert.Nil(t, err, "error should be nil")
 	assert.True(t, archiver == nil, "archiver should be nil")
 }
@@ -98,4 +100,10 @@ func TestUpdateDefaultArchiver(t *testing.T) {
 	firstArchiver, err := testDB.GetArchiverByID(*firstArchiver.ID)
 	assert.Nil(t, err, "error should be nil")
 	assert.True(t, !firstArchiver.IsDefault, "archiver should not be the default anymore")
+
+	// Test default archiver query
+	defaultArchiver, err := testDB.GetArchiverByUserIDAndAlias(*testUser.ID, nil)
+	assert.Nil(t, err, "error should be nil")
+	assert.True(t, defaultArchiver != nil, "default archiver should noty be nil")
+	assert.NotEqual(t, defaultArchiver.ID, firstArchiver.ID, "")
 }

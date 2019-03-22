@@ -139,15 +139,22 @@ func (pg *DB) GetArchiverByID(id uint) (*model.Archiver, error) {
 	return mapRowToArchiver(row)
 }
 
-// GetArchiverByUserIDAndAlias get an archiver from the DB
-func (pg *DB) GetArchiverByUserIDAndAlias(uid uint, alias string) (*model.Archiver, error) {
-	query, args, _ := pg.psql.Select(archiverColumns...).From(
+// GetArchiverByUserIDAndAlias get an archiver from the DB.
+// Default archiver is returned if alias is nil.
+func (pg *DB) GetArchiverByUserIDAndAlias(uid uint, alias *string) (*model.Archiver, error) {
+	selectBuilder := pg.psql.Select(archiverColumns...).From(
 		"archivers",
 	).Where(
 		sq.Eq{"user_id": uid},
-	).Where(
-		sq.Eq{"alias": alias},
-	).ToSql()
+	)
+
+	if alias != nil {
+		selectBuilder = selectBuilder.Where(sq.Eq{"alias": *alias})
+	} else {
+		selectBuilder = selectBuilder.Where(sq.Eq{"is_default": true})
+	}
+
+	query, args, _ := selectBuilder.ToSql()
 	row := pg.db.QueryRow(query, args...)
 	return mapRowToArchiver(row)
 }

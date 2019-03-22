@@ -146,3 +146,34 @@ func deleteArchiverResolver(p graphql.ResolveParams) (interface{}, error) {
 	}
 	return archiver, nil
 }
+
+var archiveArticleMutationField = &graphql.Field{
+	Type:        graphql.ID,
+	Description: "archive an article",
+	Args: graphql.FieldConfigArgument{
+		"id": &graphql.ArgumentConfig{
+			Description: "article ID",
+			Type:        graphql.NewNonNull(graphql.ID),
+		},
+		"archiver": &graphql.ArgumentConfig{
+			Description: "archiver alias (using default if missing)",
+			Type:        graphql.String,
+		},
+	},
+	Resolve: archiveArticleResolver,
+}
+
+func archiveArticleResolver(p graphql.ResolveParams) (interface{}, error) {
+	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	if !ok {
+		return nil, errors.New("invalid article ID")
+	}
+	var archiver *string
+	if val, ok := p.Args["archiver"]; ok {
+		sVal := val.(string)
+		archiver = &sVal
+	}
+
+	err := service.Lookup().ArchiveArticle(p.Context, id, archiver)
+	return id, err
+}

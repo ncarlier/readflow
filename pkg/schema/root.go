@@ -33,6 +33,7 @@ var rootMutation = graphql.NewObject(
 			"deleteAPIKey":           deleteAPIKeyMutationField,
 			"createOrUpdateArchiver": createOrUpdateArchiverMutationField,
 			"deleteArchiver":         deleteArchiverMutationField,
+			"archiveArticle":         archiveArticleMutationField,
 		},
 	},
 )
