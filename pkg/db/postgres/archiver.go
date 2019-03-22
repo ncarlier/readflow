@@ -84,10 +84,48 @@ func (pg *DB) updateArchiver(archiver model.Archiver) (*model.Archiver, error) {
 
 // CreateOrUpdateArchiver creates or updates an archiver into the DB
 func (pg *DB) CreateOrUpdateArchiver(archiver model.Archiver) (*model.Archiver, error) {
-	if archiver.ID != nil {
-		return pg.updateArchiver(archiver)
+	var result *model.Archiver
+	var err error
+
+	tx, err := pg.db.Begin()
+	if err != nil {
+		return nil, err
 	}
-	return pg.createArchiver(archiver)
+
+	if archiver.ID != nil {
+		result, err = pg.updateArchiver(archiver)
+	} else {
+		result, err = pg.createArchiver(archiver)
+	}
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	if result != nil && result.IsDefault {
+		// Unset previous archiver default
+		err = pg.setDefaultArchiver(result)
+		if err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+	}
+	return result, tx.Commit()
+}
+
+func (pg *DB) setDefaultArchiver(archiver *model.Archiver) error {
+	update := map[string]interface{}{
+		"is_default": false,
+	}
+	query, args, _ := pg.psql.Update(
+		"archivers",
+	).SetMap(update).Where(
+		sq.NotEq{"id": archiver.ID},
+	).Where(
+		sq.Eq{"user_id": archiver.UserID},
+	).ToSql()
+
+	_, err := pg.db.Exec(query, args...)
+	return err
 }
 
 // GetArchiverByID get an archiver from the DB
@@ -107,6 +145,7 @@ func (pg *DB) GetArchiverByUserIDAndAlias(uid uint, alias string) (*model.Archiv
 		"archivers",
 	).Where(
 		sq.Eq{"user_id": uid},
+	).Where(
 		sq.Eq{"alias": alias},
 	).ToSql()
 	row := pg.db.QueryRow(query, args...)
