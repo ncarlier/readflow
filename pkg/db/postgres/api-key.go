@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/ncarlier/reader/pkg/model"
 )
 
@@ -172,4 +173,19 @@ func (pg *DB) DeleteAPIKey(apiKey model.APIKey) error {
 	}
 
 	return nil
+}
+
+// DeleteAPIKeys removes API keys from the DB
+func (pg *DB) DeleteAPIKeys(uid uint, ids []uint) (int64, error) {
+	query, args, _ := pg.psql.Delete("api_keys").Where(
+		sq.Eq{"user_id": uid},
+	).Where(
+		sq.Eq{"id": ids},
+	).ToSql()
+	result, err := pg.db.Exec(query, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.RowsAffected()
 }

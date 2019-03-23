@@ -10,4 +10,5 @@ type APIKeyRepository interface {
 	GetAPIKeysByUserID(userID uint) ([]model.APIKey, error)
 	CreateOrUpdateAPIKey(apiKey model.APIKey) (*model.APIKey, error)
 	DeleteAPIKey(apiKey model.APIKey) error
+	DeleteAPIKeys(uid uint, ids []uint) (int64, error)
 }

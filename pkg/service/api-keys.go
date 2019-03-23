@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/ncarlier/reader/pkg/model"
 )
@@ -25,6 +27,20 @@ func (reg *Registry) GetAPIKeys(ctx context.Context) (*[]model.APIKey, error) {
 	}
 
 	return &apiKeys, err
+}
+
+// GetAPIKey get an API key of the current user
+func (reg *Registry) GetAPIKey(ctx context.Context, id uint) (*model.APIKey, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	apiKey, err := reg.db.GetAPIKeyByID(id)
+	if err != nil || apiKey == nil || apiKey.UserID != uid {
+		if err == nil {
+			err = errors.New("API key not found")
+		}
+		return nil, err
+	}
+	return apiKey, nil
 }
 
 // CreateOrUpdateAPIKey create or update an API key for current user
@@ -72,4 +88,22 @@ func (reg *Registry) DeleteAPIKey(ctx context.Context, id uint) (*model.APIKey, 
 		return nil, err
 	}
 	return apiKey, nil
+}
+
+// DeleteAPIKeys delete API keys of the current user
+func (reg *Registry) DeleteAPIKeys(ctx context.Context, ids []uint) (int64, error) {
+	uid := getCurrentUserFromContext(ctx)
+	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
+
+	nb, err := reg.db.DeleteAPIKeys(uid, ids)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Str("ids", idsStr).Msg("unable to delete API keys")
+		return 0, err
+	}
+	reg.logger.Debug().Err(err).Uint(
+		"uid", uid,
+	).Str("ids", idsStr).Int64("nb", nb).Msg("API keys deleted")
+	return nb, nil
 }

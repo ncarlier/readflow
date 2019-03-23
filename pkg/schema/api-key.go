@@ -50,6 +50,28 @@ func apiKeysResolver(p graphql.ResolveParams) (interface{}, error) {
 	return apiKeys, nil
 }
 
+var apiKeyQueryField = &graphql.Field{
+	Type: apiKeyType,
+	Args: graphql.FieldConfigArgument{
+		"id": &graphql.ArgumentConfig{
+			Type: graphql.ID,
+		},
+	},
+	Resolve: apiKeyResolver,
+}
+
+func apiKeyResolver(p graphql.ResolveParams) (interface{}, error) {
+	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	if !ok {
+		return nil, errors.New("invalid API key ID")
+	}
+	apiKey, err := service.Lookup().GetAPIKey(p.Context, id)
+	if err != nil {
+		return nil, err
+	}
+	return apiKey, nil
+}
+
 // MUTATIONS
 
 var createOrUpdateAPIKeyMutationField = &graphql.Field{
@@ -80,26 +102,32 @@ func createOrUpdateAPIKeyResolver(p graphql.ResolveParams) (interface{}, error) 
 	return apiKey, nil
 }
 
-var deleteAPIKeyMutationField = &graphql.Field{
-	Type:        apiKeyType,
-	Description: "delete an API key",
+var deleteAPIKeysMutationField = &graphql.Field{
+	Type:        graphql.Int,
+	Description: "delete API keys",
 	Args: graphql.FieldConfigArgument{
-		"id": &graphql.ArgumentConfig{
-			Type: graphql.NewNonNull(graphql.ID),
+		"ids": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(graphql.NewList(graphql.ID)),
 		},
 	},
-	Resolve: deleteAPIKeyResolver,
+	Resolve: deleteAPIKeysResolver,
 }
 
-func deleteAPIKeyResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+func deleteAPIKeysResolver(p graphql.ResolveParams) (interface{}, error) {
+	idsArg, ok := p.Args["ids"].([]interface{})
 	if !ok {
-		return nil, errors.New("invalid API key ID")
+		return nil, errors.New("invalid API Key ID")
+	}
+	var ids []uint
+	for _, v := range idsArg {
+		if id, ok := tooling.ConvGQLStringToUint(v); ok {
+			ids = append(ids, id)
+		}
 	}
 
-	apiKey, err := service.Lookup().DeleteAPIKey(p.Context, id)
+	nb, err := service.Lookup().DeleteAPIKeys(p.Context, ids)
 	if err != nil {
 		return nil, err
 	}
-	return apiKey, nil
+	return nb, nil
 }
