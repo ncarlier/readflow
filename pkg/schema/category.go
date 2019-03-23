@@ -44,6 +44,28 @@ func categoriesResolver(p graphql.ResolveParams) (interface{}, error) {
 	return categories, nil
 }
 
+var categoryQueryField = &graphql.Field{
+	Type: categoryType,
+	Args: graphql.FieldConfigArgument{
+		"id": &graphql.ArgumentConfig{
+			Type: graphql.ID,
+		},
+	},
+	Resolve: categoryResolver,
+}
+
+func categoryResolver(p graphql.ResolveParams) (interface{}, error) {
+	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	if !ok {
+		return nil, errors.New("invalid category ID")
+	}
+	category, err := service.Lookup().GetCategory(p.Context, id)
+	if err != nil {
+		return nil, err
+	}
+	return category, nil
+}
+
 // MUTATIONS
 
 var createOrUpdateCategoryMutationField = &graphql.Field{
@@ -74,26 +96,32 @@ func createOrUpdateCategoryResolver(p graphql.ResolveParams) (interface{}, error
 	return category, nil
 }
 
-var deleteCategoryMutationField = &graphql.Field{
-	Type:        categoryType,
-	Description: "delete a category",
+var deleteCategoriesMutationField = &graphql.Field{
+	Type:        graphql.Int,
+	Description: "delete categories",
 	Args: graphql.FieldConfigArgument{
-		"id": &graphql.ArgumentConfig{
-			Type: graphql.NewNonNull(graphql.ID),
+		"ids": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(graphql.NewList(graphql.ID)),
 		},
 	},
-	Resolve: deleteCategoryResolver,
+	Resolve: deleteCategoriesResolver,
 }
 
-func deleteCategoryResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+func deleteCategoriesResolver(p graphql.ResolveParams) (interface{}, error) {
+	idsArg, ok := p.Args["ids"].([]interface{})
 	if !ok {
 		return nil, errors.New("invalid category ID")
 	}
+	var ids []uint
+	for _, v := range idsArg {
+		if id, ok := tooling.ConvGQLStringToUint(v); ok {
+			ids = append(ids, id)
+		}
+	}
 
-	category, err := service.Lookup().DeleteCategory(p.Context, id)
+	nb, err := service.Lookup().DeleteCategories(p.Context, ids)
 	if err != nil {
 		return nil, err
 	}
-	return category, nil
+	return nb, nil
 }

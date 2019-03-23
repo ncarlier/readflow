@@ -26,8 +26,7 @@ func graphqlHandler(conf *config.Config) http.Handler {
 
 		result := graphql.Do(params)
 		if len(result.Errors) > 0 {
-			http.Error(w, result.Errors[0].Error(), http.StatusBadRequest)
-			return
+			w.WriteHeader(http.StatusBadRequest)
 		}
 		json.NewEncoder(w).Encode(result)
 	})

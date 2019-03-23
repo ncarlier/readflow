@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/ncarlier/reader/pkg/model"
 )
 
@@ -193,4 +194,19 @@ func (pg *DB) DeleteCategory(category model.Category) error {
 	}
 
 	return nil
+}
+
+// DeleteCategories removes categories from the DB
+func (pg *DB) DeleteCategories(uid uint, ids []uint) (int64, error) {
+	query, args, _ := pg.psql.Delete("categories").Where(
+		sq.Eq{"user_id": uid},
+	).Where(
+		sq.Eq{"id": ids},
+	).ToSql()
+	result, err := pg.db.Exec(query, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.RowsAffected()
 }
