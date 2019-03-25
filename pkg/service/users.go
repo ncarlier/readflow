@@ -3,10 +3,12 @@ package service
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/ncarlier/reader/pkg/constant"
 	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/reader/pkg/tooling"
 )
 
 func getCurrentUserFromContext(ctx context.Context) uint {
@@ -86,5 +88,8 @@ func (reg *Registry) GetCurrentUser(ctx context.Context) (*model.User, error) {
 		).Msg("unable to find user")
 		return nil, err
 	}
+	// Compute user hash
+	user.Hash = tooling.Hash(strings.ToLower(user.Username))
+
 	return user, nil
 }

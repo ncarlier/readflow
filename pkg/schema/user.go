@@ -12,7 +12,13 @@ var userType = graphql.NewObject(
 			"username": &graphql.Field{
 				Type: graphql.String,
 			},
+			"hash": &graphql.Field{
+				Type: graphql.String,
+			},
 			"last_login_at": &graphql.Field{
+				Type: graphql.DateTime,
+			},
+			"created_at": &graphql.Field{
 				Type: graphql.DateTime,
 			},
 		},
