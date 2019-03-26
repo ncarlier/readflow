@@ -72,6 +72,28 @@ func archiversResolver(p graphql.ResolveParams) (interface{}, error) {
 	return archivers, nil
 }
 
+var archiverQueryField = &graphql.Field{
+	Type: archiverType,
+	Args: graphql.FieldConfigArgument{
+		"id": &graphql.ArgumentConfig{
+			Type: graphql.ID,
+		},
+	},
+	Resolve: archiverResolver,
+}
+
+func archiverResolver(p graphql.ResolveParams) (interface{}, error) {
+	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	if !ok {
+		return nil, errors.New("invalid archiver ID")
+	}
+	archiver, err := service.Lookup().GetArchiver(p.Context, id)
+	if err != nil {
+		return nil, err
+	}
+	return archiver, nil
+}
+
 // MUTATIONS
 
 var createOrUpdateArchiverMutationField = &graphql.Field{
@@ -123,28 +145,34 @@ func createOrUpdateArchiverResolver(p graphql.ResolveParams) (interface{}, error
 	return archiver, nil
 }
 
-var deleteArchiverMutationField = &graphql.Field{
-	Type:        archiverType,
-	Description: "delete a archiver",
+var deleteArchiversMutationField = &graphql.Field{
+	Type:        graphql.Int,
+	Description: "delete archivers",
 	Args: graphql.FieldConfigArgument{
-		"id": &graphql.ArgumentConfig{
-			Type: graphql.NewNonNull(graphql.ID),
+		"ids": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(graphql.NewList(graphql.ID)),
 		},
 	},
-	Resolve: deleteArchiverResolver,
+	Resolve: deleteArchiversResolver,
 }
 
-func deleteArchiverResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+func deleteArchiversResolver(p graphql.ResolveParams) (interface{}, error) {
+	idsArg, ok := p.Args["ids"].([]interface{})
 	if !ok {
 		return nil, errors.New("invalid archiver ID")
 	}
+	var ids []uint
+	for _, v := range idsArg {
+		if id, ok := tooling.ConvGQLStringToUint(v); ok {
+			ids = append(ids, id)
+		}
+	}
 
-	archiver, err := service.Lookup().DeleteArchiver(p.Context, id)
+	nb, err := service.Lookup().DeleteArchivers(p.Context, ids)
 	if err != nil {
 		return nil, err
 	}
-	return archiver, nil
+	return nb, nil
 }
 
 var archiveArticleMutationField = &graphql.Field{

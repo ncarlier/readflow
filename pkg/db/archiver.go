@@ -9,4 +9,5 @@ type ArchiverRepository interface {
 	GetArchiversByUserID(uid uint) ([]model.Archiver, error)
 	CreateOrUpdateArchiver(archiver model.Archiver) (*model.Archiver, error)
 	DeleteArchiver(archiver model.Archiver) error
+	DeleteArchivers(uid uint, ids []uint) (int64, error)
 }

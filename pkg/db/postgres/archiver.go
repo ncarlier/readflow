@@ -219,3 +219,18 @@ func (pg *DB) DeleteArchiver(archiver model.Archiver) error {
 
 	return nil
 }
+
+// DeleteArchivers removes archivers from the DB
+func (pg *DB) DeleteArchivers(uid uint, ids []uint) (int64, error) {
+	query, args, _ := pg.psql.Delete("archivers").Where(
+		sq.Eq{"user_id": uid},
+	).Where(
+		sq.Eq{"id": ids},
+	).ToSql()
+	result, err := pg.db.Exec(query, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.RowsAffected()
+}

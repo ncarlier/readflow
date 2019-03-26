@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/ncarlier/reader/pkg/service/archive"
 
@@ -22,6 +24,20 @@ func (reg *Registry) GetArchivers(ctx context.Context) (*[]model.Archiver, error
 	}
 
 	return &archivers, err
+}
+
+// GetArchiver get an archiver of the current user
+func (reg *Registry) GetArchiver(ctx context.Context, id uint) (*model.Archiver, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	archiver, err := reg.db.GetArchiverByID(id)
+	if err != nil || archiver == nil || *archiver.UserID != uid {
+		if err == nil {
+			err = errors.New("Archiver not found")
+		}
+		return nil, err
+	}
+	return archiver, nil
 }
 
 // CreateOrUpdateArchiver create or update a archiver for current user
@@ -78,6 +94,24 @@ func (reg *Registry) DeleteArchiver(ctx context.Context, id uint) (*model.Archiv
 		return nil, err
 	}
 	return archiver, nil
+}
+
+// DeleteArchivers delete archivers of the current user
+func (reg *Registry) DeleteArchivers(ctx context.Context, ids []uint) (int64, error) {
+	uid := getCurrentUserFromContext(ctx)
+	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
+
+	nb, err := reg.db.DeleteArchivers(uid, ids)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Str("ids", idsStr).Msg("unable to delete archivers")
+		return 0, err
+	}
+	reg.logger.Debug().Err(err).Uint(
+		"uid", uid,
+	).Str("ids", idsStr).Int64("nb", nb).Msg("archivers deleted")
+	return nb, nil
 }
 
 // ArchiveArticle archive an article using a archive provider
