@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  #######################################
+  # Postgres: The database
+  #######################################
+  db:
+    image: "postgres:11"
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-reader_test}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-testpwd}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"

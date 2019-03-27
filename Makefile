@@ -29,6 +29,7 @@ all: build
 root_dir:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 makefiles:=$(root_dir)/makefiles
 include $(makefiles)/help.Makefile
+include $(makefiles)/docker/compose.Makefile
 
 ## Clean built files
 clean:
@@ -89,3 +90,37 @@ distribution:
 	GOOS=darwin make build archive
 .PHONY: distribution
 
+## Start development server (aka: a test database instance)
+dev-server:
+	docker-compose -f docker-compose.dev.yml down
+	docker-compose -f docker-compose.dev.yml up
+.PHONY: dev-server
+
+## Deploy containers to Docker host
+deploy: compose-build compose-up
+.PHONY: deploy
+
+## Un-deploy containers from Docker host
+undeploy: compose-down
+.PHONY: undeploy
+
+## Backup database
+backup:
+	archive=backup/db-`date -I`.dump
+	echo "Backuping PosgreSQL database ($$archive)..."
+	mkdir -p backup
+	docker exec -u postgres nxreaderapi_database_1 pg_dump -Fc keycloak > $$archive
+	gzip $$archive
+	echo "done."
+.ONESHELL:
+.PHONY: backup
+
+## Restore database
+restore:
+	echo "Restoring $(archive) database dump ..."
+	@while [ -z "$$CONTINUE" ]; do \
+		read -r -p "Are you sure? [y/N]: " CONTINUE; \
+	done ; \
+	[ $$CONTINUE = "y" ] || [ $$CONTINUE = "Y" ] || (echo "Exiting."; exit 1;)
+	docker exec -i -u postgres nxreaderapi_database_1 pg_restore -C -d postgres < $(archive)
+.PHONY: restore

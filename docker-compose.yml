@@ -1,20 +1,53 @@
 version: "3"
 
 services:
-  #######################################
-  # Postgres: The database
-  #######################################
-  database:
-    image: "postgres:11"
+  ########################################
+  # PostgreSQL
+  ########################################
+  db:
+    image: postgres:11
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-testpwd}
-      POSTGRES_DB: ${POSTGRES_DB:-reader_test}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
-#    volumes:
-#      - db-data:/var/lib/postgresql/data
+      - POSTGRES_DB=${POSTGRES_DB:-reader}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - internal
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    labels:
+      - "traefik.enable=false"
 
-#volumes:
-#  db-data:
+  ########################################
+  # Reader server
+  ########################################
+  reader:
+    build: .
+    image: "ncarlier/reader:latest"
+    restart: always
+    depends_on:
+      - db
+    networks:
+      - web
+      - internal
+    environment:
+      - APP_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB:-reader}?sslmode=disable
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 5s
+      timeout: 2s
+      retries: 15
+    labels:
+      - "traefik.port=8080"
+      - "traefik.frontend.rule=Host:${FQDN}"
+      - "traefik.docker.network=${GW_NETWORK_NAME}"
+
+networks:
+  web:
+    external:
+      name: "${GW_NETWORK_NAME}"
+  internal:
+    external: false
+
+volumes:
+  db-data:
