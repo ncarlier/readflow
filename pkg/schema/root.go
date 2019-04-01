@@ -32,6 +32,7 @@ var rootMutation = graphql.NewObject(
 			"createOrUpdateCategory": createOrUpdateCategoryMutationField,
 			"deleteCategories":       deleteCategoriesMutationField,
 			"updateArticleStatus":    updateArticleStatusMutationField,
+			"markAllArticlesAsRead":  markAllArticlesAsReadMutationField,
 			"createOrUpdateAPIKey":   createOrUpdateAPIKeyMutationField,
 			"deleteAPIKeys":          deleteAPIKeysMutationField,
 			"createOrUpdateArchiver": createOrUpdateArchiverMutationField,

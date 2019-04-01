@@ -8,4 +8,5 @@ type ArticleRepository interface {
 	GetArticleByID(id uint) (*model.Article, error)
 	CreateOrUpdateArticle(article model.Article) (*model.Article, error)
 	DeleteArticle(article model.Article) error
+	MarkAllArticlesAsRead(uid uint, categoryID *uint) (int64, error)
 }

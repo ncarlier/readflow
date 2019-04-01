@@ -99,3 +99,21 @@ func (reg *Registry) UpdateArticleStatus(ctx context.Context, id uint, status st
 
 	return article, nil
 }
+
+// MarkAllArticlesAsRead set status to read for all articles (of a category if provided)
+func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, categoryID *uint) (int64, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	nb, err := reg.db.MarkAllArticlesAsRead(uid, categoryID)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Msg("unable to mark all articles as read")
+		return 0, err
+	}
+	reg.logger.Debug().Uint(
+		"uid", uid,
+	).Msg("all articles marked as read")
+
+	return nb, nil
+}

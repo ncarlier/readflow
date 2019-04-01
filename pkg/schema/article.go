@@ -193,7 +193,7 @@ func articleResolver(p graphql.ResolveParams) (interface{}, error) {
 
 var updateArticleStatusMutationField = &graphql.Field{
 	Type:        articleType,
-	Description: "updadet article status (read or unread)",
+	Description: "update article status (read or unread)",
 	Args: graphql.FieldConfigArgument{
 		"id": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.ID),
@@ -217,4 +217,28 @@ func updateArticleStatusResolver(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 	return article, nil
+}
+
+var markAllArticlesAsReadMutationField = &graphql.Field{
+	Type:        graphql.Int,
+	Description: "set all articles (of a category if provided) to read status",
+	Args: graphql.FieldConfigArgument{
+		"category": &graphql.ArgumentConfig{
+			Type: graphql.ID,
+		},
+	},
+	Resolve: markAllArticlesAsReadResolver,
+}
+
+func markAllArticlesAsReadResolver(p graphql.ResolveParams) (interface{}, error) {
+	var category *uint
+	if val, ok := tooling.ConvGQLIntToUint(p.Args["category"]); ok {
+		category = &val
+	}
+
+	nb, err := service.Lookup().MarkAllArticlesAsRead(p.Context, category)
+	if err != nil {
+		return nil, err
+	}
+	return nb, nil
 }

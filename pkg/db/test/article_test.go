@@ -84,3 +84,36 @@ func TestGetPaginatedArticlesByUserID(t *testing.T) {
 	assert.True(t, !res.HasNext, "we should only have one page")
 	assert.True(t, len(res.Entries) >= 0, "entries shouldn't be empty")
 }
+
+func TestMarkAllArticlesAsRead(t *testing.T) {
+	teardownTestCase := setupTestCase(t)
+	defer teardownTestCase(t)
+
+	// Create article test case
+	builder := model.NewArticleBuilder()
+	article := builder.UserID(
+		*testUser.ID,
+	).Random().Build()
+	assertNewArticle(t, article)
+
+	// Page request
+	status := "unread"
+	req := model.ArticlesPageRequest{
+		Limit:  20,
+		Status: &status,
+	}
+
+	res, err := testDB.GetPaginatedArticlesByUserID(*testUser.ID, req)
+	assert.Nil(t, err, "error should be nil")
+	assert.NotNil(t, res, "response shouldn't be nil")
+	assert.True(t, res.TotalCount >= 0, "total count should be a positive integer")
+
+	nb, err := testDB.MarkAllArticlesAsRead(*testUser.ID, nil)
+	assert.Nil(t, err, "error should be nil")
+	assert.NotEqual(t, 0, nb, "some articles should have been updated")
+
+	res, err = testDB.GetPaginatedArticlesByUserID(*testUser.ID, req)
+	assert.Nil(t, err, "error should be nil")
+	assert.NotNil(t, res, "response shouldn't be nil")
+	assert.True(t, res.TotalCount == 0, "total count should be 0")
+}

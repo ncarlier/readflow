@@ -172,3 +172,34 @@ func (pg *DB) DeleteArticle(article model.Article) error {
 
 	return nil
 }
+
+// MarkAllArticlesAsRead set status to read for all articles of an user and a category
+func (pg *DB) MarkAllArticlesAsRead(uid uint, categoryID *uint) (int64, error) {
+	update := map[string]interface{}{
+		"status":     "read",
+		"updated_at": "NOW()",
+	}
+	queryBuilder := pg.psql.Update(
+		"articles",
+	).SetMap(update).Where(
+		sq.Eq{"user_id": uid},
+	)
+
+	if categoryID != nil {
+		queryBuilder = queryBuilder.Where(sq.Eq{"category_id": categoryID})
+	}
+
+	query, args, _ := queryBuilder.ToSql()
+
+	result, err := pg.db.Exec(query, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return count, err
+}
