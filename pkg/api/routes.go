@@ -47,7 +47,7 @@ var routes = Routes{
 	},
 	Route{
 		[]string{"GET"},
-		"/healtz",
+		"/healthz",
 		false,
 		healthz,
 	},
