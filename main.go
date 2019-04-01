@@ -38,7 +38,7 @@ func main() {
 	if *conf.Debug {
 		level = "debug"
 	}
-	logger.Configure(level, true, nil)
+	logger.Configure(level, true, *conf.SentryDSN)
 
 	// Configure the DB
 	_db, err := db.Configure(*conf.DB)

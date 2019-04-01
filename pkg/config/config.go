@@ -13,6 +13,7 @@ type Config struct {
 	Version    *bool
 	Debug      *bool
 	LogDir     *string
+	SentryDSN  *string
 }
 
 var config = &Config{
@@ -21,6 +22,7 @@ var config = &Config{
 	Version:    flag.Bool("version", false, "Print version"),
 	Debug:      flag.Bool("debug", getBoolEnv("DEBUG", false), "Output debug logs"),
 	LogDir:     flag.String("log-dir", getEnv("LOG_DIR", os.TempDir()), "Webhooks execution log directory"),
+	SentryDSN:  flag.String("sentry-dsn", getEnv("SENTRY_DSN", ""), "Sentry DSN URL"),
 }
 
 func init() {
