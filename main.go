@@ -12,6 +12,7 @@ import (
 	"syscall"
 	"time"
 
+	eventbroker "github.com/ncarlier/reader/pkg/event-broker"
 	"github.com/ncarlier/reader/pkg/service"
 
 	"github.com/ncarlier/reader/pkg/db"
@@ -44,6 +45,12 @@ func main() {
 	_db, err := db.Configure(*conf.DB)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Could not configure Database")
+	}
+
+	// Configure Event Broker
+	_, err = eventbroker.Configure(*conf.Broker)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Could not configure Event Broker")
 	}
 
 	// Init service registry

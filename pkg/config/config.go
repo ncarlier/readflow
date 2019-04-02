@@ -10,6 +10,7 @@ import (
 type Config struct {
 	ListenAddr *string
 	DB         *string
+	Broker     *string
 	Version    *bool
 	Debug      *bool
 	LogDir     *string
@@ -19,6 +20,7 @@ type Config struct {
 var config = &Config{
 	ListenAddr: flag.String("listen", getEnv("LISTEN_ADDR", ":8080"), "HTTP service address"),
 	DB:         flag.String("db", getEnv("DB", "postgres://postgres:testpwd@localhost/reader_test?sslmode=disable"), "Database connection string"),
+	Broker:     flag.String("broker", getEnv("BROKER", ""), "External event broker URI for outgoing events"),
 	Version:    flag.Bool("version", false, "Print version"),
 	Debug:      flag.Bool("debug", getBoolEnv("DEBUG", false), "Output debug logs"),
 	LogDir:     flag.String("log-dir", getEnv("LOG_DIR", os.TempDir()), "Webhooks execution log directory"),

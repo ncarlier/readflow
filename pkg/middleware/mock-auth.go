@@ -12,7 +12,7 @@ import (
 func MockAuth(inner http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		user, err := service.Lookup().GetOrRegisterUser(ctx, "call@me.neo")
+		user, err := service.Lookup().GetOrRegisterUser(ctx, "call@me.morpheus")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
