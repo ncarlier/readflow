@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/ncarlier/reader/pkg/constant"
+	"github.com/ncarlier/reader/pkg/event"
 	"github.com/ncarlier/reader/pkg/model"
 	"github.com/ncarlier/reader/pkg/tooling"
 )
@@ -67,6 +68,7 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 	reg.logger.Debug().Uint(
 		"uid", *user.ID,
 	).Str("username", username).Msg("user registered")
+	event.Emit(event.CreateUser, *user)
 	return user, nil
 }
 

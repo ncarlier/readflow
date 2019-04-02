@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/ncarlier/reader/pkg/event"
+
 	"github.com/ncarlier/reader/pkg/model"
 )
 
@@ -34,6 +36,7 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleFor
 			reg.logger.Info().Uint(
 				"uid", uid,
 			).Str("title", article.Title).Uint("id", *article.ID).Msg("article created")
+			event.Emit(event.CreateArticle, *article)
 		}
 	}
 	var err error
