@@ -52,5 +52,5 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 }
 
 func init() {
-	logger.Configure("debug", true, nil)
+	logger.Configure("debug", true, "")
 }

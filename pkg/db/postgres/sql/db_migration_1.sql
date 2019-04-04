@@ -84,12 +84,15 @@ create table archivers (
 create table rules (
   id serial not null,
   user_id int not null,
+  category_id int null,
+  alias text not null,
   priority int not null,
   rule text not null,
-  action text not null,
   created_at timestamp with time zone not null default now(),
   updated_at timestamp with time zone null,
 
   primary key (id),
-  foreign key (user_id) references users(id) on delete cascade
+  unique (user_id, alias),
+  foreign key (user_id) references users(id) on delete cascade,
+  foreign key (category_id) references categories(id) on delete set null
 )

@@ -89,18 +89,21 @@ create table archivers (
 create table rules (
   id serial not null,
   user_id int not null,
+  category_id int null,
+  alias text not null,
   priority int not null,
   rule text not null,
-  action text not null,
   created_at timestamp with time zone not null default now(),
   updated_at timestamp with time zone null,
 
   primary key (id),
-  foreign key (user_id) references users(id) on delete cascade
+  unique (user_id, alias),
+  foreign key (user_id) references users(id) on delete cascade,
+  foreign key (category_id) references categories(id) on delete set null
 )
 `,
 }
 
 var DatabaseSQLMigrationChecksums = map[string]string{
-	"db_migration_1": "f9de1aa313218c4b4092864372e3c341191c03f114ef97661e990a480768033b",
+	"db_migration_1": "6b7ac5c1474bc400c1bbb642fcf3c161f51de7252350eaa261cb1ed796e72b67",
 }

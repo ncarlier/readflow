@@ -16,6 +16,7 @@ type DB interface {
 	ArticleRepository
 	APIKeyRepository
 	ArchiverRepository
+	RuleRepository
 }
 
 // Configure the data store regarding the datasource URI

@@ -9,7 +9,7 @@ import (
 
 func assertArchiverExists(t *testing.T, archiver model.Archiver) *model.Archiver {
 	result, err := testDB.GetArchiverByUserIDAndAlias(*archiver.UserID, &archiver.Alias)
-	assert.Nil(t, err, "error on getting archiver by user and title should be nil")
+	assert.Nil(t, err, "error on getting archiver by user and alias should be nil")
 	if result != nil {
 		id := *result.ID
 		archiver.ID = &id
