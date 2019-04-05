@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	ruleengine "github.com/ncarlier/reader/pkg/service/rule-engine"
+	ruleengine "github.com/ncarlier/reader/pkg/rule-engine"
 
 	"github.com/ncarlier/reader/pkg/model"
 )
@@ -48,7 +48,7 @@ func (reg *Registry) CreateOrUpdateRule(ctx context.Context, form model.RuleForm
 	rule := builder.UserID(uid).Form(&form).Build()
 
 	// Validate rule configuration
-	_, err := ruleengine.NewRuleProcessor(rule)
+	_, err := ruleengine.NewRuleProcessor(*rule)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -56,6 +56,7 @@ func (reg *Registry) CreateOrUpdateRule(ctx context.Context, form model.RuleForm
 		return nil, err
 	}
 
+	// Create or update the rule
 	result, err := reg.db.CreateOrUpdateRule(*rule)
 	if err != nil {
 		evt := reg.logger.Info().Err(err).Uint(
@@ -68,6 +69,10 @@ func (reg *Registry) CreateOrUpdateRule(ctx context.Context, form model.RuleForm
 		}
 		return nil, err
 	}
+
+	// Force to refresh the rule engine cache
+	reg.ruleEngineCache.Evict(uid)
+
 	return result, err
 }
 
@@ -86,6 +91,7 @@ func (reg *Registry) DeleteRule(ctx context.Context, id uint) (*model.Rule, erro
 		return nil, err
 	}
 
+	// Delete rule from DB
 	err = reg.db.DeleteRule(*rule)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
@@ -93,6 +99,10 @@ func (reg *Registry) DeleteRule(ctx context.Context, id uint) (*model.Rule, erro
 		).Uint("id", id).Msg("unable to delete rule")
 		return nil, err
 	}
+
+	// Force to refresh the rule engine cache
+	reg.ruleEngineCache.Evict(uid)
+
 	return rule, nil
 }
 
@@ -101,6 +111,7 @@ func (reg *Registry) DeleteRules(ctx context.Context, ids []uint) (int64, error)
 	uid := getCurrentUserFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
+	// Delete rules from the DB
 	nb, err := reg.db.DeleteRules(uid, ids)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
@@ -108,8 +119,49 @@ func (reg *Registry) DeleteRules(ctx context.Context, ids []uint) (int64, error)
 		).Str("ids", idsStr).Msg("unable to delete rules")
 		return 0, err
 	}
-	reg.logger.Debug().Err(err).Uint(
+	reg.logger.Debug().Uint(
 		"uid", uid,
 	).Str("ids", idsStr).Int64("nb", nb).Msg("rules deleted")
+
+	// Force to refresh the rule engine cache
+	reg.ruleEngineCache.Evict(uid)
+
 	return nb, nil
+}
+
+// ProcessArticle apply user's rules on the article
+func (reg *Registry) ProcessArticle(ctx context.Context, article *model.Article) error {
+	uid := getCurrentUserFromContext(ctx)
+	// Retrieve pipeline from cache
+	pipeline := reg.ruleEngineCache.Get(uid)
+	if pipeline == nil {
+		reg.logger.Debug().Uint(
+			"uid", uid,
+		).Msg("loading rules into the cache")
+		// Init pipeline if not in cache
+		rules, err := reg.GetRules(ctx)
+		if err != nil {
+			return err
+		}
+		pipeline, err = ruleengine.NewProcessorsPipeline(*rules)
+		if err != nil {
+			return err
+		}
+		reg.ruleEngineCache.Set(uid, pipeline)
+	}
+	applied, err := pipeline.Apply(article)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Str("title", article.Title).Msg("unable to apply rules on the article")
+		return err
+	}
+	if applied {
+		reg.logger.Debug().Uint(
+			"uid", uid,
+		).Str("title", article.Title).Uint(
+			"category", *article.CategoryID,
+		).Msg("rule applied on the article")
+	}
+	return nil
 }

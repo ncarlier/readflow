@@ -21,6 +21,18 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleFor
 		).Form(&art).Build()
 
 		// TODO validate article!
+		// if category, validate that the category belongs to the user
+
+		if article.CategoryID == nil {
+			// Process article by the rule engine
+			if err := reg.ProcessArticle(ctx, article); err != nil {
+				result.Errors = append(result.Errors, err)
+				reg.logger.Info().Err(err).Uint(
+					"uid", uid,
+				).Str("title", art.Title).Msg("unable to create article")
+				continue
+			}
+		}
 
 		reg.logger.Debug().Uint(
 			"uid", uid,
