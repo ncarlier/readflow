@@ -30,6 +30,6 @@ func Lookup() *Registry {
 	if instance != nil {
 		return instance
 	}
-	log.Fatal().Msg("Service registry not initialized")
+	log.Fatal().Msg("service registry not initialized")
 	return nil
 }

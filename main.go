@@ -12,6 +12,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ncarlier/reader/pkg/job"
+
 	eventbroker "github.com/ncarlier/reader/pkg/event-broker"
 	"github.com/ncarlier/reader/pkg/service"
 
@@ -41,22 +43,25 @@ func main() {
 	}
 	logger.Configure(level, true, *conf.SentryDSN)
 
+	log.Debug().Msg("starting Nunux Reader server...")
+
 	// Configure the DB
 	_db, err := db.Configure(*conf.DB)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Could not configure Database")
+		log.Fatal().Err(err).Msg("could not configure Database")
 	}
 
 	// Configure Event Broker
 	_, err = eventbroker.Configure(*conf.Broker)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Could not configure Event Broker")
+		log.Fatal().Err(err).Msg("could not configure Event Broker")
 	}
 
 	// Init service registry
 	service.InitRegistry(_db)
 
-	log.Debug().Msg("Starting Nunux Reader server...")
+	// Start job scheduler
+	scheduler := job.StartNewScheduler(_db)
 
 	server := &http.Server{
 		Addr:    *conf.ListenAddr,
@@ -69,7 +74,8 @@ func main() {
 
 	go func() {
 		<-quit
-		log.Debug().Msg("Server is shutting down...")
+		log.Debug().Msg("server is shutting down...")
+		scheduler.Shutdown()
 		api.Shutdown()
 
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -77,19 +83,19 @@ func main() {
 
 		server.SetKeepAlivesEnabled(false)
 		if err := server.Shutdown(ctx); err != nil {
-			log.Fatal().Err(err).Msg("Could not gracefully shutdown the server")
+			log.Fatal().Err(err).Msg("could not gracefully shutdown the server")
 		}
 		close(done)
 	}()
 
 	api.Start()
 
-	log.Info().Str("listen", *conf.ListenAddr).Msg("Server started")
+	log.Info().Str("listen", *conf.ListenAddr).Msg("server started")
 
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatal().Err(err).Str("listen", *conf.ListenAddr).Msg("Could not start the server")
+		log.Fatal().Err(err).Str("listen", *conf.ListenAddr).Msg("could not start the server")
 	}
 
 	<-done
-	log.Debug().Msg("Server stopped")
+	log.Debug().Msg("server stopped")
 }

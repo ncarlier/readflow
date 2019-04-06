@@ -1,6 +1,10 @@
 package db
 
-import "github.com/ncarlier/reader/pkg/model"
+import (
+	"time"
+
+	"github.com/ncarlier/reader/pkg/model"
+)
 
 // ArticleRepository is the repository interface to manage Articles
 type ArticleRepository interface {
@@ -9,4 +13,5 @@ type ArticleRepository interface {
 	CreateOrUpdateArticle(article model.Article) (*model.Article, error)
 	DeleteArticle(article model.Article) error
 	MarkAllArticlesAsRead(uid uint, categoryID *uint) (int64, error)
+	DeleteReadArticlesOlderThan(delay time.Duration) (int64, error)
 }

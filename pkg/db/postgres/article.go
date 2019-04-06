@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/ncarlier/reader/pkg/model"
@@ -202,4 +203,22 @@ func (pg *DB) MarkAllArticlesAsRead(uid uint, categoryID *uint) (int64, error) {
 	}
 
 	return count, err
+}
+
+// DeleteReadArticlesOlderThan remove old articles from the DB
+func (pg *DB) DeleteReadArticlesOlderThan(delay time.Duration) (int64, error) {
+	maxAge := time.Now().Add(-delay)
+	query, args, _ := pg.psql.Delete(
+		"articles",
+	).Where(
+		sq.Eq{"status": "read"},
+	).Where(
+		sq.Lt{"updated_at": maxAge},
+	).ToSql()
+
+	result, err := pg.db.Exec(query, args...)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
