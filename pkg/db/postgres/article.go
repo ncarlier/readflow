@@ -8,7 +8,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 var articleColumns = []string{

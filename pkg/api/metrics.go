@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/ncarlier/reader/pkg/config"
+	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 

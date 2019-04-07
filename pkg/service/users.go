@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ncarlier/reader/pkg/constant"
-	"github.com/ncarlier/reader/pkg/event"
-	"github.com/ncarlier/reader/pkg/model"
-	"github.com/ncarlier/reader/pkg/tooling"
+	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/event"
+	"github.com/ncarlier/readflow/pkg/model"
+	"github.com/ncarlier/readflow/pkg/tooling"
 )
 
 func getCurrentUserFromContext(ctx context.Context) uint {

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	ruleengine "github.com/ncarlier/reader/pkg/rule-engine"
+	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
 
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 // GetRules get rules from current user

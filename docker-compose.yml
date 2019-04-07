@@ -19,16 +19,15 @@ services:
       - "traefik.enable=false"
 
   ########################################
-  # Reader server
+  # API
   ########################################
-  reader:
+  api:
     build: .
-    image: "ncarlier/reader:latest"
+    image: "ncarlier/readflow:latest"
     restart: always
     depends_on:
       - db
     networks:
-      - web
       - internal
     environment:
       - APP_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB:-reader}?sslmode=disable
@@ -38,7 +37,35 @@ services:
       timeout: 2s
       retries: 15
     labels:
-      - "traefik.port=8080"
+      - "traefik.enable=false"
+
+  ########################################
+  # Webapp
+  ########################################
+  app:
+    build: ../readflow-app
+    image: "ncarlier/readflow-app:latest"
+    restart: always
+    networks:
+      - internal
+    labels:
+      - "traefik.enable=false"
+
+  ########################################
+  # Authentication proxy
+  ########################################
+  auth:
+    image: keycloak/keycloak-gatekeeper
+    restart: always
+    depends_on:
+      - app
+    networks:
+      - web
+      - internal
+    volumes:
+      - "/etc/auth_config.yml:/etc/auth_config.yml"
+    labels:
+      - "traefik.port=3000"
       - "traefik.frontend.rule=Host:${FQDN}"
       - "traefik.docker.network=${GW_NETWORK_NAME}"
 

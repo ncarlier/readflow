@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 // Provider archive provider interface

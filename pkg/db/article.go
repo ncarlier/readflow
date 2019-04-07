@@ -3,7 +3,7 @@ package db
 import (
 	"time"
 
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 // ArticleRepository is the repository interface to manage Articles

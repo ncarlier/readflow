@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ncarlier/reader/pkg/event"
+	"github.com/ncarlier/readflow/pkg/event"
 
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 // CreateArticles creates new articles

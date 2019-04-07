@@ -3,7 +3,7 @@ package job
 import (
 	"time"
 
-	"github.com/ncarlier/reader/pkg/db"
+	"github.com/ncarlier/readflow/pkg/db"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

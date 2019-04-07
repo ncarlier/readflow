@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/ncarlier/reader/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/constant"
 )
 
 // Tracing is a middleware to trace HTTP request

@@ -3,8 +3,8 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/ncarlier/reader/pkg/assert"
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 func assertCategoryExists(t *testing.T, userID *uint, title string) *model.Category {

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/ncarlier/reader/pkg/config"
-	"github.com/ncarlier/reader/pkg/version"
+	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/version"
 )
 
 // Info API informations model structure.

@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/ncarlier/reader/pkg/constant"
-	"github.com/ncarlier/reader/pkg/service"
+	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/service"
 )
 
 // ProxyAuth is a middleware to checks HTTP request credentials from proxied headers

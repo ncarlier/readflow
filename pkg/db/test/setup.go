@@ -3,10 +3,10 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/ncarlier/reader/pkg/assert"
-	"github.com/ncarlier/reader/pkg/db"
-	"github.com/ncarlier/reader/pkg/logger"
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/ncarlier/readflow/pkg/db"
+	"github.com/ncarlier/readflow/pkg/logger"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 var testDB db.DB

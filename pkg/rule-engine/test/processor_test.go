@@ -3,9 +3,9 @@ package test
 import (
 	"testing"
 
-	"github.com/ncarlier/reader/pkg/assert"
-	"github.com/ncarlier/reader/pkg/model"
-	ruleengine "github.com/ncarlier/reader/pkg/rule-engine"
+	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/ncarlier/readflow/pkg/model"
+	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
 )
 
 func newTestRule(rule string, category uint) model.Rule {

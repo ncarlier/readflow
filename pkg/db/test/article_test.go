@@ -3,8 +3,8 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/ncarlier/reader/pkg/assert"
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 func assertNewArticle(t *testing.T, article *model.Article) *model.Article {

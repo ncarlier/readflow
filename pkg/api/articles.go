@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/ncarlier/reader/pkg/config"
-	"github.com/ncarlier/reader/pkg/middleware"
-	"github.com/ncarlier/reader/pkg/model"
-	"github.com/ncarlier/reader/pkg/service"
+	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/middleware"
+	"github.com/ncarlier/readflow/pkg/model"
+	"github.com/ncarlier/readflow/pkg/service"
 )
 
 // articles is the handler to post articles using API keys.

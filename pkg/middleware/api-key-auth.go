@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ncarlier/reader/pkg/service"
+	"github.com/ncarlier/readflow/pkg/service"
 
-	"github.com/ncarlier/reader/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/constant"
 )
 
 // APIKeyAuth is a middleware to checks HTTP request with API key

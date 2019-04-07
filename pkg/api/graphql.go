@@ -6,8 +6,8 @@ import (
 
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
-	"github.com/ncarlier/reader/pkg/config"
-	"github.com/ncarlier/reader/pkg/schema"
+	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/schema"
 )
 
 // graphqlHandler is the handler for GraphQL requets.

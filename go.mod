@@ -1,4 +1,4 @@
-module github.com/ncarlier/reader
+module github.com/ncarlier/readflow
 
 require (
 	github.com/Masterminds/squirrel v1.1.0

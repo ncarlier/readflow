@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/ncarlier/reader/pkg/db"
-	ruleengine "github.com/ncarlier/reader/pkg/rule-engine"
+	"github.com/ncarlier/readflow/pkg/db"
+	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ncarlier/reader/pkg/config"
-	"github.com/ncarlier/reader/pkg/middleware"
+	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/middleware"
 )
 
 // NewRouter creates router with declared routes

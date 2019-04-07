@@ -1,6 +1,6 @@
 package db
 
-import "github.com/ncarlier/reader/pkg/model"
+import "github.com/ncarlier/readflow/pkg/model"
 
 // ArchiverRepository is the repository interface to manage Archivers
 type ArchiverRepository interface {

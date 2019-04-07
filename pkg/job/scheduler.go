@@ -1,6 +1,6 @@
 package job
 
-import "github.com/ncarlier/reader/pkg/db"
+import "github.com/ncarlier/readflow/pkg/db"
 
 // Scheduler is a job scheduler
 type Scheduler struct {

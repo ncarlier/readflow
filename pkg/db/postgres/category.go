@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 func (pg *DB) createCategory(category model.Category) (*model.Category, error) {

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sync/atomic"
 
-	"github.com/ncarlier/reader/pkg/config"
+	"github.com/ncarlier/readflow/pkg/config"
 )
 
 var (

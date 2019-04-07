@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ncarlier/reader/pkg/service/archive"
+	"github.com/ncarlier/readflow/pkg/service/archive"
 
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 // GetArchivers get archivers from current user

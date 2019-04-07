@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/antonmedv/expr"
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 // RuleProcessor define a rule processor

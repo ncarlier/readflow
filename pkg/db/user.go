@@ -1,6 +1,6 @@
 package db
 
-import "github.com/ncarlier/reader/pkg/model"
+import "github.com/ncarlier/readflow/pkg/model"
 
 // UserRepository is the repository interface to manage Users
 type UserRepository interface {

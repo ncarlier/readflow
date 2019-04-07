@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/ncarlier/reader/pkg/tooling"
+	"github.com/ncarlier/readflow/pkg/tooling"
 )
 
 // APIKey structure definition

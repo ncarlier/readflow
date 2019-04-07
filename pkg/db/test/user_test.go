@@ -3,7 +3,7 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/ncarlier/reader/pkg/assert"
+	"github.com/ncarlier/readflow/pkg/assert"
 )
 
 func TestCreateOrUpdateUser(t *testing.T) {

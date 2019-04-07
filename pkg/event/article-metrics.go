@@ -1,8 +1,8 @@
 package event
 
 import (
-	"github.com/ncarlier/reader/pkg/metric"
-	"github.com/ncarlier/reader/pkg/model"
+	"github.com/ncarlier/readflow/pkg/metric"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 func init() {

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit"
-	"github.com/ncarlier/reader/pkg/tooling"
+	"github.com/ncarlier/readflow/pkg/tooling"
 )
 
 // ArticleForm API structure definition

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ncarlier/reader/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/rs/zerolog/log"
 )
 

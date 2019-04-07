@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"strconv"
 
-	migration "github.com/ncarlier/reader/autogen/db/postgres"
+	migration "github.com/ncarlier/readflow/autogen/db/postgres"
 	"github.com/rs/zerolog/log"
 )
 

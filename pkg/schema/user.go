@@ -2,7 +2,7 @@ package schema
 
 import (
 	"github.com/graphql-go/graphql"
-	"github.com/ncarlier/reader/pkg/service"
+	"github.com/ncarlier/readflow/pkg/service"
 )
 
 var userType = graphql.NewObject(

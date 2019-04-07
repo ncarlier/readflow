@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ncarlier/reader/pkg/config"
+	"github.com/ncarlier/readflow/pkg/config"
 )
 
 func varz(conf *config.Config) http.Handler {

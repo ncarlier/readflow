@@ -3,7 +3,7 @@
 export GO111MODULE=on
 
 # App name
-APPNAME=reader
+APPNAME=readflow
 
 # Go configuration
 GOOS?=linux

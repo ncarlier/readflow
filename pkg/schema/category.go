@@ -3,10 +3,10 @@ package schema
 import (
 	"errors"
 
-	"github.com/ncarlier/reader/pkg/tooling"
+	"github.com/ncarlier/readflow/pkg/tooling"
 
 	"github.com/graphql-go/graphql"
-	"github.com/ncarlier/reader/pkg/service"
+	"github.com/ncarlier/readflow/pkg/service"
 )
 
 var categoryType = graphql.NewObject(

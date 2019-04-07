@@ -12,17 +12,17 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ncarlier/reader/pkg/job"
+	"github.com/ncarlier/readflow/pkg/job"
 
-	eventbroker "github.com/ncarlier/reader/pkg/event-broker"
-	"github.com/ncarlier/reader/pkg/service"
+	eventbroker "github.com/ncarlier/readflow/pkg/event-broker"
+	"github.com/ncarlier/readflow/pkg/service"
 
-	"github.com/ncarlier/reader/pkg/db"
+	"github.com/ncarlier/readflow/pkg/db"
 
-	"github.com/ncarlier/reader/pkg/api"
-	"github.com/ncarlier/reader/pkg/config"
-	"github.com/ncarlier/reader/pkg/logger"
-	"github.com/ncarlier/reader/pkg/version"
+	"github.com/ncarlier/readflow/pkg/api"
+	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/logger"
+	"github.com/ncarlier/readflow/pkg/version"
 	"github.com/rs/zerolog/log"
 )
 

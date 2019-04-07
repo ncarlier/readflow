@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	eventbroker "github.com/ncarlier/reader/pkg/event-broker"
-	"github.com/ncarlier/reader/pkg/model"
+	eventbroker "github.com/ncarlier/readflow/pkg/event-broker"
+	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/rs/zerolog/log"
 )
 

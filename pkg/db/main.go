@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/ncarlier/reader/pkg/db/postgres"
+	"github.com/ncarlier/readflow/pkg/db/postgres"
 	"github.com/rs/zerolog/log"
 )
 
