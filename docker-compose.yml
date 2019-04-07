@@ -43,7 +43,7 @@ services:
   # Webapp
   ########################################
   app:
-    build: ../readflow-app
+    build: ./ui/Dockerfile
     image: "ncarlier/readflow-app:latest"
     restart: always
     networks:

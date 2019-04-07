@@ -1,0 +1,26 @@
+
+.link {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  display: inline-flex;
+  color: inherit;
+  text-decoration: none;
+  align-items: center;
+  cursor: pointer;
+}
+
+.link > i {
+  padding-right: 0.5em;
+  width: 24px;
+  box-sizing: content-box;
+}
+
+.link > span {
+  flex: 1 1 auto;
+}
+
+.link > small {
+  font-family: monospace;
+  color: gray;
+  padding-left: 0.5em;
+}
+

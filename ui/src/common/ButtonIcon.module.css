@@ -1,0 +1,41 @@
+
+.button {
+  display: inline-block;
+  text-align: center;
+  background: transparent;
+  position: relative;
+  border-radius: 20px;
+  line-height: 40px;
+  width: 40px;
+  border: transparent;
+  cursor: pointer;
+  color: inherit;
+}
+
+.button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.button:focus {
+  outline: none;
+}
+
+.button > i {
+  vertical-align: middle;
+}
+
+.primary {
+  color: var(--button-primary-color)
+}
+
+.loading > i {
+  animation-name: rotate; 
+  animation-duration: 2s; 
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes rotate {
+  from {transform: rotate(360deg);}
+  to {transform: rotate(0deg);}
+}

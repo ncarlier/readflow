@@ -1,0 +1,20 @@
+:root {
+  --error-color: #cd5356;
+  --main-bg-color: #eaeff1;
+  --navbar-bg-color: #18202c;
+  --navbar-header-text-color: white;
+  --navbar-header-bg-color: #232f3e;
+  --navbar-header-shadow-color: #404854;
+  --navbar-link-color: rgba(255, 255, 255, 0.7);
+  --navbar-link-hover-color: rgba(255, 255, 255, 0.08);
+  --navbar-link-active-color: #4fc3f7;
+  --header-text-color: #fff;
+  --header-bg-color: #009be5;
+  --button-color: rgba(0, 0, 0, 0.87);
+  --button-default-color: #dddddd;
+  --button-default-hover-color: #cacaca;
+  --button-primary-color: #009be5;
+  --button-primary-hover-color: #006db3;
+  --button-danger-color: #cd5356;
+  --button-danger-hover-color: #ce4245;
+}

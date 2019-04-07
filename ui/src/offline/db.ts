@@ -1,0 +1,16 @@
+import Dexie from 'dexie'
+import { Article } from '../articles/models'
+
+class OfflineDatabase extends Dexie {
+  articles: Dexie.Table<Article, number>
+
+  constructor() {
+    super('ReaderOfflineDatabase');
+    this.version(1).stores({
+      articles: '++id, first, last',
+    });
+    this.articles = this.table('articles')
+  }
+}
+
+export const db = new OfflineDatabase()

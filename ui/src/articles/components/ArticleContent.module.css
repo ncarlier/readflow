@@ -1,0 +1,10 @@
+
+.content {
+  display: flex;
+  flex-direction: inherit;
+}
+
+.content > iframe {
+  flex: 1 1 auto;
+  border: none;
+}

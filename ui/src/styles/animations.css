@@ -1,0 +1,40 @@
+
+.fold-enter {
+  margin-left: -256px;
+}
+
+.fold-enter.fold-enter-active {
+  margin-left: 0px;
+  transition: margin 300ms ease-in;
+}
+
+.fold-leave {
+  margin-left: 0px;
+}
+
+.fold-leave.fold-leave-active {
+  margin-left: -256px;
+  transition: margin 300ms ease-in;
+}
+
+.fade-enter {
+  bottom: -10px;
+  opacity: 0;
+}
+
+.fade-enter.fade-enter-active {
+  bottom: 0;
+  opacity: 1;
+  transition: opacity 500ms ease-in, bottom 500ms ease-in;
+}
+
+.fade-leave {
+  bottom: 0;
+  opacity: 1;
+}
+
+.fade-leave.fade-leave-active {
+  bottom: -10px;
+  opacity: 0;
+  transition: opacity 500ms ease-in, bottom 500ms ease-in;
+}

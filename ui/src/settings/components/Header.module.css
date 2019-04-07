@@ -1,0 +1,21 @@
+.header {
+  background-color: var(--header-bg-color);
+  color: var(--header-text-color);
+  padding: 0 24px;
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 0 auto;
+}
+
+.header > h1 {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.33;
+  letter-spacing: 0.5px;
+}
+
+.header > nav {
+  flex: 1 1 100%;
+}

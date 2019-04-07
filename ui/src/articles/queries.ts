@@ -1,0 +1,70 @@
+import gql from "graphql-tag"
+
+export const GetArticles = gql`
+  query articles($limit: Int!, $sortOrder: sortOrder!, $status: status!, $category: Int, $afterCursor: Int) {
+    articles(limit: $limit, sortOrder: $sortOrder, status: $status, category: $category, afterCursor: $afterCursor) {
+      totalCount
+      endCursor
+      hasNext
+      entries{
+        id
+        title
+        text
+        url
+        image
+        status
+        created_at
+      }
+    }
+  }
+`
+
+export const GetArticle = gql`
+  query article($id: ID!) {
+    article(id: $id) {
+      id
+      title
+      html
+      url
+      status
+      created_at
+    }
+  }
+`
+
+export const GetFullArticle = gql`
+  query article($id: ID!) {
+    article(id: $id) {
+      id
+      title
+      text
+      html
+      url
+      image
+      status
+      created_at
+    }
+  }
+`
+
+export const UpdateArticleStatus = gql`
+  mutation updateArticleStatus($id: ID!, $status: status!) {
+    updateArticleStatus(id: $id, status: $status) {
+      id
+      status
+      updated_at
+    }
+  }
+`
+
+export const ArchiveArticle = gql`
+  mutation archiveArticle($id: ID!, $archiver: String!) {
+    archiveArticle(id: $id, archiver: $archiver)
+  }
+`
+
+export const MarkAllArticlesAsRead = gql`
+  mutation markAllArticlesAsRead($category: ID) {
+    markAllArticlesAsRead(category: $category)
+  }
+`

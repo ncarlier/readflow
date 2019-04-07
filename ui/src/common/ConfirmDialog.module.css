@@ -1,0 +1,19 @@
+.overlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.dialog {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  margin-right: -50%;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  outline: none;
+}

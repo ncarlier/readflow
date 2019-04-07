@@ -1,0 +1,17 @@
+
+.help {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: gray;
+  display: inline-flex;
+  text-decoration: none;
+  align-items: center;
+  cursor: pointer;
+}
+
+.help > i {
+  padding-right: 0.2em;
+  box-sizing: content-box;
+  font-size: inherit;
+}

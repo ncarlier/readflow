@@ -1,0 +1,44 @@
+.error {
+  background-color: var(--error-color);
+  color: white;
+  padding: 0 !important;
+  position: relative;
+  overflow: hidden !important;
+}
+
+.error::before {
+  content: "report";
+  font-family: 'Material Icons';
+  right: 0;
+  position: absolute;
+  font-size: 8em;
+  top: 0;
+  opacity: .4;
+}
+
+.error > * {
+  padding: 1em;
+}
+
+.error > header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.error > header > h1 {
+  margin: 0;
+  font-size: 1.3em;
+  font-weight: 400;
+}
+
+.error > div {
+  opacity: 0.8;
+}
+
+.error > footer {
+  color: black;
+  background-color: white;
+  display: flex;
+  justify-content: flex-end;
+  align-content: center;
+  flex: 1 0 auto;
+}

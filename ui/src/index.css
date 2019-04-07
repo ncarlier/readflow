@@ -1,0 +1,98 @@
+@import './styles/colors.css';
+@import './styles/animations.css';
+@import './styles/md.css';
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--main-bg-color)
+}
+
+.hidden {
+  display: none;
+}
+
+.masked {
+  filter: blur(3px);
+}
+
+.masked:hover {
+  filter: blur(0);
+}
+
+/*
+ * TABLE
+ */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  background-color: transparent;
+}
+
+table thead th {
+  font-size: .95rem;
+  font-weight: 500;
+  color: rgba(0,0,0,.54);
+  border-top-width: 0;
+  border-bottom-width: 1px;
+  border-bottom: 2px solid rgba(0,0,0,.06);
+  vertical-align: bottom;
+}
+
+table thead th:first-child {
+  width: 1em;
+}
+
+table td, table th {
+  padding: .75rem;
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+
+table td a, table th a {
+  text-decoration: none;
+  color: inherit;
+}
+
+th {
+  text-align: inherit;
+}
+
+/*
+ * CHECKBOX
+ */
+input[type=checkbox] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+}
+
+input[type=checkbox] {
+  display: block;
+  outline: none;
+  border-radius: 4px;
+  font-size: 24px;
+  width: 1em;
+  height: 1em;
+  background: #fff;
+  border: 1px solid #ccc;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--header-bg-color);
+}
+
+input[type="checkbox"]:checked::before {
+  font-family: 'Material Icons';
+  font-weight: 500;
+  content: 'done';
+  display: block;
+  color: white;
+}

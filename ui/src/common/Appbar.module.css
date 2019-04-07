@@ -1,0 +1,15 @@
+.appBar {
+  display: flex;
+  background-color: var(--header-bg-color);
+  color: var(--header-text-color);
+  min-height: 1em;
+  flex: 1 0 auto;
+  align-content: center;
+}
+
+.appBar h1 {
+  margin: 0;
+  font-size: 18px;
+  flex: 1 1 auto;
+  align-self: center;
+}

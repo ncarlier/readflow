@@ -1,0 +1,45 @@
+
+.menu {
+  position: relative;
+}
+
+.menu > summary::-webkit-details-marker {
+  display:none;
+}
+
+.nav {
+  composes: container from global;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 99;
+  width: auto;
+  color: black;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.nav ul {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  list-style: none;
+}
+
+.nav > ul > li {
+  border-top: 1px solid #d4d4d4;
+}
+
+.nav > ul > li:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.nav > ul > li:first-child {
+  border-top: none;
+}
+
+.nav a {
+  padding: 8px;
+  white-space: nowrap;
+  display: flex;
+}

@@ -1,0 +1,115 @@
+.snackbar {
+  box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+  border-radius: 4px;
+  min-width: 344px;
+  max-width: 672px;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+
+  z-index: 8;
+  margin: 16px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+}
+
+.error {
+  background-color: var(--error-color);
+}
+.error .actions > button {
+  color: white;
+}
+
+@media (max-width: 480px) {
+  .snackbar {
+    min-width: 100%;
+    margin: 8px;
+  }
+}
+
+.label {
+  color: hsla(0,0%,100%,.87);
+  font-family: Roboto,sans-serif;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  letter-spacing: .0178571429em;
+  text-decoration: inherit;
+  text-transform: inherit;
+  flex-grow: 1;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 14px 16px;
+}
+
+.actions {
+  margin-left: 0;
+  margin-right: 8px;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.actions > button {
+  color: #bb86fc;
+  background-color: transparent;
+  font-family: Roboto,sans-serif;
+  font-size: .875rem;
+  line-height: 2.25rem;
+  font-weight: 500;
+  letter-spacing: .0892857143em;
+  text-decoration: none;
+  text-transform: uppercase;
+  will-change: transform,opacity;
+  padding: 0 8px;
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 36px;
+  border: none;
+  outline: none;
+  line-height: inherit;
+  user-select: none;
+  overflow: hidden;
+  vertical-align: middle;
+  border-radius: 4px;
+}
+
+.actions > button:hover {
+  cursor: pointer;
+}
+.actions > button:after,
+.actions > button:before {
+  background-color: #bb86fc;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+}
+.actions > button:hover:before {
+  opacity: .08;
+}
+.actions > button:hover:after {
+  transition: opacity .15s linear;
+}
+
+button.dismiss { 
+  margin-left: 8px;
+  margin-right: 0;
+  width: 36px;
+  height: 36px;
+  padding: 9px;
+  font-size: 18px;
+  color: hsla(0,0%,100%,.87);
+}

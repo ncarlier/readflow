@@ -1,0 +1,47 @@
+.about > div {
+  display: block;
+}
+
+.about h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 2em;
+  font-weight: 500;
+}
+
+.about ul {
+  margin: 0;
+  padding: 0;
+}
+
+.about ul > li:first-child {
+  margin: 0;
+}
+
+.about ul > li {
+  display: inline-block;
+  margin-left: 1.75rem;
+  font-size: 1rem;
+}
+
+
+.about ul > li:first-child::before {
+  display: none;
+}
+
+.about ul > li:before {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  position: absolute;
+  top: auto;
+  left: auto;
+  font-weight: 400;
+  margin-left: -1rem;
+  content: "\2022";
+  opacity: 1;
+  color: inherit;
+  vertical-align: top;
+}

@@ -1,0 +1,39 @@
+
+.button {
+  composes: button from global;
+  color: var(--button-color);
+  background-color: var(--button-default-color);
+}
+
+.button:hover {
+  background-color: var(--button-default-hover-color);
+}
+.button:focus {
+  outline: none;
+}
+
+.button:disabled,
+.button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: default;
+}
+
+.primary {
+  color: #fff;
+  background-color: var(--button-primary-color);
+}
+
+.primary:hover {
+  background-color: var(--button-primary-hover-color);
+}
+
+.danger {
+  color: #fff;
+  background-color: var(--button-danger-color);
+}
+
+.danger:hover {
+  background-color: var(--button-danger-hover-color);
+}

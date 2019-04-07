@@ -1,0 +1,35 @@
+.summary {
+  display: flex;
+  flex-direction: row;
+  overflow: initial !important;
+}
+.summary > * {
+  max-height: 240px;
+}
+
+.illustration {
+  width: 320px;
+}
+
+.illustration > img {
+  object-fit: cover;
+  max-height: inherit;
+  width: inherit;
+}
+
+.summary > p {
+  flex-grow: 1;
+  padding: 1em;
+  margin: 0;
+  overflow: auto;
+}
+
+@media (max-width: 512px) {
+  .summary {
+    flex-direction: column;
+  }
+
+  .illustration {
+    width: 100%;
+  }
+}
