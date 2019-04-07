@@ -1,1 +1,6 @@
 release/
+ui/node_modules/
+ui/build/
+TODO.md
+.env
+.vscode

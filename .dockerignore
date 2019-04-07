@@ -1,0 +1,4 @@
+release/
+ui/
+.git/
+.env
