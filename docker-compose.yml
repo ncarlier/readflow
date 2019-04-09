@@ -43,7 +43,7 @@ services:
   # Webapp
   ########################################
   app:
-    build: ./ui/Dockerfile
+    build: ./ui/
     image: "ncarlier/readflow-app:latest"
     restart: always
     networks:
@@ -57,13 +57,14 @@ services:
   auth:
     image: keycloak/keycloak-gatekeeper
     restart: always
+    command: --config /etc/auth_config.yml
     depends_on:
       - app
     networks:
       - web
       - internal
     volumes:
-      - "/etc/auth_config.yml:/etc/auth_config.yml"
+      - "/etc/readflow_gatekeeper.yml:/etc/auth_config.yml"
     labels:
       - "traefik.port=3000"
       - "traefik.frontend.rule=Host:${FQDN}"
