@@ -54,15 +54,6 @@ export const AddCategoryForm = ({history, showMessage }: AllProps) => {
     <Panel>
       <header>
         <h1>Add new category</h1>
-        <Button title="Back to categories" to="/settings/categories">
-          Cancel
-        </Button>
-        <Button
-          title="Add category"
-          onClick={handleOnClick}
-          primary>
-          Add
-        </Button>
       </header>
       <section>
         {errorMessage != null &&
@@ -77,6 +68,17 @@ export const AddCategoryForm = ({history, showMessage }: AllProps) => {
             required />
         </form>
       </section>
+      <footer>
+        <Button title="Back to categories" to="/settings/categories">
+          Cancel
+        </Button>
+        <Button
+          title="Add category"
+          onClick={handleOnClick}
+          primary>
+          Add
+        </Button>
+      </footer>
     </Panel>
   )
 }

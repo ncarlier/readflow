@@ -20,6 +20,7 @@ export default ({ items }: Props) => (
         <li key={item.key}>
           <LinkIcon
             to={`/settings/${item.key}`}
+            title={item.label}
             icon={item.icon}>
             {item.label}
           </LinkIcon>

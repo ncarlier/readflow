@@ -54,15 +54,6 @@ export const EditCategoryForm = ({ category, history, showMessage }: AllProps) =
     <>
       <header>
         <h1>Edit category #{category.id}</h1>
-        <Button title="Back to categories" to="/settings/categories">
-          Cancel
-        </Button>
-        <Button
-          title="Edit category"
-          onClick={handleOnSubmit}
-          primary>
-          Update
-        </Button>
       </header>
       <section>
         {errorMessage != null &&
@@ -77,6 +68,17 @@ export const EditCategoryForm = ({ category, history, showMessage }: AllProps) =
             required />
         </form>
       </section>
+      <footer>
+        <Button title="Back to categories" to="/settings/categories">
+          Cancel
+        </Button>
+        <Button
+          title="Edit category"
+          onClick={handleOnSubmit}
+          primary>
+          Update
+        </Button>
+      </footer>
     </>
   )
 }

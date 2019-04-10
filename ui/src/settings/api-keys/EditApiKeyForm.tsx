@@ -55,15 +55,6 @@ export const EditApiKeyForm = ({ data, history, showMessage }: AllProps) => {
     <>
       <header>
         <h1>Edit API key #{data.id}</h1>
-        <Button title="Back to API keys" to="/settings/api-keys">
-          Cancel
-        </Button>
-        <Button
-          title="Edit API key"
-          onClick={handleOnSubmit}
-          primary>
-          Update
-        </Button>
       </header>
       <section>
         {errorMessage != null &&
@@ -78,6 +69,17 @@ export const EditApiKeyForm = ({ data, history, showMessage }: AllProps) => {
             required />
         </form>
       </section>
+      <footer>
+        <Button title="Back to API keys" to="/settings/api-keys">
+          Cancel
+        </Button>
+        <Button
+          title="Edit API key"
+          onClick={handleOnSubmit}
+          primary>
+          Update
+        </Button>
+      </footer>
     </>
   )
 }

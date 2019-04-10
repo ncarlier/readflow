@@ -68,15 +68,6 @@ export const EditRuleForm = ({ data, history, showMessage }: AllProps) => {
     <>
       <header>
         <h1>Edit rule #{data.id}</h1>
-        <Button title="Back to rules" to="/settings/rules">
-          Cancel
-        </Button>
-        <Button
-          title="Edit rule"
-          onClick={handleOnSubmit}
-          primary>
-          Update
-        </Button>
       </header>
       <section>
         {errorMessage != null &&
@@ -111,6 +102,17 @@ export const EditRuleForm = ({ data, history, showMessage }: AllProps) => {
           </FormSelectField>
         </form>
       </section>
+      <footer>
+        <Button title="Back to rules" to="/settings/rules">
+          Cancel
+        </Button>
+        <Button
+          title="Edit rule"
+          onClick={handleOnSubmit}
+          primary>
+          Update
+        </Button>
+      </footer>
     </>
   )
 }

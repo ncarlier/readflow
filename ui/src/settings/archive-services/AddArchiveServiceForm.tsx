@@ -62,15 +62,6 @@ export const AddArchiveServiceForm = ({history, showMessage}: AllProps) => {
     <Panel>
       <header>
         <h1>Add new archive service</h1>
-        <Button title="Back to archive serices" to="/settings/archive-services">
-          Cancel
-        </Button>
-        <Button
-          title="Add archive service"
-          onClick={handleOnClick}
-          primary>
-          Add
-        </Button>
       </header>
       <section>
         {errorMessage != null &&
@@ -95,6 +86,17 @@ export const AddArchiveServiceForm = ({history, showMessage}: AllProps) => {
           <FormCheckboxField label="To use by default" {...checkbox('is_default')} />
         </form>
       </section>
+      <footer>
+        <Button title="Back to archive serices" to="/settings/archive-services">
+          Cancel
+        </Button>
+        <Button
+          title="Add archive service"
+          onClick={handleOnClick}
+          primary>
+          Add
+        </Button>
+      </footer>
     </Panel>
   )
 }

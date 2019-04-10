@@ -64,15 +64,6 @@ export const AddRuleForm = ({history, showMessage}: AllProps) => {
     <Panel>
       <header>
         <h1>Add new rule</h1>
-        <Button title="Back to rules" to="/settings/rules">
-          Cancel
-        </Button>
-        <Button
-          title="Add rule"
-          onClick={handleOnClick}
-          primary>
-          Add
-        </Button>
       </header>
       <section>
         {errorMessage != null &&
@@ -108,6 +99,17 @@ export const AddRuleForm = ({history, showMessage}: AllProps) => {
           </FormSelectField>
         </form>
       </section>
+      <footer>
+        <Button title="Back to rules" to="/settings/rules">
+          Cancel
+        </Button>
+        <Button
+          title="Add rule"
+          onClick={handleOnClick}
+          primary>
+          Add
+        </Button>
+      </footer>
     </Panel>
   )
 }

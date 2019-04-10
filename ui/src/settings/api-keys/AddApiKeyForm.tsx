@@ -54,15 +54,6 @@ export const AddApiKeyForm = ({history, showMessage }: AllProps) => {
     <Panel>
       <header>
         <h1>Add new API key</h1>
-        <Button title="Back to API keys" to="/settings/api-keys">
-          Cancel
-        </Button>
-        <Button
-          title="Add API key"
-          onClick={handleOnClick}
-          primary>
-          Add
-        </Button>
       </header>
       <section>
         {errorMessage != null &&
@@ -77,6 +68,17 @@ export const AddApiKeyForm = ({history, showMessage }: AllProps) => {
             required />
         </form>
       </section>
+      <footer>
+        <Button title="Back to API keys" to="/settings/api-keys">
+          Cancel
+        </Button>
+        <Button
+          title="Add API key"
+          onClick={handleOnClick}
+          primary>
+          Add
+        </Button>
+      </footer>
     </Panel>
   )
 }

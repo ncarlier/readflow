@@ -65,15 +65,6 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
     <>
       <header>
         <h1>Edit archive service #{data.id}</h1>
-        <Button title="Back to archive services" to="/settings/archive-services">
-          Cancel
-        </Button>
-        <Button
-          title="Edit archive service"
-          onClick={handleOnSubmit}
-          primary>
-          Update
-        </Button>
       </header>
       <section>
         {errorMessage != null &&
@@ -94,6 +85,17 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
           <FormCheckboxField label="To use by default" {...checkbox('is_default')} />
         </form>
       </section>
+      <footer>
+        <Button title="Back to archive services" to="/settings/archive-services">
+          Cancel
+        </Button>
+        <Button
+          title="Edit archive service"
+          onClick={handleOnSubmit}
+          primary>
+          Update
+        </Button>
+      </footer>
     </>
   )
 }

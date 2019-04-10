@@ -16,13 +16,14 @@ type IProps = {
   icon: string
   active?: boolean
   onClick?: Function
+  title?: string
   children: ReactNode
 }
 
 type Props = IProps & IPropsFromState
 
 export const LinkIcon = (props: Props) => {
-  const {children, icon, to, active, onClick} = props
+  const {children, icon, to, active, title, onClick} = props
   const { pathname } = props.router.location
   const handleOnClick = useCallback(
     () => onClick ? onClick() : () => true,
@@ -38,8 +39,11 @@ export const LinkIcon = (props: Props) => {
     return (
       <a style={{position: 'relative'}}
         onClick={handleOnClick}
+        title={title}
         className={className}>
-        <Icon name={icon}/> {children}<Ink />
+        <Icon name={icon}/>
+        <span>{children}</span>
+        <Ink />
       </a>
     )
   }
@@ -49,9 +53,12 @@ export const LinkIcon = (props: Props) => {
       to={to}
       style={{position: 'relative'}}
       onClick={handleOnClick}
+      title={title}
       className={className}
       >
-      <Icon name={icon}/> {children}<Ink />
+      <Icon name={icon}/>
+      <span>{children}</span>
+      <Ink />
     </Link>
   )
 }

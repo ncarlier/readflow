@@ -20,7 +20,7 @@ import AddRuleForm from './rules/AddRuleForm'
 import EditRuleTab from './rules/EditRuleTab'
 
 const items = [
-  { key: 'categories', label: 'Categories' , icon: 'bookmarks'},
+  { key: 'categories', label: 'Categories', icon: 'bookmarks'},
   { key: 'rules', label: 'Rules', icon: 'directions' },
   { key: 'api-keys', label: 'API keys', icon: 'verified_users' },
   { key: 'archive-services', label: 'Archive service', icon: 'backup' },
