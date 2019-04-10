@@ -22,7 +22,12 @@ func NewRouter(conf *config.Config) *http.ServeMux {
 
 		handler = route.HandlerFunc(conf)
 		if route.AuthNRequired {
-			handler = middleware.MockAuth(handler)
+			switch *conf.AuthN {
+			case "mock":
+				handler = middleware.MockAuth(handler)
+			default:
+				handler = middleware.ProxyAuth(handler)
+			}
 		}
 		handler = middleware.Method(handler, route.Methods)
 		handler = middleware.Cors(handler)

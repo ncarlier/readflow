@@ -11,6 +11,7 @@ type Config struct {
 	ListenAddr *string
 	DB         *string
 	Broker     *string
+	AuthN      *string
 	Version    *bool
 	Debug      *bool
 	LogDir     *string
@@ -21,6 +22,7 @@ var config = &Config{
 	ListenAddr: flag.String("listen", getEnv("LISTEN_ADDR", ":8080"), "HTTP service address"),
 	DB:         flag.String("db", getEnv("DB", "postgres://postgres:testpwd@localhost/reader_test?sslmode=disable"), "Database connection string"),
 	Broker:     flag.String("broker", getEnv("BROKER", ""), "External event broker URI for outgoing events"),
+	AuthN:      flag.String("authn", getEnv("AUTHN", "proxy"), "Authentication method (mock, proxy or basic)"),
 	Version:    flag.Bool("version", false, "Print version"),
 	Debug:      flag.Bool("debug", getBoolEnv("DEBUG", false), "Output debug logs"),
 	LogDir:     flag.String("log-dir", getEnv("LOG_DIR", os.TempDir()), "Webhooks execution log directory"),
