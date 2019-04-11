@@ -39,6 +39,11 @@ export function register(config?: Config) {
       return;
     }
 
+    window.addEventListener('beforeinstallprompt', (e: any) => {
+      e.preventDefault();
+      e.prompt();
+    });
+
     window.addEventListener('load', () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
