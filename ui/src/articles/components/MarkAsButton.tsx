@@ -17,6 +17,7 @@ type UpdateArticleStatusFields = {
 
 type Props = {
   article: Article
+  floating?: boolean
 }
 
 type AllProps = Props & IMessageDispatchProps
@@ -24,6 +25,7 @@ type AllProps = Props & IMessageDispatchProps
 export const MarkAsButton = (props: AllProps) => {
   const {
     article,
+    floating = false,
     showMessage
   } = props
 
@@ -55,6 +57,7 @@ export const MarkAsButton = (props: AllProps) => {
         title="Mark as unread"
         onClick={handleOnClick}
         loading={loading}
+        floating={floating}
         icon="undo"
         primary />
     )
@@ -65,9 +68,9 @@ export const MarkAsButton = (props: AllProps) => {
       title="Mark as read"
       onClick={handleOnClick}
       loading={loading}
+      floating={floating}
       icon="done"
-      primary
-    />
+      primary />
   )
 }
 

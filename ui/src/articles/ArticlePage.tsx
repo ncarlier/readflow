@@ -12,6 +12,8 @@ import Loader from '../common/Loader'
 import ErrorPanel from '../error/ErrorPanel'
 import Panel from '../common/Panel'
 import { Category } from '../categories/models'
+import ButtonIcon from '../common/ButtonIcon'
+import MarkAsButton from './components/MarkAsButton'
 
 type Props = {
   category?: Category
@@ -44,8 +46,9 @@ export default ({ category, match }: AllProps) => {
       <>
         {article !== null ? 
           <>
-            <ArticleHeader article={article} showAllActions />
+            <ArticleHeader article={article} />
             <ArticleContent article={article} />
+            <MarkAsButton article={article} floating />
           </>
           : <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
         }
@@ -56,7 +59,13 @@ export default ({ category, match }: AllProps) => {
   return (
     <Page title={title}
           subtitle={data && data.article ? data.article.title : ''}
-          contextualMenu={"TODO"}>
+          actions={
+            <ButtonIcon
+              to={redirect} 
+              icon="arrow_back"
+              title="back to the list"
+            />
+          }>
       <Panel style={{flex: '1 1 auto'}}>
         {render(data, error, loading)}
       </Panel>

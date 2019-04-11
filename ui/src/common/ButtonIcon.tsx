@@ -12,6 +12,7 @@ type Props = {
   icon: string
   primary?: boolean
   loading?: boolean
+  floating?: boolean
   title?: string
   to?: LocationDescriptor
   //onClick?: MouseEventHandler<HTMLAnchorElement|HTMLButtonElement>
@@ -19,10 +20,11 @@ type Props = {
 }
 
 export default (props: Props) => {
-  const { icon, title, primary, loading, to, onClick } = props
+  const { icon, title, primary, loading, floating, to, onClick } = props
   let className = classNames(
     styles.button,
     primary ? styles.primary : null,
+    floating ? styles.floating : null,
   )
 
   if (loading) {

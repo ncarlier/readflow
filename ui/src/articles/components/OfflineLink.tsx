@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useState, ReactNode } from 'react'
 import { useApolloClient } from 'react-apollo-hooks'
 
 import {Article, GetArticleResponse} from '../models'
@@ -10,6 +10,7 @@ import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/
 import { connectOfflineDispatch, IOfflineDispatchProps } from '../../containers/OfflineContainer'
 import ConfirmDialog from '../../common/ConfirmDialog'
 import { useModal } from 'react-modal-hook'
+import LinkIcon from '../../common/LinkIcon'
 
 type Props = {
   article: Article
@@ -18,7 +19,7 @@ type Props = {
 
 type AllProps = Props & IMessageDispatchProps & IOfflineDispatchProps
 
-export const OfflineButton = (props: AllProps) => {
+export const OfflineLink = (props: AllProps) => {
   const {
     article,
     remove,
@@ -27,12 +28,10 @@ export const OfflineButton = (props: AllProps) => {
     showMessage
   } = props
 
-  const [loading, setLoading] = useState(false)
   const client = useApolloClient()
   
   const putArticleOffline = async () => {
     try {
-      setLoading(true)
       const { errors, data } = await client.query<GetArticleResponse>({
         query: GetFullArticle,
         variables: {id: article.id}
@@ -42,7 +41,6 @@ export const OfflineButton = (props: AllProps) => {
         await saveOfflineArticle(fullArticle)
         showMessage(`Article put offline: ${article.title}`)
       }
-      setLoading(false)
       if (errors) {
         throw new Error(errors[0])
       }
@@ -75,24 +73,25 @@ export const OfflineButton = (props: AllProps) => {
 
   if (remove) {
     return (
-      <ButtonIcon
+      <LinkIcon
         title="Remove"
         onClick={showDeleteConfirmModal}
-        icon="delete"
-        loading={loading} />
+        icon="delete">
+        <span>Remove offline</span><small>[r]</small>
+      </LinkIcon>
     )
   }
 
   return (
-    <ButtonIcon
+    <LinkIcon
       title="Put offline"
       onClick={putArticleOffline}
-      loading={loading}
-      icon="signal_wifi_off"
-    />
+      icon="signal_wifi_off">
+      <span>Put offline</span><small>[o]</small>
+    </LinkIcon>
   )
 }
 
 export default connectOfflineDispatch(
-  connectMessageDispatch(OfflineButton)
+  connectMessageDispatch(OfflineLink)
 )

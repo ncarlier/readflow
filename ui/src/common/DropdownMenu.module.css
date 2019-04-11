@@ -28,6 +28,7 @@
 
 .nav > ul > li {
   border-top: 1px solid #d4d4d4;
+  margin: 0;
 }
 
 .nav > ul > li:hover {

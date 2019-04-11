@@ -42,7 +42,7 @@ export const LinkIcon = (props: Props) => {
         title={title}
         className={className}>
         <Icon name={icon}/>
-        <span>{children}</span>
+        {children}
         <Ink />
       </a>
     )
@@ -57,7 +57,7 @@ export const LinkIcon = (props: Props) => {
       className={className}
       >
       <Icon name={icon}/>
-      <span>{children}</span>
+      {children}
       <Ink />
     </Link>
   )

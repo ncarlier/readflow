@@ -8,12 +8,15 @@
 }
 
 .header > h1 a {
-  display: inline-flex;
   color: inherit;
   text-decoration: none;
 }
 
-.header > h1 a:before {
+.header > h1 > small a {
+  display: inline-flex;
+}
+
+.header > h1 > small a:before {
   content: "-";
   padding: 0 .5em;
 }

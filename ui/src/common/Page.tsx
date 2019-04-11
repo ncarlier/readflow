@@ -12,11 +12,11 @@ import { classNames } from './helpers'
 import Snackbar from './Snackbar'
 
 type Props = {
-  children: ReactNode
   title?: string
   subtitle?: string
   className?: string
-  contextualMenu?: ReactNode
+  children: ReactNode
+  actions?: ReactNode
 }
 
 export default (props: Props) => {
@@ -25,7 +25,7 @@ export default (props: Props) => {
     title = 'Reader',
     subtitle,
     className,
-    contextualMenu,
+    actions,
   } = props
 
   usePageTitle(title, subtitle)
@@ -45,7 +45,7 @@ export default (props: Props) => {
       </ReactCSSTransitionGroup>
       <section>
         { navbarIsOpen && <div className={styles.fog} onClick={toggleNavbar}/> }
-        <Appbar title={title} onClickMenu={toggleNavbar} contextualMenu={contextualMenu} />
+        <Appbar title={title} onClickMenu={toggleNavbar} actions={actions} />
         <Content>{children}</Content>
         <Snackbar />
       </section>

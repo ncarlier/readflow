@@ -19,7 +19,7 @@ export default ({article, readMoreBasePath}: Props) => {
   
   return (
     <Panel>
-      <ArticleHeader article={article} />
+      <ArticleHeader article={article} to={readMorePath} />
       <article className={ styles.summary }>
         { article.image &&
           <Link
@@ -31,7 +31,7 @@ export default ({article, readMoreBasePath}: Props) => {
         }
         <p>{article.text}</p>
       </article>
-      <ArticleFooter article={article} readMorePath={readMorePath} />
+      { !article.isOffline && <ArticleFooter article={article} />}
     </Panel>
   )
 }

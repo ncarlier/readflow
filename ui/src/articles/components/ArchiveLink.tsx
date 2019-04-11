@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react'
 import { useMutation, useApolloClient } from 'react-apollo-hooks'
 
 import { Article } from '../models'
-import ButtonIcon from '../../common/ButtonIcon'
 
 import { ArchiveArticle } from '../queries'
 import { getGQLError } from '../../common/helpers'
@@ -10,6 +9,7 @@ import { GetArchiveServicesResponse } from '../../settings/archive-services/mode
 import { GetArchiveServices } from '../../settings/archive-services/queries'
 import { IMessageDispatchProps, connectMessageDispatch } from '../../containers/MessageContainer';
 import useConfirmModal from '../../hooks/useConfirmModal'
+import LinkIcon from '../../common/LinkIcon'
 
 type ArchiveArticleFields = {
   id: number
@@ -22,7 +22,7 @@ type Props = {
 
 type AllProps = Props & IMessageDispatchProps
 
-export const ArchiveButton = (props: AllProps) => {
+export const ArchiveLink = (props: AllProps) => {
   const {
     article,
     showMessage
@@ -76,13 +76,13 @@ export const ArchiveButton = (props: AllProps) => {
   }, [article])
 
   return (
-    <ButtonIcon
+    <LinkIcon
       title="Save to your cloud provider"
       icon="backup"
-      onClick={handleOnClick}
-      loading={loading}
-    />
+      onClick={handleOnClick}>
+      <span>Save to...</span><small>[s]</small>
+    </LinkIcon>
   )
 }
 
-export default connectMessageDispatch(ArchiveButton)
+export default connectMessageDispatch(ArchiveLink)

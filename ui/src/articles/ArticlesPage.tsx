@@ -105,7 +105,7 @@ export const ArticlesPage = (props : AllProps) => {
   }
 
   return (
-    <Page title={title} contextualMenu={
+    <Page title={title} actions={
         <ArticlesPageMenu 
           refresh={refetch}
           markAllAsRead={req.status == 'unread' ? markAllAsRead : undefined}

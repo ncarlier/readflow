@@ -3,6 +3,7 @@ import React, { useCallback } from 'react'
 import LinkIcon from '../../common/LinkIcon'
 import { connectRouter, IRouterStateProps, IRouterDispatchProps } from '../../containers/RouterContainer'
 import useKeyboard from '../../hooks/useKeyboard'
+import DropdownMenu from '../../common/DropdownMenu'
 
 type Props = {
   refresh: () => void
@@ -49,28 +50,30 @@ export const ArticlesPageMenu = (props: AllProps) => {
   useKeyboard('shift+m', () => markAllAsRead ? markAllAsRead() : false)
 
   return (
-    <ul>
-      <li>
-        <LinkIcon onClick={refresh} icon="refresh">
-          <span>Refresh</span><small>[shift+r]</small>
-        </LinkIcon>
-      </li>
-      <li>
-        <LinkIcon to={{...loc, search: toggleSortOrderQueryParam(loc.search)}} icon="sort">
-          <span>Invert sort order</span><small>[shift+o]</small>
-        </LinkIcon>
-      </li>
-      { markAllAsRead && <li>
-        <LinkIcon onClick={markAllAsRead} icon="done_all">
-          <span>Mark all as read</span><small>[shift+m]</small>
-        </LinkIcon>
-      </li> }
-      { canToggleStatus && <li>
-        <LinkIcon to={{...loc, search: toggleStatusQueryParam(loc.search)}} icon="history">
-          <span>Toggle history</span><small>[shift+h]</small>
-        </LinkIcon>
-      </li> }
-    </ul>
+    <DropdownMenu>
+      <ul>
+        <li>
+          <LinkIcon onClick={refresh} icon="refresh">
+            <span>Refresh</span><small>[shift+r]</small>
+          </LinkIcon>
+        </li>
+        <li>
+          <LinkIcon to={{...loc, search: toggleSortOrderQueryParam(loc.search)}} icon="sort">
+            <span>Invert sort order</span><small>[shift+o]</small>
+          </LinkIcon>
+        </li>
+        { markAllAsRead && <li>
+          <LinkIcon onClick={markAllAsRead} icon="done_all">
+            <span>Mark all as read</span><small>[shift+m]</small>
+          </LinkIcon>
+        </li> }
+        { canToggleStatus && <li>
+          <LinkIcon to={{...loc, search: toggleStatusQueryParam(loc.search)}} icon="history">
+            <span>Toggle history</span><small>[shift+h]</small>
+          </LinkIcon>
+        </li> }
+      </ul>
+    </DropdownMenu>
   )
 }
 
