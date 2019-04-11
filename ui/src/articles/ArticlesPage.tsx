@@ -50,15 +50,17 @@ export const ArticlesPage = (props : AllProps) => {
     variables: req
   })
   
-  const fetchMoreArticles = useCallback(() => {
+  const fetchMoreArticles = useCallback(async () => {
     if (!data!.articles.hasNext) {
       return
     }
     console.log('fetching more articles...')
-    fetchMore({
+    await fetchMore({
       variables: {...req, afterCursor: data!.articles.endCursor, category: null},
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev
+        const nbFetchedArticles = fetchMoreResult.articles.entries.length
+        console.log(nbFetchedArticles + ' article(s) fetched')
         const articles =  {
           ...fetchMoreResult.articles,
           entries: [...prev.articles.entries, ...fetchMoreResult.articles.entries]

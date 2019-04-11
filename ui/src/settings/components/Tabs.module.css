@@ -25,4 +25,7 @@
   .tabs a span {
     display: none;
   }
+  .tabs a > i {
+    padding-right: 0;
+  }
 }

@@ -26,7 +26,7 @@ export const OfflineArticlesPage = ({offlineArticles, fetchOfflineArticles, matc
       articles={d}
       basePath={match.path}
       emptyMessage="No offline articles"
-      fetchMoreArticles={ () => console.log('TODO: fetchMoreArticles') }
+      fetchMoreArticles={ async () => console.log('TODO: fetchMoreArticles') }
     />,
     Other: () => <Panel><ErrorPanel>Unable to fetch articles!</ErrorPanel></Panel>
   })
