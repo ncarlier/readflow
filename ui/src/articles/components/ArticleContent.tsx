@@ -10,6 +10,11 @@ type Props = {
 
 export default ({article}: Props) => {
   const contentRef = useRef<any>(null)
+
+  var cssLink = document.createElement("link")
+  cssLink.href = process.env.PUBLIC_URL + "/readable.css"
+  cssLink.rel = "stylesheet" 
+  cssLink.type = "text/css" 
  
   useEffect(
     () => {
@@ -17,6 +22,7 @@ export default ({article}: Props) => {
       ifrm = ifrm.contentWindow || ifrm.contentDocument.document || ifrm.contentDocument
       ifrm.document.open()
       ifrm.document.write(article.html)
+      ifrm.document.head.appendChild(cssLink)
       ifrm.document.close()
     },
     [article],
