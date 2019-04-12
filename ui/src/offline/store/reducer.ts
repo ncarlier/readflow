@@ -4,7 +4,8 @@ import { Article } from '../../articles/models'
 
 // Type-safe initialState!
 const initialState: OfflineArticlesState = {
-  data: [],
+  data: undefined,
+  query: {limit: 10, sortOrder: 'asc'},
   selected: undefined,
   error: undefined,
   loading: true
@@ -18,11 +19,7 @@ const reducer: Reducer<OfflineArticlesState> = (state = initialState, action) =>
       return { ...state, loading: true }
     }
     case OfflineArticlesActionTypes.SAVE_SUCCESS: {
-      let { data } = state
-      const article = action.payload
-      data = data.filter((art: Article) => art.id != article.id)
-      data.unshift(action.payload)
-      return { ...state, loading: false, data }
+      return { ...state, loading: false, error: undefined }
     }
     case OfflineArticlesActionTypes.SAVE_ERROR: {
       return { ...state, loading: false, error: action.payload }
@@ -36,17 +33,27 @@ const reducer: Reducer<OfflineArticlesState> = (state = initialState, action) =>
       if (selected && article.id === selected.id) {
         selected = undefined
       }
-      data = data.filter((art: Article) => art.id != article.id)
-      return { ...state, loading: false, data, selected }
+      if (data) {
+        data.entries = data.entries.filter((art: Article) => art.id != article.id)
+      }
+      return { ...state, loading: false, data, error: undefined }
     }
     case OfflineArticlesActionTypes.REMOVE_ERROR: {
       return { ...state, loading: false, error: action.payload }
     }
     case OfflineArticlesActionTypes.FETCH_REQUEST: {
-      return { ...state, loading: true }
+      const query = action.payload
+      return { ...state, loading: true, query }
     }
     case OfflineArticlesActionTypes.FETCH_SUCCESS: {
-      return { ...state, loading: false, data: action.payload }
+      const {query, data} = state
+      const { payload } = action
+      const nbFetchedArticles = payload.entries.length
+      console.log(nbFetchedArticles + ' article(s) fetched')
+      if (data && query.afterCursor) {
+        payload.entries = data.entries.concat(payload.entries)
+      }
+      return { ...state, loading: false, data: payload, error: undefined }
     }
     case OfflineArticlesActionTypes.FETCH_ERROR: {
       return { ...state, loading: false, error: action.payload }

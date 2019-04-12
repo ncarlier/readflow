@@ -5,6 +5,7 @@ import * as offlineArticlesActions from '../offline/store/actions'
 import { Article } from '../articles/models'
 import { OfflineArticlesState } from '../offline/store/types'
 import { ApplicationState } from '../store'
+import { GetArticlesQuery } from '../offline/dao/articles'
 
 export interface IOfflineStateProps {
   offlineArticles: OfflineArticlesState
@@ -26,7 +27,7 @@ const mapStateToProps = ({ offlineArticles }: ApplicationState): IOfflineStatePr
 const mapDispatchToProps = (dispatch: Dispatch): IOfflineDispatchProps => ({
   saveOfflineArticle: (data: Article) => dispatch(offlineArticlesActions.saveRequest(data)),
   removeOfflineArticle: (data: Article) => dispatch(offlineArticlesActions.removeRequest(data)),
-  fetchOfflineArticles: () => dispatch(offlineArticlesActions.fetchRequest()),
+  fetchOfflineArticles: (query: GetArticlesQuery) => dispatch(offlineArticlesActions.fetchRequest(query)),
   fetchOfflineArticle: (id: number) => dispatch(offlineArticlesActions.selectRequest(id))
 })
 

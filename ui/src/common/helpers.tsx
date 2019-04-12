@@ -1,4 +1,4 @@
-import { ReactNode } from "react"
+import React, { ReactNode } from "react"
 import { ApolloError } from "apollo-boost"
 import { FormState } from "react-use-form-state"
 
@@ -24,6 +24,22 @@ export function matchResponse<T>(p: GQLResponsePattern<T>): (data: T | undefined
   }
 }
 
+export interface StatePattern<T> {
+  Loading: () => ReactNode
+  Error: (err: Error) => ReactNode
+  Data: (data: T) => ReactNode
+}
+
+export function matchState<T>(p: StatePattern<T>): (data: T | undefined, error: Error | undefined, loading: boolean) => ReactNode {
+  return (data: T | undefined, error: Error | undefined, loading: boolean): ReactNode => {
+    return <>
+      {loading && p.Loading()}
+      {error && p.Error(error)}
+      {data && p.Data(data)}
+    </>
+  }
+}
+
 export function classNames(...names: (string|undefined|null)[]) {
   return names.filter(name => name).join(' ')
 }
@@ -40,14 +56,13 @@ export function getURLParam<T>(params: URLSearchParams, name: string, fallback: 
   let result = fallback
   if (params.has(name)) {
     const val = params.get(name)
-    switch (typeof fallback) {
-      case 'number':
-        if (parseInt(val!, 10) != NaN) {
-          result = <any>parseInt(val!, 10)
-        }
-        break
-      case 'string':
-        result = <any>val!
+    if (fallback instanceof Number) {
+      if (parseInt(val!, 10) != NaN) {
+        return Number.parseInt(val!, 10) as any
+      }
+    }
+    if (fallback instanceof String) {
+      return !val as any
     }
   }
   return result

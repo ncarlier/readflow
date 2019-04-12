@@ -22,7 +22,7 @@ export default ({ items }: Props) => (
             to={`/settings/${item.key}`}
             title={item.label}
             icon={item.icon}>
-            {item.label}
+            <span>{item.label}</span>
           </LinkIcon>
         </li>
       ))}

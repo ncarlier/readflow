@@ -5,7 +5,6 @@ export interface Article {
   text: string
   image: string
   url: string
-  cdate: string
   status: string
   isOffline?: boolean
   published_at: string

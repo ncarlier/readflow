@@ -1,38 +1,54 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 
 import Page from  '../common/Page'
 import ErrorPanel from '../error/ErrorPanel'
-import { matchResponse } from '../common/helpers'
+import { matchState, getURLParam } from '../common/helpers'
 import Loader from '../common/Loader'
 import Panel from '../common/Panel'
 import ArticleList from '../articles/components/ArticleList'
-import { Article } from '../articles/models'
 import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
 import { RouteComponentProps } from 'react-router'
+import { GetArticlesQuery, GetArticlesResult } from './dao/articles'
 
 type AllProps = OfflineProps & RouteComponentProps
 
-export const OfflineArticlesPage = ({offlineArticles, fetchOfflineArticles, match}: AllProps) => {
+export const OfflineArticlesPage = ({offlineArticles, fetchOfflineArticles, match, location}: AllProps) => {
+  const params = new URLSearchParams(location.search)
+  const query: GetArticlesQuery = {
+    limit: getURLParam<number>(params, 'limit', 10),
+    sortOrder: getURLParam<string>(params, 'sort', 'asc'),
+  }
+  
   const { data, error, loading } = offlineArticles
 
   useEffect(() => {
-    fetchOfflineArticles()
+    fetchOfflineArticles(query)
   }, [])
+
+  const fetchMoreArticles = useCallback(async () => {
+    if (!loading && data && data.hasNext) {
+      fetchOfflineArticles({...query, afterCursor: data.endCursor})
+    }
+  }, [data])
   
-  const render = matchResponse<Article[]>({
+  const render = matchState<GetArticlesResult>({
     Loading: () => <Loader />,
     Error: (err) => <Panel><ErrorPanel>{err.message}</ErrorPanel></Panel>,
     Data: (d) => <ArticleList
-      articles={d}
+      articles={d.entries}
       basePath={match.path}
       emptyMessage="No offline articles"
-      fetchMoreArticles={ async () => console.log('TODO: fetchMoreArticles') }
+      fetchMoreArticles={ fetchMoreArticles }
     />,
-    Other: () => <Panel><ErrorPanel>Unable to fetch articles!</ErrorPanel></Panel>
   })
 
+  let title = "offline articles"
+  if (data && data.totalCount) {
+    title = data.totalCount + ' ' + title
+  }
+
   return (
-    <Page title="Offline articles">
+    <Page title={title}>
       {render(data, error, loading)}
     </Page>
   )

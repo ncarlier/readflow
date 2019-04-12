@@ -1,4 +1,5 @@
 import { Article } from "../../articles/models"
+import { GetArticlesQuery, GetArticlesResult } from "../dao/articles"
 
 export enum OfflineArticlesActionTypes {
   SAVE_REQUEST = '@@offlineArticles/SAVE_REQUEST',
@@ -19,7 +20,8 @@ export enum OfflineArticlesActionTypes {
 // https://github.com/piotrwitek/react-redux-typescript-guide#state-with-type-level-immutability
 export interface OfflineArticlesState {
   readonly loading: boolean
-  readonly data: Article[]
+  readonly data?: GetArticlesResult
+  readonly query: GetArticlesQuery
   readonly selected?: Article
   readonly error?: Error
 }

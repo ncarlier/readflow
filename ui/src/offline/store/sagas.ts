@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
 import { OfflineArticlesActionTypes } from './types'
-import { getArticles, getArticle, saveArticle, removeArticle } from '../dao/articles'
+import { getArticles, getArticle, saveArticle, removeArticle, GetArticlesQuery } from '../dao/articles'
 import { Article } from '../../articles/models'
 
 import {
@@ -18,10 +18,10 @@ import {
 // "generator function", which you can read about here:
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
 
-function* handleFetch() {
+function* handleFetch({payload}: {payload: GetArticlesQuery}) {
   try {
     // To call async functions, use redux-saga's `call()`.
-    const res = yield call(getArticles)
+    const res = yield call(getArticles, payload)
 
     if (res.error) {
       yield put(fetchError(new Error(res.error)))
