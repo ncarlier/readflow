@@ -22,7 +22,7 @@ type Props = {
 export default (props: Props) => {
   const {
     children,
-    title = 'Reader',
+    title,
     subtitle,
     className,
     actions,

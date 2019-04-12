@@ -37,14 +37,16 @@ export const OfflineArticlesPage = ({offlineArticles, fetchOfflineArticles, matc
     Data: (d) => <ArticleList
       articles={d.entries}
       basePath={match.path}
-      emptyMessage="No offline articles"
+      emptyMessage="no offline articles"
       fetchMoreArticles={ fetchMoreArticles }
     />,
   })
 
-  let title = "offline articles"
-  if (data && data.totalCount) {
-    title = data.totalCount + ' ' + title
+  let title = ' '
+  if (data) {
+    const {totalCount} = data
+    const plural = totalCount > 1 ? " articles" : " article" 
+    title = data.totalCount + ' offline ' + plural
   }
 
   return (

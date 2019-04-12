@@ -29,21 +29,22 @@ export const ArticlesPage = (props : AllProps) => {
     status: 'unread',
   }
   
-  let title = 'Articles to read'
+  let title = 'to read'
   let basePath = match.url + '/'
-  let emptyMessage = 'No more article to read'
+  let emptyMessage = 'no article to read'
   if (category) {
     req.category = category.id
-    title = category.title
     req.status = getURLParam<string>(params, 'status', 'unread'),
+    title = (req.status === 'unread') ? "to read" : "read"
+    title = title + ' in "' + category.title + '"'
     basePath += 'articles/'
-    emptyMessage = 'No more article to read in this category'
+    emptyMessage = 'no article to read in this category'
   }
 
   if (basePath.startsWith('/history')) {
-    title = 'History'
+    title = 'read'
     req.status = 'read'
-    emptyMessage = 'History is empty'
+    emptyMessage = 'history is empty'
   }
   
   const { data, error, loading, fetchMore, refetch } = useQuery<GetArticlesResponse>(GetArticles, {
@@ -99,10 +100,13 @@ export const ArticlesPage = (props : AllProps) => {
     Other: () => <Panel><ErrorPanel>Unable to fetch articles!</ErrorPanel></Panel>
   })
 
-  if (data && data.articles && data.articles.totalCount) {
-    const {totalCount} = data.articles    
-    title += ` [${totalCount}]`
-  }
+  if (data && data.articles) {
+    const {totalCount} = data.articles
+    const plural = totalCount > 1 ? " articles " : " article " 
+    title = totalCount + plural + title
+  } else (
+    title = " "
+  )
 
   return (
     <Page title={title} actions={
