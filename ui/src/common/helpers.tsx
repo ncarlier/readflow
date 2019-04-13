@@ -56,13 +56,13 @@ export function getURLParam<T>(params: URLSearchParams, name: string, fallback: 
   let result = fallback
   if (params.has(name)) {
     const val = params.get(name)
-    if (fallback instanceof Number) {
-      if (parseInt(val!, 10) != NaN) {
+    if (val && typeof fallback === 'number') {
+      if (parseInt(val, 10) != NaN) {
         return Number.parseInt(val!, 10) as any
       }
     }
-    if (fallback instanceof String) {
-      return !val as any
+    if (val && typeof fallback === 'string') {
+      return val as any
     }
   }
   return result

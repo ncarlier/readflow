@@ -35,6 +35,7 @@ const reducer: Reducer<OfflineArticlesState> = (state = initialState, action) =>
       }
       if (data) {
         data.entries = data.entries.filter((art: Article) => art.id != article.id)
+        data.totalCount--
       }
       return { ...state, loading: false, data, error: undefined }
     }

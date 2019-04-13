@@ -7,8 +7,7 @@ import styles from './Snackbar.module.css'
 import { MessageState } from '../store/message/types'
 import { ApplicationState } from '../store'
 import * as messageActions from '../store/message/actions'
-import { classNames } from './helpers';
-import Icon from './Icon';
+import { classNames } from './helpers'
 
 type Props = {
   ttl?: number

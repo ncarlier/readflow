@@ -37,9 +37,9 @@ export const MarkAsButton = (props: AllProps) => {
       setLoading(true)
       const res = await updateArticleStatusMutation({
         variables: {id: article.id, status},
-        update: updateCacheAfterUpdateStatus
+        // update: updateCacheAfterUpdateStatus
       })
-      setLoading(false)
+      if (floating) setLoading(false)
     } catch (err) {
       setLoading(false)
       showMessage(getGQLError(err), true)

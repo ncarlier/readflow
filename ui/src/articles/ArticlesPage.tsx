@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { useQuery, useMutation } from 'react-apollo-hooks'
 
-import { GetArticlesResponse, GetArticlesRequest } from './models'
+import { GetArticlesResponse, GetArticlesRequest, Article } from './models'
 import { GetArticles, MarkAllArticlesAsRead } from './queries'
 import Page from  '../common/Page'
 import ArticleList from './components/ArticleList'
@@ -70,7 +70,7 @@ export const ArticlesPage = (props : AllProps) => {
       }
     })
   }, [data])
-  
+
   const markAllArticlesAsReadMutation = useMutation<{category?: number}>(MarkAllArticlesAsRead)
 
   const markAllArticlesAsRead = async () => {
@@ -95,6 +95,9 @@ export const ArticlesPage = (props : AllProps) => {
       articles={d.articles.entries}
       basePath={basePath}
       emptyMessage={emptyMessage}
+      filter={(a) => a.status === req.status}
+      hasMore={d.articles.hasNext}
+      refetch={refetch}
       fetchMoreArticles={fetchMoreArticles}
     />,
     Other: () => <Panel><ErrorPanel>Unable to fetch articles!</ErrorPanel></Panel>

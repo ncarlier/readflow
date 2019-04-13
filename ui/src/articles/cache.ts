@@ -10,7 +10,7 @@ export const updateCacheAfterUpdateStatus = (proxy: DataProxy, mutationResult: {
   try {
     previousArticleResponse = proxy.readQuery<GetArticleResponse>({
       query: GetArticle,
-      variables: {id: updated.id+""} // +"" is a hack because ID
+      variables: {id: updated.id+""} // +"" is a hack because ID type
     })
   } catch (e) {
     previousArticleResponse = null

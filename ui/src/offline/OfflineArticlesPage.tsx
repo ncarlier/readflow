@@ -25,6 +25,10 @@ export const OfflineArticlesPage = ({offlineArticles, fetchOfflineArticles, matc
     fetchOfflineArticles(query)
   }, [])
 
+  const refetch = useCallback(async () => {
+    fetchOfflineArticles(query)
+  }, [data])
+
   const fetchMoreArticles = useCallback(async () => {
     if (!loading && data && data.hasNext) {
       fetchOfflineArticles({...query, afterCursor: data.endCursor})
@@ -38,6 +42,8 @@ export const OfflineArticlesPage = ({offlineArticles, fetchOfflineArticles, matc
       articles={d.entries}
       basePath={match.path}
       emptyMessage="no offline articles"
+      hasMore={d.hasNext}
+      refetch={refetch}
       fetchMoreArticles={ fetchMoreArticles }
     />,
   })
