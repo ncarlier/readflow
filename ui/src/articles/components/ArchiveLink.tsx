@@ -52,7 +52,7 @@ export const ArchiveLink = (props: AllProps) => {
       title={`Save to ${service.alias}`}
       icon="backup"
       onClick={archiveArticle}>
-      <span>Save to {service.alias}</span>{service.is_default && !noShortcuts && <small className="keyb">[s]</small>}
+      <span>Save to {service.alias}</span>{service.is_default && !noShortcuts && <kbd>s</kbd>}
     </LinkIcon>
   )
 }

@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react"
 import ReactModal from "react-modal"
 
-import styles from './ConfirmDialog.module.css'
+import styles from './Dialog.module.css'
 import Panel from "./Panel";
 import Button from "./Button";
 const customStyles = {
@@ -23,7 +23,7 @@ type Props = {
   onCancel?: (e: any) => void
 }
 
-const ConfirmDialog = ({
+export default ({
   title,
   confirmLabel,
   children,
@@ -47,5 +47,3 @@ const ConfirmDialog = ({
     </Panel>
   </ReactModal>
 )
-
-export default ConfirmDialog;

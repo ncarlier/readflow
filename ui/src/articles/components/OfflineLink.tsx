@@ -82,7 +82,7 @@ export const OfflineLink = (props: AllProps) => {
         title="Remove"
         onClick={showDeleteConfirmModal}
         icon="delete">
-        <span>Remove offline</span>{!noShortcuts && <small>[r]</small>}
+        <span>Remove offline</span>{!noShortcuts && <kbd>r</kbd>}
       </LinkIcon>
     )
   }
@@ -92,7 +92,7 @@ export const OfflineLink = (props: AllProps) => {
       title="Put offline"
       onClick={putArticleOffline}
       icon="signal_wifi_off">
-      <span>Put offline</span>{!noShortcuts && <small className="keyb">[o]</small>}
+      <span>Put offline</span>{!noShortcuts && <kbd>o</kbd>}
     </LinkIcon>
   )
 }

@@ -54,22 +54,22 @@ export const ArticlesPageMenu = (props: AllProps) => {
       <ul>
         <li>
           <LinkIcon onClick={refresh} icon="refresh">
-            <span>Refresh</span><small>[shift+r]</small>
+            <span>Refresh</span><kbd>shift+r</kbd>
           </LinkIcon>
         </li>
         <li>
           <LinkIcon to={{...loc, search: toggleSortOrderQueryParam(loc.search)}} icon="sort">
-            <span>Invert sort order</span><small>[shift+o]</small>
+            <span>Invert sort order</span><kbd>shift+o</kbd>
           </LinkIcon>
         </li>
         { markAllAsRead && <li>
           <LinkIcon onClick={markAllAsRead} icon="done_all">
-            <span>Mark all as read</span><small>[shift+m]</small>
+            <span>Mark all as read</span><kbd>shift+m</kbd>
           </LinkIcon>
         </li> }
         { canToggleStatus && <li>
           <LinkIcon to={{...loc, search: toggleStatusQueryParam(loc.search)}} icon="history">
-            <span>Toggle history</span><small>[shift+h]</small>
+            <span>Toggle history</span><kbd>shift+h</kbd>
           </LinkIcon>
         </li> }
       </ul>

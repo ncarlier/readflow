@@ -10,6 +10,10 @@ import styles from './Page.module.css'
 import { usePageTitle } from '../hooks'
 import { classNames } from './helpers'
 import Snackbar from './Snackbar'
+import { useModal } from 'react-modal-hook'
+import useKeyboard from '../hooks/useKeyboard'
+import InfoDialog from './InfoDialog'
+import Shortcuts from './Shortcuts'
 
 type Props = {
   title?: string
@@ -29,6 +33,18 @@ export default (props: Props) => {
   } = props
 
   usePageTitle(title, subtitle)
+
+  const [showShortcutsModal, hideShortcutsModal] = useModal(
+    () => (
+      <InfoDialog
+        title="Shortcuts"
+        onOk={hideShortcutsModal}
+      >
+        <Shortcuts />
+      </InfoDialog>
+    )
+  )
+  useKeyboard('?', showShortcutsModal)
 
   // const small = useMedia('(max-width: 400px)')
   // const large = useMedia('(min-width: 767px)')
