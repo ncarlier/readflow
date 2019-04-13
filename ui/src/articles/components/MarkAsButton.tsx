@@ -9,6 +9,7 @@ import { UpdateArticleStatus } from '../queries'
 import { getGQLError } from '../../common/helpers'
 import { updateCacheAfterUpdateStatus } from '../cache'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer';
+import useKeyboard from '../../hooks/useKeyboard';
 
 type UpdateArticleStatusFields = {
   id: number
@@ -51,10 +52,14 @@ export const MarkAsButton = (props: AllProps) => {
     updateArticleStatus(status) 
   }, [article])
 
+  // Keyboard shortcut is only active for Floating Action Button
+  useKeyboard('m', handleOnClick, floating)
+  const kbs = floating ? " [m]" : ""
+
   if (article.status === 'read') {
     return (
       <ButtonIcon
-        title="Mark as unread"
+        title={"Mark as unread" + kbs}
         onClick={handleOnClick}
         loading={loading}
         floating={floating}
@@ -65,7 +70,7 @@ export const MarkAsButton = (props: AllProps) => {
 
   return (
     <ButtonIcon
-      title="Mark as read"
+      title={"Mark as read" + kbs}
       onClick={handleOnClick}
       loading={loading}
       floating={floating}

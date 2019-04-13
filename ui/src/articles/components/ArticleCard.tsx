@@ -7,6 +7,7 @@ import ArticleHeader from '../components/ArticleHeader'
 import styles from './ArticleCard.module.css'
 import Panel from '../../common/Panel'
 import ArticleFooter from './ArticleFooter'
+import ArticleMenu from './ArticleMenu'
 
 type Props = {
   article: Article
@@ -19,7 +20,9 @@ export default ({article, readMoreBasePath}: Props) => {
   
   return (
     <Panel>
-      <ArticleHeader article={article} to={readMorePath} />
+      <ArticleHeader article={article} to={readMorePath}>
+        <ArticleMenu article={article} noShortcuts />
+      </ArticleHeader>
       <article className={ styles.summary }>
         { article.image &&
           <Link

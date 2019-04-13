@@ -3,12 +3,14 @@ import mousetrap from "mousetrap"
 
 type KeyHandler = (e: ExtendedKeyboardEvent, combo: string) => void
 
-export default (key: string, handler: KeyHandler) => {
+export default (key: string, handler: KeyHandler, enable = true) => {
   useEffect(() => {
-    mousetrap.unbind(key)
-    mousetrap.bind(key, handler)
-    return () => {
+    if (enable) {
       mousetrap.unbind(key)
+      mousetrap.bind(key, handler)
+      return () => {
+        mousetrap.unbind(key)
+      }
     }
   }, [handler])
 }

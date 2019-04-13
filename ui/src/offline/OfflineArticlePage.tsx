@@ -9,7 +9,9 @@ import { RouteComponentProps, Redirect } from 'react-router'
 import ArticleHeader from '../articles/components/ArticleHeader'
 import ArticleContent from '../articles/components/ArticleContent'
 import { Article } from '../articles/models'
-import { OfflineProps, connectOffline } from '../containers/OfflineContainer';
+import { OfflineProps, connectOffline } from '../containers/OfflineContainer'
+import ArticleMenu from '../articles/components/ArticleMenu'
+import ButtonIcon from '../common/ButtonIcon'
 
 type AllProps = RouteComponentProps<{id: string}> & OfflineProps
 
@@ -28,7 +30,9 @@ export const OfflineArticlePage = ({match, offlineArticles, fetchOfflineArticle}
     Data: (a) => <>
         {a !== null && (a.isOffline = true) ? 
           <>
-            <ArticleHeader article={a} />
+            <ArticleHeader article={a}>
+              <ArticleMenu article={a} />
+            </ArticleHeader>
             <ArticleContent article={a} />
           </>
           : <ErrorPanel title="Not found">Article #${id} not found.</ErrorPanel>
@@ -38,7 +42,14 @@ export const OfflineArticlePage = ({match, offlineArticles, fetchOfflineArticle}
   })
 
   return (
-    <Page title="Offline articles" subtitle={data && data.title}>
+    <Page title="Offline articles" subtitle={data && data.title}
+      actions={
+        <ButtonIcon
+          to="/offline" 
+          icon="arrow_back"
+          title="back to the list"
+        />
+      }>
       <Panel style={{flex: '1 1 auto'}}>
         {render(data, error, loading)}
       </Panel>

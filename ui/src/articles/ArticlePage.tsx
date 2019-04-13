@@ -14,6 +14,7 @@ import Panel from '../common/Panel'
 import { Category } from '../categories/models'
 import ButtonIcon from '../common/ButtonIcon'
 import MarkAsButton from './components/MarkAsButton'
+import ArticleMenu from './components/ArticleMenu'
 
 type Props = {
   category?: Category
@@ -46,7 +47,9 @@ export default ({ category, match }: AllProps) => {
       <>
         {article !== null ? 
           <>
-            <ArticleHeader article={article} />
+            <ArticleHeader article={article}>
+              <ArticleMenu article={article} />
+            </ArticleHeader>
             <ArticleContent article={article} />
             <MarkAsButton article={article} floating />
           </>

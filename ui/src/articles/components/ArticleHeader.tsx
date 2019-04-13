@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { Article } from '../models'
 
@@ -12,11 +12,12 @@ import ArticleMenu from './ArticleMenu'
 type Props = {
   article: Article
   to?: History.LocationDescriptor
+  children?: ReactNode
 }
 
 type AllProps = Props
 
-export default ({article, to}: AllProps) => (
+export default ({article, to, children}: AllProps) => (
   <header className={styles.header}>
     <h1>
       <small>
@@ -36,7 +37,7 @@ export default ({article, to}: AllProps) => (
       </span>
     </h1>
     <div className={styles.actions}>
-      <ArticleMenu article={article} />
+      {children}
     </div>
   </header>
 )

@@ -1,9 +1,8 @@
 
-import React, { useState, ReactNode } from 'react'
+import React from 'react'
 import { useApolloClient } from 'react-apollo-hooks'
 
 import {Article, GetArticleResponse} from '../models'
-import ButtonIcon from '../../common/ButtonIcon'
 
 import { GetFullArticle } from '../queries'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
@@ -11,10 +10,12 @@ import { connectOfflineDispatch, IOfflineDispatchProps } from '../../containers/
 import ConfirmDialog from '../../common/ConfirmDialog'
 import { useModal } from 'react-modal-hook'
 import LinkIcon from '../../common/LinkIcon'
+import useKeyboard from '../../hooks/useKeyboard'
 
 type Props = {
   article: Article
   remove?: boolean
+  noShortcuts?: boolean
 }
 
 type AllProps = Props & IMessageDispatchProps & IOfflineDispatchProps
@@ -23,6 +24,7 @@ export const OfflineLink = (props: AllProps) => {
   const {
     article,
     remove,
+    noShortcuts,
     saveOfflineArticle,
     removeOfflineArticle,
     showMessage
@@ -70,6 +72,9 @@ export const OfflineLink = (props: AllProps) => {
       </ConfirmDialog>
     )
   )
+  
+  useKeyboard('r', showDeleteConfirmModal, !noShortcuts && remove)
+  useKeyboard('o', putArticleOffline, !noShortcuts && !remove)
 
   if (remove) {
     return (
@@ -77,7 +82,7 @@ export const OfflineLink = (props: AllProps) => {
         title="Remove"
         onClick={showDeleteConfirmModal}
         icon="delete">
-        <span>Remove offline</span><small>[r]</small>
+        <span>Remove offline</span>{!noShortcuts && <small>[r]</small>}
       </LinkIcon>
     )
   }
@@ -87,7 +92,7 @@ export const OfflineLink = (props: AllProps) => {
       title="Put offline"
       onClick={putArticleOffline}
       icon="signal_wifi_off">
-      <span>Put offline</span><small>[o]</small>
+      <span>Put offline</span>{!noShortcuts && <small className="keyb">[o]</small>}
     </LinkIcon>
   )
 }

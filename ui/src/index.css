@@ -26,6 +26,12 @@ body {
   filter: blur(0);
 }
 
+@media (max-width: 512px) {
+  .keyb {
+    display: none;
+  }
+}
+
 /*
  * TABLE
  */

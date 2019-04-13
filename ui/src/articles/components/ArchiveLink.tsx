@@ -1,23 +1,25 @@
-import React, { useState, useCallback } from 'react'
-import { useMutation, useApolloClient } from 'react-apollo-hooks'
+import React, { useCallback } from 'react'
+import { useMutation } from 'react-apollo-hooks'
 
 import { Article } from '../models'
 
 import { ArchiveArticle } from '../queries'
 import { getGQLError } from '../../common/helpers'
-import { GetArchiveServicesResponse } from '../../settings/archive-services/models'
-import { GetArchiveServices } from '../../settings/archive-services/queries'
+import { ArchiveService } from '../../settings/archive-services/models'
 import { IMessageDispatchProps, connectMessageDispatch } from '../../containers/MessageContainer';
-import useConfirmModal from '../../hooks/useConfirmModal'
 import LinkIcon from '../../common/LinkIcon'
+import useKeyboard from '../../hooks/useKeyboard'
 
 type ArchiveArticleFields = {
   id: number
   archiver: string
+  noShortcuts?: boolean
 }
 
 type Props = {
   article: Article
+  service: ArchiveService
+  noShortcuts?: boolean
 }
 
 type AllProps = Props & IMessageDispatchProps
@@ -25,62 +27,32 @@ type AllProps = Props & IMessageDispatchProps
 export const ArchiveLink = (props: AllProps) => {
   const {
     article,
-    showMessage
+    service,
+    showMessage,
+    noShortcuts,
   } = props
 
-  const client = useApolloClient()
-  const [loading, setLoading] = useState(false)
   const archiveArticleMutation = useMutation<ArchiveArticleFields>(ArchiveArticle)
-  const [showNoArchiveServiceModal] = useConfirmModal(
-    'Archiving',
-    <p>
-      No archive service configured.<br/>
-      Please configure one in the <a href="/settings/archive-services">setting page</a>.
-    </p>
-  )
   
-  const archiveArticle = async (alias: string) => {
-    await archiveArticleMutation({
-      variables: {id: article.id, archiver: alias}
-    })
-  }
-
-  const selectAndUseArchiveService = async () => {
+  const archiveArticle = useCallback(async () => {
     try {
-      setLoading(true)
-      const { errors, data } = await client.query<GetArchiveServicesResponse>({
-        query: GetArchiveServices,
+      await archiveArticleMutation({
+        variables: {id: article.id, archiver: service.alias}
       })
-      if (data) {
-        if (data.archivers.length === 0) {
-          showNoArchiveServiceModal()
-        } else if (data.archivers.length > 1) {
-          // TODO: Show choosing modal
-          showMessage('You have to choose a default service archiver. Abort.')
-        } else {
-          await archiveArticle(data.archivers[0].alias)
-          showMessage(`Article put offline: ${article.title}`)
-        }
-      }
-      setLoading(false)
-      if (errors) {
-        throw new Error(errors[0])
-      }
+      showMessage(`Article sent to ${service.alias}: ${article.title}`)
     } catch (err) {
       showMessage(getGQLError(err), true)
     }
-  }    
-
-  const handleOnClick = useCallback(() => {
-    selectAndUseArchiveService()
   }, [article])
+  
+  useKeyboard('s', archiveArticle, service.is_default && !noShortcuts)
 
   return (
     <LinkIcon
-      title="Save to your cloud provider"
+      title={`Save to ${service.alias}`}
       icon="backup"
-      onClick={handleOnClick}>
-      <span>Save to...</span><small>[s]</small>
+      onClick={archiveArticle}>
+      <span>Save to {service.alias}</span>{service.is_default && !noShortcuts && <small className="keyb">[s]</small>}
     </LinkIcon>
   )
 }
