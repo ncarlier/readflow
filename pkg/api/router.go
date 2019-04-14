@@ -17,19 +17,16 @@ func NewRouter(conf *config.Config) *http.ServeMux {
 		return fmt.Sprintf("%d", time.Now().UnixNano())
 	}
 
+	authMiddleware := middleware.Auth(*conf.AuthN)
+
 	for _, route := range routes {
 		var handler http.Handler
 
 		handler = route.HandlerFunc(conf)
 		if route.AuthNRequired {
-			switch *conf.AuthN {
-			case "mock":
-				handler = middleware.MockAuth(handler)
-			default:
-				handler = middleware.ProxyAuth(handler)
-			}
+			handler = authMiddleware(handler)
 		}
-		handler = middleware.Method(handler, route.Methods)
+		handler = middleware.Method(route.Methods)(handler)
 		handler = middleware.Cors(handler)
 		handler = middleware.Logger(handler)
 		handler = middleware.Tracing(nextRequestID)(handler)

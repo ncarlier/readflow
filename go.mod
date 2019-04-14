@@ -6,6 +6,7 @@ require (
 	github.com/asaskevich/EventBus v0.0.0-20180315140547-d46933a94f05
 	github.com/brianvoe/gofakeit v3.17.0+incompatible
 	github.com/certifi/gocertifi v0.0.0-20190105021004-abcd57078448 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/graphql-go/graphql v0.7.7

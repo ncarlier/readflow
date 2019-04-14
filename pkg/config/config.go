@@ -22,7 +22,7 @@ var config = &Config{
 	ListenAddr: flag.String("listen", getEnv("LISTEN_ADDR", ":8080"), "HTTP service address"),
 	DB:         flag.String("db", getEnv("DB", "postgres://postgres:testpwd@localhost/reader_test?sslmode=disable"), "Database connection string"),
 	Broker:     flag.String("broker", getEnv("BROKER", ""), "External event broker URI for outgoing events"),
-	AuthN:      flag.String("authn", getEnv("AUTHN", "proxy"), "Authentication method (mock, proxy or basic)"),
+	AuthN:      flag.String("authn", getEnv("AUTHN", "https://login.nunux.org/auth/realms/readflow"), "Authentication method (\"mock\", \"proxy\" or OIDC if URL)"),
 	Version:    flag.Bool("version", false, "Print version"),
 	Debug:      flag.Bool("debug", getBoolEnv("DEBUG", false), "Output debug logs"),
 	LogDir:     flag.String("log-dir", getEnv("LOG_DIR", os.TempDir()), "Webhooks execution log directory"),

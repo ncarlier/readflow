@@ -44,6 +44,7 @@ You can configure the server by setting environment variables:
 |----------|---------|-------------|
 | `APP_LISTEN_ADDR` | `:8080` | HTTP server address |
 | `APP_DB` | `postgres://postgres:testpwd@localhost/reader_test` | Database connection string |
+| `APP_AUTHN` | `https://login.nunux.org/auth/realms/readflow` | Authentication method ("mock", "proxy" or OIDC if URL) |
 | `APP_BROKER` | none | External event broker URI for outgoing events |
 | `APP_SENTRY_DSN` | none | Sentry DSN URL for error reporting |
 | `APP_LOG_LEVEL` | `info` | Logging level (`debug`, `info`, `warn` or `error`) |

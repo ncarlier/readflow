@@ -37,7 +37,9 @@ services:
       timeout: 2s
       retries: 15
     labels:
-      - "traefik.enable=false"
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:api.${FQDN}"
+      - "traefik.docker.network=${GW_NETWORK_NAME}"
 
   ########################################
   # Webapp
@@ -47,26 +49,10 @@ services:
     image: "ncarlier/readflow-app:latest"
     restart: always
     networks:
-      - internal
-    labels:
-      - "traefik.enable=false"
-
-  ########################################
-  # Authentication proxy
-  ########################################
-  auth:
-    image: keycloak/keycloak-gatekeeper
-    restart: always
-    command: --config /etc/auth_config.yml
-    depends_on:
-      - app
-    networks:
       - web
       - internal
-    volumes:
-      - "/etc/readflow_gatekeeper.yml:/etc/auth_config.yml"
     labels:
-      - "traefik.port=3000"
+      - "traefik.port=80"
       - "traefik.frontend.rule=Host:${FQDN}"
       - "traefik.docker.network=${GW_NETWORK_NAME}"
 

@@ -4,14 +4,18 @@ User interface of readflow.
 
 ## Configuration
 
-By default the API endpoint is `/api`.
+You can configure the webapp build by setting environment variables:
 
-You can change this by setting the `REACT_APP_API_BASE_URL` environment variable.
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `REACT_APP_API_ROOT` | `https://api.readflow.app` | API base URL. |
+| `REACT_APP_AUTHORITY` | `https://login.nunux.org/auth/realms/readflow` | OpenID Connect authority provider URL. |
+| `REACT_APP_CLIENT_ID` | `webapp` | OpenID Connect client ID. |
 
 Example:
 
 ```bash
-$ export REACT_APP_API_BASE_URL=http://localhost:8080
+$ export REACT_APP_API_ROOT=http://localhost:8080
 ```
 
 ## Development server
