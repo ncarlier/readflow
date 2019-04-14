@@ -23,9 +23,9 @@
   color: white;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 512px) {
   .snackbar {
-    min-width: 100%;
+    max-width: 100%;
     margin: 8px;
   }
 }

@@ -9,6 +9,7 @@ import ArticleList from '../articles/components/ArticleList'
 import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
 import { RouteComponentProps } from 'react-router'
 import { GetArticlesQuery, GetArticlesResult } from './dao/articles'
+import ArticlesPageMenu from '../articles/components/ArticlesPageMenu'
 
 type AllProps = OfflineProps & RouteComponentProps
 
@@ -23,7 +24,7 @@ export const OfflineArticlesPage = ({offlineArticles, fetchOfflineArticles, matc
 
   useEffect(() => {
     fetchOfflineArticles(query)
-  }, [])
+  }, [location])
 
   const refetch = useCallback(async () => {
     fetchOfflineArticles(query)
@@ -56,7 +57,9 @@ export const OfflineArticlesPage = ({offlineArticles, fetchOfflineArticles, matc
   }
 
   return (
-    <Page title={title}>
+    <Page title={title} actions={
+        <ArticlesPageMenu refresh={refetch} />
+      }>
       {render(data, error, loading)}
     </Page>
   )

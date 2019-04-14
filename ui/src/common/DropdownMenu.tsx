@@ -19,8 +19,11 @@ export default ({children}: Props) => {
   const handleClickOutside = (e: MouseEvent) => {
     const $el = e.target
     if (!($el instanceof Element)) return
-    const $details = $el.closest("details")
-    if (!$details && ref.current) {
+    if (ref.current) {
+      const $details = $el.closest("details")
+      if ($details === ref.current && $details.hasAttribute('open')) {
+        e.preventDefault()
+      }
       ref.current.removeAttribute('open')
     }
   }

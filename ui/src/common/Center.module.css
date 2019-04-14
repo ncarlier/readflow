@@ -1,12 +1,15 @@
 
 .center {
   height: 100%;
-  text-align: center;
 }
 
 .center > div {
-  position: relative;
+  margin: 0;
+  position: absolute;
   display: initial;
   top: 50%;
+  left: 0;
   transform: translateY(-50%);
+  text-align: center;
+  width: 100%;
 }

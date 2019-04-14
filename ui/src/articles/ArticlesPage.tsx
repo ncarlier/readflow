@@ -45,6 +45,9 @@ export const ArticlesPage = (props : AllProps) => {
     title = 'read'
     req.status = 'read'
     emptyMessage = 'history is empty'
+    if (!params.has('sort')) {
+      req.sortOrder = 'desc'
+    }
   }
   
   const { data, error, loading, fetchMore, refetch } = useQuery<GetArticlesResponse>(GetArticles, {

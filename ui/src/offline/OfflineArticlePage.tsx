@@ -38,7 +38,8 @@ export const OfflineArticlePage = ({match, offlineArticles, fetchOfflineArticle}
           : <ErrorPanel title="Not found">Article #${id} not found.</ErrorPanel>
         }
       </>,
-    Other: () => <Redirect to="/offline" />
+    // Other: () => <Redirect to="/offline" />
+    Other: () => <Loader />
   })
 
   return (
