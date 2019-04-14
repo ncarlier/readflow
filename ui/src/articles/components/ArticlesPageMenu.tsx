@@ -4,6 +4,8 @@ import LinkIcon from '../../common/LinkIcon'
 import { connectRouter, IRouterStateProps, IRouterDispatchProps } from '../../containers/RouterContainer'
 import useKeyboard from '../../hooks/useKeyboard'
 import DropdownMenu from '../../common/DropdownMenu'
+import ConfirmDialog from '../../common/ConfirmDialog';
+import { useModal } from 'react-modal-hook';
 
 type Props = {
   refresh: () => void
@@ -36,18 +38,28 @@ export const ArticlesPageMenu = (props: AllProps) => {
   }, [loc])
   
   const toggleStatus = useCallback((event: KeyboardEvent) => {
-    if (!canToggleStatus) {
-      return false
-    }
     event.preventDefault()
     push({...loc, search: toggleStatusQueryParam(loc.search)})
     return false
   }, [loc])
+
+  const [showMarkAllAsReadDialog, hideMarkAllAsReadDialog] = useModal(
+    () => (
+      <ConfirmDialog
+        title="Mark all as read?"
+        confirmLabel="Do it"
+        onConfirm={() => {markAllAsRead!(); hideMarkAllAsReadDialog()}}
+        onCancel={hideMarkAllAsReadDialog}
+      >
+        Are you sure to mark ALL articles as read?
+      </ConfirmDialog>
+    )
+  )
   
-  useKeyboard('shift+h', toggleStatus)
+  useKeyboard('shift+h', toggleStatus, canToggleStatus)
   useKeyboard('shift+o', toggleSortOrder)
   useKeyboard('shift+r', () => refresh())
-  useKeyboard('shift+m', () => markAllAsRead ? markAllAsRead() : false)
+  useKeyboard('shift+m', () => showMarkAllAsReadDialog(), markAllAsRead !== undefined)
 
   return (
     <DropdownMenu>
@@ -63,7 +75,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
           </LinkIcon>
         </li>
         { markAllAsRead && <li>
-          <LinkIcon onClick={markAllAsRead} icon="done_all">
+          <LinkIcon onClick={showMarkAllAsReadDialog} icon="done_all">
             <span>Mark all as read</span><kbd>shift+m</kbd>
           </LinkIcon>
         </li> }
