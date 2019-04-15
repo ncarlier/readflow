@@ -9,7 +9,7 @@ body {
 img {
   max-width: 100%;
 }
-pre {
+pre, code {
   overflow: auto;
 }
 a {
