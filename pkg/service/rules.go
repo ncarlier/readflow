@@ -129,8 +129,8 @@ func (reg *Registry) DeleteRules(ctx context.Context, ids []uint) (int64, error)
 	return nb, nil
 }
 
-// ProcessArticle apply user's rules on the article
-func (reg *Registry) ProcessArticle(ctx context.Context, article *model.Article) error {
+// ProcessArticleByRuleEngine apply user's rules on the article
+func (reg *Registry) ProcessArticleByRuleEngine(ctx context.Context, article *model.Article) error {
 	uid := getCurrentUserFromContext(ctx)
 	// Retrieve pipeline from cache
 	pipeline := reg.ruleEngineCache.Get(uid)

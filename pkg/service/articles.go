@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
+
+	readability "github.com/go-shiori/go-readability"
 
 	"github.com/ncarlier/readflow/pkg/event"
-
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
@@ -25,12 +27,22 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleFor
 
 		if article.CategoryID == nil {
 			// Process article by the rule engine
-			if err := reg.ProcessArticle(ctx, article); err != nil {
+			if err := reg.ProcessArticleByRuleEngine(ctx, article); err != nil {
 				result.Errors = append(result.Errors, err)
 				reg.logger.Info().Err(err).Uint(
 					"uid", uid,
 				).Str("title", art.Title).Msg("unable to create article")
 				continue
+			}
+		}
+
+		if article.URL != nil && (article.Image == nil || article.Text == nil || article.HTML == nil) {
+			// Fetch original article to extract missing attributes
+			if err := reg.HydrateArticle(ctx, article); err != nil {
+				reg.logger.Info().Err(err).Uint(
+					"uid", uid,
+				).Str("title", art.Title).Msg("unable to fetch original article")
+				// continue
 			}
 		}
 
@@ -131,4 +143,25 @@ func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, categoryID *uint
 	).Msg("all articles marked as read")
 
 	return nb, nil
+}
+
+// HydrateArticle add missimg attributes form original article
+func (reg *Registry) HydrateArticle(ctx context.Context, article *model.Article) error {
+	art, err := readability.FromURL(*article.URL, 5*time.Second)
+	if err != nil {
+		return err
+	}
+	if article.HTML == nil {
+		article.HTML = &art.Content
+	}
+	if article.Title == "" {
+		article.Title = art.Title
+	}
+	article.Text = &art.Excerpt
+	article.Image = &art.Image
+	// TODO:
+	// article.Favicon = &art.Favicon
+	// article.Length = art.Length
+
+	return nil
 }
