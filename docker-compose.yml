@@ -28,16 +28,12 @@ services:
     depends_on:
       - db
     networks:
+      - web
       - internal
     environment:
       - APP_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB:-reader}?sslmode=disable
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
-      interval: 5s
-      timeout: 2s
-      retries: 15
     labels:
-      - "traefik.port=80"
+      - "traefik.port=8080"
       - "traefik.frontend.rule=Host:api.${FQDN}"
       - "traefik.docker.network=${GW_NETWORK_NAME}"
 
