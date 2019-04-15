@@ -32,6 +32,7 @@ services:
       - internal
     environment:
       - APP_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB:-reader}?sslmode=disable
+      - APP_BROKER=${READFLOW_BROKER}
     labels:
       - "traefik.port=8080"
       - "traefik.frontend.rule=Host:api.${FQDN}"

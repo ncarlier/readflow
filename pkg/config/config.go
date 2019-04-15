@@ -12,6 +12,7 @@ type Config struct {
 	DB         *string
 	Broker     *string
 	AuthN      *string
+	PublicURL  *string
 	Version    *bool
 	Debug      *bool
 	LogDir     *string
@@ -23,6 +24,7 @@ var config = &Config{
 	DB:         flag.String("db", getEnv("DB", "postgres://postgres:testpwd@localhost/reader_test?sslmode=disable"), "Database connection string"),
 	Broker:     flag.String("broker", getEnv("BROKER", ""), "External event broker URI for outgoing events"),
 	AuthN:      flag.String("authn", getEnv("AUTHN", "https://login.nunux.org/auth/realms/readflow"), "Authentication method (\"mock\", \"proxy\" or OIDC if URL)"),
+	PublicURL:  flag.String("public-url", getEnv("PUBLIC_URL", "https://api.readflow.app"), "Public URL"),
 	Version:    flag.Bool("version", false, "Print version"),
 	Debug:      flag.Bool("debug", getBoolEnv("DEBUG", false), "Output debug logs"),
 	LogDir:     flag.String("log-dir", getEnv("LOG_DIR", os.TempDir()), "Webhooks execution log directory"),

@@ -20,6 +20,7 @@ func newHTTPBroker(uri *url.URL) (Broker, error) {
 
 // Send the payload to the event broker
 func (hb *HTTPBroker) Send(payload io.Reader) error {
+	// TODO add HMAC header signature (X-Broker-Signature)
 	resp, err := http.Post(hb.uri.String(), "application/json; charset=utf-8", payload)
 	if err != nil {
 		return err
