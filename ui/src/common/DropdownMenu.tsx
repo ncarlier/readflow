@@ -20,8 +20,9 @@ export default ({children}: Props) => {
     const $el = e.target
     if (!($el instanceof Element)) return
     if (ref.current) {
+      const isButton = $el.parentElement && $el.parentElement.tagName === 'BUTTON'
       const $details = $el.closest("details")
-      if ($details === ref.current && $details.hasAttribute('open')) {
+      if (isButton && $details === ref.current && $details.hasAttribute('open')) {
         e.preventDefault()
       }
       ref.current.removeAttribute('open')

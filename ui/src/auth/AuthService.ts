@@ -17,7 +17,7 @@ export class AuthService {
     this.userManager = new UserManager(settings)
 
     Log.logger = console
-    Log.level = Log.INFO
+    Log.level = Log.WARN
   }
 
   public getUser() {
