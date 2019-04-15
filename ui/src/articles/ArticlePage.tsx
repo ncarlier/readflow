@@ -15,6 +15,7 @@ import { Category } from '../categories/models'
 import ButtonIcon from '../common/ButtonIcon'
 import MarkAsButton from './components/MarkAsButton'
 import ArticleMenu from './components/ArticleMenu'
+import Center from '../common/Center';
 
 type Props = {
   category?: Category
@@ -41,7 +42,7 @@ export default ({ category, match }: AllProps) => {
   })
   
   const render = matchResponse<GetArticleResponse>({
-    Loading: () => <Loader />,
+    Loading: () => <Center><Loader /></Center>,
     Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
     Data: ({article}) => 
       <>

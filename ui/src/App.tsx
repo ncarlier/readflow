@@ -45,8 +45,13 @@ const client = new ApolloClient({
       }
     })
   },
-  onError: ({ graphQLErrors, networkError, response }) => {
-    console.log('onError', graphQLErrors, networkError, response)
+  onError: ({ networkError }) => {
+    if (networkError) {
+      console.log('networkError:', networkError.name, networkError.message)
+      if (networkError.message === 'login_required') {
+        authService.login()
+      }
+    }
   },
 })
 
