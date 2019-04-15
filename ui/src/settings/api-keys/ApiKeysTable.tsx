@@ -4,6 +4,8 @@ import { ApiKey } from './models'
 import Empty from '../../common/Empty'
 import { Link } from 'react-router-dom'
 import TimeAgo from '../../common/TimeAgo'
+import { getBookmarklet, preventBookmarkletClick } from '../../common/helpers'
+import Icon from '../../common/Icon';
 
 export interface OnSelectedFn {
   (ids: number[]): void
@@ -70,6 +72,7 @@ export default ({data, onSelected}: Props) => {
           </th>
           <th>Alias</th>
           <th>Token</th>
+          <th>Bookmarklet</th>
           <th>Last usage</th>
           <th>Created</th>
           <th>Updated</th>
@@ -90,7 +93,14 @@ export default ({data, onSelected}: Props) => {
                 {apiKey.alias}
               </Link>
             </th>
-            <td><span className="masked">{apiKey.token}</span></td>
+            <td>
+              <span className="masked">{apiKey.token}</span>
+            </td>
+            <td>
+              <a title="Bookmark me!" href={getBookmarklet(apiKey.token)} onClick={preventBookmarkletClick}>
+                <Icon name="bookmark" />
+              </a>
+            </td>
             <td><TimeAgo dateTime={apiKey.last_usage_at} /></td>
             <td><TimeAgo dateTime={apiKey.created_at} /></td>
             <td><TimeAgo dateTime={apiKey.updated_at} /></td>
