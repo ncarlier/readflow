@@ -48,7 +48,7 @@ func mapRowToArticle(row *sql.Row) (*model.Article, error) {
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
-		return nil, err
+		return nil, mapError(err)
 	}
 	return article, nil
 }

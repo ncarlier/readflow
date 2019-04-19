@@ -35,15 +35,19 @@ func articles(conf *config.Config) http.Handler {
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		if len(articles.Errors) > 0 {
+		status := http.StatusAccepted
+		if len(articles.Errors) == 0 && len(articles.Articles) > 0 {
+			status = http.StatusCreated
+		} else if len(articles.Errors) > 0 {
 			if len(articles.Articles) > 0 {
-				w.WriteHeader(http.StatusPartialContent)
+				status = http.StatusPartialContent
+			} else if len(articles.Errors) == 1 && articles.Errors[0] == model.ErrAlreadyExists {
+				status = http.StatusNotModified
 			} else {
-				w.WriteHeader(http.StatusBadRequest)
+				status = http.StatusBadRequest
 			}
-		} else {
-			w.WriteHeader(http.StatusCreated)
 		}
+		w.WriteHeader(status)
 		w.Write(data)
 	})
 	return middleware.APIKeyAuth(handler)
