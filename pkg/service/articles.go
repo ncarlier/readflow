@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/ncarlier/readflow/pkg/tooling"
+
 	readability "github.com/go-shiori/go-readability"
 
 	"github.com/ncarlier/readflow/pkg/event"
@@ -42,6 +44,7 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleFor
 				reg.logger.Info().Err(err).Uint(
 					"uid", uid,
 				).Str("title", art.Title).Msg("unable to fetch original article")
+				// TODO excerpt and image should be extracted from HTML content
 				// continue
 			}
 		}
@@ -157,7 +160,9 @@ func (reg *Registry) HydrateArticle(ctx context.Context, article *model.Article)
 	if article.Title == "" {
 		article.Title = art.Title
 	}
-	article.Text = &art.Excerpt
+	// FIXME: readability excerpt don't well support UTF8
+	text := tooling.ToUTF8(art.Excerpt)
+	article.Text = &text
 	article.Image = &art.Image
 	// TODO:
 	// article.Favicon = &art.Favicon
