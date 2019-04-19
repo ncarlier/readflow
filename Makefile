@@ -66,7 +66,7 @@ install: release/$(EXECUTABLE)
 
 ## Create Docker image
 image:
-	echo ">>> Building Docker image ..."
+	echo ">>> Building Docker image..."
 	docker build --rm -t ncarlier/$(APPNAME) .
 .PHONY: image
 
@@ -74,6 +74,13 @@ image:
 changelog:
 	standard-changelog --first-release
 .PHONY: changelog
+
+## Generate HTML website
+html:
+	echo ">>> Building static website..."
+	hugo -s landing -d ../release/html --cleanDestinationDir
+	hugo -s docs -d ../release/html/docs --cleanDestinationDir
+.PHONY: html
 
 ## Create archive
 archive: release/$(EXECUTABLE)
