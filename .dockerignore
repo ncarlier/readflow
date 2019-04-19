@@ -1,4 +1,6 @@
 release/
 ui/
+docs/
+landing/
 .git/
 .env

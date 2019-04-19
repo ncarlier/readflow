@@ -1,0 +1,58 @@
+baseURL = "https://about.readflow.app/docs"
+
+languageCode = "en-us"
+DefaultContentLanguage = "en"
+title = "readflow documentation"
+theme = "docdock"
+pygmentsCodeFences = true
+pygmentsStyle = "monokai"
+
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = true
+enableMissingTranslationPlaceholders = false
+
+[Languages]
+  [Languages.en]
+    title = "readflow documentation"
+    weight = 1
+    languageName = "English"
+    contentDir = "content/en"
+
+  [Languages.fr]
+    title = "Documentation de readflow"
+    weight = 2
+    languageName = "Français"
+    contentDir = "content/fr"
+
+
+[params]
+editURL = "https://github.com/ncarlier/readflow/edit/master/docs/content/"
+showVisitedLinks = false # default is false
+themeStyle = "original" # "original" or "flex" # default "flex"
+themeVariant = "" # choose theme variant "green", "gold" , "gray", "blue" (default)
+ordersectionsby = "weight" # ordersectionsby = "title"
+disableHomeIcon = false # default is false
+disableSearch = false # default is false
+disableNavChevron = false # set true to hide next/prev chevron, default is false
+highlightClientSide = false # set true to use highlight.pack.js instead of the default hugo chroma highlighter
+menushortcutsnewtab = false # set true to open shortcuts links to a new tab/window
+enableGitInfo = true
+
+[outputs]
+home = [ "HTML", "RSS", "JSON"]
+
+[[menu.shortcuts]]
+pre = "<h3>More</h3>"
+name = "<i class='fa fa-globe'></i> <label>Home page</label>"
+url = "https://readflow.app/"
+weight = 10
+
+[[menu.shortcuts]]
+name = "<i class='fa fa-github'></i> <label>Github repo</label>"
+url = "https://github.com/ncarlier/readflow"
+weight = 15
+
+[[menu.shortcuts]]
+name = "<i class='fa fa-bullhorn'></i> <label>Support this project</label>"
+url = "https://www.paypal.me/nunux"
+weight = 20

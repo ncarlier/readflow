@@ -4,3 +4,6 @@
 [submodule "landing/themes/hugo-fresh"]
 	path = landing/themes/hugo-fresh
 	url = https://github.com/StefMa/hugo-fresh
+[submodule "docs/themes/docdock"]
+	path = docs/themes/docdock
+	url = https://github.com/vjeantet/hugo-theme-docdock.git
