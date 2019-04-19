@@ -4,7 +4,7 @@
 [![Image size](https://images.microbadger.com/badges/image/ncarlier/readflow.svg)](https://microbadger.com/images/ncarlier/readflow)
 [![Docker pulls](https://img.shields.io/docker/pulls/ncarlier/readflow.svg)](https://hub.docker.com/r/ncarlier/readflow/)
 
-Read the Internet with complete peace of mind and freedom.
+Read your Internet article flow in one place with complete peace of mind and freedom.
 
 ![Logo](readflow.svg)
 

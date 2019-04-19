@@ -1,3 +1,6 @@
 [submodule "makefiles"]
 	path = makefiles
 	url = https://github.com/ncarlier/makefiles.git
+[submodule "landing/themes/hugo-fresh"]
+	path = landing/themes/hugo-fresh
+	url = https://github.com/StefMa/hugo-fresh

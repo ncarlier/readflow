@@ -11,7 +11,7 @@ export default () => (
       <h1>
         <img src={process.env.PUBLIC_URL + '/logo.svg'} />
       </h1>
-      <p>Read the Internet with complete peace of mind and freedom</p>
+      <p>Read your Internet article flow in one place with complete peace of mind and freedom.</p>
       <ul>
         <li>Sources</li>
         <li>Bug or feature request</li>

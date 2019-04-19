@@ -1,0 +1,78 @@
+baseURL: https://about.readflow.app
+languageCode: en-us
+title: About readflow
+theme: hugo-fresh
+
+params:
+  navbarlogo:
+   image: logos/logo.svg
+   link: /
+  font:
+    name: "Open Sans"
+    sizes: [400,600]
+  hero:
+    title: Read
+    subtitle: your Internet article flow in one place with complete peace of mind and freedom 
+    buttontext: Get started
+    buttonlink: "https://readflow.app/login.html"
+    image: illustrations/worker.svg
+  navbar:
+  - title: About
+    url: /
+  - title: Hosting
+    url: https://readflow.app/login.html
+  - title: Documentation
+    url: /doc
+  - title: Sources
+    url: https://github.com/ncarlier/readflow
+  section1:
+    title: Features
+    subtitle: if you have to select only three of them
+    tiles:
+    - title: Read everything in one place
+      icon: read
+      text: Centralize your news monitoring without frills
+      url: https://readflow.app/login.html
+      buttonText: Get started
+    - title: Progressive We App
+      icon: pwa
+      text: Great user experiences on all your devices
+      url: /doc
+      buttonText: Read more
+    - title: Cloud integration
+      icon: cloud
+      text: Articles can come from anywhere on the Internet
+      url: /doc
+      buttonText: Read more
+  section3:
+    title: Give a try?
+    subtitle: Our hosted service is waiting for you
+    image: illustrations/screenshot.png
+    buttonText: Get started
+    buttonLink: "https://readflow.app/login.html"
+  footer:
+    # Logo (from /images/logos/___)
+    logo: logo-white.svg
+    socialmedia:
+    - link: https://github.com/ncarlier/readflow
+      icon: github
+    - link: https://twitter.com/ncarlier
+      icon: twitter
+    bulmalogo: true
+    quicklinks:
+      column1:
+        title: "Product"
+        links:
+        - text: Support this project
+          link: https://www.paypal.me/nunux
+        - text: Discover a bug
+          link: https://github.com/ncarlier/readflow/issue
+        - text: Request features
+          link: https://github.com/ncarlier/readflow/issue
+      column2:
+        title: "Docs"
+        links:
+        - text: Get started
+          link: /
+        - text: User guides
+          link: /
