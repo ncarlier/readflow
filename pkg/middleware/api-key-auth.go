@@ -49,6 +49,7 @@ func APIKeyAuth(inner http.Handler) http.Handler {
 			return
 		}
 		ctx = context.WithValue(ctx, constant.UserID, apiKey.UserID)
+		ctx = context.WithValue(ctx, constant.APIKeyAlias, apiKey.Alias)
 
 		inner.ServeHTTP(w, r.WithContext(ctx))
 	})

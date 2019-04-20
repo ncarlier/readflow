@@ -1,7 +1,10 @@
 package ruleengine
 
 import (
+	"context"
 	"fmt"
+
+	"github.com/ncarlier/readflow/pkg/constant"
 
 	"github.com/antonmedv/expr"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -15,7 +18,11 @@ type RuleProcessor struct {
 
 // NewRuleProcessor reates a new rule processor
 func NewRuleProcessor(rule model.Rule) (*RuleProcessor, error) {
-	p, err := expr.Parse(rule.Rule, expr.Define("article", model.Article{}))
+	p, err := expr.Parse(
+		rule.Rule,
+		expr.Define("article", model.Article{}),
+		expr.Define("key", ""),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("invalid rule expression: %s", err)
 	}
@@ -26,10 +33,15 @@ func NewRuleProcessor(rule model.Rule) (*RuleProcessor, error) {
 }
 
 // Apply a rule on an article
-func (rp *RuleProcessor) Apply(article *model.Article) (bool, error) {
+func (rp *RuleProcessor) Apply(ctx context.Context, article *model.Article) (bool, error) {
 	env := map[string]interface{}{
 		"article": article,
 	}
+
+	if alias := ctx.Value(constant.APIKeyAlias); alias != nil {
+		env["key"] = alias
+	}
+
 	result, err := rp.expression.Eval(env)
 	if err != nil {
 		return false, fmt.Errorf("Unable to eval expression on article #%d: %s", article.ID, err)
@@ -59,9 +71,9 @@ func NewProcessorsPipeline(rules []model.Rule) (*ProcessorPipeline, error) {
 }
 
 // Apply a processor pipeline on an article
-func (pp *ProcessorPipeline) Apply(article *model.Article) (bool, error) {
+func (pp *ProcessorPipeline) Apply(ctx context.Context, article *model.Article) (bool, error) {
 	for _, processor := range *pp {
-		applied, err := processor.Apply(article)
+		applied, err := processor.Apply(ctx, article)
 		if err != nil {
 			return false, err
 		}

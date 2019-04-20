@@ -149,7 +149,7 @@ func (reg *Registry) ProcessArticleByRuleEngine(ctx context.Context, article *mo
 		}
 		reg.ruleEngineCache.Set(uid, pipeline)
 	}
-	applied, err := pipeline.Apply(article)
+	applied, err := pipeline.Apply(ctx, article)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
