@@ -14,15 +14,15 @@ params:
     title: Read
     subtitle: your Internet article flow in one place with complete peace of mind and freedom 
     buttontext: Get started
-    buttonlink: "https://readflow.app/login.html"
+    buttonlink: "https://readflow.app/login"
     image: illustrations/worker.svg
   navbar:
   - title: About
     url: /
   - title: Hosting
-    url: https://readflow.app/login.html
+    url: https://readflow.app/login
   - title: Documentation
-    url: /doc
+    url: /docs
   - title: Sources
     url: https://github.com/ncarlier/readflow
   section1:
@@ -32,7 +32,7 @@ params:
     - title: Read everything in one place
       icon: read
       text: Centralize your news monitoring without frills
-      url: https://readflow.app/login.html
+      url: https://readflow.app/login
       buttonText: Get started
     - title: Progressive We App
       icon: pwa
@@ -42,14 +42,14 @@ params:
     - title: Cloud integration
       icon: cloud
       text: Articles can come from anywhere on the Internet
-      url: /doc
+      url: /docs
       buttonText: Read more
   section3:
     title: Give a try?
     subtitle: Our hosted service is waiting for you
     image: illustrations/screenshot.png
     buttonText: Get started
-    buttonLink: "https://readflow.app/login.html"
+    buttonLink: "https://readflow.app/login"
   footer:
     # Logo (from /images/logos/___)
     logo: logo-white.svg
@@ -73,6 +73,6 @@ params:
         title: "Docs"
         links:
         - text: Get started
-          link: /
+          link: /docs
         - text: User guides
-          link: /
+          link: /docs

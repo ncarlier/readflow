@@ -11,6 +11,7 @@ import ErrorPage from './error/ErrorPage'
 const Routes = () => (
   <Switch>
     <Redirect exact from="/" to="/unread" />
+    <Redirect exact from="/login" to="/unread" />
     <Route path="/unread" component={ArticlesRoutes} />
     <Route path="/history" component={ArticlesRoutes} />
     <Route path="/offline" component={OfflineRoutes} />
