@@ -32,7 +32,7 @@ export default ({article, readMoreBasePath}: Props) => {
               <img src={article.image} alt="Illustration" />
           </Link>
         }
-        <p>{article.text}</p>
+        { article.text && <p>{article.text}</p>}
       </article>
       { !article.isOffline && <ArticleFooter article={article} />}
     </Panel>

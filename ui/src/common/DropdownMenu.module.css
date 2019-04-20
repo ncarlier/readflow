@@ -4,7 +4,13 @@
 }
 
 .menu > summary::-webkit-details-marker {
-  display:none;
+  display: none;
+}
+.menu > summary::-moz-list-bullet {
+  list-style-type: none;
+}
+.menu > summary {
+  list-style-image: none;
 }
 
 .nav {

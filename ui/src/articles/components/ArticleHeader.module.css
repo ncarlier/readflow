@@ -1,3 +1,7 @@
+.header > h1 {
+  opacity: 1 !important;
+  font-size: 1.1em !important;
+}
 
 .header > h1 > small {
   font-size: small;
@@ -5,15 +9,20 @@
   color: #0000009c;
   font-weight: 500;
   display: block;
+  opacity: .8;
 }
 
 .header > h1 a {
-  color: inherit;
   text-decoration: none;
 }
 
 .header > h1 > small a {
+  color: inherit;
   display: inline-flex;
+}
+
+.header > h1 > span a {
+  color: black;
 }
 
 .header > h1 > small a:before {

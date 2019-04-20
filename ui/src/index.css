@@ -26,12 +26,6 @@ body {
   filter: blur(0);
 }
 
-@media (max-width: 512px) {
-  kbd {
-    display: none;
-  }
-}
-
 kbd {
     background-color: #fafbfc;
     border: 1px solid #d1d5da;

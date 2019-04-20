@@ -21,6 +21,10 @@
   background-color: rgba(0, 0, 0, 0.24);
 }
 
+.mobile kbd {
+  display: none;
+}
+
 @media (max-width: 767px) {
   .page > span > aside {
     position: fixed;

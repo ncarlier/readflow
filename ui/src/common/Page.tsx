@@ -14,6 +14,7 @@ import { useModal } from 'react-modal-hook'
 import useKeyboard from '../hooks/useKeyboard'
 import InfoDialog from './InfoDialog'
 import Shortcuts from './Shortcuts'
+import { isMobileDevice } from './device'
 
 type Props = {
   title?: string
@@ -51,8 +52,10 @@ export default (props: Props) => {
   const [navbarIsOpen, setNavbarIsOpen] = useState<boolean>(window.innerWidth > 767)
   const toggleNavbar = useCallback(() => setNavbarIsOpen(!navbarIsOpen), [navbarIsOpen])
 
+  const deviceClassName = isMobileDevice() ? styles.mobile : null
+
   return (
-    <div className={classNames(styles.page, className)}>
+    <div className={classNames(styles.page, className, deviceClassName)}>
       <ReactCSSTransitionGroup
         transitionName="fold"
         transitionEnterTimeout={300}
