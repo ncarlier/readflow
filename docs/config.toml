@@ -44,7 +44,7 @@ home = [ "HTML", "RSS", "JSON"]
 [[menu.shortcuts]]
 pre = "<h3>More</h3>"
 name = "<i class='fa fa-globe'></i> <label>Home page</label>"
-url = "https://readflow.app/"
+url = "https://about.readflow.app/"
 weight = 10
 
 [[menu.shortcuts]]

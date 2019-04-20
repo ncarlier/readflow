@@ -37,11 +37,11 @@ params:
     - title: Progressive We App
       icon: pwa
       text: Great user experiences on all your devices
-      url: /doc
+      url: /docs
       buttonText: Read more
     - title: Cloud integration
       icon: cloud
-      text: Articles can come from anywhere on the Internet
+      text: Easy integration with many other services thanks to the open API
       url: /docs
       buttonText: Read more
   section3:
