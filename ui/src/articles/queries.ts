@@ -68,3 +68,17 @@ export const MarkAllArticlesAsRead = gql`
     markAllArticlesAsRead(category: $category)
   }
 `
+export const AddNewArticle = gql`
+  mutation addArticle($url: String!, $category: ID) {
+    addArticle(url: $url, category: $category) {
+      id
+      title
+      text
+      html
+      url
+      image
+      status
+      created_at
+    }
+  }
+`

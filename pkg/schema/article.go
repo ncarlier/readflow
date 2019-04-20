@@ -242,3 +242,35 @@ func markAllArticlesAsReadResolver(p graphql.ResolveParams) (interface{}, error)
 	}
 	return nb, nil
 }
+
+var addArticleMutationField = &graphql.Field{
+	Type:        articleType,
+	Description: "add new article",
+	Args: graphql.FieldConfigArgument{
+		"url": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+		"category": &graphql.ArgumentConfig{
+			Type: graphql.ID,
+		},
+	},
+	Resolve: addArticleResolver,
+}
+
+func addArticleResolver(p graphql.ResolveParams) (interface{}, error) {
+	var category *uint
+	if val, ok := tooling.ConvGQLIntToUint(p.Args["category"]); ok {
+		category = &val
+	}
+	url, _ := p.Args["url"].(string)
+	form := model.ArticleForm{
+		URL:        &url,
+		CategoryID: category,
+	}
+
+	article, err := service.Lookup().CreateArticle(p.Context, form, service.ArticleCreationOptions{})
+	if err != nil {
+		return nil, err
+	}
+	return article, nil
+}

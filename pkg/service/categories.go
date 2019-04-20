@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 
@@ -31,7 +30,7 @@ func (reg *Registry) GetCategory(ctx context.Context, id uint) (*model.Category,
 	category, err := reg.db.GetCategoryByID(id)
 	if err != nil || category == nil || *category.UserID != uid {
 		if err == nil {
-			err = errors.New("category not found")
+			err = ErrCategoryNotFound
 		}
 		return nil, err
 	}

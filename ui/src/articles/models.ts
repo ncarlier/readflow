@@ -40,5 +40,9 @@ export interface UpdateArticleStatusResponse {
 export interface MarkAllArticlesAsReadResponse {
   markAllArticlesAsRead: number
 }
-  
+
+export interface AddNewArticleRequest {
+  url: string
+  category?: number
+}
   

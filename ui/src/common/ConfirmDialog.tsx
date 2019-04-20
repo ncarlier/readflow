@@ -32,7 +32,11 @@ export default ({
 }: Props) => (
   <ReactModal
     isOpen
+    shouldCloseOnEsc
+    shouldCloseOnOverlayClick
+    shouldFocusAfterRender
     appElement={document.getElementById('root')!}
+    onRequestClose={onCancel}
     className={styles.dialog}
     overlayClassName={styles.overlay}>
     <Panel>

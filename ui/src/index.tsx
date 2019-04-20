@@ -25,8 +25,8 @@ authService.getUser().then((user) => {
       document.location.replace("https://about.readflow.app")
     }
   } else if (user.expired) {
-    authService.renewToken().then(run)
+    authService.renewToken().then(run, () => authService.login())
   } else {
     run()
   }
-})
+}, () => authService.login())

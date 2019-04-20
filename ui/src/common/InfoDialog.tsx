@@ -14,7 +14,11 @@ type Props = {
 export default ({title, children, onOk}: Props) => (
   <ReactModal
     isOpen
+    shouldCloseOnEsc
+    shouldCloseOnOverlayClick
+    shouldFocusAfterRender
     appElement={document.getElementById('root')!}
+    onRequestClose={onOk}
     className={styles.dialog}
     overlayClassName={styles.overlay}>
     <Panel>

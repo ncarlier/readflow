@@ -14,56 +14,85 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-// CreateArticles creates new articles
-func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleForm) (*model.Articles, error) {
+// ArticleCreationOptions article creation options
+type ArticleCreationOptions struct {
+	IgnoreHydrateError bool
+}
+
+// CreateArticle creates new article
+func (reg *Registry) CreateArticle(ctx context.Context, data model.ArticleForm, opts ArticleCreationOptions) (*model.Article, error) {
 	uid := getCurrentUserFromContext(ctx)
-	result := model.Articles{}
-	for _, art := range data {
-		builder := model.NewArticleBuilder()
-		article := builder.UserID(
-			uid,
-		).Form(&art).Build()
+	builder := model.NewArticleBuilder()
+	article := builder.UserID(
+		uid,
+	).Form(&data).Build()
 
-		// TODO validate article!
-		// if category, validate that the category belongs to the user
+	// TODO validate article!
 
-		if article.CategoryID == nil {
-			// Process article by the rule engine
-			if err := reg.ProcessArticleByRuleEngine(ctx, article); err != nil {
-				result.Errors = append(result.Errors, err)
-				reg.logger.Info().Err(err).Uint(
-					"uid", uid,
-				).Str("title", art.Title).Msg("unable to create article")
-				continue
-			}
-		}
-
-		if article.URL != nil && (article.Image == nil || article.Text == nil || article.HTML == nil) {
-			// Fetch original article to extract missing attributes
-			if err := reg.HydrateArticle(ctx, article); err != nil {
-				reg.logger.Info().Err(err).Uint(
-					"uid", uid,
-				).Str("title", art.Title).Msg("unable to fetch original article")
-				// TODO excerpt and image should be extracted from HTML content
-				// continue
-			}
-		}
-
-		reg.logger.Debug().Uint(
-			"uid", uid,
-		).Str("title", article.Title).Msg("creating article...")
-		article, err := reg.db.CreateOrUpdateArticle(*article)
+	var category *model.Category
+	if article.CategoryID != nil {
+		cat, err := reg.GetCategory(ctx, *article.CategoryID)
 		if err != nil {
-			result.Errors = append(result.Errors, err)
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", art.Title).Msg("unable to create article")
-		} else {
-			result.Articles = append(result.Articles, article)
-			reg.logger.Info().Uint(
+			).Str("title", article.Title).Msg("unable to create article")
+			return nil, err
+		}
+		category = cat
+	}
+
+	if category == nil {
+		// Process article by the rule engine
+		if err := reg.ProcessArticleByRuleEngine(ctx, article); err != nil {
+			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", article.Title).Uint("id", *article.ID).Msg("article created")
-			event.Emit(event.CreateArticle, *article)
+			).Str("title", article.Title).Msg("unable to create article")
+			return nil, err
+		}
+	}
+
+	if article.URL != nil && (article.Image == nil || article.Text == nil || article.HTML == nil) {
+		// Fetch original article to extract missing attributes
+		if err := reg.HydrateArticle(ctx, article); err != nil {
+			reg.logger.Info().Err(err).Uint(
+				"uid", uid,
+			).Str("title", article.Title).Msg("unable to fetch original article")
+			// TODO excerpt and image should be extracted from HTML content
+			if !opts.IgnoreHydrateError {
+				return nil, err
+			}
+		}
+	}
+
+	reg.logger.Debug().Uint(
+		"uid", uid,
+	).Str("title", article.Title).Msg("creating article...")
+	newArticle, err := reg.db.CreateOrUpdateArticle(*article)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Str("title", article.Title).Msg("unable to create article")
+		return nil, err
+	}
+	reg.logger.Info().Uint(
+		"uid", uid,
+	).Str("title", newArticle.Title).Uint("id", *newArticle.ID).Msg("article created")
+	event.Emit(event.CreateArticle, *newArticle)
+	return newArticle, nil
+}
+
+// CreateArticles creates new articles
+func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleForm) (*model.Articles, error) {
+	result := model.Articles{}
+	for _, art := range data {
+		article, err := reg.CreateArticle(ctx, art, ArticleCreationOptions{
+			IgnoreHydrateError: true,
+		})
+		if err != nil {
+			result.Errors = append(result.Errors, err)
+		}
+		if article != nil {
+			result.Articles = append(result.Articles, article)
 		}
 	}
 	var err error

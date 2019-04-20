@@ -13,6 +13,7 @@ import { RouteComponentProps } from 'react-router'
 import { Category } from '../categories/models'
 import ArticlesPageMenu from './components/ArticlesPageMenu'
 import { IMessageDispatchProps, connectMessageDispatch } from '../containers/MessageContainer';
+import AddButton from './components/AddButton'
 
 type Props = {
   category?: Category
@@ -41,7 +42,8 @@ export const ArticlesPage = (props : AllProps) => {
     emptyMessage = 'no article to read in this category'
   }
 
-  if (basePath.startsWith('/history')) {
+  const isHistory = basePath.startsWith('/history')
+  if (isHistory) {
     title = 'read'
     req.status = 'read'
     emptyMessage = 'history is empty'
@@ -94,15 +96,18 @@ export const ArticlesPage = (props : AllProps) => {
   const render = matchResponse<GetArticlesResponse>({
     Loading: () => <Loader />,
     Error: (err) => <Panel><ErrorPanel>{err.message}</ErrorPanel></Panel>,
-    Data: (d) => <ArticleList
-      articles={d.articles.entries}
-      basePath={basePath}
-      emptyMessage={emptyMessage}
-      filter={(a) => a.status === req.status}
-      hasMore={d.articles.hasNext}
-      refetch={refetch}
-      fetchMoreArticles={fetchMoreArticles}
-    />,
+    Data: (d) => <>
+      <ArticleList
+        articles={d.articles.entries}
+        basePath={basePath}
+        emptyMessage={emptyMessage}
+        filter={(a) => a.status === req.status}
+        hasMore={d.articles.hasNext}
+        refetch={refetch}
+        fetchMoreArticles={fetchMoreArticles}
+      />
+      { !isHistory && <AddButton category={category} /> }
+    </>,
     Other: () => <Panel><ErrorPanel>Unable to fetch articles!</ErrorPanel></Panel>
   })
 

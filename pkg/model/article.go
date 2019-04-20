@@ -17,6 +17,7 @@ type ArticleForm struct {
 	URL         *string    `json:"url,omitempty"`
 	Image       *string    `json:"image,omitempty"`
 	PublishedAt *time.Time `json:"published_at,omitempty"`
+	CategoryID  *uint      `json:"category,omitempty"`
 }
 
 // Articles structure definition
@@ -136,5 +137,6 @@ func (ab *ArticleBuilder) Form(form *ArticleForm) *ArticleBuilder {
 	ab.article.URL = form.URL
 	ab.article.Image = form.Image
 	ab.article.PublishedAt = form.PublishedAt
+	ab.article.CategoryID = form.CategoryID
 	return ab
 }

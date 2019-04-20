@@ -1,8 +1,14 @@
 
 .overlay {
+  z-index: 999;
   height: 100%;
   width: 100%;
   text-align: center;
+}
+
+.blur {
+  position: absolute !important;
+  background-color: #ffffff80;
 }
 
 @keyframes donut-spin {

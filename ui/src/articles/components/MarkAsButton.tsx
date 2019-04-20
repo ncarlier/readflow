@@ -7,7 +7,6 @@ import ButtonIcon from '../../common/ButtonIcon'
 
 import { UpdateArticleStatus } from '../queries'
 import { getGQLError } from '../../common/helpers'
-import { updateCacheAfterUpdateStatus } from '../cache'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer';
 import useKeyboard from '../../hooks/useKeyboard';
 
