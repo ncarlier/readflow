@@ -122,7 +122,6 @@ export default ({children, background, onSwipe, threshold = 0.3}: Props) => {
         { background ? background : <span>Action</span> }
       </div>
       <div
-        onClick={onSwipe}
         ref={elementRef}
         onMouseDown={onDragStartMouse}
         onTouchStart={onDragStartTouch}
