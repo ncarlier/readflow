@@ -259,7 +259,7 @@ var addArticleMutationField = &graphql.Field{
 
 func addArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 	var category *uint
-	if val, ok := tooling.ConvGQLIntToUint(p.Args["category"]); ok {
+	if val, ok := tooling.ConvGQLStringToUint(p.Args["category"]); ok {
 		category = &val
 	}
 	url, _ := p.Args["url"].(string)
