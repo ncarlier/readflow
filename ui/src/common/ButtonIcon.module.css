@@ -52,7 +52,7 @@
   bottom: 30px;
   right: 30px;
   box-shadow: 0px 2px 5px #666;
-  z-index: 999;
+  z-index: 99;
 }
 
 @keyframes rotate {
