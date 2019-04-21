@@ -33,6 +33,11 @@ export interface GetArticleResponse {
   article: Article
 }
 
+export type UpdateArticleStatusRequest = {
+  id: number
+  status: string
+}
+
 export interface UpdateArticleStatusResponse {
   updateArticleStatus: Article
 }

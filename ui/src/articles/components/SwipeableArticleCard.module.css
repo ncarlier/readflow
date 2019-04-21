@@ -1,0 +1,16 @@
+.background {
+  display: flex;
+  height: 100%;
+  background: green;
+}
+
+.background span {
+  flex: 1 1 auto;
+}
+
+.background i {
+  font-size: 3em;
+  align-self: center;
+  color: white;
+  padding: 0.5em;
+}

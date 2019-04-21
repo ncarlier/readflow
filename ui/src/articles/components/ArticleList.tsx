@@ -1,16 +1,16 @@
 import React, { createRef } from 'react'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import { Article } from '../models'
-import ArticleCard from './ArticleCard'
 
 import styles from './ArticleList.module.css'
 import Empty from '../../common/Empty'
 import useInfiniteScroll from '../../hooks/useInfiniteScroll'
 import Panel from '../../common/Panel'
 import Center from '../../common/Center'
-import Button from '../../common/Button';
-import ButtonIcon from '../../common/ButtonIcon';
+import ButtonIcon from '../../common/ButtonIcon'
+import ArticleCard from './ArticleCard'
+import { useMedia } from '../../hooks'
+import SwipeableArticleCard from './SwipeableArticleCard'
 
 type Props = {
   articles: Article[]
@@ -34,6 +34,7 @@ export default (props: Props) => {
   const ref = createRef<HTMLUListElement>()
   
   const isFetching = useInfiniteScroll(ref, fetchMoreArticles)
+  const isMobileDisplay = useMedia('(max-width: 767px)')
 
   const articles = props.articles.filter(filter)
   
@@ -53,7 +54,11 @@ export default (props: Props) => {
     <ul className={styles.list} ref={ref}>
       {articles.map(article => (
         <li key={`article-${article.id}`}>
-          <ArticleCard article={article} readMoreBasePath={basePath} />
+          {
+            isMobileDisplay ?
+            <SwipeableArticleCard article={article} readMoreBasePath={basePath} /> :
+            <ArticleCard article={article} readMoreBasePath={basePath} />
+          }
         </li>
       ))}
       {isFetching && <li><Panel><Center>Fetching more articles...</Center></Panel></li>}

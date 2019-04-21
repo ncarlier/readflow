@@ -2,18 +2,13 @@
 import React, { useState, useCallback } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 
-import { Article } from '../models'
+import { Article, UpdateArticleStatusRequest } from '../models'
 import ButtonIcon from '../../common/ButtonIcon'
 
 import { UpdateArticleStatus } from '../queries'
 import { getGQLError } from '../../common/helpers'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer';
 import useKeyboard from '../../hooks/useKeyboard';
-
-type UpdateArticleStatusFields = {
-  id: number
-  status: string
-}
 
 type Props = {
   article: Article
@@ -30,7 +25,7 @@ export const MarkAsButton = (props: AllProps) => {
   } = props
 
   const [loading, setLoading] = useState(false)
-  const updateArticleStatusMutation = useMutation<UpdateArticleStatusFields>(UpdateArticleStatus)
+  const updateArticleStatusMutation = useMutation<UpdateArticleStatusRequest>(UpdateArticleStatus)
   
   const updateArticleStatus = async (status: string) => {
     try{
