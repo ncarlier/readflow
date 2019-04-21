@@ -1,11 +1,6 @@
 .background {
   display: flex;
   height: 100%;
-  background: green;
-}
-
-.background span {
-  flex: 1 1 auto;
 }
 
 .background i {

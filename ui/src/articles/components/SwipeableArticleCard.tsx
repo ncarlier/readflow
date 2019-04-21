@@ -1,6 +1,4 @@
 import React, { useCallback } from 'react'
-import SwipeToDelete from 'react-swipe-to-delete-component'
-import 'react-swipe-to-delete-component/dist/swipe-to-delete.css'
 
 import styles from './SwipeableArticleCard.module.css'
 import {Article, UpdateArticleStatusRequest} from '../models'
@@ -10,6 +8,7 @@ import { useMutation } from 'react-apollo-hooks';
 import { UpdateArticleStatus } from '../queries';
 import { getGQLError } from '../../common/helpers';
 import { IMessageDispatchProps, connectMessageDispatch } from '../../containers/MessageContainer';
+import SwipeableListItem from '../../common/SwipeableListItem'
 
 type Props = {
   article: Article
@@ -20,8 +19,6 @@ type AllProps = Props & IMessageDispatchProps
 
 const Background = ({icon}: {icon: string}) => (
   <div className={styles.background}>
-    <Icon name={icon} />
-    <span />
     <Icon name={icon} />
   </div>
 )
@@ -46,14 +43,13 @@ export const SwipeableArticleCard = (props: AllProps) => {
   }, [article])
 
   const bgIcon = article.status === 'read' ? 'undo' : 'done'
-  
+
   return (
-    <SwipeToDelete
+    <SwipeableListItem
       background={<Background icon={bgIcon} />}
-      deleteSwipe={0.3}
-      onDelete={handleOnDelete}>
+      onSwipe={handleOnDelete}>
       <ArticleCard article={article} readMoreBasePath={readMoreBasePath} />
-    </SwipeToDelete>
+    </SwipeableListItem>
   )
 }
 
