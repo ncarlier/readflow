@@ -55,7 +55,7 @@ export default (props: Props) => {
       {articles.map(article => (
         <li key={`article-${article.id}`}>
           {
-            isMobileDisplay ?
+            isMobileDisplay && !article.isOffline ?
             <SwipeableArticleCard article={article} readMoreBasePath={basePath} /> :
             <ArticleCard article={article} readMoreBasePath={basePath} />
           }

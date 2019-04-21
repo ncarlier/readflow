@@ -48,7 +48,10 @@ export const SwipeableArticleCard = (props: AllProps) => {
   const bgIcon = article.status === 'read' ? 'undo' : 'done'
   
   return (
-    <SwipeToDelete background={<Background icon={bgIcon} />} onDelete={handleOnDelete}>
+    <SwipeToDelete
+      background={<Background icon={bgIcon} />}
+      deleteSwipe={0.3}
+      onDelete={handleOnDelete}>
       <ArticleCard article={article} readMoreBasePath={readMoreBasePath} />
     </SwipeToDelete>
   )
