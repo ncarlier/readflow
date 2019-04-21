@@ -36,6 +36,7 @@ func NewRuleProcessor(rule model.Rule) (*RuleProcessor, error) {
 func (rp *RuleProcessor) Apply(ctx context.Context, article *model.Article) (bool, error) {
 	env := map[string]interface{}{
 		"article": article,
+		"key":     "",
 	}
 
 	if alias := ctx.Value(constant.APIKeyAlias); alias != nil {
