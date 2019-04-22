@@ -13,6 +13,14 @@
       "type": "image/png"
     }
   ],
+  "share_target": {
+    "action": "/unread/add",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",

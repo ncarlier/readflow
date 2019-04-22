@@ -18,6 +18,7 @@ interface AddArticleFormFields {
 }
 
 type Props = {
+  value?: string
   category?: Category
   onSuccess: (article: Article) => void
   onCancel: (e: any) => void
@@ -25,10 +26,10 @@ type Props = {
 
 type AllProps = Props
 
-export default ({ category, onSuccess, onCancel }: AllProps) => {
+export default ({ value, category, onSuccess, onCancel }: AllProps) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null) 
-  const [formState, { url }] = useFormState<AddArticleFormFields>()
+  const [formState, { url }] = useFormState<AddArticleFormFields>({url: value})
   const addArticleMutation = useMutation<AddNewArticleRequest>(AddNewArticle)
 
   const addArticle = async (form: AddArticleFormFields) => {

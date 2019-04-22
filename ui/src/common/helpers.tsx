@@ -3,6 +3,14 @@ import { ApolloError } from "apollo-boost"
 import { FormState } from "react-use-form-state"
 import { API_BASE_URL } from "../constants";
 
+
+export const URLRegExp = new RegExp('^(https?:\\/\\/)?'+        // protocol
+  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+  '((\\d{1,3}\\.){3}\\d{1,3}))'+     // OR ip (v4) address
+  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+  '(\\?[;&a-z\\d%_.~+=-]*)?'+        // query string
+  '(\\#[-a-z\\d_]*)?$','i')          // fragment locator
+
 export interface GQLResponsePattern<T> {
   Loading: () => ReactNode
   Error: (err: ApolloError | Error) => ReactNode
