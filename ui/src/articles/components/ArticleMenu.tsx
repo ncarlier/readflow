@@ -10,6 +10,7 @@ import { GetArchiveServicesResponse } from '../../settings/archive-services/mode
 import { GetArchiveServices } from '../../settings/archive-services/queries'
 import { matchResponse } from '../../common/helpers'
 import Loader from '../../common/Loader'
+import ShareLink from './ShareLink'
 
 type Props = {
   article: Article
@@ -19,6 +20,7 @@ type Props = {
 type AllProps = Props
 
 export default ({ article, noShortcuts = false }: AllProps) => {
+  const nvg: any = window.navigator
   
   const { data, error, loading } = useQuery<GetArchiveServicesResponse>(GetArchiveServices)
 
@@ -36,6 +38,11 @@ export default ({ article, noShortcuts = false }: AllProps) => {
   return (
     <DropdownMenu>
       <ul>
+        { nvg.share &&
+          <li>
+            <ShareLink article={article} />
+          </li>
+        }
         { article.isOffline ?
           <li>
             <OfflineLink article={article} remove noShortcuts={noShortcuts} />
