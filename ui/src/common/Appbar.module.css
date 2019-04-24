@@ -5,6 +5,8 @@
   min-height: 1em;
   flex: 1 0 auto;
   align-content: center;
+  padding-left: .5em;
+  padding-right: 1em;
 }
 
 .appBar h1 {

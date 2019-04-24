@@ -23,6 +23,7 @@ var rootQuery = graphql.NewObject(
 			"archiver":   archiverQueryField,
 			"rules":      rulesQueryField,
 			"rule":       ruleQueryField,
+			"device":     deviceQueryField,
 		},
 	},
 )
@@ -43,6 +44,8 @@ var rootMutation = graphql.NewObject(
 			"archiveArticle":         archiveArticleMutationField,
 			"createOrUpdateRule":     createOrUpdateRuleMutationField,
 			"deleteRules":            deleteRulesMutationField,
+			"createPushSubscription": createPushSubscriptionMutationField,
+			"deletePushSubscription": deletePushSubscriptionMutationField,
 		},
 	},
 )

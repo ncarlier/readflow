@@ -15,6 +15,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/job"
 
 	eventbroker "github.com/ncarlier/readflow/pkg/event-broker"
+	_ "github.com/ncarlier/readflow/pkg/event-listener"
 	"github.com/ncarlier/readflow/pkg/service"
 
 	"github.com/ncarlier/readflow/pkg/db"
@@ -58,7 +59,10 @@ func main() {
 	}
 
 	// Init service registry
-	service.InitRegistry(_db)
+	err = service.InitRegistry(_db)
+	if err != nil {
+		log.Fatal().Err(err).Msg("could not init service registry")
+	}
 
 	// Start job scheduler
 	scheduler := job.StartNewScheduler(_db)

@@ -10,3 +10,8 @@ var bus = EventBus.New()
 func Emit(event string, payload ...interface{}) {
 	bus.Publish(event, payload...)
 }
+
+// Subscribe add a event listenner
+func Subscribe(event string, fn interface{}) error {
+	return bus.Subscribe(event, fn)
+}

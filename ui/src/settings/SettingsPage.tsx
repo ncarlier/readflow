@@ -18,6 +18,7 @@ import EditArchiveServiceTab from './archive-services/EditArchiveServiceTab'
 import RulesTab from './rules/RulesTab'
 import AddRuleForm from './rules/AddRuleForm'
 import EditRuleTab from './rules/EditRuleTab'
+import NotificationButton from './components/NotificationButton'
 
 const items = [
   { key: 'categories', label: 'Categories', icon: 'bookmarks'},
@@ -29,7 +30,7 @@ const items = [
 type AllProps = RouteComponentProps<{}>
 
 export default ({match}: AllProps) => (
-  <Page title="">
+  <Page title="" actions={<NotificationButton />}>
     <Header>
       <h1>Settings</h1>
       <ButtonIcon icon="info" to="/about" title="About" />

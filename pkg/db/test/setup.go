@@ -13,7 +13,7 @@ var testDB db.DB
 
 const defaultUsername = "test"
 
-const defaultDBConnString = "postgres://postgres:testpwd@localhost/reader_test?sslmode=disable"
+const defaultDBConnString = "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable"
 
 var testUser *model.User
 

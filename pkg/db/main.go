@@ -17,6 +17,8 @@ type DB interface {
 	APIKeyRepository
 	ArchiverRepository
 	RuleRepository
+	DeviceRepository
+	PropertiesRepository
 }
 
 // Configure the data store regarding the datasource URI

@@ -2,6 +2,7 @@ module github.com/ncarlier/readflow
 
 require (
 	github.com/Masterminds/squirrel v1.1.0
+	github.com/SherClockHolmes/webpush-go v1.1.0
 	github.com/antonmedv/expr v1.1.4
 	github.com/asaskevich/EventBus v0.0.0-20180315140547-d46933a94f05
 	github.com/brianvoe/gofakeit v3.17.0+incompatible

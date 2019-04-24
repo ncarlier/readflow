@@ -7,6 +7,7 @@ import { createBrowserHistory } from 'history'
 import configureStore from './configureStore'
 import * as serviceWorker from './serviceWorker'
 import authService from './auth/AuthService'
+import { setupNotification } from './notification';
 
 const run = () => {
   const history = createBrowserHistory()
@@ -14,6 +15,7 @@ const run = () => {
   const store = configureStore(history, initialState)
   ReactDOM.render(<App store={store} history={history} />, document.getElementById('root'))
   serviceWorker.register()
+  setupNotification()
 }
 
 authService.getUser().then((user) => {

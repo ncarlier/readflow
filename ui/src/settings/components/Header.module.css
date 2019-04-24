@@ -1,7 +1,7 @@
 .header {
   background-color: var(--header-bg-color);
   color: var(--header-text-color);
-  padding: 0 24px;
+  padding: 0 1em;
   display: flex;
   flex-wrap: wrap;
   flex: 1 0 auto;

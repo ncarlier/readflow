@@ -21,7 +21,7 @@ type Config struct {
 
 var config = &Config{
 	ListenAddr: flag.String("listen", getEnv("LISTEN_ADDR", ":8080"), "HTTP service address"),
-	DB:         flag.String("db", getEnv("DB", "postgres://postgres:testpwd@localhost/reader_test?sslmode=disable"), "Database connection string"),
+	DB:         flag.String("db", getEnv("DB", "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable"), "Database connection string"),
 	Broker:     flag.String("broker", getEnv("BROKER", ""), "External event broker URI for outgoing events"),
 	AuthN:      flag.String("authn", getEnv("AUTHN", "https://login.nunux.org/auth/realms/readflow"), "Authentication method (\"mock\", \"proxy\" or OIDC if URL)"),
 	PublicURL:  flag.String("public-url", getEnv("PUBLIC_URL", "https://api.readflow.app"), "Public URL"),

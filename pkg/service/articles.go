@@ -102,6 +102,20 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleFor
 	return &result, err
 }
 
+// CountArticles count articles
+func (reg *Registry) CountArticles(ctx context.Context, req model.ArticlesPageRequest) (uint, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	result, err := reg.db.CountArticlesByUserID(uid, req)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Msg("unable to count articles")
+		return 0, err
+	}
+	return result, nil
+}
+
 // GetArticles get articles
 func (reg *Registry) GetArticles(ctx context.Context, req model.ArticlesPageRequest) (*model.ArticlesPageResponse, error) {
 	uid := getCurrentUserFromContext(ctx)

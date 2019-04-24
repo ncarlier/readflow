@@ -102,8 +102,30 @@ create table rules (
   foreign key (category_id) references categories(id) on delete set null
 )
 `,
+	"db_migration_2": `create table devices (
+  id serial not null,
+  user_id int not null,
+  key text not null,
+  subscription json not null,
+  created_at timestamp with time zone not null default now(),
+
+  primary key (id),
+  unique (user_id, key),
+  foreign key (user_id) references users(id) on delete cascade
+);
+
+create table properties (
+  rev serial not null,
+  vapid_public_key text not null,
+  vapid_private_key text not null,
+  created_at timestamp with time zone not null default now(),
+
+  primary key (rev)
+)
+`,
 }
 
 var DatabaseSQLMigrationChecksums = map[string]string{
 	"db_migration_1": "6b7ac5c1474bc400c1bbb642fcf3c161f51de7252350eaa261cb1ed796e72b67",
+	"db_migration_2": "0be0d1ef1e9481d61db425a7d54378f3667c091949525b9c285b18660b6e8a1d",
 }
