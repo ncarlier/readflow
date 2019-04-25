@@ -21,11 +21,7 @@ func articles(conf *config.Config) http.Handler {
 			return
 		}
 
-		articles, err := service.Lookup().CreateArticles(ctx, articlesForm)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		articles := service.Lookup().CreateArticles(ctx, articlesForm)
 
 		// TODO filters some attributes
 
@@ -35,7 +31,7 @@ func articles(conf *config.Config) http.Handler {
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		status := http.StatusAccepted
+		status := http.StatusNoContent
 		if len(articles.Errors) == 0 && len(articles.Articles) > 0 {
 			status = http.StatusCreated
 		} else if len(articles.Errors) > 0 {

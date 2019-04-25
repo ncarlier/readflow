@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/ncarlier/readflow/pkg/tooling"
@@ -82,7 +81,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, data model.ArticleForm, 
 }
 
 // CreateArticles creates new articles
-func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleForm) (*model.Articles, error) {
+func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleForm) *model.Articles {
 	result := model.Articles{}
 	for _, art := range data {
 		article, err := reg.CreateArticle(ctx, art, ArticleCreationOptions{
@@ -95,11 +94,7 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleFor
 			result.Articles = append(result.Articles, article)
 		}
 	}
-	var err error
-	if len(result.Errors) > 0 {
-		err = fmt.Errorf("Errors when creating articles")
-	}
-	return &result, err
+	return &result
 }
 
 // CountArticles count articles
