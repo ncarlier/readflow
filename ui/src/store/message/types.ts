@@ -1,6 +1,5 @@
-
 export enum MessageActionTypes {
-  SHOW_MESSAGE = '@@message/SHOW',
+  SHOW_MESSAGE = '@@message/SHOW'
 }
 
 export interface MessageState {

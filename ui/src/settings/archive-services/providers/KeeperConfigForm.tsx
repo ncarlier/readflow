@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react'
-
-import { useFormState, FormState } from 'react-use-form-state'
+import React from 'react'
+import { useFormState } from 'react-use-form-state'
 
 import FormInputField from '../../../common/FormInputField'
 
@@ -9,29 +8,26 @@ interface KeeperConfigFormFields {
   api_key: string
 }
 
-type Props = {
+interface Props {
   onChange(config: any): void
-  config?: KeeperConfigFormFields 
+  config?: KeeperConfigFormFields
 }
 
-export default ({onChange, config}: Props) => {
-  const [formState, { url, text }] = useFormState<KeeperConfigFormFields>(config ? config : {
-    endpoint: 'https://api.nunux.org/keeper/v2/documents',
-    api_key: ''
-  }, {
-    onChange: (e, stateValues, nextStateValues) => onChange(nextStateValues) }
-  )
-  
+const defaultConfig = {
+  endpoint: 'https://api.nunux.org/keeper/v2/documents',
+  // eslint-disable-next-line @typescript-eslint/camelcase
+  api_key: ''
+}
+
+export default ({ onChange, config = defaultConfig }: Props) => {
+  const [formState, { url, text }] = useFormState<KeeperConfigFormFields>(config, {
+    onChange: (_e, stateValues, nextStateValues) => onChange(nextStateValues)
+  })
+
   return (
     <>
-      <FormInputField label="Endpoint"
-        {...url('endpoint')}
-        error={!formState.validity.endpoint}
-        required />
-      <FormInputField label="API key"
-        {...text('api_key')}
-        error={!formState.validity.api_key}
-        required />
+      <FormInputField label="Endpoint" {...url('endpoint')} error={!formState.validity.endpoint} required />
+      <FormInputField label="API key" {...text('api_key')} error={!formState.validity.api_key} required />
     </>
   )
 }

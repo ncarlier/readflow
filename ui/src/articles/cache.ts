@@ -1,16 +1,20 @@
-import { DataProxy } from "apollo-cache"
-import { GetArticlesResponse, UpdateArticleStatusResponse, GetArticleResponse } from "./models"
-import { GetArticle, GetArticles } from "./queries"
+import { DataProxy } from 'apollo-cache'
 
+import { GetArticleResponse, GetArticlesResponse, UpdateArticleStatusResponse } from './models'
+import { GetArticle, GetArticles } from './queries'
 
-export const updateCacheAfterUpdateStatus = (proxy: DataProxy, mutationResult: {data: UpdateArticleStatusResponse}) => {
-  const updated = mutationResult!.data.updateArticleStatus
+export const updateCacheAfterUpdateStatus = (
+  proxy: DataProxy,
+  mutationResult: { data: UpdateArticleStatusResponse }
+) => {
+  if (!mutationResult) return
+  const updated = mutationResult.data.updateArticleStatus
   // Update GetArticle cache
   let previousArticleResponse: GetArticleResponse | null
   try {
     previousArticleResponse = proxy.readQuery<GetArticleResponse>({
       query: GetArticle,
-      variables: {id: updated.id+""} // +"" is a hack because ID type
+      variables: { id: updated.id + '' } // +"" is a hack because ID type
     })
   } catch (e) {
     previousArticleResponse = null
@@ -20,16 +24,16 @@ export const updateCacheAfterUpdateStatus = (proxy: DataProxy, mutationResult: {
     proxy.writeQuery({
       data: {
         article: merged
-      }, 
+      },
       query: GetArticle,
-      variables: {id: updated.id}
+      variables: { id: updated.id }
     })
   }
   // Update GetArticles cache
   let previousArticlesResponse: GetArticlesResponse | null
   try {
     previousArticlesResponse = proxy.readQuery<GetArticlesResponse>({
-      query: GetArticles,
+      query: GetArticles
     })
   } catch (e) {
     previousArticlesResponse = null

@@ -1,6 +1,4 @@
-
-
-export type ApiKey = {
+export interface ApiKey {
   id: number
   alias: string
   token: string
@@ -9,7 +7,7 @@ export type ApiKey = {
   updated_at?: string
 }
 
-export type GetApiKeysResponse = {
+export interface GetApiKeysResponse {
   apiKeys: ApiKey[]
 }
 
@@ -17,6 +15,6 @@ export interface GetApiKeyResponse {
   apiKey: ApiKey
 }
 
-export type CreateOrUpdateApiKeyResponse = {
+export interface CreateOrUpdateApiKeyResponse {
   createOrUpdateAPIKey: ApiKey
 }

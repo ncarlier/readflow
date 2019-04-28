@@ -1,5 +1,5 @@
-import { Article } from "../../articles/models"
-import { GetArticlesQuery, GetArticlesResult } from "../dao/articles"
+import { Article } from '../../articles/models'
+import { GetArticlesQuery, GetArticlesResult } from '../dao/articles'
 
 export enum OfflineArticlesActionTypes {
   SAVE_REQUEST = '@@offlineArticles/SAVE_REQUEST',
@@ -13,7 +13,7 @@ export enum OfflineArticlesActionTypes {
   FETCH_ERROR = '@@offlineArticles/FETCH_ERROR',
   SELECT_REQUEST = '@@offlineArticles/SELECT_REQUEST',
   SELECT_SUCCESS = '@@offlinAarticles/SELECT_SUCCESS',
-  SELECT_ERROR = '@@offlineArticles/SELECT_ERROR',
+  SELECT_ERROR = '@@offlineArticles/SELECT_ERROR'
 }
 
 // Declare state types with `readonly` modifier to get compile time immutability.

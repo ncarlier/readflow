@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import gql from 'graphql-tag'
 
 export const GetCategories = gql`
   query {
@@ -28,7 +28,7 @@ export const DeleteCategories = gql`
   }
 `
 
-export const CreateOrUpdateCategory = gql `
+export const CreateOrUpdateCategory = gql`
   mutation createOrUpdateCategory($id: ID, $title: String!) {
     createOrUpdateCategory(id: $id, title: $title) {
       id

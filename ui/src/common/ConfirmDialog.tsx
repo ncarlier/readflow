@@ -1,21 +1,12 @@
-import React, { ReactNode } from "react"
-import ReactModal from "react-modal"
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import React, { ReactNode } from 'react'
+import ReactModal from 'react-modal'
 
+import Button from './Button'
 import styles from './Dialog.module.css'
-import Panel from "./Panel";
-import Button from "./Button";
-const customStyles = {
-  content : {
-    top         : '50%',
-    left        : '50%',
-    right       : 'auto',
-    bottom      : 'auto',
-    marginRight : '-50%',
-    transform   : 'translate(-50%, -50%)'
-  }
-}
+import Panel from './Panel'
 
-type Props = {
+interface Props {
   title: string
   confirmLabel: string
   children: ReactNode
@@ -23,13 +14,7 @@ type Props = {
   onCancel?: (e: any) => void
 }
 
-export default ({
-  title,
-  confirmLabel,
-  children,
-  onConfirm,
-  onCancel,
-}: Props) => (
+export default ({ title, confirmLabel, children, onConfirm, onCancel }: Props) => (
   <ReactModal
     isOpen
     shouldCloseOnEsc
@@ -38,15 +23,18 @@ export default ({
     appElement={document.getElementById('root')!}
     onRequestClose={onCancel}
     className={styles.dialog}
-    overlayClassName={styles.overlay}>
+    overlayClassName={styles.overlay}
+  >
     <Panel>
       <header>
         <h1>{title}</h1>
       </header>
       <section>{children}</section>
       <footer>
-        { onCancel && <Button onClick={onCancel}>Cancel</Button> }
-        <Button primary onClick={onConfirm}>{confirmLabel}</Button>
+        {onCancel && <Button onClick={onCancel}>Cancel</Button>}
+        <Button primary onClick={onConfirm}>
+          {confirmLabel}
+        </Button>
       </footer>
     </Panel>
   </ReactModal>

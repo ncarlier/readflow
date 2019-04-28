@@ -1,9 +1,7 @@
 import React from 'react'
 
-type Props = {
+interface Props {
   name: string
 }
 
-export default ({ name }: Props) => (
-  <i className="material-icons">{ name }</i>
-)
+export default ({ name }: Props) => <i className="material-icons">{name}</i>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { format } from 'timeago.js'
 
-type Props = {
+interface Props {
   dateTime?: string
 }
 
@@ -10,8 +10,10 @@ export default ({ dateTime }: Props) => {
     return <span>-</span>
   }
   const date = new Date(dateTime)
-  const ago = format(dateTime) 
+  const ago = format(dateTime)
   return (
-    <time dateTime={date.toISOString()} title={date.toISOString()}>{ago}</time>
+    <time dateTime={date.toISOString()} title={date.toISOString()}>
+      {ago}
+    </time>
   )
 }

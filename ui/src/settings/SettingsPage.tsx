@@ -1,35 +1,35 @@
 import React from 'react'
-import { Switch, Route, RouteComponentProps, Redirect } from 'react-router'
+import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
 
-import Page from '../common/Page'
-import Header from './components/Header'
-import Content from '../common/Content'
-import Tabs from './components/Tabs'
-import CategoriesTab from './categories/CategoriesTab'
-import ApiKeysTab from './api-keys/ApiKeysTab'
-import ArchiveServiceTab from './archive-services/ArchiveServicesTab'
 import ButtonIcon from '../common/ButtonIcon'
-import AddCategoryForm from './categories/AddCategoryForm'
-import EditCategoryTab from './categories/EditCategoryTab'
+import Content from '../common/Content'
+import Page from '../common/Page'
 import AddApiKeyForm from './api-keys/AddApiKeyForm'
+import ApiKeysTab from './api-keys/ApiKeysTab'
 import EditApiKeyTab from './api-keys/EditApiKeyTab'
 import AddArchiveServiceForm from './archive-services/AddArchiveServiceForm'
+import ArchiveServiceTab from './archive-services/ArchiveServicesTab'
 import EditArchiveServiceTab from './archive-services/EditArchiveServiceTab'
-import RulesTab from './rules/RulesTab'
+import AddCategoryForm from './categories/AddCategoryForm'
+import CategoriesTab from './categories/CategoriesTab'
+import EditCategoryTab from './categories/EditCategoryTab'
+import Header from './components/Header'
+import NotificationButton from './components/NotificationButton'
+import Tabs from './components/Tabs'
 import AddRuleForm from './rules/AddRuleForm'
 import EditRuleTab from './rules/EditRuleTab'
-import NotificationButton from './components/NotificationButton'
+import RulesTab from './rules/RulesTab'
 
 const items = [
-  { key: 'categories', label: 'Categories', icon: 'bookmarks'},
+  { key: 'categories', label: 'Categories', icon: 'bookmarks' },
   { key: 'rules', label: 'Rules', icon: 'directions' },
   { key: 'api-keys', label: 'API keys', icon: 'verified_users' },
-  { key: 'archive-services', label: 'Archive service', icon: 'backup' },
+  { key: 'archive-services', label: 'Archive service', icon: 'backup' }
 ]
 
 type AllProps = RouteComponentProps<{}>
 
-export default ({match}: AllProps) => (
+export default ({ match }: AllProps) => (
   <Page title="" actions={<NotificationButton />}>
     <Header>
       <h1>Settings</h1>

@@ -1,27 +1,27 @@
 import React from 'react'
 import { useQuery } from 'react-apollo-hooks'
-import { RouteComponentProps, Redirect } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 
-import { GetArticleResponse } from './models'
-import { GetArticle } from './queries'
-import Page from  '../common/Page'
-import ArticleHeader from './components/ArticleHeader'
-import ArticleContent from './components/ArticleContent'
-import { matchResponse } from '../common/helpers'
-import Loader from '../common/Loader'
-import ErrorPanel from '../error/ErrorPanel'
-import Panel from '../common/Panel'
 import { Category } from '../categories/models'
 import ButtonIcon from '../common/ButtonIcon'
-import MarkAsButton from './components/MarkAsButton'
+import Center from '../common/Center'
+import { matchResponse } from '../common/helpers'
+import Loader from '../common/Loader'
+import Page from '../common/Page'
+import Panel from '../common/Panel'
+import ErrorPanel from '../error/ErrorPanel'
+import ArticleContent from './components/ArticleContent'
+import ArticleHeader from './components/ArticleHeader'
 import ArticleMenu from './components/ArticleMenu'
-import Center from '../common/Center';
+import MarkAsButton from './components/MarkAsButton'
+import { GetArticleResponse } from './models'
+import { GetArticle } from './queries'
 
-type Props = {
+interface Props {
   category?: Category
 }
 
-type AllProps = Props & RouteComponentProps<{id: string}>
+type AllProps = Props & RouteComponentProps<{ id: string }>
 
 export default ({ category, match }: AllProps) => {
   const { id } = match.params
@@ -38,15 +38,19 @@ export default ({ category, match }: AllProps) => {
   }
 
   const { data, error, loading } = useQuery<GetArticleResponse>(GetArticle, {
-    variables: {id}
+    variables: { id }
   })
-  
+
   const render = matchResponse<GetArticleResponse>({
-    Loading: () => <Center><Loader /></Center>,
-    Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
-    Data: ({article}) => 
+    Loading: () => (
+      <Center>
+        <Loader />
+      </Center>
+    ),
+    Error: err => <ErrorPanel>{err.message}</ErrorPanel>,
+    Data: ({ article }) => (
       <>
-        {article !== null ? 
+        {article !== null ? (
           <>
             <ArticleHeader article={article}>
               <ArticleMenu article={article} />
@@ -54,25 +58,21 @@ export default ({ category, match }: AllProps) => {
             <ArticleContent article={article} />
             <MarkAsButton article={article} floating />
           </>
-          : <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
-        }
-      </>,
+        ) : (
+          <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
+        )}
+      </>
+    ),
     Other: () => <Redirect to={redirect} />
   })
 
   return (
-    <Page title={title}
-          subtitle={data && data.article ? data.article.title : ''}
-          actions={
-            <ButtonIcon
-              to={redirect} 
-              icon="arrow_back"
-              title="back to the list"
-            />
-          }>
-      <Panel style={{flex: '1 1 auto'}}>
-        {render(data, error, loading)}
-      </Panel>
+    <Page
+      title={title}
+      subtitle={data && data.article ? data.article.title : ''}
+      actions={<ButtonIcon to={redirect} icon="arrow_back" title="back to the list" />}
+    >
+      <Panel style={{ flex: '1 1 auto' }}>{render(data, error, loading)}</Panel>
     </Page>
   )
 }

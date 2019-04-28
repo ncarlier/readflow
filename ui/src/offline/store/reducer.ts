@@ -1,11 +1,12 @@
 import { Reducer } from 'redux'
-import { OfflineArticlesState, OfflineArticlesActionTypes } from './types'
+
 import { Article } from '../../articles/models'
+import { OfflineArticlesActionTypes, OfflineArticlesState } from './types'
 
 // Type-safe initialState!
 const initialState: OfflineArticlesState = {
   data: undefined,
-  query: {limit: 10, sortOrder: 'asc'},
+  query: { limit: 10, sortOrder: 'asc' },
   selected: undefined,
   error: undefined,
   loading: true
@@ -47,7 +48,7 @@ const reducer: Reducer<OfflineArticlesState> = (state = initialState, action) =>
       return { ...state, loading: true, query }
     }
     case OfflineArticlesActionTypes.FETCH_SUCCESS: {
-      const {query, data} = state
+      const { query, data } = state
       const { payload } = action
       const nbFetchedArticles = payload.entries.length
       console.log(nbFetchedArticles + ' article(s) fetched')

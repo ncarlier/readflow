@@ -1,6 +1,4 @@
-
-
-export type Device = {
+export interface Device {
   id: number
   key: string
   created_at?: string
@@ -10,10 +8,10 @@ export interface GetDeviceResponse {
   device: Device
 }
 
-export type CreatePushSubscriptionResponse = {
+export interface CreatePushSubscriptionResponse {
   createPushSubscription: Device
 }
 
-export type DeletePushSubscriptionResponse = {
+export interface DeletePushSubscriptionResponse {
   deletePushSubscription: Device
 }

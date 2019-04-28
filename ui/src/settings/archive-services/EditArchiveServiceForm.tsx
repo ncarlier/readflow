@@ -1,20 +1,20 @@
+/* eslint-disable @typescript-eslint/camelcase */
+import { History } from 'history'
 import React, { useCallback, useState } from 'react'
-
-import { useFormState } from 'react-use-form-state'
 import { useMutation } from 'react-apollo-hooks'
+import { useFormState } from 'react-use-form-state'
 
 import Button from '../../common/Button'
+import FormCheckboxField from '../../common/FormCheckboxField'
 import FormInputField from '../../common/FormInputField'
-import ErrorPanel from '../../error/ErrorPanel'
+import FormSelectField from '../../common/FormSelectField'
 import { getGQLError, isValidForm } from '../../common/helpers'
-import { History } from 'history'
+import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import ErrorPanel from '../../error/ErrorPanel'
 import { updateCacheAfterUpdate } from './cache'
 import { ArchiveService } from './models'
-import { CreateOrUpdateArchiveService } from './queries'
-import FormSelectField from '../../common/FormSelectField'
-import FormCheckboxField from '../../common/FormCheckboxField'
 import KeeperConfigForm from './providers/KeeperConfigForm'
-import { IMessageDispatchProps, connectMessageDispatch } from '../../containers/MessageContainer'
+import { CreateOrUpdateArchiveService } from './queries'
 
 interface EditArchiveServiceFormFields {
   alias: string
@@ -22,7 +22,7 @@ interface EditArchiveServiceFormFields {
   is_default: boolean
 }
 
-type Props = {
+interface Props {
   data: ArchiveService
   history: History
 }
@@ -30,8 +30,8 @@ type Props = {
 type AllProps = Props & IMessageDispatchProps
 
 export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps) => {
-  const [config, setConfig] = useState<any>(JSON.parse(data.config)) 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null) 
+  const [config, setConfig] = useState<any>(JSON.parse(data.config))
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text, select, checkbox }] = useFormState<EditArchiveServiceFormFields>({
     alias: data.alias,
     provider: data.provider,
@@ -40,10 +40,10 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
   const editArchiveServiceMutation = useMutation<ArchiveService>(CreateOrUpdateArchiveService)
 
   const editArchiveService = async (service: ArchiveService) => {
-    try{
-      const res = await editArchiveServiceMutation({
+    try {
+      await editArchiveServiceMutation({
         variables: service,
-        update: updateCacheAfterUpdate,
+        update: updateCacheAfterUpdate
       })
       showMessage(`Archive service edited: ${service.alias}`)
       history.goBack()
@@ -54,11 +54,11 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
 
   const handleOnSubmit = useCallback(() => {
     if (!isValidForm(formState) || !config) {
-      setErrorMessage("Please fill out correctly the mandatory fields.")
+      setErrorMessage('Please fill out correctly the mandatory fields.')
       return
     }
     const { alias, provider, is_default } = formState.values
-    editArchiveService({id: data.id, alias, provider, is_default, config: JSON.stringify(config)})
+    editArchiveService({ id: data.id, alias, provider, is_default, config: JSON.stringify(config) })
   }, [formState, config])
 
   return (
@@ -67,21 +67,14 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
         <h1>Edit archive service #{data.id}</h1>
       </header>
       <section>
-        {errorMessage != null &&
-          <ErrorPanel title="Unable to edit archive service">
-            {errorMessage}
-          </ErrorPanel>
-        }
+        {errorMessage != null && <ErrorPanel title="Unable to edit archive service">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Alias"
-            {...text('alias')}
-            error={!formState.validity.alias}
-            required />
+          <FormInputField label="Alias" {...text('alias')} error={!formState.validity.alias} required />
           <FormSelectField label="Provider" {...select('provider')}>
             <option value="keeper">Keeper</option>
             <option value="wallabag">Wallabag</option>
           </FormSelectField>
-          { formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} /> }
+          {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
           <FormCheckboxField label="To use by default" {...checkbox('is_default')} />
         </form>
       </section>
@@ -89,10 +82,7 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
         <Button title="Back to archive services" to="/settings/archive-services">
           Cancel
         </Button>
-        <Button
-          title="Edit archive service"
-          onClick={handleOnSubmit}
-          primary>
+        <Button title="Edit archive service" onClick={handleOnSubmit} primary>
           Update
         </Button>
       </footer>

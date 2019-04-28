@@ -1,7 +1,8 @@
 import { action } from 'typesafe-actions'
-import { OfflineArticlesActionTypes } from './types'
+
 import { Article } from '../../articles/models'
 import { GetArticlesQuery } from '../dao/articles'
+import { OfflineArticlesActionTypes } from './types'
 
 export const saveRequest = (data: Article) => action(OfflineArticlesActionTypes.SAVE_REQUEST, data)
 export const saveSuccess = (data: Article) => action(OfflineArticlesActionTypes.SAVE_SUCCESS, data)

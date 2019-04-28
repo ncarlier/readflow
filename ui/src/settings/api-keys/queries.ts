@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import gql from 'graphql-tag'
 
 export const GetApiKeys = gql`
   query {
@@ -32,7 +32,7 @@ export const DeleteApiKeys = gql`
   }
 `
 
-export const CreateOrUpdateApiKey = gql `
+export const CreateOrUpdateApiKey = gql`
   mutation createOrUpdateAPIKey($id: ID, $alias: String!) {
     createOrUpdateAPIKey(id: $id, alias: $alias) {
       id

@@ -1,18 +1,17 @@
 import React, { useCallback, useState } from 'react'
-
-import { useFormState } from 'react-use-form-state'
 import { useMutation } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
+import { useFormState } from 'react-use-form-state'
 
-import Panel from '../../common/Panel'
 import Button from '../../common/Button'
-import { usePageTitle } from '../../hooks'
 import FormInputField from '../../common/FormInputField'
-import { CreateOrUpdateApiKey } from './queries'
-import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, isValidForm } from '../../common/helpers'
-import { updateCacheAfterCreate } from './cache'
+import Panel from '../../common/Panel'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import ErrorPanel from '../../error/ErrorPanel'
+import { usePageTitle } from '../../hooks'
+import { updateCacheAfterCreate } from './cache'
+import { CreateOrUpdateApiKey } from './queries'
 
 interface AddApiKeyFormFields {
   alias: string
@@ -20,15 +19,15 @@ interface AddApiKeyFormFields {
 
 type AllProps = RouteComponentProps<{}> & IMessageDispatchProps
 
-export const AddApiKeyForm = ({history, showMessage }: AllProps) => {
+export const AddApiKeyForm = ({ history, showMessage }: AllProps) => {
   usePageTitle('Settings - Add new API key')
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null) 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<AddApiKeyFormFields>()
   const addApiKeyMutation = useMutation<AddApiKeyFormFields>(CreateOrUpdateApiKey)
 
-  const addApiKey = async (apiKey: {alias: string | null}) => {
-    try{
+  const addApiKey = async (apiKey: { alias: string | null }) => {
+    try {
       const res = await addApiKeyMutation({
         variables: apiKey,
         update: updateCacheAfterCreate
@@ -43,11 +42,11 @@ export const AddApiKeyForm = ({history, showMessage }: AllProps) => {
 
   const handleOnClick = useCallback(() => {
     if (!isValidForm(formState)) {
-      setErrorMessage("Please fill out correctly the mandatory fields.")
+      setErrorMessage('Please fill out correctly the mandatory fields.')
       return
     }
-    const {alias}  = formState.values
-    addApiKey({alias})
+    const { alias } = formState.values
+    addApiKey({ alias })
   }, [formState])
 
   return (
@@ -56,26 +55,16 @@ export const AddApiKeyForm = ({history, showMessage }: AllProps) => {
         <h1>Add new API key</h1>
       </header>
       <section>
-        {errorMessage != null &&
-          <ErrorPanel title="Unable to add new API key">
-            {errorMessage}
-          </ErrorPanel>
-        }
+        {errorMessage != null && <ErrorPanel title="Unable to add new API key">{errorMessage}</ErrorPanel>}
         <form>
-          <FormInputField label="Alias"
-            {...text('alias')}
-            error={!formState.validity.alias}
-            required />
+          <FormInputField label="Alias" {...text('alias')} error={!formState.validity.alias} required />
         </form>
       </section>
       <footer>
         <Button title="Back to API keys" to="/settings/api-keys">
           Cancel
         </Button>
-        <Button
-          title="Add API key"
-          onClick={handleOnClick}
-          primary>
+        <Button title="Add API key" onClick={handleOnClick} primary>
           Add
         </Button>
       </footer>

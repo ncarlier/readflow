@@ -1,9 +1,10 @@
 import { Reducer } from 'redux'
-import { MessageState, MessageActionTypes } from './types'
+
+import { MessageActionTypes, MessageState } from './types'
 
 const initialState: MessageState = {
-  text: null, 
-  isError: false 
+  text: null,
+  isError: false
 }
 
 const reducer: Reducer<MessageState> = (state = initialState, action) => {

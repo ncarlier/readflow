@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import gql from 'graphql-tag'
 
 export const GetDevice = gql`
   query device($id: ID!) {
@@ -18,7 +18,7 @@ export const DeletePushSubscription = gql`
   }
 `
 
-export const CreatePushSubscription = gql `
+export const CreatePushSubscription = gql`
   mutation createPushSubscription($sub: String!) {
     createPushSubscription(sub: $sub) {
       id

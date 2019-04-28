@@ -1,11 +1,10 @@
 import React from 'react'
 
 import { Article } from '../models'
-
 import styles from './ArticleFooter.module.css'
 import MarkAsButton from './MarkAsButton'
 
-type Props = {
+interface Props {
   article: Article
 }
 

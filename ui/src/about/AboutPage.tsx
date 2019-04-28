@@ -1,12 +1,11 @@
 import React from 'react'
 
-import Page from '../common/Page'
 import Center from '../common/Center'
-
+import Page from '../common/Page'
 import styles from './AboutPage.module.css'
 
 export default () => (
-  <Page title="About" >
+  <Page title="About">
     <Center className={styles.about}>
       <h1>
         <img src={process.env.PUBLIC_URL + '/logo.svg'} />

@@ -1,18 +1,17 @@
 import React, { createRef } from 'react'
 
-import { Article } from '../models'
-
-import styles from './ArticleList.module.css'
-import Empty from '../../common/Empty'
-import useInfiniteScroll from '../../hooks/useInfiniteScroll'
-import Panel from '../../common/Panel'
-import Center from '../../common/Center'
 import ButtonIcon from '../../common/ButtonIcon'
-import ArticleCard from './ArticleCard'
+import Center from '../../common/Center'
+import Empty from '../../common/Empty'
+import Panel from '../../common/Panel'
 import { useMedia } from '../../hooks'
+import useInfiniteScroll from '../../hooks/useInfiniteScroll'
+import { Article } from '../models'
+import ArticleCard from './ArticleCard'
+import styles from './ArticleList.module.css'
 import SwipeableArticleCard from './SwipeableArticleCard'
 
-type Props = {
+interface Props {
   articles: Article[]
   basePath: string
   emptyMessage: string
@@ -32,21 +31,23 @@ export default (props: Props) => {
     emptyMessage = 'No more article to read'
   } = props
   const ref = createRef<HTMLUListElement>()
-  
+
   const isFetching = useInfiniteScroll(ref, fetchMoreArticles)
   const isMobileDisplay = useMedia('(max-width: 767px)')
 
   const articles = props.articles.filter(filter)
-  
+
   if (articles.length === 0) {
     if (hasMore) {
       refetch()
     } else {
-      return <Empty>
-        <ButtonIcon title="Refresh" icon="refresh" onClick={() => refetch()} />
-        <br />
-        <span>{emptyMessage}</span>
-      </Empty>
+      return (
+        <Empty>
+          <ButtonIcon title="Refresh" icon="refresh" onClick={() => refetch()} />
+          <br />
+          <span>{emptyMessage}</span>
+        </Empty>
+      )
     }
   }
 
@@ -54,14 +55,20 @@ export default (props: Props) => {
     <ul className={styles.list} ref={ref}>
       {articles.map(article => (
         <li key={`article-${article.id}`}>
-          {
-            isMobileDisplay && !article.isOffline ?
-            <SwipeableArticleCard article={article} readMoreBasePath={basePath} /> :
+          {isMobileDisplay && !article.isOffline ? (
+            <SwipeableArticleCard article={article} readMoreBasePath={basePath} />
+          ) : (
             <ArticleCard article={article} readMoreBasePath={basePath} />
-          }
+          )}
         </li>
       ))}
-      {isFetching && <li><Panel><Center>Fetching more articles...</Center></Panel></li>}
+      {isFetching && (
+        <li>
+          <Panel>
+            <Center>Fetching more articles...</Center>
+          </Panel>
+        </li>
+      )}
     </ul>
   )
 }

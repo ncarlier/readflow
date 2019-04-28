@@ -1,13 +1,14 @@
+import './index.css'
+
+import { createBrowserHistory } from 'history'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
-import App from './App'
-import { createBrowserHistory } from 'history'
 
-import configureStore from './configureStore'
-import * as serviceWorker from './serviceWorker'
+import App from './App'
 import authService from './auth/AuthService'
-import { setupNotification } from './notification';
+import configureStore from './configureStore'
+import { setupNotification } from './notification'
+import * as serviceWorker from './serviceWorker'
 
 const run = () => {
   const history = createBrowserHistory()
@@ -18,17 +19,20 @@ const run = () => {
   setupNotification()
 }
 
-authService.getUser().then((user) => {
-  if (user === null) {
-    if (document.location.pathname === '/login') {
-      authService.login()
+authService.getUser().then(
+  user => {
+    if (user === null) {
+      if (document.location.pathname === '/login') {
+        authService.login()
+      } else {
+        // No previous login, then redirect to about page.
+        document.location.replace('https://about.readflow.app')
+      }
+    } else if (user.expired) {
+      authService.renewToken().then(run, () => authService.login())
     } else {
-      // No previous login, then redirect to about page.
-      document.location.replace("https://about.readflow.app")
+      run()
     }
-  } else if (user.expired) {
-    authService.renewToken().then(run, () => authService.login())
-  } else {
-    run()
-  }
-}, () => authService.login())
+  },
+  () => authService.login()
+)

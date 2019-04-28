@@ -1,39 +1,39 @@
 import React, { useState } from 'react'
-import { usePageTitle } from '../../hooks'
-import Panel from '../../common/Panel'
-import Button from '../../common/Button'
-import { useQuery, useMutation } from 'react-apollo-hooks'
-import { matchResponse, getGQLError } from '../../common/helpers'
-import Loader from '../../common/Loader'
-import {OnSelectedFn} from './ArchiveServicesTable'
-import { RouteComponentProps } from 'react-router'
-import ErrorPanel from '../../error/ErrorPanel'
-import { updateCacheAfterDelete } from './cache'
+import { useMutation, useQuery } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
+import { RouteComponentProps } from 'react-router'
+
+import Button from '../../common/Button'
 import ConfirmDialog from '../../common/ConfirmDialog'
-import { GetArchiveServicesResponse } from './models'
-import { GetArchiveServices, DeleteArchiveServices } from './queries'
-import ArchiveServicesTable from './ArchiveServicesTable'
+import { getGQLError, matchResponse } from '../../common/helpers'
+import Loader from '../../common/Loader'
+import Panel from '../../common/Panel'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import ErrorPanel from '../../error/ErrorPanel'
+import { usePageTitle } from '../../hooks'
+import ArchiveServicesTable, { OnSelectedFn } from './ArchiveServicesTable'
+import { updateCacheAfterDelete } from './cache'
+import { GetArchiveServicesResponse } from './models'
+import { DeleteArchiveServices, GetArchiveServices } from './queries'
 
 type AllProps = RouteComponentProps<{}> & IMessageDispatchProps
 
-export const ArchiveServicesTab = ({match, showMessage}: AllProps) => {
+export const ArchiveServicesTab = ({ match, showMessage }: AllProps) => {
   usePageTitle('Settings - Archive services')
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null) 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetArchiveServicesResponse>(GetArchiveServices)
-  const deleteArchiveServicesMutation = useMutation<{ids: number[]}>(DeleteArchiveServices)
+  const deleteArchiveServicesMutation = useMutation<{ ids: number[] }>(DeleteArchiveServices)
 
-  const onSelectedHandler: OnSelectedFn = (keys) => {
+  const onSelectedHandler: OnSelectedFn = keys => {
     setSelection(keys)
   }
 
   const deleteArchiveServices = async (ids: number[]) => {
-    try{
+    try {
       const res = await deleteArchiveServicesMutation({
-        variables: {ids},
+        variables: { ids },
         update: updateCacheAfterDelete(ids)
       })
       setSelection([])
@@ -42,9 +42,10 @@ export const ArchiveServicesTab = ({match, showMessage}: AllProps) => {
     } catch (err) {
       setErrorMessage(getGQLError(err))
     }
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     hideDeleteConfirmModal()
   }
-  
+
   const [showDeleteConfirmModal, hideDeleteConfirmModal] = useModal(
     () => (
       <ConfirmDialog
@@ -61,45 +62,32 @@ export const ArchiveServicesTab = ({match, showMessage}: AllProps) => {
 
   const render = matchResponse<GetArchiveServicesResponse>({
     Loading: () => <Loader />,
-    Error: (err) => <ErrorPanel title="Unable to fetch archive services">
-        {err.message}
-      </ErrorPanel>,
-    Data: ({archivers}) => <ArchiveServicesTable
-      data={archivers}
-      onSelected={onSelectedHandler}
-    />,
-    Other: () => <ErrorPanel>
-        Unable to fetch archive services with no obvious reason :(
-      </ErrorPanel>
+    Error: err => <ErrorPanel title="Unable to fetch archive services">{err.message}</ErrorPanel>,
+    Data: data => <ArchiveServicesTable data={data.archivers} onSelected={onSelectedHandler} />,
+    Other: () => <ErrorPanel>Unable to fetch archive services with no obvious reason :(</ErrorPanel>
   })
 
   return (
     <Panel>
       <header>
-        { selection.length > 0 &&
-          <Button
-            title="Remove selection"
-            danger
-            onClick={showDeleteConfirmModal}>
+        {selection.length > 0 && (
+          <Button title="Remove selection" danger onClick={showDeleteConfirmModal}>
             Remove
           </Button>
-        }
-        <Button 
+        )}
+        <Button
           title="Add new archive service"
           primary
           to={{
             pathname: match.path + '/add',
             state: { modal: true }
-          }} >
+          }}
+        >
           Add archive service
         </Button>
       </header>
       <section>
-        {errorMessage != null &&
-          <ErrorPanel title="Unable to delete archive service(s)">
-            {errorMessage}
-          </ErrorPanel>
-        }
+        {errorMessage != null && <ErrorPanel title="Unable to delete archive service(s)">{errorMessage}</ErrorPanel>}
         {render(data, error, loading)}
       </section>
     </Panel>

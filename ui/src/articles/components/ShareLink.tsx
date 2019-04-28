@@ -1,11 +1,9 @@
-
 import React, { useCallback } from 'react'
 
-import {Article} from '../models'
-
 import LinkIcon from '../../common/LinkIcon'
+import { Article } from '../models'
 
-type Props = {
+interface Props {
   article: Article
 }
 
@@ -18,13 +16,10 @@ export default ({ article }: Props) => {
       text: article.text,
       url: article.url
     })
-  }, [article]) 
+  }, [article])
 
   return (
-    <LinkIcon
-      title="Share article"
-      onClick={share}
-      icon="share">
+    <LinkIcon title="Share article" onClick={share} icon="share">
       <span>Share</span>
     </LinkIcon>
   )

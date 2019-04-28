@@ -1,8 +1,8 @@
-import { useState, useEffect, RefObject, useCallback } from 'react'
+import { RefObject, useCallback, useEffect, useState } from 'react'
 
 export default (ref: RefObject<HTMLElement>, fetchMoreItems: () => Promise<void>): boolean => {
   const [isFetching, setIsFetching] = useState(false)
-  
+
   useEffect(() => {
     if (!isFetching) return
     fetchMoreItems().finally(() => setIsFetching(false))

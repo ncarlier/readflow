@@ -1,4 +1,3 @@
-
 const isMobile = {
   Android() {
     return navigator.userAgent.match(/Android/i)

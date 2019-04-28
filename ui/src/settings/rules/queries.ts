@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import gql from 'graphql-tag'
 
 export const GetRules = gql`
   query {
@@ -34,7 +34,7 @@ export const DeleteRules = gql`
   }
 `
 
-export const CreateOrUpdateRule = gql `
+export const CreateOrUpdateRule = gql`
   mutation createOrUpdateRule($id: ID, $alias: String!, $category_id: Int!, $rule: String!, $priority: Int) {
     createOrUpdateRule(id: $id, alias: $alias, category_id: $category_id, rule: $rule, priority: $priority) {
       id

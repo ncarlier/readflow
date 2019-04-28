@@ -1,38 +1,39 @@
 import React, { useState } from 'react'
-import { usePageTitle } from '../../hooks'
-import Panel from '../../common/Panel'
-import Button from '../../common/Button'
-import { useQuery, useMutation } from 'react-apollo-hooks'
-import { matchResponse, getGQLError } from '../../common/helpers'
-import Loader from '../../common/Loader'
-import ApiKeysTable, {OnSelectedFn} from './ApiKeysTable'
+import { useMutation, useQuery } from 'react-apollo-hooks'
+import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
+
+import Button from '../../common/Button'
+import ConfirmDialog from '../../common/ConfirmDialog'
+import { getGQLError, matchResponse } from '../../common/helpers'
+import Loader from '../../common/Loader'
+import Panel from '../../common/Panel'
+import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
 import ErrorPanel from '../../error/ErrorPanel'
-import { GetApiKeys, DeleteApiKeys } from './queries'
+import { usePageTitle } from '../../hooks'
+import ApiKeysTable, { OnSelectedFn } from './ApiKeysTable'
 import { updateCacheAfterDelete } from './cache'
 import { GetApiKeysResponse } from './models'
-import { useModal } from 'react-modal-hook'
-import ConfirmDialog from '../../common/ConfirmDialog'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { DeleteApiKeys, GetApiKeys } from './queries'
 
 type AllProps = RouteComponentProps<{}> & IMessageDispatchProps
 
-export const ApiKeysTab = ({match, showMessage}: AllProps) => {
+export const ApiKeysTab = ({ match, showMessage }: AllProps) => {
   usePageTitle('Settings - API keys')
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null) 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetApiKeysResponse>(GetApiKeys)
-  const deleteApiKeysMutation = useMutation<{ids: number[]}>(DeleteApiKeys)
+  const deleteApiKeysMutation = useMutation<{ ids: number[] }>(DeleteApiKeys)
 
-  const onSelectedHandler: OnSelectedFn = (keys) => {
+  const onSelectedHandler: OnSelectedFn = keys => {
     setSelection(keys)
   }
 
   const deleteApiKeys = async (ids: number[]) => {
-    try{
+    try {
       const res = await deleteApiKeysMutation({
-        variables: {ids},
+        variables: { ids },
         update: updateCacheAfterDelete(ids)
       })
       setSelection([])
@@ -42,9 +43,10 @@ export const ApiKeysTab = ({match, showMessage}: AllProps) => {
     } catch (err) {
       setErrorMessage(getGQLError(err))
     }
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     hideDeleteConfirmModal()
   }
-  
+
   const [showDeleteConfirmModal, hideDeleteConfirmModal] = useModal(
     () => (
       <ConfirmDialog
@@ -61,45 +63,32 @@ export const ApiKeysTab = ({match, showMessage}: AllProps) => {
 
   const render = matchResponse<GetApiKeysResponse>({
     Loading: () => <Loader />,
-    Error: (err) => <ErrorPanel title="Unable to fetch API keys">
-        {err.message}
-      </ErrorPanel>,
-    Data: ({apiKeys}) => <ApiKeysTable
-      data={apiKeys}
-      onSelected={onSelectedHandler}
-    />,
-    Other: () => <ErrorPanel>
-        Unable to fetch API keys with no obvious reason :(
-      </ErrorPanel>
+    Error: err => <ErrorPanel title="Unable to fetch API keys">{err.message}</ErrorPanel>,
+    Data: data => <ApiKeysTable data={data.apiKeys} onSelected={onSelectedHandler} />,
+    Other: () => <ErrorPanel>Unable to fetch API keys with no obvious reason :(</ErrorPanel>
   })
 
   return (
     <Panel>
       <header>
-        { selection.length > 0 &&
-          <Button
-            title="Remove selection"
-            danger
-            onClick={showDeleteConfirmModal}>
+        {selection.length > 0 && (
+          <Button title="Remove selection" danger onClick={showDeleteConfirmModal}>
             Remove
           </Button>
-        }
-        <Button 
+        )}
+        <Button
           title="Add new API key"
           primary
           to={{
             pathname: match.path + '/add',
             state: { modal: true }
-          }} >
+          }}
+        >
           Add API key
         </Button>
       </header>
       <section>
-        {errorMessage != null &&
-          <ErrorPanel title="Unable to delete API key(s)">
-            {errorMessage}
-          </ErrorPanel>
-        }
+        {errorMessage != null && <ErrorPanel title="Unable to delete API key(s)">{errorMessage}</ErrorPanel>}
         {render(data, error, loading)}
       </section>
     </Panel>

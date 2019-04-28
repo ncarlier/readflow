@@ -1,8 +1,8 @@
 import React from 'react'
 
-import styles from './Navbar.module.css'
-import LinkIcon from './LinkIcon'
 import CategoriesLinks from './CategoriesLinks'
+import LinkIcon from './LinkIcon'
+import styles from './Navbar.module.css'
 import UserInfos from './UserInfos'
 
 export default () => (
@@ -17,9 +17,21 @@ export default () => (
       <li className={styles.links}>
         <span>Articles</span>
         <ul>
-          <li><LinkIcon to="/unread" icon="view_list">Articles to read</LinkIcon></li>
-          <li><LinkIcon to="/offline" icon="signal_wifi_off">Offline articles</LinkIcon></li>
-          <li><LinkIcon to="/history" icon="history">History</LinkIcon></li>
+          <li>
+            <LinkIcon to="/unread" icon="view_list">
+              Articles to read
+            </LinkIcon>
+          </li>
+          <li>
+            <LinkIcon to="/offline" icon="signal_wifi_off">
+              Offline articles
+            </LinkIcon>
+          </li>
+          <li>
+            <LinkIcon to="/history" icon="history">
+              History
+            </LinkIcon>
+          </li>
         </ul>
       </li>
       <li className={styles.links}>
@@ -28,7 +40,11 @@ export default () => (
       </li>
       <li className={styles.links}>
         <ul>
-          <li><LinkIcon to="/settings" icon="settings">Settings</LinkIcon></li>
+          <li>
+            <LinkIcon to="/settings" icon="settings">
+              Settings
+            </LinkIcon>
+          </li>
         </ul>
       </li>
     </ul>

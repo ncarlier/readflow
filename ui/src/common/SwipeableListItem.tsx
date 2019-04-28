@@ -1,15 +1,16 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { ReactNode, useEffect, useRef } from 'react'
 
 import styles from './SwipeableListItem.module.css'
 
-type Props = {
+interface Props {
   children: ReactNode
   background?: ReactNode
   threshold?: number
   onSwipe: () => void
 }
 
-export default ({children, background, onSwipe, threshold = 0.3}: Props) => {
+export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
   // Drag & Drop
   let dragStartX = 0
   let left = 0
@@ -23,17 +24,17 @@ export default ({children, background, onSwipe, threshold = 0.3}: Props) => {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const bgRef = useRef<HTMLDivElement>(null)
   const elementRef = useRef<HTMLDivElement>(null)
-  
+
   const updatePosition = () => {
     if (dragged) requestAnimationFrame(updatePosition)
-    const now = Date.now();
+    const now = Date.now()
     const elapsed = now - startTime
 
     if (dragged && elapsed > fpsInterval) {
       const $bg = bgRef.current!
       const $el = elementRef.current!
       $el.style.transform = `translateX(${left}px)`
-      const opacity = (Math.abs(left) / 100)
+      const opacity = Math.abs(left) / 100
       if (opacity < 1 && opacity.toFixed(2) !== $bg.style.opacity) {
         $bg.style.opacity = opacity.toFixed(2)
       }
@@ -43,7 +44,7 @@ export default ({children, background, onSwipe, threshold = 0.3}: Props) => {
       startTime = Date.now()
     }
   }
-  
+
   const onDragStart = (clientX: number) => {
     const $el = elementRef.current!
     dragged = true
@@ -52,7 +53,7 @@ export default ({children, background, onSwipe, threshold = 0.3}: Props) => {
     startTime = Date.now()
     requestAnimationFrame(updatePosition)
   }
-  
+
   const onDragEnd = () => {
     if (dragged) {
       const $el = elementRef.current!
@@ -70,7 +71,7 @@ export default ({children, background, onSwipe, threshold = 0.3}: Props) => {
       $el.style.transform = `translateX(${left}px)`
     }
   }
-  
+
   const onMouseMove = (evt: MouseEvent) => {
     const l = evt.clientX - dragStartX
     if (l < 0) {
@@ -96,40 +97,34 @@ export default ({children, background, onSwipe, threshold = 0.3}: Props) => {
     onDragStart(touch.clientX)
     window.addEventListener('touchmove', onTouchMove)
   }
-  
-  const onDragEndMouse = (evt: MouseEvent) => {
+
+  const onDragEndMouse = () => {
     window.removeEventListener('mousemove', onMouseMove)
     onDragEnd()
   }
-  
-  const onDragEndTouch = (evt: TouchEvent) => {
+
+  const onDragEndTouch = () => {
     window.removeEventListener('touchmove', onTouchMove)
     onDragEnd()
   }
 
   useEffect(() => {
-    window.addEventListener("mouseup", onDragEndMouse)
-    window.addEventListener("touchend", onDragEndTouch)
+    window.addEventListener('mouseup', onDragEndMouse)
+    window.addEventListener('touchend', onDragEndTouch)
     return () => {
-      window.removeEventListener("mouseup", onDragEndMouse)
-      window.removeEventListener("touchend", onDragEndTouch)
+      window.removeEventListener('mouseup', onDragEndMouse)
+      window.removeEventListener('touchend', onDragEndTouch)
     }
   }, [])
 
   return (
     <div className={styles.wrapper} ref={wrapperRef}>
       <div ref={bgRef} className={styles.background}>
-        { background ? background : <span>Action</span> }
+        {background ? background : <span>Action</span>}
       </div>
-      <div
-        ref={elementRef}
-        onMouseDown={onDragStartMouse}
-        onTouchStart={onDragStartTouch}
-        className={styles.item}
-      >
+      <div ref={elementRef} onMouseDown={onDragStartMouse} onTouchStart={onDragStartTouch} className={styles.item}>
         {children}
       </div>
     </div>
   )
-
 }

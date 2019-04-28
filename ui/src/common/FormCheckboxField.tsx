@@ -1,8 +1,9 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { CheckboxProps } from 'react-use-form-state'
+
 import { classNames } from './helpers'
 
-type Props = {
+interface Props {
   label: string
   required?: boolean
   readOnly?: boolean
@@ -12,16 +13,14 @@ type Props = {
 type AllProps = Props & CheckboxProps
 
 export default (props: AllProps) => {
-  const {error, label, ...rest} = props
-  const className = classNames(
-    'checkbox',
-     error ? 'has-error' : null 
-  )
+  const { error, label, ...rest } = props
+  const className = classNames('checkbox', error ? 'has-error' : null)
   return (
     <div className={className}>
       <label>
         <input {...rest} />
-        <i className="helper"></i>{label}
+        <i className="helper" />
+        {label}
       </label>
     </div>
   )

@@ -1,6 +1,4 @@
-
-
-export type ArchiveService = {
+export interface ArchiveService {
   id?: number
   alias: string
   provider: string
@@ -10,7 +8,7 @@ export type ArchiveService = {
   updated_at?: string
 }
 
-export type GetArchiveServicesResponse = {
+export interface GetArchiveServicesResponse {
   archivers: ArchiveService[]
 }
 
@@ -18,6 +16,6 @@ export interface GetArchiveServiceResponse {
   archiver: ArchiveService
 }
 
-export type CreateOrUpdateArchiveServiceResponse = {
+export interface CreateOrUpdateArchiveServiceResponse {
   createOrUpdateArchiver: ArchiveService
 }

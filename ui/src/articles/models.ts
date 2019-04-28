@@ -33,7 +33,7 @@ export interface GetArticleResponse {
   article: Article
 }
 
-export type UpdateArticleStatusRequest = {
+export interface UpdateArticleStatusRequest {
   id: number
   status: string
 }
@@ -50,4 +50,3 @@ export interface AddNewArticleRequest {
   url: string
   category?: number
 }
-  

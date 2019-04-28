@@ -1,26 +1,24 @@
-
-import React, { useState, useEffect } from 'react'
-import { useMutation, useApolloClient } from 'react-apollo-hooks'
+import React, { useEffect, useState } from 'react'
+import { useApolloClient, useMutation } from 'react-apollo-hooks'
 
 import ButtonIcon from '../../common/ButtonIcon'
-
-import { GetDeviceResponse, DeletePushSubscriptionResponse, CreatePushSubscriptionResponse } from './models'
-import { GetDevice, DeletePushSubscription, CreatePushSubscription } from './queries'
+import { CreatePushSubscriptionResponse, DeletePushSubscriptionResponse, GetDeviceResponse } from './models'
+import { CreatePushSubscription, DeletePushSubscription, GetDevice } from './queries'
 
 const DEVICE_ID = 'device_id'
 
 export default () => {
   const [id, setId] = useState(localStorage.getItem(DEVICE_ID))
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<Error|null>(null)
+  const [error, setError] = useState<Error | null>(null)
   const client = useApolloClient()
 
   const getPushSubscription = async (pushId: string) => {
     setLoading(true)
     try {
-      const { errors, data } = await client.query<GetDeviceResponse>({
+      const { errors } = await client.query<GetDeviceResponse>({
         query: GetDevice,
-        variables: {id: pushId}
+        variables: { id: pushId }
       })
       if (errors) {
         throw new Error(errors[0])
@@ -40,7 +38,7 @@ export default () => {
 
   const createPushSubscriptionMutation = useMutation<CreatePushSubscriptionResponse>(CreatePushSubscription)
   const createPushSubscription = async () => {
-    try{
+    try {
       setLoading(true)
       const swr = await navigator.serviceWorker.ready
       const subscription = await swr.pushManager.getSubscription()
@@ -62,9 +60,9 @@ export default () => {
   }
   const deletePushSubscriptionMutation = useMutation<DeletePushSubscriptionResponse>(DeletePushSubscription)
   const deletePushSubscription = async () => {
-    try{
+    try {
       setLoading(true)
-      await deletePushSubscriptionMutation({variables: {id}})
+      await deletePushSubscriptionMutation({ variables: { id } })
       setId(null)
       localStorage.removeItem(DEVICE_ID)
     } catch (err) {

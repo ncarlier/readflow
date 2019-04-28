@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { Log, UserManager } from 'oidc-client'
+
 import { AUTHORITY, CLIENT_ID } from '../constants'
 
 export class AuthService {
@@ -25,11 +27,7 @@ export class AuthService {
   }
 
   public getAccountUrl() {
-    return AUTHORITY + 
-      '/account?referrer=' +
-      CLIENT_ID +
-      '&referrer_uri=' +
-      encodeURI(document.location.href)
+    return AUTHORITY + '/account?referrer=' + CLIENT_ID + '&referrer_uri=' + encodeURI(document.location.href)
   }
 
   public login() {

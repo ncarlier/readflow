@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
-import Page from  '../common/Page'
-import { URLRegExp } from '../common/helpers'
 import ButtonIcon from '../common/ButtonIcon'
+import { URLRegExp } from '../common/helpers'
+import Page from '../common/Page'
 import AddArticleForm from './components/AddArticleForm'
 
 type AllProps = RouteComponentProps
@@ -11,7 +12,7 @@ type AllProps = RouteComponentProps
 export default ({ location, history }: AllProps) => {
   const params = new URLSearchParams(location.search)
 
-  let value = ""
+  let value = ''
   if (params.has('url')) {
     value = params.get('url')!
   } else if (params.has('text') || params.has('title')) {
@@ -26,17 +27,10 @@ export default ({ location, history }: AllProps) => {
     }
   }
 
-  const redirect = () => history.replace("/unread")
+  const redirect = () => history.replace('/unread')
 
   return (
-    <Page title="Add new article"
-          actions={
-            <ButtonIcon
-              to="/unread" 
-              icon="arrow_back"
-              title="back to the list"
-            />
-          }>
+    <Page title="Add new article" actions={<ButtonIcon to="/unread" icon="arrow_back" title="back to the list" />}>
       <AddArticleForm value={value} onCancel={redirect} onSuccess={redirect} />
     </Page>
   )

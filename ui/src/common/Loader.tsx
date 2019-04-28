@@ -1,9 +1,9 @@
 import React from 'react'
 
-import styles from './Loader.module.css'
 import { classNames } from './helpers'
+import styles from './Loader.module.css'
 
-type Props = {
+interface Props {
   blur?: boolean
 }
 

@@ -1,22 +1,19 @@
-
 function urlBase64ToUint8Array(base64String: string) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
-  const rawData = window.atob(base64);
-  return Uint8Array.from(Array.from(rawData).map(char => char.charCodeAt(0)));
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = window.atob(base64)
+  return Uint8Array.from(Array.from(rawData).map(char => char.charCodeAt(0)))
 }
 
 export const setupNotification = () => {
-  if (!("Notification" in window)) {
-    console.error("This browser does not support desktop notification")
-  } else if (Notification.permission === "granted") {
-    console.log("Permission to receive notifications has been granted")
+  if (!('Notification' in window)) {
+    console.error('This browser does not support desktop notification')
+  } else if (Notification.permission === 'granted') {
+    console.log('Permission to receive notifications has been granted')
   } else if (Notification.permission !== 'denied') {
-    Notification.requestPermission(function (permission) {
-      if (permission === "granted") {
-        console.log("Permission to receive notifications has been granted")
+    Notification.requestPermission(function(permission) {
+      if (permission === 'granted') {
+        console.log('Permission to receive notifications has been granted')
       }
     })
   }
@@ -25,7 +22,7 @@ export const setupNotification = () => {
 const renewPushSubscription = async (registration: ServiceWorkerRegistration) => {
   const applicationServerKey = urlBase64ToUint8Array(window.vapidPublicKey)
   try {
-    const subscripiton  = await registration.pushManager.getSubscription()
+    const subscripiton = await registration.pushManager.getSubscription()
     if (subscripiton) {
       const ok = await subscripiton.unsubscribe()
       if (ok) {
@@ -42,7 +39,7 @@ const renewPushSubscription = async (registration: ServiceWorkerRegistration) =>
 
 export const subscribePush = async (registration: ServiceWorkerRegistration) => {
   const applicationServerKey = urlBase64ToUint8Array(window.vapidPublicKey)
-  
+
   try {
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,

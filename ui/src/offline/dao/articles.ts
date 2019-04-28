@@ -1,5 +1,5 @@
-import { db } from "../db"
-import { Article } from "../../articles/models"
+import { Article } from '../../articles/models'
+import { db } from '../db'
 
 export const saveArticle = (article: Article) => {
   return db.transaction('rw', db.articles, async () => {
@@ -39,16 +39,16 @@ export const getTotalNbArticles = () => {
   db.articles.count()
 }
 
-export const getArticles = async ({limit = 10, afterCursor, sortOrder = 'asc'}: GetArticlesQuery) => {
+export const getArticles = async ({ limit = 10, afterCursor, sortOrder = 'asc' }: GetArticlesQuery) => {
   const table = db.articles
-  
+
   const result: GetArticlesResult = {
     endCursor: -1,
     entries: [],
     hasNext: false,
-    totalCount: 0,
+    totalCount: 0
   }
-  result.totalCount = await table.count() 
+  result.totalCount = await table.count()
 
   const asc = sortOrder === 'asc'
   if (afterCursor) {
@@ -81,6 +81,6 @@ export const getArticles = async ({limit = 10, afterCursor, sortOrder = 'asc'}: 
   if (result.entries.length) {
     result.endCursor = (result.entries[result.entries.length - 1] as Article).id
   }
-  
- return result
+
+  return result
 }

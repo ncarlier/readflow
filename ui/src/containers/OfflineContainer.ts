@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 
-import * as offlineArticlesActions from '../offline/store/actions'
 import { Article } from '../articles/models'
+import { GetArticlesQuery } from '../offline/dao/articles'
+import * as offlineArticlesActions from '../offline/store/actions'
 import { OfflineArticlesState } from '../offline/store/types'
 import { ApplicationState } from '../store'
-import { GetArticlesQuery } from '../offline/dao/articles'
 
 export interface IOfflineStateProps {
   offlineArticles: OfflineArticlesState
@@ -31,7 +31,12 @@ const mapDispatchToProps = (dispatch: Dispatch): IOfflineDispatchProps => ({
   fetchOfflineArticle: (id: number) => dispatch(offlineArticlesActions.selectRequest(id))
 })
 
-
-export const connectOffline = connect(mapStateToProps, mapDispatchToProps)
-export const connectOfflineDispatch = connect(null, mapDispatchToProps)
+export const connectOffline = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)
+export const connectOfflineDispatch = connect(
+  null,
+  mapDispatchToProps
+)
 export const connectOfflineState = connect(mapStateToProps)

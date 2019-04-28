@@ -1,13 +1,9 @@
-import React, {ReactNode} from 'react'
+import React, { ReactNode } from 'react'
 
 import styles from './Header.module.css'
 
-type Props = {
+interface Props {
   children: ReactNode
 }
 
-export default ({children}: Props) => (
-  <header className={styles.header}>
-    {children}
-  </header>
-)
+export default ({ children }: Props) => <header className={styles.header}>{children}</header>

@@ -1,5 +1,5 @@
-import {useEffect} from "react"
-import mousetrap from "mousetrap"
+import mousetrap from 'mousetrap'
+import { useEffect } from 'react'
 
 type KeyHandler = (e: ExtendedKeyboardEvent, combo: string) => void
 

@@ -1,17 +1,16 @@
-import React from 'react'
-import { Provider} from 'react-redux'
-import { ModalProvider } from "react-modal-hook"
+import ApolloClient from 'apollo-boost'
 import { ConnectedRouter } from 'connected-react-router'
-import { Store } from 'redux'
 import { History } from 'history'
+import React from 'react'
+import { ApolloProvider } from 'react-apollo-hooks'
+import { ModalProvider } from 'react-modal-hook'
+import { Provider } from 'react-redux'
+import { Store } from 'redux'
 
-import ApolloClient from "apollo-boost"
-import { ApolloProvider } from "react-apollo-hooks"
-
-import Routes from './routes'
-import { ApplicationState } from './store'
 import authService from './auth/AuthService'
 import { API_BASE_URL } from './constants'
+import Routes from './routes'
+import { ApplicationState } from './store'
 
 interface PropsFromDispatch {
   [key: string]: any
@@ -31,7 +30,7 @@ const client = new ApolloClient({
   fetchOptions: {
     credentials: 'include'
   },
-  request: async (operation) => {
+  request: async operation => {
     let user = await authService.getUser()
     if (user === null) {
       authService.login()
@@ -52,10 +51,10 @@ const client = new ApolloClient({
         authService.login()
       }
     }
-  },
+  }
 })
 
-export default function App({store, history, theme}: Props) {
+export default function App({ store, history /*, theme*/ }: Props) {
   return (
     <Provider store={store}>
       <ApolloProvider client={client}>

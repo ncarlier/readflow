@@ -1,6 +1,4 @@
-
-
-export type Rule = {
+export interface Rule {
   id?: number
   alias: string
   category_id: number
@@ -10,7 +8,7 @@ export type Rule = {
   updated_at?: string
 }
 
-export type GetRulesResponse = {
+export interface GetRulesResponse {
   rules: Rule[]
 }
 
@@ -18,6 +16,6 @@ export interface GetRuleResponse {
   rule: Rule
 }
 
-export type CreateOrUpdateRuleResponse = {
+export interface CreateOrUpdateRuleResponse {
   createOrUpdateRule: Rule
 }

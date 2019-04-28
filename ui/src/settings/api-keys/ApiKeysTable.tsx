@@ -1,22 +1,22 @@
-import React, { useState, FormEvent, useRef } from 'react'
-
-import { ApiKey } from './models'
-import Empty from '../../common/Empty'
+import React, { FormEvent, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import TimeAgo from '../../common/TimeAgo'
+
+import Empty from '../../common/Empty'
 import { getBookmarklet, preventBookmarkletClick } from '../../common/helpers'
-import Icon from '../../common/Icon';
+import Icon from '../../common/Icon'
+import TimeAgo from '../../common/TimeAgo'
+import { ApiKey } from './models'
 
 export interface OnSelectedFn {
   (ids: number[]): void
 }
 
-type Props = {
+interface Props {
   data: ApiKey[]
   onSelected?: OnSelectedFn
 }
 
-export default ({data, onSelected}: Props) => {
+export default ({ data, onSelected }: Props) => {
   const selectAllRef = useRef<HTMLInputElement>(null)
   const [selection, setSelection] = useState<Map<number, boolean>>(() => {
     const state = new Map<number, boolean>()
@@ -26,10 +26,12 @@ export default ({data, onSelected}: Props) => {
 
   const triggerOnSelectedEvent = (state: Map<number, boolean>) => {
     if (onSelected) {
-      const payload = Array.from(state).map(tuple => {
-        const [key, val] = tuple
-        return val ? key : -1
-      }).filter(v => v !== -1)
+      const payload = Array.from(state)
+        .map(tuple => {
+          const [key, val] = tuple
+          return val ? key : -1
+        })
+        .filter(v => v !== -1)
       onSelected(payload)
     }
   }
@@ -40,13 +42,13 @@ export default ({data, onSelected}: Props) => {
     const node = selectAllRef.current
     if (node) {
       let allChecked = true
-      newState.forEach(val => val ? null : allChecked = false)
+      newState.forEach(val => (val ? null : (allChecked = false)))
       node.checked = allChecked
     }
     triggerOnSelectedEvent(newState)
     setSelection(newState)
   }
-  
+
   const onCheckboxAllChange = (e: FormEvent<HTMLInputElement>) => {
     const newValue = e.currentTarget.checked
     const newState = new Map<number, boolean>()
@@ -64,11 +66,7 @@ export default ({data, onSelected}: Props) => {
       <thead>
         <tr>
           <th>
-            <input
-              ref={selectAllRef}
-              type="checkbox"
-              onChange={onCheckboxAllChange}
-            />
+            <input ref={selectAllRef} type="checkbox" onChange={onCheckboxAllChange} />
           </th>
           <th>Alias</th>
           <th>Token</th>
@@ -82,11 +80,7 @@ export default ({data, onSelected}: Props) => {
         {data.map(apiKey => (
           <tr key={`api-key-${apiKey.id}`}>
             <th>
-              <input
-                type="checkbox"
-                onChange={onCheckboxChange(apiKey.id)}
-                checked={selection.get(apiKey.id)}
-              />
+              <input type="checkbox" onChange={onCheckboxChange(apiKey.id)} checked={selection.get(apiKey.id)} />
             </th>
             <th>
               <Link title="Edit API key" to={`/settings/api-keys/${apiKey.id}`}>
@@ -101,9 +95,15 @@ export default ({data, onSelected}: Props) => {
                 <Icon name="bookmark" />
               </a>
             </td>
-            <td><TimeAgo dateTime={apiKey.last_usage_at} /></td>
-            <td><TimeAgo dateTime={apiKey.created_at} /></td>
-            <td><TimeAgo dateTime={apiKey.updated_at} /></td>
+            <td>
+              <TimeAgo dateTime={apiKey.last_usage_at} />
+            </td>
+            <td>
+              <TimeAgo dateTime={apiKey.created_at} />
+            </td>
+            <td>
+              <TimeAgo dateTime={apiKey.updated_at} />
+            </td>
           </tr>
         ))}
       </tbody>

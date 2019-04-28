@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import gql from 'graphql-tag'
 
 export const GetArticles = gql`
   query articles($limit: Int!, $sortOrder: sortOrder!, $status: status!, $category: Int, $afterCursor: Int) {
@@ -6,7 +6,7 @@ export const GetArticles = gql`
       totalCount
       endCursor
       hasNext
-      entries{
+      entries {
         id
         title
         text

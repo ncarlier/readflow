@@ -1,4 +1,4 @@
-import gql from "graphql-tag"
+import gql from 'graphql-tag'
 
 export const GetArchiveServices = gql`
   query {
@@ -33,8 +33,14 @@ export const DeleteArchiveServices = gql`
   }
 `
 
-export const CreateOrUpdateArchiveService = gql `
-  mutation createOrUpdateArchiver($id: ID, $alias: String!, $provider: provider!, $config: String!, $is_default: Boolean!) {
+export const CreateOrUpdateArchiveService = gql`
+  mutation createOrUpdateArchiver(
+    $id: ID
+    $alias: String!
+    $provider: provider!
+    $config: String!
+    $is_default: Boolean!
+  ) {
     createOrUpdateArchiver(id: $id, alias: $alias, provider: $provider, config: $config, is_default: $is_default) {
       id
       alias
