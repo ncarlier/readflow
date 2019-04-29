@@ -63,10 +63,4 @@ var routes = Routes{
 		true,
 		metrics,
 	},
-	Route{
-		[]string{"GET"},
-		"/init.js",
-		false,
-		initJS,
-	},
 }
