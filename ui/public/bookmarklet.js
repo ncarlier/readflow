@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 function b() {
   var r = new Request(FP_URL + '/articles')
   var h = new Headers({
