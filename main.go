@@ -6,6 +6,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -26,6 +27,14 @@ import (
 	"github.com/ncarlier/readflow/pkg/version"
 	"github.com/rs/zerolog/log"
 )
+
+func init() {
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: readflow OPTIONS\n\n")
+		fmt.Fprintf(os.Stderr, "Options:\n")
+		flag.PrintDefaults()
+	}
+}
 
 func main() {
 	flag.Parse()

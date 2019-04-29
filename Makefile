@@ -20,8 +20,15 @@ ARCHIVE=$(APPNAME)-$(GOOS)-$(GOARCH).tgz
 EXECUTABLE=$(APPNAME)$(EXT)
 
 # Extract version infos
-VERSION:=`git describe --tags`
-LDFLAGS=-ldflags "-X main.Version=$(VERSION)"
+PKG_VERSION:=github.com/ncarlier/$(APPNAME)/pkg/version
+VERSION:=`git describe --always --dirty`
+GIT_COMMIT:=`git rev-list -1 HEAD --abbrev-commit`
+BUILT:=`date`
+define LDFLAGS
+-X '$(PKG_VERSION).Version=$(VERSION)' \
+-X '$(PKG_VERSION).GitCommit=$(GIT_COMMIT)' \
+-X '$(PKG_VERSION).Built=$(BUILT)'
+endef
 
 all: build
 
@@ -47,7 +54,7 @@ autogen:
 build: autogen
 	-mkdir -p release
 	echo ">>> Building $(EXECUTABLE) $(VERSION) for $(GOOS)-$(GOARCH) ..."
-	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o release/$(EXECUTABLE)
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -o release/$(EXECUTABLE)
 .PHONY: build
 
 release/$(EXECUTABLE): build
