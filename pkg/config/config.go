@@ -14,8 +14,8 @@ type Config struct {
 	AuthN      *string
 	PublicURL  *string
 	Version    *bool
-	Debug      *bool
-	LogDir     *string
+	LogPretty  *bool
+	LogLevel   *string
 	SentryDSN  *string
 }
 
@@ -26,8 +26,8 @@ var config = &Config{
 	AuthN:      flag.String("authn", getEnv("AUTHN", "https://login.nunux.org/auth/realms/readflow"), "Authentication method (\"mock\", \"proxy\" or OIDC if URL)"),
 	PublicURL:  flag.String("public-url", getEnv("PUBLIC_URL", "https://api.readflow.app"), "Public URL"),
 	Version:    flag.Bool("version", false, "Print version"),
-	Debug:      flag.Bool("debug", getBoolEnv("DEBUG", false), "Output debug logs"),
-	LogDir:     flag.String("log-dir", getEnv("LOG_DIR", os.TempDir()), "Webhooks execution log directory"),
+	LogPretty:  flag.Bool("log-pretty", getBoolEnv("LOG_PRETTY", false), "Output human readable logs"),
+	LogLevel:   flag.String("log-level", getEnv("LOG_LEVEL", "info"), "Log level (debug, info, warn, error)"),
 	SentryDSN:  flag.String("sentry-dsn", getEnv("SENTRY_DSN", ""), "Sentry DSN URL"),
 }
 
@@ -38,8 +38,6 @@ func init() {
 	flag.StringVar(config.ListenAddr, "l", *config.ListenAddr, usage)
 	usage = flag.Lookup("version").Usage + shorthand
 	flag.BoolVar(config.Version, "v", *config.Version, usage)
-	usage = flag.Lookup("debug").Usage + shorthand
-	flag.BoolVar(config.Debug, "d", *config.Debug, usage)
 }
 
 // Get global configuration

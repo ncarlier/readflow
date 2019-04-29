@@ -38,11 +38,7 @@ func main() {
 	}
 
 	// Configure the logger
-	level := "info"
-	if *conf.Debug {
-		level = "debug"
-	}
-	logger.Configure(level, true, *conf.SentryDSN)
+	logger.Configure(*conf.LogLevel, *conf.LogPretty, *conf.SentryDSN)
 
 	log.Debug().Msg("starting Nunux Reader server...")
 
