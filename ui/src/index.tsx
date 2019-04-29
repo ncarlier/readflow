@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom'
 
 import App from './App'
 import authService from './auth/AuthService'
+import { getOnlineStatus } from './common/helpers'
 import configureStore from './configureStore'
 import { setupNotification } from './notification'
 import * as serviceWorker from './serviceWorker'
@@ -19,20 +20,26 @@ const run = () => {
   setupNotification()
 }
 
-authService.getUser().then(
-  user => {
-    if (user === null) {
-      if (document.location.pathname === '/login') {
-        authService.login()
-      } else {
-        // No previous login, then redirect to about page.
-        document.location.replace('https://about.readflow.app')
-      }
-    } else if (user.expired) {
-      authService.renewToken().then(run, () => authService.login())
+const login = async () => {
+  const user = await authService.getUser()
+  if (user === null) {
+    if (document.location.pathname === '/login') {
+      return authService.login()
     } else {
-      run()
+      // No previous login, then redirect to about page.
+      document.location.replace('https://about.readflow.app')
     }
-  },
-  () => authService.login()
-)
+  } else if (user.expired) {
+    return authService.renewToken()
+  } else {
+    return user
+  }
+}
+
+if (getOnlineStatus()) {
+  login().then(run, authService.login)
+} else {
+  run()
+}
+
+window.addEventListener('online', login)

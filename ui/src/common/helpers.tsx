@@ -112,3 +112,7 @@ export function preventBookmarkletClick(e: MouseEvent<any>) {
   e.preventDefault()
   alert("Don't click on me! But drag and drop me to your toolbar.")
 }
+
+export function getOnlineStatus() {
+  return typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean' ? navigator.onLine : true
+}
