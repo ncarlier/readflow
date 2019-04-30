@@ -1,5 +1,5 @@
 import { History } from 'history'
-import React, { useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
@@ -11,6 +11,7 @@ import FormInputField from '../../common/FormInputField'
 import { getGQLError, isValidForm } from '../../common/helpers'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
 import ErrorPanel from '../../error/ErrorPanel'
+import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 
 interface EditCategoryFormFields {
   title: string
@@ -26,6 +27,7 @@ type AllProps = Props & IMessageDispatchProps
 export const EditCategoryForm = ({ category, history, showMessage }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<EditCategoryFormFields>({ title: category.title })
+  const onMountValidator = useOnMountInputValidator(formState.validity)
   const editCategoryMutation = useMutation<Category>(CreateOrUpdateCategory)
 
   const editCategory = async (category: Category) => {
@@ -41,13 +43,17 @@ export const EditCategoryForm = ({ category, history, showMessage }: AllProps) =
     }
   }
 
-  const handleOnSubmit = useCallback(() => {
-    if (!isValidForm(formState)) {
-      setErrorMessage('Please fill out correctly the mandatory fields.')
-      return
-    }
-    editCategory({ id: category.id, ...formState.values })
-  }, [formState])
+  const handleOnSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!isValidForm(formState, onMountValidator)) {
+        setErrorMessage('Please fill out correctly the mandatory fields.')
+        return
+      }
+      editCategory({ id: category.id, ...formState.values })
+    },
+    [formState]
+  )
 
   return (
     <>
@@ -57,7 +63,13 @@ export const EditCategoryForm = ({ category, history, showMessage }: AllProps) =
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to edit category">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Title" {...text('title')} error={!formState.validity.label} required />
+          <FormInputField
+            label="Title"
+            {...text('title')}
+            error={!formState.validity.title}
+            required
+            ref={onMountValidator.bind}
+          />
         </form>
       </section>
       <footer>

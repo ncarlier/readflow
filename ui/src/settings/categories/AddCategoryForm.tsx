@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 import { useFormState } from 'react-use-form-state'
@@ -13,6 +13,7 @@ import Panel from '../../common/Panel'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
+import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 
 interface AddCategoryFormFields {
   title: string
@@ -25,6 +26,7 @@ export const AddCategoryForm = ({ history, showMessage }: AllProps) => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<AddCategoryFormFields>()
+  const onMountValidator = useOnMountInputValidator(formState.validity)
   const addCategoryMutation = useMutation<Category>(CreateOrUpdateCategory)
 
   const addNewCategory = async (category: Category) => {
@@ -41,13 +43,17 @@ export const AddCategoryForm = ({ history, showMessage }: AllProps) => {
     }
   }
 
-  const handleOnClick = useCallback(() => {
-    if (!isValidForm(formState)) {
-      setErrorMessage('Please fill out correctly the mandatory fields.')
-      return
-    }
-    addNewCategory(formState.values)
-  }, [formState])
+  const handleOnSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!isValidForm(formState, onMountValidator)) {
+        setErrorMessage('Please fill out correctly the mandatory fields.')
+        return
+      }
+      addNewCategory(formState.values)
+    },
+    [formState]
+  )
 
   return (
     <Panel>
@@ -56,15 +62,21 @@ export const AddCategoryForm = ({ history, showMessage }: AllProps) => {
       </header>
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to add new category">{errorMessage}</ErrorPanel>}
-        <form>
-          <FormInputField label="Title" {...text('title')} error={!formState.validity.title} required />
+        <form onSubmit={handleOnSubmit}>
+          <FormInputField
+            label="Title"
+            {...text('title')}
+            error={!formState.validity.title}
+            required
+            ref={onMountValidator.bind}
+          />
         </form>
       </section>
       <footer>
         <Button title="Back to categories" to="/settings/categories">
           Cancel
         </Button>
-        <Button title="Add category" onClick={handleOnClick} primary>
+        <Button title="Add category" onClick={handleOnSubmit} primary>
           Add
         </Button>
       </footer>

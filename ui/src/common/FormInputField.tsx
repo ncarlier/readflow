@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { forwardRef, ReactNode, Ref } from 'react'
 import { BaseInputProps } from 'react-use-form-state'
 
 import { classNames } from './helpers'
@@ -13,8 +13,8 @@ interface Props {
 
 type AllProps = Props & BaseInputProps
 
-export default (props: AllProps) => {
-  const { error, label, children, ...rest } = props
+export default forwardRef((props: AllProps, ref: Ref<any>) => {
+  const { error, label, children, ...rest } = { ...props, ref }
 
   if (rest.type === 'checkbox') {
     const className = classNames('checkbox', error ? 'has-error' : null)
@@ -52,4 +52,4 @@ export default (props: AllProps) => {
       <i className="bar" />
     </div>
   )
-}
+})

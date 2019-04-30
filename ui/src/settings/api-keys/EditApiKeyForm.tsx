@@ -1,5 +1,5 @@
 import { History } from 'history'
-import React, { useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
@@ -8,6 +8,7 @@ import FormInputField from '../../common/FormInputField'
 import { getGQLError, isValidForm } from '../../common/helpers'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
 import ErrorPanel from '../../error/ErrorPanel'
+import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
 import { ApiKey } from './models'
 import { CreateOrUpdateApiKey } from './queries'
@@ -26,6 +27,7 @@ type AllProps = Props & IMessageDispatchProps
 export const EditApiKeyForm = ({ data, history, showMessage }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<EditApiKeyFormFields>({ alias: data.alias })
+  const onMountValidator = useOnMountInputValidator(formState.validity)
   const editApiKeyMutation = useMutation<ApiKey>(CreateOrUpdateApiKey)
 
   const editApiKey = async (apiKey: { id: number; alias: string }) => {
@@ -41,14 +43,18 @@ export const EditApiKeyForm = ({ data, history, showMessage }: AllProps) => {
     }
   }
 
-  const handleOnSubmit = useCallback(() => {
-    if (!isValidForm(formState)) {
-      setErrorMessage('Please fill out correctly the mandatory fields.')
-      return
-    }
-    const { alias } = formState.values
-    editApiKey({ id: data.id, alias })
-  }, [formState])
+  const handleOnSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!isValidForm(formState, onMountValidator)) {
+        setErrorMessage('Please fill out correctly the mandatory fields.')
+        return
+      }
+      const { alias } = formState.values
+      editApiKey({ id: data.id, alias })
+    },
+    [formState]
+  )
 
   return (
     <>
@@ -58,7 +64,13 @@ export const EditApiKeyForm = ({ data, history, showMessage }: AllProps) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to edit API key">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Alias" {...text('alias')} error={!formState.validity.alias} required />
+          <FormInputField
+            label="Alias"
+            {...text('alias')}
+            error={!formState.validity.alias}
+            required
+            ref={onMountValidator.bind}
+          />
         </form>
       </section>
       <footer>

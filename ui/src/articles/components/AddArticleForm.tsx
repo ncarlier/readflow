@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
@@ -9,6 +9,7 @@ import { getGQLError, isValidForm } from '../../common/helpers'
 import Loader from '../../common/Loader'
 import Panel from '../../common/Panel'
 import ErrorPanel from '../../error/ErrorPanel'
+import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { AddNewArticleRequest, Article } from '../models'
 import { AddNewArticle } from '../queries'
 
@@ -29,6 +30,7 @@ export default ({ value, category, onSuccess, onCancel }: AllProps) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { url }] = useFormState<AddArticleFormFields>({ url: value })
+  const onMountValidator = useOnMountInputValidator(formState.validity)
   const addArticleMutation = useMutation<AddNewArticleRequest>(AddNewArticle)
 
   const addArticle = async (form: AddArticleFormFields) => {
@@ -45,13 +47,17 @@ export default ({ value, category, onSuccess, onCancel }: AllProps) => {
     }
   }
 
-  const handleOnClick = useCallback(() => {
-    if (!isValidForm(formState)) {
-      setErrorMessage('Please fill out correctly the mandatory fields.')
-      return
-    }
-    addArticle(formState.values)
-  }, [formState])
+  const handleOnSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!isValidForm(formState, onMountValidator)) {
+        setErrorMessage('Please fill out correctly the mandatory fields.')
+        return
+      }
+      addArticle(formState.values)
+    },
+    [formState]
+  )
 
   return (
     <Panel>
@@ -61,15 +67,21 @@ export default ({ value, category, onSuccess, onCancel }: AllProps) => {
       </header>
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to add new article">{errorMessage}</ErrorPanel>}
-        <form>
-          <FormInputField label="URL" {...url('url')} error={!formState.validity.url} required />
+        <form onSubmit={handleOnSubmit}>
+          <FormInputField
+            label="URL"
+            {...url('url')}
+            error={!formState.validity.url}
+            required
+            ref={onMountValidator.bind}
+          />
         </form>
       </section>
       <footer>
         <Button title="Back to API keys" onClick={onCancel}>
           Cancel
         </Button>
-        <Button title="Add new article" onClick={handleOnClick} primary>
+        <Button title="Add new article" onClick={handleOnSubmit} primary>
           Add
         </Button>
       </footer>

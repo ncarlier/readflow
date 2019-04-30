@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { forwardRef, ReactNode, Ref } from 'react'
 import { BaseInputProps, Omit } from 'react-use-form-state'
 
 import { classNames } from './helpers'
@@ -13,8 +13,8 @@ interface Props {
 
 type AllProps = Props & Omit<BaseInputProps, 'type'>
 
-export default (props: AllProps) => {
-  const { error, label, children, ...rest } = props
+export default forwardRef((props: AllProps, ref: Ref<any>) => {
+  const { error, label, children, ...rest } = { ...props, ref }
 
   const className = classNames('form-group', error ? 'has-error' : null)
 
@@ -28,4 +28,4 @@ export default (props: AllProps) => {
       {children}
     </div>
   )
-}
+})

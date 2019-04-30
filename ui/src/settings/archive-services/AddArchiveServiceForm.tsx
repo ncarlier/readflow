@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 import { useFormState } from 'react-use-form-state'
@@ -12,6 +12,7 @@ import Panel from '../../common/Panel'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
+import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
 import { ArchiveService } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
@@ -35,6 +36,7 @@ export const AddArchiveServiceForm = ({ history, showMessage }: AllProps) => {
     alias: '',
     isDefault: false
   })
+  const onMountValidator = useOnMountInputValidator(formState.validity)
 
   const addArchiveServiceMutation = useMutation<ArchiveService>(CreateOrUpdateArchiveService)
 
@@ -51,15 +53,19 @@ export const AddArchiveServiceForm = ({ history, showMessage }: AllProps) => {
     }
   }
 
-  const handleOnClick = useCallback(() => {
-    if (!isValidForm(formState) || !config) {
-      setErrorMessage('Please fill out correctly the mandatory fields.')
-      return
-    }
-    const { alias, provider, isDefault } = formState.values
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    addArchiveService({ alias, provider, is_default: isDefault, config: JSON.stringify(config) })
-  }, [formState, config])
+  const handleOnSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!isValidForm(formState, onMountValidator) || !config) {
+        setErrorMessage('Please fill out correctly the mandatory fields.')
+        return
+      }
+      const { alias, provider, isDefault } = formState.values
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      addArchiveService({ alias, provider, is_default: isDefault, config: JSON.stringify(config) })
+    },
+    [formState, config]
+  )
 
   return (
     <Panel>
@@ -68,9 +74,21 @@ export const AddArchiveServiceForm = ({ history, showMessage }: AllProps) => {
       </header>
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to add new archive service">{errorMessage}</ErrorPanel>}
-        <form>
-          <FormInputField label="Alias" {...text('alias')} error={!formState.validity.alias} required />
-          <FormSelectField label="Provider" {...select('provider')} error={!formState.validity.provider} required>
+        <form onSubmit={handleOnSubmit}>
+          <FormInputField
+            label="Alias"
+            {...text('alias')}
+            error={!formState.validity.alias}
+            required
+            ref={onMountValidator.bind}
+          />
+          <FormSelectField
+            label="Provider"
+            {...select('provider')}
+            error={!formState.validity.provider}
+            required
+            ref={onMountValidator.bind}
+          >
             <option>Please select an archive provider</option>
             <option value="keeper">Keeper</option>
             <option value="wallabag">Wallabag</option>
@@ -83,7 +101,7 @@ export const AddArchiveServiceForm = ({ history, showMessage }: AllProps) => {
         <Button title="Back to archive serices" to="/settings/archive-services">
           Cancel
         </Button>
-        <Button title="Add archive service" onClick={handleOnClick} primary>
+        <Button title="Add archive service" onClick={handleOnSubmit} primary>
           Add
         </Button>
       </footer>

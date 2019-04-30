@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { History } from 'history'
-import React, { useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
@@ -11,6 +11,7 @@ import FormSelectField from '../../common/FormSelectField'
 import { getGQLError, isValidForm } from '../../common/helpers'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
 import ErrorPanel from '../../error/ErrorPanel'
+import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
 import { ArchiveService } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
@@ -37,6 +38,7 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
     provider: data.provider,
     is_default: data.is_default
   })
+  const onMountValidator = useOnMountInputValidator(formState.validity)
   const editArchiveServiceMutation = useMutation<ArchiveService>(CreateOrUpdateArchiveService)
 
   const editArchiveService = async (service: ArchiveService) => {
@@ -52,14 +54,18 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
     }
   }
 
-  const handleOnSubmit = useCallback(() => {
-    if (!isValidForm(formState) || !config) {
-      setErrorMessage('Please fill out correctly the mandatory fields.')
-      return
-    }
-    const { alias, provider, is_default } = formState.values
-    editArchiveService({ id: data.id, alias, provider, is_default, config: JSON.stringify(config) })
-  }, [formState, config])
+  const handleOnSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!isValidForm(formState, onMountValidator) || !config) {
+        setErrorMessage('Please fill out correctly the mandatory fields.')
+        return
+      }
+      const { alias, provider, is_default } = formState.values
+      editArchiveService({ id: data.id, alias, provider, is_default, config: JSON.stringify(config) })
+    },
+    [formState, config]
+  )
 
   return (
     <>
@@ -69,8 +75,14 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to edit archive service">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Alias" {...text('alias')} error={!formState.validity.alias} required />
-          <FormSelectField label="Provider" {...select('provider')}>
+          <FormInputField
+            label="Alias"
+            {...text('alias')}
+            error={!formState.validity.alias}
+            required
+            ref={onMountValidator.bind}
+          />
+          <FormSelectField label="Provider" {...select('provider')} ref={onMountValidator.bind}>
             <option value="keeper">Keeper</option>
             <option value="wallabag">Wallabag</option>
           </FormSelectField>

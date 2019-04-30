@@ -3,6 +3,7 @@ import React, { MouseEvent, ReactNode } from 'react'
 import { FormState } from 'react-use-form-state'
 
 import { API_BASE_URL } from '../constants'
+import { FormMountValidity } from '../hooks/useOnMountInputValidator'
 
 export const URLRegExp = new RegExp(
   '^(https?:\\/\\/)?' + // protocol
@@ -87,14 +88,14 @@ export function getURLParam<T>(params: URLSearchParams, name: string, fallback: 
   return result
 }
 
-export function isValidForm(form: FormState<any>) {
-  let result = true
-  Object.keys(form.values).forEach(key => {
-    if (!form.validity[key]) {
-      result = false
+export function isValidForm(formState: FormState<any>, onMountValidator: FormMountValidity<any>) {
+  const validity = { ...onMountValidator.validity, ...formState.validity }
+  Object.keys(formState.values).forEach(key => {
+    if (!validity[key]) {
+      return false
     }
   })
-  return result
+  return true
 }
 
 export function getBookmarklet(apiKey: string) {
