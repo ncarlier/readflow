@@ -12,8 +12,10 @@ Read your Internet article flow in one place with complete peace of mind and fre
 
 - Read articles from anywhere in one place.
 - Save articles for offline reading.
-- Save articles to external services ([Keeper][keeper], [Wallabag][wallabag], ...).
+- Save articles to external services ([Keeper][keeper], [Wallabag][wallabag], Webhooks...).
 - Create categories and classify new articles automatically thanks to a customizable rule engine.
+- Receive notifications when new articles are to be read.
+- Good user experience on mobile devices.
 - No tracking and no publicity.
 
 ## Installation

@@ -92,7 +92,7 @@ html:
 ## Create archive
 archive: release/$(EXECUTABLE)
 	echo ">>> Creating release/$(ARCHIVE) archive..."
-	tar czf release/$(ARCHIVE) README.md LICENSE CHANGELOG.md -C release/ $(EXECUTABLE)
+	tar czf release/$(ARCHIVE) README.md LICENSE -C release/ $(EXECUTABLE)
 	rm release/$(EXECUTABLE)
 .PHONY: archive
 
@@ -102,6 +102,7 @@ distribution:
 	GOARCH=arm64 make build archive
 	GOARCH=arm make build archive
 	GOOS=darwin make build archive
+	GOOS=windows make build archive
 .PHONY: distribution
 
 ## Start development server (aka: a test database instance)
