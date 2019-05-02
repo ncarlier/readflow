@@ -7,13 +7,15 @@ import { Category } from '../../categories/models'
 import ButtonIcon from '../../common/ButtonIcon'
 import styles from '../../common/Dialog.module.css'
 import useKeyboard from '../../hooks/useKeyboard'
+import { Article } from '../models'
 import AddArticleForm from './AddArticleForm'
 
 interface Props {
   category?: Category
+  onSuccess: (article: Article) => void
 }
 
-export default ({ category }: Props) => {
+export default ({ category, onSuccess }: Props) => {
   const [showAddModal, hideAddModal] = useModal(() => (
     <ReactModal
       isOpen
@@ -25,7 +27,14 @@ export default ({ category }: Props) => {
       className={styles.dialog}
       overlayClassName={styles.overlay}
     >
-      <AddArticleForm category={category} onSuccess={hideAddModal} onCancel={hideAddModal} />
+      <AddArticleForm
+        category={category}
+        onSuccess={a => {
+          onSuccess(a)
+          hideAddModal()
+        }}
+        onCancel={hideAddModal}
+      />
     </ReactModal>
   ))
 

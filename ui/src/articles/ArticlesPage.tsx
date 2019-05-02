@@ -111,7 +111,7 @@ export const ArticlesPage = (props: AllProps) => {
           refetch={refetch}
           fetchMoreArticles={fetchMoreArticles}
         />
-        {!isHistory && <AddButton category={category} />}
+        {!isHistory && <AddButton category={category} onSuccess={refetch} />}
       </>
     ),
     Other: () => (

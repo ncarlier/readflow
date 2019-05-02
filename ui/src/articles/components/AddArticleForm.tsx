@@ -8,6 +8,7 @@ import FormInputField from '../../common/FormInputField'
 import { getGQLError, isValidForm } from '../../common/helpers'
 import Loader from '../../common/Loader'
 import Panel from '../../common/Panel'
+import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { AddNewArticleRequest, Article } from '../models'
@@ -24,9 +25,9 @@ interface Props {
   onCancel: (e: any) => void
 }
 
-type AllProps = Props
+type AllProps = Props & IMessageDispatchProps
 
-export default ({ value, category, onSuccess, onCancel }: AllProps) => {
+const AddArticleForm = ({ value, category, onSuccess, onCancel, showMessage }: AllProps) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { url }] = useFormState<AddArticleFormFields>({ url: value })
@@ -40,7 +41,9 @@ export default ({ value, category, onSuccess, onCancel }: AllProps) => {
       const variables = { ...form, category: categoryID }
       const res = await addArticleMutation({ variables })
       setLoading(false)
-      onSuccess(res.data.addArticle)
+      const article = res.data.addArticle
+      onSuccess(article)
+      showMessage(`New article: ${article.title}`)
     } catch (err) {
       setLoading(false)
       setErrorMessage(getGQLError(err))
@@ -88,3 +91,5 @@ export default ({ value, category, onSuccess, onCancel }: AllProps) => {
     </Panel>
   )
 }
+
+export default connectMessageDispatch(AddArticleForm)
