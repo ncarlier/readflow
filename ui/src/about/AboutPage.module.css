@@ -45,3 +45,18 @@
   color: inherit;
   vertical-align: top;
 }
+
+.about ul > li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+@media (max-width: 412px) {
+  .about ul > li {
+    display: block;
+    margin: 1em 0;
+  }
+  .about ul > li:before {
+    display: none;
+  }
+}

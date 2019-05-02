@@ -12,9 +12,21 @@ export default () => (
       </h1>
       <p>Read your Internet article flow in one place with complete peace of mind and freedom.</p>
       <ul>
-        <li>Sources</li>
-        <li>Bug or feature request</li>
-        <li>Support this project</li>
+        <li>
+          <a href="https://github.com/ncarlier/readflow" rel="noreferrer noopener" target="_blank">
+            Sources
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/ncarlier/readflow/issues" rel="noreferrer noopener" target="_blank">
+            Bug or feature request
+          </a>
+        </li>
+        <li>
+          <a href="https://www.paypal.me/nunux" rel="noreferrer noopener" target="_blank">
+            Support this project
+          </a>
+        </li>
       </ul>
     </Center>
   </Page>
