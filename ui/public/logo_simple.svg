@@ -11,7 +11,7 @@
    version="1.1"
    id="svg4585"
    inkscape:version="0.92.2 2405546, 2018-03-11"
-   sodipodi:docname="logo.svg"
+   sodipodi:docname="logo_simple.svg"
    width="200"
    height="200">
   <sodipodi:namedview
@@ -23,13 +23,13 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1360"
-     inkscape:window-height="708"
+     inkscape:window-width="1920"
+     inkscape:window-height="922"
      id="namedview25"
      showgrid="false"
      inkscape:zoom="1.4989474"
-     inkscape:cx="-14.9275"
-     inkscape:cy="43.67985"
+     inkscape:cx="-149.0216"
+     inkscape:cy="41.011311"
      inkscape:window-x="0"
      inkscape:window-y="31"
      inkscape:window-maximized="1"
@@ -60,13 +60,13 @@
   <g
      transform="matrix(1.1050787,1.1050787,-1.1050787,1.1050787,86.590791,-38.463523)"
      id="g4181"
-     style="fill:#d40000">
+     style="fill:#009be5;fill-opacity:1">
     <g
        id="g4149"
        transform="matrix(-0.80996054,-0.80996054,0.80996054,-0.80996054,-132.42193,170.90204)"
-       style="fill:#d40000;fill-opacity:1;stroke-width:0.32185319">
+       style="fill:#009be5;fill-opacity:1;stroke-width:0.32185319">
       <ellipse
-         style="fill:#d40000;fill-opacity:1;stroke-width:0.32185319"
+         style="fill:#009be5;fill-opacity:1;stroke-width:0.32185319"
          id="ellipse4137"
          ry="13.714"
          rx="13.566"
@@ -74,13 +74,13 @@
          cx="13.566"
          transform="translate(-103.05255,144.73673)" />
       <path
-         style="fill:#d40000;fill-opacity:1;stroke-width:0.32185319"
+         style="fill:#009be5;fill-opacity:1;stroke-width:0.32185319"
          id="path4139"
          d="M 65.569,100 H 46.35 C 46.35,74.121 25.598,53.142 0,53.142 v 0 -19.427 c 36.214,0 65.569,29.676 65.569,66.285 z"
          inkscape:connector-curvature="0"
          transform="translate(-103.05255,144.73673)" />
       <path
-         style="fill:#d40000;fill-opacity:1;stroke-width:0.32185319"
+         style="fill:#009be5;fill-opacity:1;stroke-width:0.32185319"
          id="path4141"
          d="M 79.135,100 C 79.135,55.817 43.706,20 0,20 V 0 c 54.631,0 98.918,44.772 98.918,100 z"
          inkscape:connector-curvature="0"
