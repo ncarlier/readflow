@@ -24,7 +24,7 @@ const login = async () => {
   const user = await authService.getUser()
   if (user === null) {
     if (document.location.pathname === '/login') {
-      return await authService.login()
+      throw new Error('login forced')
     } else {
       // No previous login, then redirect to about page.
       document.location.replace('https://about.readflow.app')
@@ -32,12 +32,12 @@ const login = async () => {
   } else if (user.expired) {
     return await authService.renewToken()
   } else {
-    return user
+    return Promise.resolve(user)
   }
 }
 
 if (getOnlineStatus()) {
-  login().then(run, authService.login)
+  login().then(user => user && run(), () => authService.login())
 } else {
   run()
 }
