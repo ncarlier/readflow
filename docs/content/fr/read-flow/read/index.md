@@ -11,6 +11,8 @@ Les flux de lecture sont organisés de la façon suivante:
 - L'historique: Il regroupe tous les articles lus.
 
 Pour marquer un article comme lu, vous devez cliquer sur le bouton de marquage.
+Si vous utiliser un mobile, vous pouvez également faire glisser l'article sur la gauche.
+Il disparetra et sera marqué comme lu.
 
 ![](images/mark-as-read.png)
 

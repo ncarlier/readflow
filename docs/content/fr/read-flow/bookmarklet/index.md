@@ -4,7 +4,7 @@ description = "Ajouter un article pendant la navigation web en utilisant une boo
 weight = 4
 +++
 
-Pour créer une bookmarklet, vous devez au préalable avoir [déclaré une clé d'API](../../third-parties/api-key).
+Pour créer une bookmarklet, vous devez au préalable avoir [déclaré une clé d'API](../../third-parties/create/integration-api).
 
 Une fois la clé d'API créée, vous pouvez glisser déposer l'icône de la bookmarklet {{< icon name="bookmark" size="large" >}} dans les favoris de votre navigateur.
 
