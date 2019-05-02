@@ -18,16 +18,17 @@ const run = () => {
   ReactDOM.render(<App store={store} history={history} />, document.getElementById('root'))
   serviceWorker.register()
   setupNotification()
+  localStorage.setItem('last_run', new Date().toISOString())
 }
 
 const login = async () => {
   const user = await authService.getUser()
   if (user === null) {
-    if (document.location.pathname === '/login') {
-      throw new Error('login forced')
-    } else {
-      // No previous login, then redirect to about page.
+    if (localStorage.getItem('last_run') === null && document.location.pathname !== '/login') {
+      // No previous usage, then redirect to about page.
       document.location.replace('https://about.readflow.app')
+    } else {
+      throw new Error('login forced')
     }
   } else if (user.expired) {
     return await authService.renewToken()
