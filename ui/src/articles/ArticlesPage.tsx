@@ -122,7 +122,8 @@ export const ArticlesPage = (props: AllProps) => {
   })
 
   if (data && data.articles) {
-    const { totalCount } = data.articles
+    const delta = data.articles.entries.filter(a => a.status !== req.status).length
+    const totalCount = data.articles.totalCount - delta
     const plural = totalCount > 1 ? ' articles ' : ' article '
     title = totalCount + plural + title
   } else title = ' '
