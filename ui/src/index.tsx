@@ -24,13 +24,13 @@ const login = async () => {
   const user = await authService.getUser()
   if (user === null) {
     if (document.location.pathname === '/login') {
-      return authService.login()
+      return await authService.login()
     } else {
       // No previous login, then redirect to about page.
       document.location.replace('https://about.readflow.app')
     }
   } else if (user.expired) {
-    return authService.renewToken()
+    return await authService.renewToken()
   } else {
     return user
   }
