@@ -20,7 +20,23 @@ $ # Lancer feedpushr
 $ feedpushr --log-pretty --plugin ./feedpushr-readflow.so --output readflow://
 ```
 
-Vous devriez voir ceci sur l'IHM de feedpushr:
+ou avec Docker:
+
+```bash
+$ cat conf.env
+APP_PLUGINS=feedpushr-readflow.so                                           
+APP_READFLOW_URL=https://api.readflow.app
+APP_READFLOW_API_KEY=<YOUR API KEY>
+APP_OUTPUTS=readflow://
+APP_FILTERS=fetch://#fetch,minify://#minify
+APP_LOG_PRETTY=true
+```
+
+```bash
+$ docker run -d --name feedpushr -p 8080:8080 --env-file=conf.env ncarlier/feedpushr-contrib
+```
+
+Vous devriez voir ceci sur l'IHM de feedpushr (http://localhost:8080/ui):
 
 ![](images/feedpushr-ui.png)
 
