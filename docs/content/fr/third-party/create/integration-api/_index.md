@@ -18,7 +18,7 @@ Le payload est un tableau d'articles. Un article peut avoir la structure suivant
 
 Toutes les propriétés sont facultatives à l'exception du titre.
 
-Exemple:
+*Exemple:*
 
 ```json
 [

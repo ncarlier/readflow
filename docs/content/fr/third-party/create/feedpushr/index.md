@@ -24,7 +24,4 @@ Vous devriez voir ceci sur l'IHM de feedpushr:
 
 ![](images/feedpushr-ui.png)
 
-Vous pouvez ensuite importer vos abonnements OPML dans feedpushr et voir vos articles arriver dans readflow:
-
-
-
+Vous pouvez ensuite importer vos abonnements OPML dans feedpushr et voir vos articles arriver dans readflow.

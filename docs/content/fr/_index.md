@@ -13,7 +13,7 @@ weight = 1
 * [Ajouter](read-flow) à votre flux de lecture des pages Web nettoyées de leur contenu indésirable
 * [Organiser](read-flow/organize) vos flux de lecture
 * Être [notifié](read-flow/notifications) quand votre flux de lecture contient des nouveaux articles
-* [Intégrer des services tiers](third-parties) pour étendre les possibilités
+* [Intégrer des services tiers](third-party) pour étendre les possibilités
 
 ## Contribuer à cette documentation
 

@@ -1,7 +1,7 @@
 +++
 title = "Les services tiers"
-description = "Comment intégrer des services tiers avec feedpushr"
-weight = 1
+description = "Comment intégrer des services tiers avec readflow"
+weight = 2
 +++
 
 Il existe deux types de service tiers:

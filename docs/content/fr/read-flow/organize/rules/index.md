@@ -33,7 +33,7 @@ Au sein de la règle il est possible de faire référence à l'article (`article
 Un article contient les attributs suivants:
 
 - `article.Title`: son titre
-- `article.Text`: son content text (le résumé)
+- `article.Text`: son content texte (le résumé)
 - `article.HTML`: son contenu HTML
 - `article.URL`: son URL d'origine
 - `article.Image`: son illustration
