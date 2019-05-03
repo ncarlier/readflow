@@ -30,7 +30,17 @@ const items = [
 type AllProps = RouteComponentProps<{}>
 
 export default ({ match }: AllProps) => (
-  <Page title="" actions={<NotificationButton />}>
+  <Page
+    title=""
+    actions={
+      <>
+        <a href="https://about.readflow.app/docs/en/" rel="noreferrer noopener" target="_blank">
+          Go to docs
+        </a>
+        <NotificationButton />
+      </>
+    }
+  >
     <Header>
       <h1>Settings</h1>
       <ButtonIcon icon="info" to="/about" title="About" />

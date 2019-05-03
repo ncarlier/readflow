@@ -86,7 +86,7 @@ export const AddRuleForm = ({ history, showMessage }: AllProps) => {
             required
             ref={onMountValidator.bind}
           >
-            <HelpLink href="https://about.readflow.app/docs/fr/read-flow/organize/rules/#la-syntaxe">
+            <HelpLink href="https://about.readflow.app/docs/en/read-flow/organize/rules/#syntax">
               View rule syntax
             </HelpLink>
           </FormTextareaField>
