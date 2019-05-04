@@ -34,6 +34,7 @@ all: build
 
 # Include common Make tasks
 root_dir:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+-include $(root_dir)/.env
 makefiles:=$(root_dir)/makefiles
 include $(makefiles)/help.Makefile
 include $(makefiles)/docker/compose.Makefile
