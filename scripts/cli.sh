@@ -4,6 +4,7 @@ source .env
 
 authority=https://login.nunux.org/auth/realms/readflow
 endpoint=https://api.readflow.app
+#endpoint=http://localhost:8080
 
 payload="grant_type=client_credentials&client_id=${client_id}&client_secret=${client_secret}"
 
