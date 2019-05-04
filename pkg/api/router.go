@@ -6,8 +6,14 @@ import (
 	"time"
 
 	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/middleware"
 )
+
+func isAdminRequest(r *http.Request) bool {
+	isAdmin := r.Context().Value(constant.IsAdmin)
+	return isAdmin != nil && isAdmin.(bool)
+}
 
 // NewRouter creates router with declared routes
 func NewRouter(conf *config.Config) *http.ServeMux {

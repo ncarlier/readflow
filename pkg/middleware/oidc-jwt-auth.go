@@ -52,7 +52,19 @@ func OpenIDConnectJWTAuth(authority string) Middleware {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+				isAdmin := false
+				if val, ok := claims["realm_access"]; ok {
+					if val, ok = val.(map[string]interface{})["roles"]; ok {
+						for _, role := range val.([]interface{}) {
+							if role.(string) == "admin" {
+								isAdmin = true
+								break
+							}
+						}
+					}
+				}
 				ctx = context.WithValue(ctx, constant.UserID, *user.ID)
+				ctx = context.WithValue(ctx, constant.IsAdmin, isAdmin)
 				inner.ServeHTTP(w, r.WithContext(ctx))
 				return
 			}

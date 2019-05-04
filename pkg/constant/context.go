@@ -9,4 +9,6 @@ const (
 	RequestID
 	// APIKeyAlias is the key used to store API key alias into the request context
 	APIKeyAlias
+	// IsAdmin is true when the user is an admin
+	IsAdmin
 )
