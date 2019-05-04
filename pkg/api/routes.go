@@ -57,10 +57,4 @@ var routes = Routes{
 		true,
 		varz,
 	},
-	Route{
-		[]string{"GET"},
-		"/metrics",
-		true,
-		metrics,
-	},
 }

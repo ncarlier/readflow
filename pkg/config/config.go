@@ -8,27 +8,29 @@ import (
 
 // Config contain global configuration
 type Config struct {
-	ListenAddr *string
-	DB         *string
-	Broker     *string
-	AuthN      *string
-	PublicURL  *string
-	Version    *bool
-	LogPretty  *bool
-	LogLevel   *string
-	SentryDSN  *string
+	ListenAddr        *string
+	ListenMetricsAddr *string
+	DB                *string
+	Broker            *string
+	AuthN             *string
+	PublicURL         *string
+	Version           *bool
+	LogPretty         *bool
+	LogLevel          *string
+	SentryDSN         *string
 }
 
 var config = &Config{
-	ListenAddr: flag.String("listen", getEnv("LISTEN_ADDR", ":8080"), "HTTP service address"),
-	DB:         flag.String("db", getEnv("DB", "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable"), "Database connection string"),
-	Broker:     flag.String("broker", getEnv("BROKER", ""), "External event broker URI for outgoing events"),
-	AuthN:      flag.String("authn", getEnv("AUTHN", "https://login.nunux.org/auth/realms/readflow"), "Authentication method (\"mock\", \"proxy\" or OIDC if URL)"),
-	PublicURL:  flag.String("public-url", getEnv("PUBLIC_URL", "https://api.readflow.app"), "Public URL"),
-	Version:    flag.Bool("version", false, "Print version"),
-	LogPretty:  flag.Bool("log-pretty", getBoolEnv("LOG_PRETTY", false), "Output human readable logs"),
-	LogLevel:   flag.String("log-level", getEnv("LOG_LEVEL", "info"), "Log level (debug, info, warn, error)"),
-	SentryDSN:  flag.String("sentry-dsn", getEnv("SENTRY_DSN", ""), "Sentry DSN URL"),
+	ListenAddr:        flag.String("listen", getEnv("LISTEN", ":8080"), "Service listen address"),
+	ListenMetricsAddr: flag.String("listen-metrics", getEnv("LISTEN_METRICS", ""), "Metrics listen address"),
+	DB:                flag.String("db", getEnv("DB", "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable"), "Database connection string"),
+	Broker:            flag.String("broker", getEnv("BROKER", ""), "External event broker URI for outgoing events"),
+	AuthN:             flag.String("authn", getEnv("AUTHN", "https://login.nunux.org/auth/realms/readflow"), "Authentication method (\"mock\", \"proxy\" or OIDC if URL)"),
+	PublicURL:         flag.String("public-url", getEnv("PUBLIC_URL", "https://api.readflow.app"), "Public URL"),
+	Version:           flag.Bool("version", false, "Print version"),
+	LogPretty:         flag.Bool("log-pretty", getBoolEnv("LOG_PRETTY", false), "Output human readable logs"),
+	LogLevel:          flag.String("log-level", getEnv("LOG_LEVEL", "info"), "Log level (debug, info, warn, error)"),
+	SentryDSN:         flag.String("sentry-dsn", getEnv("SENTRY_DSN", ""), "Sentry DSN URL"),
 }
 
 func init() {

@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/ncarlier/readflow/pkg/job"
+	"github.com/ncarlier/readflow/pkg/metric"
 
 	eventbroker "github.com/ncarlier/readflow/pkg/event-broker"
 	_ "github.com/ncarlier/readflow/pkg/event-listener"
@@ -77,6 +78,20 @@ func main() {
 		Handler: api.NewRouter(conf),
 	}
 
+	var metricsServer *http.Server
+	if *conf.ListenMetricsAddr != "" {
+		metricsServer = &http.Server{
+			Addr:    *conf.ListenMetricsAddr,
+			Handler: metric.NewRouter(),
+		}
+		go func() {
+			log.Info().Str("listen", *conf.ListenMetricsAddr).Msg("metrics server started")
+			if err := metricsServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatal().Err(err).Str("listen", *conf.ListenMetricsAddr).Msg("could not start metrics server")
+			}
+		}()
+	}
+
 	done := make(chan bool)
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
@@ -94,6 +109,12 @@ func main() {
 		if err := server.Shutdown(ctx); err != nil {
 			log.Fatal().Err(err).Msg("could not gracefully shutdown the server")
 		}
+		if metricsServer != nil {
+			if err := metricsServer.Shutdown(ctx); err != nil {
+				log.Fatal().Err(err).Msg("could not gracefully shutdown metrics server")
+			}
+		}
+
 		close(done)
 	}()
 
