@@ -84,6 +84,7 @@ func main() {
 			Addr:    *conf.ListenMetricsAddr,
 			Handler: metric.NewRouter(),
 		}
+		metric.StartCollectors(_db)
 		go func() {
 			log.Info().Str("listen", *conf.ListenMetricsAddr).Msg("metrics server started")
 			if err := metricsServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -110,6 +111,7 @@ func main() {
 			log.Fatal().Err(err).Msg("could not gracefully shutdown the server")
 		}
 		if metricsServer != nil {
+			metric.StopCollectors()
 			if err := metricsServer.Shutdown(ctx); err != nil {
 				log.Fatal().Err(err).Msg("could not gracefully shutdown metrics server")
 			}

@@ -7,6 +7,25 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
+// CountArticles count articles
+func (pg *DB) CountArticles(status string) (uint, error) {
+	counter := pg.psql.Select("count(*)").From(
+		"articles",
+	)
+
+	if status != "" {
+		counter = counter.Where(sq.Eq{"status": status})
+	}
+
+	query, args, _ := counter.ToSql()
+
+	var count uint
+	if err := pg.db.QueryRow(query, args...).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 // CountArticlesByUserID returns total nb of articles of an user from the DB
 func (pg *DB) CountArticlesByUserID(uid uint, req model.ArticlesPageRequest) (uint, error) {
 	counter := pg.psql.Select("count(*)").From(

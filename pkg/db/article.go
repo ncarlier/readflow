@@ -8,6 +8,7 @@ import (
 
 // ArticleRepository is the repository interface to manage Articles
 type ArticleRepository interface {
+	CountArticles(status string) (uint, error)
 	CountArticlesByUserID(uid uint, req model.ArticlesPageRequest) (uint, error)
 	GetPaginatedArticlesByUserID(uid uint, req model.ArticlesPageRequest) (*model.ArticlesPageResponse, error)
 	GetArticleByID(id uint) (*model.Article, error)

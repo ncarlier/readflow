@@ -8,4 +8,5 @@ type UserRepository interface {
 	GetUserByUsername(username string) (*model.User, error)
 	CreateOrUpdateUser(user model.User) (*model.User, error)
 	DeleteUser(user model.User) error
+	CountUsers() (uint, error)
 }

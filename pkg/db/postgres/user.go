@@ -158,3 +158,15 @@ func (pg *DB) DeleteUser(user model.User) error {
 
 	return nil
 }
+
+// CountUsers count users
+func (pg *DB) CountUsers() (uint, error) {
+	counter := pg.psql.Select("count(*)").From("users")
+	query, args, _ := counter.ToSql()
+
+	var count uint
+	if err := pg.db.QueryRow(query, args...).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
+}
