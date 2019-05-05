@@ -36,7 +36,7 @@ APP_LOG_PRETTY=true
 $ docker run -d --name feedpushr -p 8080:8080 --env-file=conf.env ncarlier/feedpushr-contrib
 ```
 
-Vous devriez voir ceci sur l'IHM de feedpushr (http://localhost:8080/ui):
+Vous devriez voir ceci sur [l'IHM de feedpushr](http://localhost:8080/ui) :
 
 ![](images/feedpushr-ui.png)
 
