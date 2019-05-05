@@ -64,47 +64,9 @@ You can access Web UI on http://localhost:8080/ui
 
 ![Screenshot](screenshot.png)
 
-## New articles
+## Documentation
 
-The only way to create a new article is to use the integration API.
-
-This API requires an API key.
-Use the user interface to obtain an API key.
-Then use the API key with your requests.
-
-```bash
-$ cat payload.json | http \
-  -a api:89b5700d-e4da-407e-94a0-7303417189c5 \
-  :8080/articles
-```
-
-The JSON payload is an array of article to create.
-It must comply this structure:
-
-```js
-[
-  {
-    "title": "foo",          // Article title
-    "html": "<p>foo</>",     // Article HTML content
-    "text": "foo",           // (optional) Article excerpt
-    "url": "http://foo.com", // (optional) Article URL
-    "image": "http://...",   // (optional) Article illustration
-    "tags": "test,foo",      // (optional) Article tags
-    "category": "Test",      // (optional) Target category title
-    "published_at": "2019-04-07T13:04:44.247Z", // (optional) Article publication date
-  },
-  {
-    "title": "bar",
-    "html": "<p>bar</p>"
-  }
-]
-```
-
-If the article `URL` is provided and `image` or `text` is missing, readflow will try to retrieve this information.
-
-`Tags` can be used by the rule engine to put an article into the relevant category.
-
-If the `category` is set then the rule engine is bypassed.
+The documentation can be found here: https://about.readlow.app/docs
 
 ## GraphQL API
 
