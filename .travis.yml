@@ -1,0 +1,26 @@
+language: go
+go:
+- "1.12"
+services:
+  - postgresql
+env:
+  - DB=postgres://postgres@localhost/travis_ci_test?sslmode=disable
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+script:
+- make test
+- make distribution
+deploy:
+  provider: releases
+  api_key:
+    secure: RAOV8u8hiRAY1HVtQXSp+HvxZOHo1JxahWAVPodBdNNNn2B7bVKcwNqtnMUZebW9u+Z+bc3euMARmzzoMkAq8B2CIb2CnB/THw1WSleOpoW2mnjICDwp40EyeU9R0wzVewqqAq2tT5Ml+KTf9SX7IcjaoymynXkTog4ARPPkd4vJ66jZOXhbggIPI0Sjr4BzmscdVKH6q4cCrdMoWEAHcjVN4aDW4DBtGWL8KYBOslY3du+LOo0b3mmfDbS1H7AXsL588OrKHs+X/299yMNQPPiQ0EiKklUr8JfMqzaDQcwJ3tBETpY6XLx/Re0B1kKlXlrMj9FwN3Yax77k6LZf/kKWR7HbCbgXTcnGWyc31JYVsce+XYyqgVHtnzBsenBXBsLOra5nqWkGoewpMgdONeO/V0biFSsXPmDp4v0+fVB19or0FNjtboEw1BEwkJMGhkQ3sZpb+wLTO5B4bVy2vl1RHOsTrI7ySoUbLh4Hw1rqZjRGtOJr/poW2jC6PNFM+HJYxRWT0is6cKlYIC8J6Rp4yo69ljH1P3Tul2HapHamL+RBq3afert8yZ5R45rd2BqoulsqE6XzE3vPIYdNY5Cb2P++C8IxDKKC6lIjqvRLZD1Py1N0xUXEVlZ5I2iI6rxhIRfhDOVg3LZVa7Z328NuQ2CuVYZol4Z6A6rwrOs=
+  file:
+  - release/readflow-linux-amd64.tgz
+  - release/readflow-linux-arm64.tgz
+  - release/readflow-linux-arm.tgz
+  - release/readflow-darwin-amd64.tgz
+  - release/readflow-windows-amd64.tgz
+  skip_cleanup: true
+  on:
+    repo: ncarlier/readflow
+    tags: true
