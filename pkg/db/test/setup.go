@@ -1,6 +1,7 @@
 package dbtest
 
 import (
+	"os"
 	"testing"
 
 	"github.com/ncarlier/readflow/pkg/assert"
@@ -38,7 +39,7 @@ func assertUserExists(t *testing.T, username string) *model.User {
 func setupTestCase(t *testing.T) func(t *testing.T) {
 	t.Log("setup test case")
 	var err error
-	testDB, err = db.Configure(defaultDBConnString)
+	testDB, err = db.Configure(getEnv("DB", defaultDBConnString))
 	if err != nil {
 		t.Fatalf("Unable to setup Database: %v", err)
 	}
@@ -53,4 +54,11 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 
 func init() {
 	logger.Configure("debug", true, "")
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv("APP_" + key); ok {
+		return value
+	}
+	return fallback
 }

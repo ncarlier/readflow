@@ -4,12 +4,11 @@ go:
 services:
   - postgresql
 env:
-  - DB=postgres://postgres@localhost/travis_ci_test?sslmode=disable
+  - APP_DB=postgres://postgres@localhost/travis_ci_test?sslmode=disable
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 script:
-- make test
-- make distribution
+- make test distribution
 deploy:
   provider: releases
   api_key:
