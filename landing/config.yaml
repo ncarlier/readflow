@@ -34,7 +34,7 @@ params:
       text: Centralize your news monitoring without frills
       url: https://readflow.app/login
       buttonText: Get started
-    - title: Progressive We App
+    - title: Progressive Web App
       icon: pwa
       text: Great user experiences on all your devices
       url: /docs
