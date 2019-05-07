@@ -37,10 +37,10 @@ export default (props: Props) => {
 
   const articles = props.articles.filter(filter)
 
-  if (articles.length === 0) {
+  if (articles.length <= 3) {
     if (hasMore) {
       refetch()
-    } else {
+    } else if (articles.length === 0) {
       return (
         <Empty>
           <ButtonIcon title="Refresh" icon="refresh" onClick={() => refetch()} />
