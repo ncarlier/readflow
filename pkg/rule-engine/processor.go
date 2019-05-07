@@ -3,6 +3,7 @@ package ruleengine
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/ncarlier/readflow/pkg/constant"
 
@@ -20,8 +21,11 @@ type RuleProcessor struct {
 func NewRuleProcessor(rule model.Rule) (*RuleProcessor, error) {
 	p, err := expr.Parse(
 		rule.Rule,
-		expr.Define("article", model.Article{}),
+		expr.Define("title", ""),
+		expr.Define("text", ""),
+		expr.Define("url", ""),
 		expr.Define("key", ""),
+		expr.Define("tags", []string{}),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("invalid rule expression: %s", err)
@@ -33,19 +37,35 @@ func NewRuleProcessor(rule model.Rule) (*RuleProcessor, error) {
 }
 
 // Apply a rule on an article
-func (rp *RuleProcessor) Apply(ctx context.Context, article *model.Article) (bool, error) {
-	env := map[string]interface{}{
-		"article": article,
-		"key":     "",
+func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleForm) (bool, error) {
+	tags := []string{}
+	if article.Tags != nil {
+		tags = strings.Split(*article.Tags, ",")
+	}
+	text := ""
+	if article.Text != nil {
+		text = *article.Text
+	}
+	url := ""
+	if article.URL != nil {
+		url = *article.URL
+	}
+	key := ""
+	if alias := ctx.Value(constant.APIKeyAlias); alias != nil {
+		key = alias.(string)
 	}
 
-	if alias := ctx.Value(constant.APIKeyAlias); alias != nil {
-		env["key"] = alias
+	env := map[string]interface{}{
+		"title": article.Title,
+		"text":  text,
+		"url":   url,
+		"key":   key,
+		"tags":  tags,
 	}
 
 	result, err := rp.expression.Eval(env)
 	if err != nil {
-		return false, fmt.Errorf("Unable to eval expression on article #%d: %s", article.ID, err)
+		return false, fmt.Errorf("Unable to eval expression on article %s: %s", *article.URL, err)
 	}
 	match := toBool(result)
 	if match {
@@ -72,7 +92,7 @@ func NewProcessorsPipeline(rules []model.Rule) (*ProcessorPipeline, error) {
 }
 
 // Apply a processor pipeline on an article
-func (pp *ProcessorPipeline) Apply(ctx context.Context, article *model.Article) (bool, error) {
+func (pp *ProcessorPipeline) Apply(ctx context.Context, article *model.ArticleForm) (bool, error) {
 	for _, processor := range *pp {
 		applied, err := processor.Apply(ctx, article)
 		if err != nil {

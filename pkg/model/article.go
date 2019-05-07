@@ -18,6 +18,7 @@ type ArticleForm struct {
 	Image       *string    `json:"image,omitempty"`
 	PublishedAt *time.Time `json:"published_at,omitempty"`
 	CategoryID  *uint      `json:"category,omitempty"`
+	Tags        *string    `json:"tags,omitempty"`
 }
 
 // Articles structure definition
@@ -93,6 +94,21 @@ func (ab *ArticleBuilder) Build() *Article {
 	return ab.article
 }
 
+// BuildForm creates an article form
+func (ab *ArticleBuilder) BuildForm(tags string) *ArticleForm {
+	ab.Build()
+	return &ArticleForm{
+		Title:       ab.article.Title,
+		Text:        ab.article.Text,
+		HTML:        ab.article.HTML,
+		URL:         ab.article.URL,
+		Image:       ab.article.Image,
+		PublishedAt: ab.article.PublishedAt,
+		CategoryID:  ab.article.CategoryID,
+		Tags:        &tags,
+	}
+}
+
 // Random fill article with random data
 func (ab *ArticleBuilder) Random() *ArticleBuilder {
 	gofakeit.Seed(0)
@@ -126,6 +142,12 @@ func (ab *ArticleBuilder) CategoryID(categoryID uint) *ArticleBuilder {
 // Title set article title
 func (ab *ArticleBuilder) Title(title string) *ArticleBuilder {
 	ab.article.Title = title
+	return ab
+}
+
+// Text set article text
+func (ab *ArticleBuilder) Text(text string) *ArticleBuilder {
+	ab.article.Text = &text
 	return ab
 }
 

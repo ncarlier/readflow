@@ -27,15 +27,13 @@ A rule is:
 
 The definition of a rule is a pseudo code whose result must be true or false.
 
-Within the rule it is possible to refer to the article (`article`) and the API key (`key`).
+Within the rule it is possible to refer to some attributes:
 
-An article contains the following attributes:
-
-- `article.Title`: its title
-- `article.Text`: its text content (le résumé)
-- `article.HTML`: its HTML content
-- `article.URL`: ist source URL
-- `article.Image`: its illustration
+- `title`: article title
+- `text`: article text content
+- `url`: article source URL
+- `tags`: article input tags
+- `key`: alias of the used API key
 
 ### Syntax
 
@@ -63,7 +61,7 @@ An article contains the following attributes:
 #### Functions
 
 - `len` (length of the character string)
-   *Example:* `len(article.Text) == 0`
+   *Example:* `len(text) >= 100`
 
 ### Examples:
 
@@ -73,7 +71,7 @@ Classify articles whose API key is "foo":
 key == "foo"
 ```
 
-Classify items with API key "foo" or "bar":
+Classify articles with API key "foo" or "bar":
 
 ```js
 key == "foo" || key == "bar"
@@ -81,14 +79,20 @@ key == "foo" || key == "bar"
 key in ["foo", "bar"]
 ```
 
+Classify articles with "foo" os tag:
+
+```js
+"foo" in tags
+```
+
 Classify articles with titles containing "Amazon" and "Alexa":
 
 ```js
-article.Title matches "Amazon" and article.Title matches "Alexa"
+title matches "Amazon" and title matches "Alexa"
 ```
 
 Classify items that come from CNN:
 
 ```js
-article.URL matches "^https://edition.cnn.com"
+url matches "^https://edition.cnn.com"
 ```

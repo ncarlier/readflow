@@ -21,20 +21,16 @@ type ArticleCreationOptions struct {
 // CreateArticle creates new article
 func (reg *Registry) CreateArticle(ctx context.Context, data model.ArticleForm, opts ArticleCreationOptions) (*model.Article, error) {
 	uid := getCurrentUserFromContext(ctx)
-	builder := model.NewArticleBuilder()
-	article := builder.UserID(
-		uid,
-	).Form(&data).Build()
 
 	// TODO validate article!
 
 	var category *model.Category
-	if article.CategoryID != nil {
-		cat, err := reg.GetCategory(ctx, *article.CategoryID)
+	if data.CategoryID != nil {
+		cat, err := reg.GetCategory(ctx, *data.CategoryID)
 		if err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", article.Title).Msg("unable to create article")
+			).Str("title", data.Title).Msg("unable to create article")
 			return nil, err
 		}
 		category = cat
@@ -42,13 +38,18 @@ func (reg *Registry) CreateArticle(ctx context.Context, data model.ArticleForm, 
 
 	if category == nil {
 		// Process article by the rule engine
-		if err := reg.ProcessArticleByRuleEngine(ctx, article); err != nil {
+		if err := reg.ProcessArticleByRuleEngine(ctx, &data); err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", article.Title).Msg("unable to create article")
+			).Str("title", data.Title).Msg("unable to create article")
 			return nil, err
 		}
 	}
+
+	builder := model.NewArticleBuilder()
+	article := builder.UserID(
+		uid,
+	).Form(&data).Build()
 
 	if article.URL != nil && (article.Image == nil || article.Text == nil || article.HTML == nil) {
 		// Fetch original article to extract missing attributes

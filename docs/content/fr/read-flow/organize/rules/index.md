@@ -28,15 +28,13 @@ Une règle est composée:
 
 La définition d'une règle est un pseudo code dont le résultat doit être vrai ou faux.
 
-Au sein de la règle il est possible de faire référence à l'article (`article`) et la clé d'API (`key`).
+Au sein de la règle il est possible de faire référence à certains attributs:
 
-Un article contient les attributs suivants:
-
-- `article.Title`: son titre
-- `article.Text`: son content texte (le résumé)
-- `article.HTML`: son contenu HTML
-- `article.URL`: son URL d'origine
-- `article.Image`: son illustration
+- `title`: le titre de l'article
+- `text`: le text (résumé) de l'article
+- `url`: l'URL d'origine de l'article
+- `tags`: les tags de l'article en entrée
+- `key`: l'alias de la clé d'API utilisée
 
 ### La syntaxe
 
@@ -64,7 +62,7 @@ Un article contient les attributs suivants:
 #### Les fonctions
 
 - `len` (longueur de la chaine de caractères)
-   *Exemple:* `len(article.Text) == 0`
+   *Exemple:* `len(tText) >= 0`
 
 ### Exemples:
 
@@ -82,14 +80,20 @@ key == "foo" || key == "bar"
 key in ["foo", "bar"]
 ```
 
+Classer les articles avec "foo" en tag:
+
+```js
+"foo" in tags
+```
+
 Classer les articles dont le titre contient "Amazon" et "Alexa":
 
 ```js
-article.Title matches "Amazon" and article.Title matches "Alexa"
+title matches "Amazon" and title matches "Alexa"
 ```
 
 Classer les articles qui viennent de CNN:
 
 ```js
-article.URL matches "^https://edition.cnn.com"
+url matches "^https://edition.cnn.com"
 ```
