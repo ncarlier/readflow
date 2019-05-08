@@ -23,7 +23,7 @@ interface Props {
 
 type AllProps = Props & RouteComponentProps<{ id: string }>
 
-export default ({ category, match }: AllProps) => {
+export default ({ category, match, history }: AllProps) => {
   const { id } = match.params
 
   let title = 'Articles to read'
@@ -56,7 +56,7 @@ export default ({ category, match }: AllProps) => {
               <ArticleMenu article={article} />
             </ArticleHeader>
             <ArticleContent article={article} />
-            <MarkAsButton article={article} floating />
+            <MarkAsButton article={article} floating onSuccess={() => history.push(redirect)} />
           </>
         ) : (
           <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>

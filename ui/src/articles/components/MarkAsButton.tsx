@@ -11,12 +11,13 @@ import { UpdateArticleStatus } from '../queries'
 interface Props {
   article: Article
   floating?: boolean
+  onSuccess?: (article: Article) => void
 }
 
 type AllProps = Props & IMessageDispatchProps
 
 export const MarkAsButton = (props: AllProps) => {
-  const { article, floating = false, showMessage } = props
+  const { article, floating = false, showMessage, onSuccess } = props
 
   const [loading, setLoading] = useState(false)
   const updateArticleStatusMutation = useMutation<UpdateArticleStatusRequest>(UpdateArticleStatus)
@@ -29,6 +30,7 @@ export const MarkAsButton = (props: AllProps) => {
         // update: updateCacheAfterUpdateStatus
       })
       if (floating) setLoading(false)
+      if (onSuccess) onSuccess(article)
     } catch (err) {
       setLoading(false)
       showMessage(getGQLError(err), true)
