@@ -14,6 +14,9 @@ export default ({ article }: Props) => {
   cssLink.href = process.env.PUBLIC_URL + '/readable.css'
   cssLink.rel = 'stylesheet'
   cssLink.type = 'text/css'
+  var script = document.createElement('script')
+  script.setAttribute('type', 'text/javascript')
+  script.setAttribute('src', process.env.PUBLIC_URL + '/readable.js')
 
   useEffect(() => {
     let ifrm = contentRef.current
@@ -21,6 +24,7 @@ export default ({ article }: Props) => {
     ifrm.document.open()
     ifrm.document.write(article.html)
     ifrm.document.head.appendChild(cssLink)
+    ifrm.document.head.appendChild(script)
     ifrm.document.close()
   }, [article])
 
