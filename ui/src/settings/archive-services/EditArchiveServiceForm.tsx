@@ -15,6 +15,7 @@ import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
 import { ArchiveService } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
+import WebhookConfigForm from './providers/WebhookConfigForm'
 import { CreateOrUpdateArchiveService } from './queries'
 
 interface EditArchiveServiceFormFields {
@@ -84,9 +85,10 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
           />
           <FormSelectField label="Provider" {...select('provider')} ref={onMountValidator.bind}>
             <option value="keeper">Keeper</option>
-            <option value="wallabag">Wallabag</option>
+            <option value="webhook">Webhook</option>
           </FormSelectField>
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
+          {formState.values.provider === 'webhook' && <WebhookConfigForm onChange={setConfig} config={config} />}
           <FormCheckboxField label="To use by default" {...checkbox('is_default')} />
         </form>
       </section>

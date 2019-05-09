@@ -79,7 +79,7 @@ key == "foo" || key == "bar"
 key in ["foo", "bar"]
 ```
 
-Classify articles with "foo" os tag:
+Classify articles with "foo" as tag:
 
 ```js
 "foo" in tags
