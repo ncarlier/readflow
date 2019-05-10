@@ -13,12 +13,12 @@ import ShareLink from './ShareLink'
 
 interface Props {
   article: Article
-  noShortcuts?: boolean
+  keyboard?: boolean
 }
 
 type AllProps = Props
 
-export default ({ article, noShortcuts = false }: AllProps) => {
+export default (props: AllProps) => {
   const nvg: any = window.navigator
 
   const { data, error, loading } = useQuery<GetArchiveServicesResponse>(GetArchiveServices)
@@ -33,7 +33,7 @@ export default ({ article, noShortcuts = false }: AllProps) => {
     Data: ({ archivers }) =>
       archivers.map(service => (
         <li key={`as-${service.id}`}>
-          <ArchiveLink article={article} service={service} noShortcuts={noShortcuts} />
+          <ArchiveLink service={service} {...props} />
         </li>
       )),
     Other: () => <li>Unknown error</li>
@@ -44,18 +44,12 @@ export default ({ article, noShortcuts = false }: AllProps) => {
       <ul>
         {nvg.share && (
           <li>
-            <ShareLink article={article} />
+            <ShareLink {...props} />
           </li>
         )}
-        {article.isOffline ? (
-          <li>
-            <OfflineLink article={article} remove noShortcuts={noShortcuts} />
-          </li>
-        ) : (
-          <li>
-            <OfflineLink article={article} noShortcuts={noShortcuts} />
-          </li>
-        )}
+        <li>
+          <OfflineLink {...props} />
+        </li>
         {renderArchiveServices(data, error, loading)}
       </ul>
     </DropdownMenu>

@@ -11,13 +11,14 @@ import { UpdateArticleStatus } from '../queries'
 interface Props {
   article: Article
   floating?: boolean
+  keyboard?: boolean
   onSuccess?: (article: Article) => void
 }
 
 type AllProps = Props & IMessageDispatchProps
 
 export const MarkAsButton = (props: AllProps) => {
-  const { article, floating = false, showMessage, onSuccess } = props
+  const { article, floating = false, keyboard = false, showMessage, onSuccess } = props
 
   const [loading, setLoading] = useState(false)
   const updateArticleStatusMutation = useMutation<UpdateArticleStatusRequest>(UpdateArticleStatus)
@@ -29,8 +30,8 @@ export const MarkAsButton = (props: AllProps) => {
         variables: { id: article.id, status }
         // update: updateCacheAfterUpdateStatus
       })
-      if (floating) setLoading(false)
       if (onSuccess) onSuccess(article)
+      if (floating) setLoading(false)
     } catch (err) {
       setLoading(false)
       showMessage(getGQLError(err), true)
@@ -43,8 +44,8 @@ export const MarkAsButton = (props: AllProps) => {
   }, [article])
 
   // Keyboard shortcut is only active for Floating Action Button
-  useKeyboard('m', handleOnClick, floating)
-  const kbs = floating ? ' [m]' : ''
+  useKeyboard('m', handleOnClick, keyboard)
+  const kbs = keyboard ? ' [m]' : ''
 
   if (article.status === 'read') {
     return (

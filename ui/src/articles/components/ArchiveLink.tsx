@@ -2,9 +2,9 @@ import React, { useCallback } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 
 import { getGQLError } from '../../common/helpers'
+import Kbd from '../../common/Kbd'
 import LinkIcon from '../../common/LinkIcon'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
-import useKeyboard from '../../hooks/useKeyboard'
 import { ArchiveService } from '../../settings/archive-services/models'
 import { Article } from '../models'
 import { ArchiveArticle } from '../queries'
@@ -16,15 +16,15 @@ interface ArchiveArticleFields {
 }
 
 interface Props {
-  article: Article
   service: ArchiveService
-  noShortcuts?: boolean
+  article: Article
+  keyboard?: boolean
 }
 
 type AllProps = Props & IMessageDispatchProps
 
 export const ArchiveLink = (props: AllProps) => {
-  const { article, service, showMessage, noShortcuts } = props
+  const { article, service, showMessage, keyboard = false } = props
 
   const archiveArticleMutation = useMutation<ArchiveArticleFields>(ArchiveArticle)
 
@@ -39,12 +39,10 @@ export const ArchiveLink = (props: AllProps) => {
     }
   }, [article])
 
-  useKeyboard('s', archiveArticle, service.is_default && !noShortcuts)
-
   return (
     <LinkIcon title={`Save to ${service.alias}`} icon="backup" onClick={archiveArticle}>
       <span>Save to {service.alias}</span>
-      {service.is_default && !noShortcuts && <kbd>s</kbd>}
+      {keyboard && service.is_default && <Kbd keys="s" onKeypress={archiveArticle} />}
     </LinkIcon>
   )
 }

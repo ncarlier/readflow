@@ -1,12 +1,22 @@
+.shortcuts {
+  display: flex;
+  flex-direction: row;
+}
+
+.shortcuts > section {
+  margin-right: 1em;
+}
+
 .shortcuts ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.shortcuts > ul > li:first-child {
+.shortcuts h1 {
   font-weight: 500;
   font-size: 1.2em;
+  margin: 0;
 }
 
 .shortcuts li > kbd {

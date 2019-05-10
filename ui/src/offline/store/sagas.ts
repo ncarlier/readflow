@@ -3,14 +3,7 @@ import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
 import { Article } from '../../articles/models'
 import { getArticle, getArticles, GetArticlesQuery, removeArticle, saveArticle } from '../dao/articles'
 import {
-  fetchError,
-  fetchSuccess,
-  removeError,
-  removeSuccess,
-  saveError,
-  saveSuccess,
-  selectError,
-  selectSuccess
+    fetchError, fetchSuccess, removeError, removeSuccess, saveError, saveSuccess, selectError, selectSuccess
 } from './actions'
 import { OfflineArticlesActionTypes } from './types'
 
@@ -39,7 +32,7 @@ function* handleFetch({ payload }: { payload: GetArticlesQuery }) {
 
 function* handleSave({ payload }: { payload: Article }) {
   try {
-    const res = yield call(saveArticle, payload)
+    const res = yield call(saveArticle, { ...payload, isOffline: true })
 
     if (res.error) {
       yield put(saveError(new Error(res.error)))

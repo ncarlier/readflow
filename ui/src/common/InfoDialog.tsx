@@ -29,7 +29,7 @@ export default ({ title, children, onOk }: Props) => (
       </header>
       <section>{children}</section>
       <footer>
-        <Button primary onClick={onOk}>
+        <Button primary onClick={onOk} autoFocus>
           Ok
         </Button>
       </footer>

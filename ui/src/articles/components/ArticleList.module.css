@@ -5,8 +5,9 @@
   padding: 1em;
 }
 
-.list li {
+.item {
   margin-bottom: 1em;
+  outline: none;
 }
 
 @media (max-width: 512px) {

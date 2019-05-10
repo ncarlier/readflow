@@ -5,6 +5,7 @@ import { Article } from '../models'
 
 interface Props {
   article: Article
+  keyboard?: boolean
 }
 
 export default ({ article }: Props) => {

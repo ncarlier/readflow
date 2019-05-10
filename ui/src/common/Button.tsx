@@ -12,6 +12,7 @@ interface Props {
   primary?: boolean
   danger?: boolean
   disabled?: boolean
+  autoFocus?: boolean
   title?: string
   onClick?: (e: any) => void
   to?: LocationDescriptor
@@ -20,7 +21,7 @@ interface Props {
 
 export default forwardRef<any, Props>((props, ref) => {
   // eslint-disable-next-line react/prop-types
-  const { icon, title, primary, danger, disabled, onClick, to, children } = props
+  const { icon, primary, danger, disabled, to, children, ...rest } = props
   const className = classNames(
     styles.button,
     primary && !disabled ? styles.primary : undefined,
@@ -29,7 +30,7 @@ export default forwardRef<any, Props>((props, ref) => {
 
   if (to) {
     return (
-      <Link ref={ref} to={to} title={title} className={className} onClick={onClick}>
+      <Link ref={ref} to={to} className={className} {...rest}>
         {icon && <Icon name={icon} />}
         {children}
         {!disabled && <Ink />}
@@ -37,7 +38,7 @@ export default forwardRef<any, Props>((props, ref) => {
     )
   }
   return (
-    <button ref={ref} title={title} className={className} disabled={disabled} onClick={onClick}>
+    <button ref={ref} className={className} disabled={disabled} {...rest}>
       {icon && <Icon name={icon} />}
       {children}
       {!disabled && <Ink />}

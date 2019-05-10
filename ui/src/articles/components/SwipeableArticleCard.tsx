@@ -46,7 +46,7 @@ export const SwipeableArticleCard = (props: AllProps) => {
 
   return (
     <SwipeableListItem background={<Background icon={bgIcon} />} onSwipe={handleOnDelete}>
-      <ArticleCard article={article} readMoreBasePath={readMoreBasePath} />
+      <ArticleCard article={article} readMoreBasePath={readMoreBasePath} isActive={false} />
     </SwipeableListItem>
   )
 }

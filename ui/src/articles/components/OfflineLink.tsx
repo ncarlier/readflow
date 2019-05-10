@@ -3,23 +3,22 @@ import { useApolloClient } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
 
 import ConfirmDialog from '../../common/ConfirmDialog'
+import Kbd from '../../common/Kbd'
 import LinkIcon from '../../common/LinkIcon'
 import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
 import { connectOfflineDispatch, IOfflineDispatchProps } from '../../containers/OfflineContainer'
-import useKeyboard from '../../hooks/useKeyboard'
 import { Article, GetArticleResponse } from '../models'
 import { GetFullArticle } from '../queries'
 
 interface Props {
   article: Article
-  remove?: boolean
-  noShortcuts?: boolean
+  keyboard?: boolean
 }
 
 type AllProps = Props & IMessageDispatchProps & IOfflineDispatchProps
 
 export const OfflineLink = (props: AllProps) => {
-  const { article, remove, noShortcuts, saveOfflineArticle, removeOfflineArticle, showMessage } = props
+  const { article, keyboard = false, saveOfflineArticle, removeOfflineArticle, showMessage } = props
 
   const client = useApolloClient()
 
@@ -53,7 +52,7 @@ export const OfflineLink = (props: AllProps) => {
 
   const [showDeleteConfirmModal, hideDeleteConfirmModal] = useModal(() => (
     <ConfirmDialog
-      title="Remove article?"
+      title={article.title}
       confirmLabel="Remove"
       onConfirm={() => removeArticleOffline()}
       onCancel={hideDeleteConfirmModal}
@@ -62,14 +61,11 @@ export const OfflineLink = (props: AllProps) => {
     </ConfirmDialog>
   ))
 
-  useKeyboard('r', showDeleteConfirmModal, !noShortcuts && remove)
-  useKeyboard('o', putArticleOffline, !noShortcuts && !remove)
-
-  if (remove) {
+  if (article.isOffline) {
     return (
       <LinkIcon title="Remove" onClick={showDeleteConfirmModal} icon="delete">
         <span>Remove offline</span>
-        {!noShortcuts && <kbd>r</kbd>}
+        {keyboard && <Kbd keys="r" onKeypress={showDeleteConfirmModal} />}
       </LinkIcon>
     )
   }
@@ -77,7 +73,7 @@ export const OfflineLink = (props: AllProps) => {
   return (
     <LinkIcon title="Put offline" onClick={putArticleOffline} icon="signal_wifi_off">
       <span>Put offline</span>
-      {!noShortcuts && <kbd>o</kbd>}
+      {keyboard && <Kbd keys="o" onKeypress={putArticleOffline} />}
     </LinkIcon>
   )
 }

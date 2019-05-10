@@ -1,19 +1,15 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
-import { Article } from '../models'
 import styles from './ArticleFooter.module.css'
-import MarkAsButton from './MarkAsButton'
 
 interface Props {
-  article: Article
+  children?: ReactNode
 }
 
 type AllProps = Props
 
-export default ({ article }: AllProps) => (
+export default ({ children }: AllProps) => (
   <footer>
-    <div className={styles.actions}>
-      <MarkAsButton article={article} />
-    </div>
+    <div className={styles.actions}>{children}</div>
   </footer>
 )

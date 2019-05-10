@@ -4,8 +4,8 @@ import styles from './Shortcuts.module.css'
 
 export default () => (
   <section className={styles.shortcuts}>
-    <ul>
-      <li>Articles list</li>
+    <section>
+      <h1>Article list</h1>
       <ul>
         <li>
           Refresh list<kbd>shift+r</kbd>
@@ -19,10 +19,25 @@ export default () => (
         <li>
           Toggle history list (if category)<kbd>shift+h</kbd>
         </li>
+        <li>
+          Next article
+          <kbd>right</kbd>
+          <kbd>k</kbd>
+          <kbd>n</kbd>
+        </li>
+        <li>
+          Previous article
+          <kbd>left</kbd>
+          <kbd>j</kbd>
+          <kbd>p</kbd>
+        </li>
+        <li>
+          Open active article<kbd>enter</kbd>
+        </li>
       </ul>
-    </ul>
-    <ul>
-      <li>Article view</li>
+    </section>
+    <section>
+      <h1>Article</h1>
       <ul>
         <li>
           Toggle read status<kbd>m</kbd>
@@ -36,7 +51,10 @@ export default () => (
         <li>
           Save to default archive service<kbd>s</kbd>
         </li>
+        <li>
+          Back to list<kbd>backspace</kbd>
+        </li>
       </ul>
-    </ul>
+    </section>
   </section>
 )

@@ -10,6 +10,7 @@ import Loader from '../common/Loader'
 import Page from '../common/Page'
 import Panel from '../common/Panel'
 import ErrorPanel from '../error/ErrorPanel'
+import useKeyboard from '../hooks/useKeyboard'
 import ArticleContent from './components/ArticleContent'
 import ArticleHeader from './components/ArticleHeader'
 import ArticleMenu from './components/ArticleMenu'
@@ -37,6 +38,8 @@ export default ({ category, match, history }: AllProps) => {
     redirect = '/history'
   }
 
+  useKeyboard('backspace', () => history.push(redirect))
+
   const { data, error, loading } = useQuery<GetArticleResponse>(GetArticle, {
     variables: { id }
   })
@@ -48,21 +51,21 @@ export default ({ category, match, history }: AllProps) => {
       </Center>
     ),
     Error: err => <ErrorPanel>{err.message}</ErrorPanel>,
-    Data: ({ article }) => (
-      <>
-        {article !== null ? (
+    Data: ({ article }) => {
+      if (article) {
+        article.isOffline = false
+        return (
           <>
             <ArticleHeader article={article}>
-              <ArticleMenu article={article} />
+              <ArticleMenu article={article} keyboard />
             </ArticleHeader>
             <ArticleContent article={article} />
-            <MarkAsButton article={article} floating onSuccess={() => history.push(redirect)} />
+            <MarkAsButton article={article} floating onSuccess={() => history.push(redirect)} keyboard />
           </>
-        ) : (
-          <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
-        )}
-      </>
-    ),
+        )
+      }
+      return <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
+    },
     Other: () => <Redirect to={redirect} />
   })
 
