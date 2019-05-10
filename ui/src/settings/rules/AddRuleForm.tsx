@@ -77,6 +77,7 @@ export const AddRuleForm = ({ history, showMessage }: AllProps) => {
             {...text('alias')}
             error={!formState.validity.alias}
             required
+            autoFocus
             ref={onMountValidator.bind}
           />
           <FormTextareaField

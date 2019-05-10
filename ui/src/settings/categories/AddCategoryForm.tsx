@@ -68,6 +68,7 @@ export const AddCategoryForm = ({ history, showMessage }: AllProps) => {
             {...text('title')}
             error={!formState.validity.title}
             required
+            autoFocus
             ref={onMountValidator.bind}
           />
         </form>

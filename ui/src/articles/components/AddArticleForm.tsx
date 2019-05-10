@@ -76,6 +76,7 @@ const AddArticleForm = ({ value, category, onSuccess, onCancel, showMessage }: A
             {...url('url')}
             error={!formState.validity.url}
             required
+            autoFocus
             ref={onMountValidator.bind}
           />
         </form>

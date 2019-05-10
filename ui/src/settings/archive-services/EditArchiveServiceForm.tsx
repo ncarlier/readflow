@@ -81,6 +81,7 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
             {...text('alias')}
             error={!formState.validity.alias}
             required
+            autoFocus
             ref={onMountValidator.bind}
           />
           <FormSelectField label="Provider" {...select('provider')} ref={onMountValidator.bind}>
