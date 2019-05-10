@@ -17,7 +17,7 @@ const defaultConfig = {
 }
 
 export default ({ onChange, config = defaultConfig }: Props) => {
-  const [formState, { url, text }] = useFormState<WebhookConfigFormFields>(config, {
+  const [formState, { url }] = useFormState<WebhookConfigFormFields>(config, {
     onChange: (_e, stateValues, nextStateValues) => onChange(nextStateValues)
   })
 

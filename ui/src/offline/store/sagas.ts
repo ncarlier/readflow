@@ -3,7 +3,14 @@ import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
 import { Article } from '../../articles/models'
 import { getArticle, getArticles, GetArticlesQuery, removeArticle, saveArticle } from '../dao/articles'
 import {
-    fetchError, fetchSuccess, removeError, removeSuccess, saveError, saveSuccess, selectError, selectSuccess
+  fetchError,
+  fetchSuccess,
+  removeError,
+  removeSuccess,
+  saveError,
+  saveSuccess,
+  selectError,
+  selectSuccess
 } from './actions'
 import { OfflineArticlesActionTypes } from './types'
 
