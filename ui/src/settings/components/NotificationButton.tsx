@@ -75,7 +75,8 @@ export default () => {
 
   const resetSubscription = async (err: Error) => {
     if (confirm(`An error occured:\n${err.message}\n\nReset subscription?`)) {
-      await deletePushSubscription()
+      setId(null)
+      localStorage.removeItem(DEVICE_ID)
     }
   }
 
