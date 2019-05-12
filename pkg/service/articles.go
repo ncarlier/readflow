@@ -3,14 +3,10 @@ package service
 import (
 	"context"
 	"errors"
-	"time"
-
-	"github.com/ncarlier/readflow/pkg/tooling"
-
-	readability "github.com/go-shiori/go-readability"
 
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/model"
+	"github.com/ncarlier/readflow/pkg/readability"
 )
 
 // ArticleCreationOptions article creation options
@@ -189,23 +185,22 @@ func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, categoryID *uint
 
 // HydrateArticle add missimg attributes form original article
 func (reg *Registry) HydrateArticle(ctx context.Context, article *model.Article) error {
-	art, err := readability.FromURL(*article.URL, 5*time.Second)
-	if err != nil {
+	art, err := readability.FetchArticle(ctx, *article.URL)
+	if art == nil {
 		return err
-	}
-	if article.HTML == nil {
-		article.HTML = &art.Content
 	}
 	if article.Title == "" {
 		article.Title = art.Title
 	}
-	// FIXME: readability excerpt don't well support UTF8
-	text := tooling.ToUTF8(art.Excerpt)
-	article.Text = &text
-	article.Image = &art.Image
-	// TODO:
-	// article.Favicon = &art.Favicon
-	// article.Length = art.Length
+	if article.HTML == nil {
+		article.HTML = art.HTML
+	}
+	if article.Text == nil {
+		article.Text = art.Text
+	}
+	if article.Image == nil {
+		article.Image = art.Image
+	}
 
-	return nil
+	return err
 }

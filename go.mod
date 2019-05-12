@@ -22,5 +22,6 @@ require (
 	github.com/sergi/go-diff v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.4.1 // indirect
 	github.com/stretchr/testify v1.3.0 // indirect
+	golang.org/x/net v0.0.0-20181201002055-351d144fa1fc
 	google.golang.org/appengine v1.5.0 // indirect
 )
