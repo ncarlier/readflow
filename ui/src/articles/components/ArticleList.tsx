@@ -1,4 +1,4 @@
-import React, { RefObject, useEffect, useRef, useState } from 'react'
+import React, { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 import ButtonIcon from '../../common/ButtonIcon'
 import Center from '../../common/Center'
@@ -56,6 +56,7 @@ export default (props: Props) => {
   } = props
 
   const ref = useRef<HTMLUListElement>(null)
+  const [loading, setLoading] = useState(false)
   const [articles, setArticles] = useState(props.articles.filter(filter))
   const [activeIndex, setActiveIndex] = useState(0)
 
@@ -63,6 +64,12 @@ export default (props: Props) => {
   const isMobileDisplay = useMedia('(max-width: 767px)')
 
   useKeyNavigation(ref, styles.item, !isMobileDisplay)
+
+  const refresh = useCallback(async () => {
+    setLoading(true)
+    await refetch()
+    setLoading(false)
+  }, [refetch])
 
   useEffect(() => {
     if (ref.current) {
@@ -81,7 +88,7 @@ export default (props: Props) => {
     } else if (articles.length === 0) {
       return (
         <Empty>
-          <ButtonIcon title="Refresh" icon="refresh" onClick={() => refetch()} />
+          <ButtonIcon title="Refresh" icon="refresh" onClick={() => refresh()} loading={loading} />
           <br />
           <span>{emptyMessage}</span>
         </Empty>
