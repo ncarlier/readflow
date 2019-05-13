@@ -6,11 +6,13 @@ export type KeyHandler = (e: ExtendedKeyboardEvent, combo: string) => void
 export default (key: string | string[], handler: KeyHandler, enable = true) => {
   useEffect(() => {
     if (enable) {
-      // console.log('bind', key)
+      console.log('bind', key)
       mousetrap.unbind(key)
-      mousetrap.bind(key, handler)
+      setTimeout(() => {
+        mousetrap.bind(key, handler)
+      }, 200)
       return () => {
-        // console.log('unbind', key)
+        console.log('unbind', key)
         mousetrap.unbind(key)
       }
     }
