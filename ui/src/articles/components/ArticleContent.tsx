@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default ({ article }: Props) => {
-  const contentRef = useRef<any>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   var cssLink = document.createElement('link')
   cssLink.href = process.env.PUBLIC_URL + '/readable.css'
@@ -19,18 +19,19 @@ export default ({ article }: Props) => {
   script.setAttribute('src', process.env.PUBLIC_URL + '/readable.js')
 
   useEffect(() => {
-    let ifrm = contentRef.current
-    ifrm = ifrm.contentWindow || ifrm.contentDocument.document || ifrm.contentDocument
-    ifrm.document.open()
-    ifrm.document.write(article.html)
-    ifrm.document.head.appendChild(cssLink)
-    ifrm.document.head.appendChild(script)
-    ifrm.document.close()
-  }, [article])
+    if (contentRef.current) {
+      var ifrm = document.createElement('iframe')
+      contentRef.current.appendChild(ifrm)
+      let doc = ifrm.contentWindow ? ifrm.contentWindow.document : ifrm.contentDocument
+      if (doc) {
+        doc.open()
+        doc.write(article.html)
+        doc.head.appendChild(cssLink)
+        doc.head.appendChild(script)
+        doc.close()
+      }
+    }
+  }, [])
 
-  return (
-    <article className={styles.content}>
-      <iframe ref={contentRef} />
-    </article>
-  )
+  return <article className={styles.content} ref={contentRef} />
 }
