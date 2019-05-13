@@ -11,6 +11,7 @@ import { connectMessageDispatch, IMessageDispatchProps } from '../containers/Mes
 import ErrorPanel from '../error/ErrorPanel'
 import AddButton from './components/AddButton'
 import ArticleList from './components/ArticleList'
+import { DisplayMode } from './components/ArticlesDisplayMode'
 import ArticlesPageMenu from './components/ArticlesPageMenu'
 import { GetArticlesRequest, GetArticlesResponse } from './models'
 import { GetArticles, MarkAllArticlesAsRead } from './queries'
@@ -19,38 +20,60 @@ interface Props {
   category?: Category
 }
 
-type AllProps = Props & RouteComponentProps & IMessageDispatchProps
-
-export const ArticlesPage = (props: AllProps) => {
-  const { category, location, match, showMessage } = props
+const buildArticlesRequest = (mode: DisplayMode, props: AllProps) => {
+  const { category, location } = props
   const params = new URLSearchParams(location.search)
+
   const req: GetArticlesRequest = {
     limit: getURLParam<number>(params, 'limit', 10),
     sortOrder: getURLParam<string>(params, 'sort', 'asc'),
     status: 'unread'
   }
+  switch (mode) {
+    case DisplayMode.history:
+      req.status = 'read'
+      req.sortOrder = getURLParam<string>(params, 'sort', 'desc')
+      break
+    case DisplayMode.category:
+      if (category && category.id) {
+        req.category = category.id
+        req.status = getURLParam<string>(params, 'status', 'unread')
+      }
+  }
 
-  let title = 'to read'
-  let basePath = match.url + '/'
-  let emptyMessage = 'no article to read'
+  return req
+}
+
+const buildTitle = (mode: DisplayMode, status: string, category?: Category) => {
+  let title = status === 'unread' ? 'to read' : 'read'
   if (category) {
-    req.category = category.id
-    req.status = getURLParam<string>(params, 'status', 'unread')
-    title = req.status === 'unread' ? 'to read' : 'read'
     title = title + ' in "' + category.title + '"'
-    basePath += 'articles/'
-    emptyMessage = 'no article to read in this category'
   }
+  return title
+}
 
-  const isHistory = basePath.startsWith('/history')
-  if (isHistory) {
-    title = 'read'
-    req.status = 'read'
-    emptyMessage = 'history is empty'
-    if (!params.has('sort')) {
-      req.sortOrder = 'desc'
-    }
+const EmptyMessage = ({ mode }: { mode: DisplayMode }) => {
+  switch (mode) {
+    case DisplayMode.category:
+      return 'no article to read in this category'
+    case DisplayMode.history:
+      return 'history is empty'
+    default:
+      return 'no article to read'
   }
+}
+
+type AllProps = Props & RouteComponentProps & IMessageDispatchProps
+
+export const ArticlesPage = (props: AllProps) => {
+  const { category, match, showMessage } = props
+
+  // Get display mode
+  let mode = match.url.startsWith('/history') ? DisplayMode.history : DisplayMode.unread
+  mode = category ? DisplayMode.category : mode
+
+  // Build GQL request
+  const req = buildArticlesRequest(mode, props)
 
   const { data, error, loading, fetchMore, refetch } = useQuery<GetArticlesResponse>(GetArticles, {
     variables: req
@@ -104,14 +127,14 @@ export const ArticlesPage = (props: AllProps) => {
       <>
         <ArticleList
           articles={d.articles.entries}
-          basePath={basePath}
-          emptyMessage={emptyMessage}
+          basePath={mode === DisplayMode.category ? `${match.url}/articles/` : `${match.url}/`}
+          emptyMessage={EmptyMessage({ mode })}
           filter={a => a.status === req.status}
           hasMore={d.articles.hasNext}
           refetch={refetch}
           fetchMoreArticles={fetchMoreArticles}
         />
-        {!isHistory && <AddButton category={category} onSuccess={refetch} />}
+        {mode !== DisplayMode.history && <AddButton category={category} onSuccess={refetch} />}
       </>
     ),
     Other: () => (
@@ -121,6 +144,8 @@ export const ArticlesPage = (props: AllProps) => {
     )
   })
 
+  // Build title
+  let title = buildTitle(mode, req.status, category)
   if (data && data.articles) {
     const delta = data.articles.entries.filter(a => a.status !== req.status).length
     const totalCount = data.articles.totalCount - delta
@@ -135,7 +160,7 @@ export const ArticlesPage = (props: AllProps) => {
         <ArticlesPageMenu
           refresh={refetch}
           markAllAsRead={req.status == 'unread' ? markAllAsRead : undefined}
-          canToggleStatus={category !== undefined}
+          mode={mode}
         />
       }
     >

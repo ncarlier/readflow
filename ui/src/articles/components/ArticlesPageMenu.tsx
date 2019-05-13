@@ -6,11 +6,12 @@ import DropdownMenu from '../../common/DropdownMenu'
 import Kbd from '../../common/Kbd'
 import LinkIcon from '../../common/LinkIcon'
 import { connectRouter, IRouterDispatchProps, IRouterStateProps } from '../../containers/RouterContainer'
+import { DisplayMode } from './ArticlesDisplayMode'
 
 interface Props {
   refresh: () => void
   markAllAsRead?: () => void
-  canToggleStatus?: boolean
+  mode: DisplayMode
 }
 
 type AllProps = Props & IRouterStateProps & IRouterDispatchProps
@@ -28,7 +29,7 @@ function toggleStatusQueryParam(qs: string) {
 }
 
 export const ArticlesPageMenu = (props: AllProps) => {
-  const { refresh, markAllAsRead, canToggleStatus, router, push } = props
+  const { refresh, markAllAsRead, mode, router, push } = props
   let { location: loc } = router
 
   const toggleSortOrder = useCallback(
@@ -86,7 +87,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
             </LinkIcon>
           </li>
         )}
-        {canToggleStatus && (
+        {mode === DisplayMode.category && (
           <li>
             <LinkIcon to={{ ...loc, search: toggleStatusQueryParam(loc.search) }} icon="history">
               <span>Toggle history</span>

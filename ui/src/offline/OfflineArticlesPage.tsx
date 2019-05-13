@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react'
 import { RouteComponentProps } from 'react-router'
 
 import ArticleList from '../articles/components/ArticleList'
+import { DisplayMode } from '../articles/components/ArticlesDisplayMode'
 import ArticlesPageMenu from '../articles/components/ArticlesPageMenu'
 import { getURLParam, matchState } from '../common/helpers'
 import Loader from '../common/Loader'
@@ -63,7 +64,7 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, mat
   }
 
   return (
-    <Page title={title} actions={<ArticlesPageMenu refresh={refetch} />}>
+    <Page title={title} actions={<ArticlesPageMenu refresh={refetch} mode={DisplayMode.offline} />}>
       {render(data, error, loading)}
     </Page>
   )
