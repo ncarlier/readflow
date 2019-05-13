@@ -14,15 +14,14 @@ interface Props {
   article: Article
   isActive: boolean
   onRemove?: () => void
-  readMoreBasePath: string
 }
 
 type AllProps = Props & RouteComponentProps
 
 export default withRouter((props: AllProps) => {
-  const { article, readMoreBasePath, isActive, onRemove, history } = props
+  const { article, isActive, onRemove, history, match } = props
 
-  const readMorePath = readMoreBasePath + props.article.id
+  const readMorePath = match.url + '/' + props.article.id
 
   useKeyboard('enter', () => history.push(readMorePath), isActive)
   const kbs = isActive ? ' [enter]' : ''

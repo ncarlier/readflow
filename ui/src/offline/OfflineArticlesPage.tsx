@@ -14,7 +14,7 @@ import { GetArticlesQuery, GetArticlesResult } from './dao/articles'
 
 type AllProps = OfflineProps & RouteComponentProps
 
-export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, match, location }: AllProps) => {
+export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, location }: AllProps) => {
   const params = new URLSearchParams(location.search)
   const query: GetArticlesQuery = {
     limit: getURLParam<number>(params, 'limit', 10),
@@ -47,7 +47,6 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, mat
     Data: d => (
       <ArticleList
         articles={d.entries}
-        basePath={match.path}
         emptyMessage="no offline articles"
         hasMore={d.hasNext}
         refetch={refetch}

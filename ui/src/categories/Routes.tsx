@@ -37,7 +37,7 @@ export default ({ match }: AllProps) => {
               component={(props: RouteComponentProps) => <ArticlesPage category={category} {...props} />}
             />
             <Route
-              path={match.path + '/articles/:id'}
+              path={match.path + '/:id'}
               component={(props: RouteComponentProps<{ id: string }>) => <ArticlePage category={category} {...props} />}
             />
           </Switch>

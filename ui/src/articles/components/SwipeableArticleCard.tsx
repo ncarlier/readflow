@@ -12,7 +12,6 @@ import styles from './SwipeableArticleCard.module.css'
 
 interface Props {
   article: Article
-  readMoreBasePath: string
 }
 
 type AllProps = Props & IMessageDispatchProps
@@ -24,7 +23,7 @@ const Background = ({ icon }: { icon: string }) => (
 )
 
 export const SwipeableArticleCard = (props: AllProps) => {
-  const { article, readMoreBasePath, showMessage } = props
+  const { article, showMessage } = props
   const updateArticleStatusMutation = useMutation<UpdateArticleStatusRequest>(UpdateArticleStatus)
 
   const updateArticleStatus = async (status: string) => {
@@ -46,7 +45,7 @@ export const SwipeableArticleCard = (props: AllProps) => {
 
   return (
     <SwipeableListItem background={<Background icon={bgIcon} />} onSwipe={handleOnDelete}>
-      <ArticleCard article={article} readMoreBasePath={readMoreBasePath} isActive={false} />
+      <ArticleCard article={article} isActive={false} />
     </SwipeableListItem>
   )
 }

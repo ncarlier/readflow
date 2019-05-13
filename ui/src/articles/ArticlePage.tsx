@@ -28,17 +28,15 @@ export default ({ category, match, history }: AllProps) => {
   const { id } = match.params
 
   let title = 'Articles to read'
-  let redirect = '/unread'
   if (category) {
     title = category.title
-    redirect = `/categories/${category.id}`
   }
   if (match.path === '/history/:id') {
     title = 'History'
-    redirect = '/history'
   }
 
-  useKeyboard('backspace', () => history.push(redirect))
+  // useKeyboard('backspace', () => history.push(redirect))
+  useKeyboard('backspace', () => history.goBack())
 
   const { data, error, loading } = useQuery<GetArticleResponse>(GetArticle, {
     variables: { id }
@@ -60,20 +58,20 @@ export default ({ category, match, history }: AllProps) => {
               <ArticleMenu article={article} keyboard />
             </ArticleHeader>
             <ArticleContent article={article} />
-            <MarkAsButton article={article} floating onSuccess={() => history.push(redirect)} keyboard />
+            <MarkAsButton article={article} floating onSuccess={() => history.goBack()} keyboard />
           </>
         )
       }
       return <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
     },
-    Other: () => <Redirect to={redirect} />
+    Other: () => <p>OTHER</p>
   })
 
   return (
     <Page
       title={title}
       subtitle={data && data.article ? data.article.title : ''}
-      actions={<ButtonIcon to={redirect} icon="arrow_back" title="back to the list" />}
+      actions={<ButtonIcon onClick={history.goBack} icon="arrow_back" title="back to the list" />}
     >
       <Panel style={{ flex: '1 1 auto' }}>{render(data, error, loading)}</Panel>
     </Page>

@@ -127,7 +127,6 @@ export const ArticlesPage = (props: AllProps) => {
       <>
         <ArticleList
           articles={d.articles.entries}
-          basePath={mode === DisplayMode.category ? `${match.url}/articles/` : `${match.url}/`}
           emptyMessage={EmptyMessage({ mode })}
           filter={a => a.status === req.status}
           hasMore={d.articles.hasNext}

@@ -14,7 +14,6 @@ import SwipeableArticleCard from './SwipeableArticleCard'
 
 interface Props {
   articles: Article[]
-  basePath: string
   emptyMessage: string
   hasMore: boolean
   fetchMoreArticles: () => Promise<void>
@@ -46,14 +45,7 @@ const useKeyNavigation = (ref: RefObject<HTMLUListElement>, itemClassName: strin
 }
 
 export default (props: Props) => {
-  const {
-    basePath,
-    fetchMoreArticles,
-    refetch,
-    hasMore,
-    filter = () => true,
-    emptyMessage = 'No more article to read'
-  } = props
+  const { fetchMoreArticles, refetch, hasMore, filter = () => true, emptyMessage = 'No more article to read' } = props
 
   const ref = useRef<HTMLUListElement>(null)
   const [loading, setLoading] = useState(false)
@@ -101,9 +93,9 @@ export default (props: Props) => {
       {articles.map((article, idx) => (
         <li key={`article-${article.id}`} className={styles.item} tabIndex={-1} onFocus={() => setActiveIndex(idx)}>
           {isMobileDisplay && !article.isOffline ? (
-            <SwipeableArticleCard article={article} readMoreBasePath={basePath} />
+            <SwipeableArticleCard article={article} />
           ) : (
-            <ArticleCard article={article} isActive={idx === activeIndex} readMoreBasePath={basePath} />
+            <ArticleCard article={article} isActive={idx === activeIndex} />
           )}
         </li>
       ))}
