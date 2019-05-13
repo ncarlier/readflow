@@ -1,3 +1,4 @@
+import mousetrap from 'mousetrap'
 import React, { useEffect, useRef } from 'react'
 
 import { Article } from '../models'
@@ -28,8 +29,34 @@ export default ({ article }: Props) => {
         doc.write(article.html)
         doc.head.appendChild(cssLink)
         doc.head.appendChild(script)
+        // Keyboard events have to propagate outside the iframe
+        doc.onkeydown = function(e: KeyboardEvent) {
+          switch (e.keyCode) {
+            case 8:
+              mousetrap.trigger('backspace')
+              break
+            case 77:
+              mousetrap.trigger('m')
+              break
+            case 79:
+              mousetrap.trigger('o')
+              break
+            case 82:
+              mousetrap.trigger('r')
+              break
+            case 83:
+              mousetrap.trigger('s')
+              break
+            case 191:
+              mousetrap.trigger('?')
+              break
+            // default:
+            // console.log(e.keyCode)
+          }
+        }
         doc.close()
       }
+      ifrm.focus()
     }
   }, [])
 
