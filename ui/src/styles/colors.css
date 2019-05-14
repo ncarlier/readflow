@@ -17,4 +17,8 @@
   --button-primary-hover-color: #006db3;
   --button-danger-color: #cd5356;
   --button-danger-hover-color: #ce4245;
+  --separator-default-color: #c5c5c5;
+  --panel-header-color: #f5f5f5;
+  --panel-body-color: #fff;
+  --panel-footer-color: #f5f5f5;
 }

@@ -30,8 +30,8 @@ export const MarkAsButton = (props: AllProps) => {
         variables: { id: article.id, status }
         // update: updateCacheAfterUpdateStatus
       })
-      if (onSuccess) onSuccess(article)
       if (floating) setLoading(false)
+      if (onSuccess) onSuccess(article)
     } catch (err) {
       setLoading(false)
       showMessage(getGQLError(err), true)

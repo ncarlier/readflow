@@ -10,8 +10,16 @@
   outline: none;
 }
 
-@media (max-width: 512px) {
+@media (max-width: 767px) {
   .list {
     padding: 0;
+  }
+  .item {
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--separator-default-color);
+  }
+  .item header, .item footer {
+    border: none;
+    background-color: white;
   }
 }

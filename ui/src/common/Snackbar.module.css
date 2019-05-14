@@ -9,7 +9,7 @@
   justify-content: flex-start;
   box-sizing: border-box;
 
-  z-index: 8;
+  z-index: 999;
   margin: 16px;
   position: fixed;
   left: 0;
@@ -23,7 +23,7 @@
   color: white;
 }
 
-@media (max-width: 512px) {
+@media (max-width: 640px) {
   .snackbar {
     max-width: 100%;
     margin: 8px;

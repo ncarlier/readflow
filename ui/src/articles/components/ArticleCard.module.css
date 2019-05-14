@@ -29,7 +29,7 @@
   overflow: auto;
 }
 
-@media (max-width: 512px) {
+@media (max-width: 640px) {
   .summary {
     flex-direction: column;
   }
