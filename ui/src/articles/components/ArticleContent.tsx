@@ -26,7 +26,7 @@ export default ({ article }: Props) => {
       let doc = ifrm.contentWindow ? ifrm.contentWindow.document : ifrm.contentDocument
       if (doc) {
         doc.open()
-        doc.write(article.html)
+        doc.write(article.html || article.text)
         doc.head.appendChild(cssLink)
         doc.head.appendChild(script)
         // Keyboard events have to propagate outside the iframe

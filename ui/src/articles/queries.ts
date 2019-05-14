@@ -24,6 +24,7 @@ export const GetArticle = gql`
     article(id: $id) {
       id
       title
+      text
       html
       url
       status
