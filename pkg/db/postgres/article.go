@@ -187,7 +187,7 @@ func (pg *DB) MarkAllArticlesAsRead(uid uint, categoryID *uint) (int64, error) {
 	)
 
 	if categoryID != nil {
-		queryBuilder = queryBuilder.Where(sq.Eq{"category_id": categoryID})
+		queryBuilder = queryBuilder.Where(sq.Eq{"category_id": *categoryID})
 	}
 
 	query, args, _ := queryBuilder.ToSql()
