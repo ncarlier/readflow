@@ -12,10 +12,11 @@
   <script>
     var mgr = new Oidc.UserManager();
     mgr.signinRedirectCallback().then(function () {
+      var urlParams = new URLSearchParams(window.location.search);
       window.history.replaceState({},
         window.document.title,
         window.location.origin);
-      window.location = "/";
+      window.location = urlParams.has("redirect") ? decodeURIComponent(urlParams.get("redirect")) : "/";
     }, function (error) {
       console.error(error);
     });

@@ -7,10 +7,11 @@ export class AuthService {
   public userManager: UserManager
 
   constructor() {
+    const redirect = encodeURIComponent(document.location.href)
     const settings = {
       authority: AUTHORITY,
       client_id: CLIENT_ID,
-      redirect_uri: `${document.location.origin}/signin-callback.html`,
+      redirect_uri: `${document.location.origin}/signin-callback.html?redirect=${redirect}`,
       silent_redirect_uri: `${document.location.origin}/silent-renew.html`,
       post_logout_redirect_uri: document.location.origin,
       response_type: 'id_token token',
