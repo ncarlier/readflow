@@ -112,6 +112,12 @@ dev-server:
 	docker-compose -f docker-compose.dev.yml up
 .PHONY: dev-server
 
+## Start test server (aka: full stack service with mocks)
+test-server:
+	docker-compose -f docker-compose.test.yml down
+	docker-compose -f docker-compose.test.yml up
+.PHONY: test-server
+
 ## Deploy containers to Docker host
 deploy: compose-build compose-up
 .PHONY: deploy
