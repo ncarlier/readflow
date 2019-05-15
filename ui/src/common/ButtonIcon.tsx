@@ -8,6 +8,7 @@ import { classNames } from './helpers'
 import Icon from './Icon'
 
 interface Props {
+  id?: string
   icon: string
   primary?: boolean
   loading?: boolean
@@ -19,13 +20,13 @@ interface Props {
 }
 
 export default (props: Props) => {
-  const { icon, title, primary, loading, floating, to, onClick } = props
+  const { icon, primary, loading, floating, to, onClick, ...attrs } = props
   let className = classNames(styles.button, primary ? styles.primary : null, floating ? styles.floating : null)
 
   if (loading) {
     className = classNames(className, styles.loading)
     return (
-      <button title={title} disabled className={className}>
+      <button {...attrs} disabled className={className}>
         <Icon name="loop" />
       </button>
     )
@@ -33,7 +34,7 @@ export default (props: Props) => {
 
   if (to) {
     return (
-      <Link to={to} title={title} className={className} onClick={onClick}>
+      <Link {...attrs} to={to} className={className} onClick={onClick}>
         {icon && <Icon name={icon} />}
         <Ink />
       </Link>
@@ -41,7 +42,7 @@ export default (props: Props) => {
   }
 
   return (
-    <button title={title} className={className} onClick={onClick}>
+    <button {...attrs} className={className} onClick={onClick}>
       <Icon name={icon} />
       <Ink />
     </button>

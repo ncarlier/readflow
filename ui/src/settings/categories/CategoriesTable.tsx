@@ -74,7 +74,7 @@ export default ({ data, onSelected }: Props) => {
       </thead>
       <tbody>
         {data.map(category => (
-          <tr key={`cat-${category.id}`}>
+          <tr key={`cat-${category.id}`} data-test-id={category.title}>
             <th>
               <input type="checkbox" onChange={onCheckboxChange(category.id!)} checked={selection.get(category.id!)} />
             </th>

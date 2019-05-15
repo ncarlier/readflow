@@ -15,7 +15,7 @@ type AllProps = RouteComponentProps<{ id: string }>
 
 export default ({ history, match }: AllProps) => {
   const { id } = match.params
-  usePageTitle(`Settings - Edit category #${id}`)
+  usePageTitle(`Settings - Edit API key #${id}`)
 
   const { data, error, loading } = useQuery<GetApiKeyResponse>(GetApiKey, {
     variables: { id }

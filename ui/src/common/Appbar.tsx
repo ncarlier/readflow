@@ -14,7 +14,7 @@ export default ({ title, onClickMenu, actions }: Props) => {
 
   return (
     <div className={styles.appBar}>
-      <ButtonIcon icon="menu" onClick={handleOnClickMenu} />
+      <ButtonIcon id="appbar-menu" icon="menu" onClick={handleOnClickMenu} />
       <h1>{title}</h1>
       {actions}
     </div>

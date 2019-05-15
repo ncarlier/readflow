@@ -11,7 +11,7 @@ export default () => {
   const isOnline = useOnlineStatus()
 
   return (
-    <nav className={styles.nav}>
+    <nav id="navbar" className={styles.nav}>
       <ul>
         <li>
           <h1>
@@ -47,7 +47,7 @@ export default () => {
         <li className={styles.links}>
           <ul>
             <li>
-              <LinkIcon to="/settings" icon="settings">
+              <LinkIcon id="navbar-link-settings" to="/settings" icon="settings">
                 Settings
               </LinkIcon>
             </li>

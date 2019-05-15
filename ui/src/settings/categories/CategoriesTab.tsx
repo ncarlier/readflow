@@ -74,11 +74,12 @@ export const CategoriesTab = ({ match, showMessage }: AllProps) => {
     <Panel>
       <header>
         {selection.length > 0 && (
-          <Button title="Remove selection" danger onClick={showDeleteConfirmModal}>
+          <Button id="remove-selection" title="Remove selection" danger onClick={showDeleteConfirmModal}>
             Remove
           </Button>
         )}
         <Button
+          id="add-new-category"
           title="Add new category"
           primary
           to={{

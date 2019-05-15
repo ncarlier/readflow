@@ -72,11 +72,12 @@ export const ApiKeysTab = ({ match, showMessage }: AllProps) => {
     <Panel>
       <header>
         {selection.length > 0 && (
-          <Button title="Remove selection" danger onClick={showDeleteConfirmModal}>
+          <Button id="remove-selection" title="Remove selection" danger onClick={showDeleteConfirmModal}>
             Remove
           </Button>
         )}
         <Button
+          id="add-new-api-key"
           title="Add new API key"
           primary
           to={{

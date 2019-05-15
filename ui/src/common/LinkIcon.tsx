@@ -1,6 +1,6 @@
 import { RouterState } from 'connected-react-router'
 import { LocationDescriptor } from 'history'
-import React, { ReactNode, useCallback } from 'react'
+import React, { MouseEvent, ReactNode } from 'react'
 import Ink from 'react-ink'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -11,10 +11,11 @@ import Icon from './Icon'
 import styles from './LinkIcon.module.css'
 
 interface IProps {
+  id?: string
   to?: LocationDescriptor
   icon: string
   active?: boolean
-  onClick?: Function
+  onClick?: (event: MouseEvent) => void
   title?: string
   children: ReactNode
 }
@@ -22,9 +23,8 @@ interface IProps {
 type Props = IProps & IPropsFromState
 
 export const LinkIcon = (props: Props) => {
-  const { children, icon, to, active, title, onClick } = props
-  const { pathname } = props.router.location
-  const handleOnClick = useCallback(() => (onClick ? onClick() : () => true), [onClick])
+  const { children, icon, to, active, router, ...attrs } = props
+  const { pathname } = router.location
 
   let className = styles.link
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -34,7 +34,7 @@ export const LinkIcon = (props: Props) => {
 
   if (!to) {
     return (
-      <a style={{ position: 'relative' }} onClick={handleOnClick} title={title} className={className}>
+      <a {...attrs} style={{ position: 'relative' }} className={className}>
         <Icon name={icon} />
         {children}
         <Ink />
@@ -43,7 +43,7 @@ export const LinkIcon = (props: Props) => {
   }
 
   return (
-    <Link to={to} style={{ position: 'relative' }} onClick={handleOnClick} title={title} className={className}>
+    <Link {...attrs} to={to} style={{ position: 'relative' }} className={className}>
       <Icon name={icon} />
       {children}
       <Ink />

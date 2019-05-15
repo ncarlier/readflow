@@ -1,6 +1,6 @@
 import React from 'react'
 import { useQuery } from 'react-apollo-hooks'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 
 import { Category } from '../categories/models'
 import ButtonIcon from '../common/ButtonIcon'

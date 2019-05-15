@@ -51,7 +51,7 @@ export default (props: Props) => {
         )}
       </ReactCSSTransitionGroup>
       <section>
-        {navbarIsOpen && <div className={styles.fog} onClick={toggleNavbar} />}
+        {navbarIsOpen && <div id="navbar-fog" className={styles.fog} onClick={toggleNavbar} />}
         <Appbar title={title} onClickMenu={toggleNavbar} actions={actions} />
         <Content>{children}</Content>
         <Snackbar />

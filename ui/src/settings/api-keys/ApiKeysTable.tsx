@@ -78,7 +78,7 @@ export default ({ data, onSelected }: Props) => {
       </thead>
       <tbody>
         {data.map(apiKey => (
-          <tr key={`api-key-${apiKey.id}`}>
+          <tr key={`api-key-${apiKey.id}`} data-test-id={apiKey.alias}>
             <th>
               <input type="checkbox" onChange={onCheckboxChange(apiKey.id)} checked={selection.get(apiKey.id)} />
             </th>

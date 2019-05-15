@@ -32,7 +32,7 @@ export default ({ title, confirmLabel, children, onConfirm, onCancel }: Props) =
       <section>{children}</section>
       <footer>
         {onCancel && <Button onClick={onCancel}>Cancel</Button>}
-        <Button primary onClick={onConfirm} autoFocus>
+        <Button id="modal-confirm" primary onClick={onConfirm} autoFocus>
           {confirmLabel}
         </Button>
       </footer>

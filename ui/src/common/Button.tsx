@@ -8,6 +8,7 @@ import { classNames } from './helpers'
 import Icon from './Icon'
 
 interface Props {
+  id?: string
   icon?: string
   primary?: boolean
   danger?: boolean
@@ -21,16 +22,17 @@ interface Props {
 
 export default forwardRef<any, Props>((props, ref) => {
   // eslint-disable-next-line react/prop-types
-  const { icon, primary, danger, disabled, to, children, ...rest } = props
+  const { icon, primary, danger, disabled, to, children, ...attrs } = props
   const className = classNames(
     styles.button,
     primary && !disabled ? styles.primary : undefined,
     danger && !disabled ? styles.danger : undefined
   )
+  const dataTest = primary ? 'btn-primary' : 'btn'
 
   if (to) {
     return (
-      <Link ref={ref} to={to} className={className} {...rest}>
+      <Link ref={ref} to={to} className={className} {...attrs} data-test={dataTest}>
         {icon && <Icon name={icon} />}
         {children}
         {!disabled && <Ink />}
@@ -38,7 +40,7 @@ export default forwardRef<any, Props>((props, ref) => {
     )
   }
   return (
-    <button ref={ref} className={className} disabled={disabled} {...rest}>
+    <button ref={ref} className={className} disabled={disabled} {...attrs} data-test={dataTest}>
       {icon && <Icon name={icon} />}
       {children}
       {!disabled && <Ink />}
