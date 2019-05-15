@@ -2,8 +2,9 @@
 import { Log, UserManager } from 'oidc-client'
 
 import { AUTHORITY, CLIENT_ID } from '../constants'
+import { AuthService } from './'
 
-export class AuthService {
+export class OIDCAuthService implements AuthService {
   public userManager: UserManager
 
   constructor() {
@@ -43,5 +44,3 @@ export class AuthService {
     return this.userManager.signoutRedirect()
   }
 }
-
-export default new AuthService()

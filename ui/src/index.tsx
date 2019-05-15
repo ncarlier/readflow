@@ -5,7 +5,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import App from './App'
-import authService from './auth/AuthService'
+import authService from './auth'
 import { getOnlineStatus } from './common/helpers'
 import configureStore from './configureStore'
 import { setupNotification } from './notification'

@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 import React from 'react'
 import { useQuery } from 'react-apollo-hooks'
 
-import authService from '../auth/AuthService'
+import authService from '../auth'
 import ErrorPanel from '../error/ErrorPanel'
 import { matchResponse } from './helpers'
 import Loader from './Loader'

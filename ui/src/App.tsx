@@ -7,7 +7,7 @@ import { ModalProvider } from 'react-modal-hook'
 import { Provider } from 'react-redux'
 import { Store } from 'redux'
 
-import authService from './auth/AuthService'
+import authService from './auth'
 import { API_BASE_URL } from './constants'
 import Routes from './routes'
 import { ApplicationState } from './store'
@@ -38,11 +38,13 @@ const client = new ApolloClient({
     if (user.expired) {
       user = await authService.renewToken()
     }
-    operation.setContext({
-      headers: {
-        authorization: 'Bearer ' + user.access_token
-      }
-    })
+    if (user.access_token) {
+      operation.setContext({
+        headers: {
+          authorization: 'Bearer ' + user.access_token
+        }
+      })
+    }
   },
   onError: ({ networkError }) => {
     if (networkError) {
