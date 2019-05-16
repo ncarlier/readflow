@@ -52,7 +52,7 @@ export default (props: Props) => {
   const [articles, setArticles] = useState(props.articles.filter(filter))
   const [activeIndex, setActiveIndex] = useState(0)
 
-  const isFetching = useInfiniteScroll(ref, fetchMoreArticles)
+  const isFetching = useInfiniteScroll(ref, hasMore, fetchMoreArticles)
   const isMobileDisplay = useMedia('(max-width: 767px)')
 
   useKeyNavigation(ref, styles.item, !isMobileDisplay)

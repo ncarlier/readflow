@@ -1,6 +1,6 @@
 import { RefObject, useCallback, useEffect, useState } from 'react'
 
-export default (ref: RefObject<HTMLElement>, fetchMoreItems: () => Promise<void>): boolean => {
+export default (ref: RefObject<HTMLElement>, hasMore: boolean, fetchMoreItems: () => Promise<void>): boolean => {
   const [isFetching, setIsFetching] = useState(false)
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default (ref: RefObject<HTMLElement>, fetchMoreItems: () => Promise<void>
   }, [isFetching, ref])
 
   useEffect(() => {
-    if (!ref.current) {
+    if (!ref.current || !hasMore) {
       return
     }
     const $container = ref.current.parentElement
@@ -32,7 +32,7 @@ export default (ref: RefObject<HTMLElement>, fetchMoreItems: () => Promise<void>
         $container.removeEventListener('resize', handleScroll)
       }
     }
-  }, [ref])
+  }, [ref, hasMore])
 
   return isFetching
 }
