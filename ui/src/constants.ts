@@ -6,3 +6,6 @@ export const AUTHORITY = process.env.REACT_APP_AUTHORITY || 'https://login.nunux
 
 // OIDC client ID
 export const CLIENT_ID = process.env.REACT_APP_CLIENT_ID || 'webapp'
+
+// VERSION
+export const VERSION = process.env.REACT_APP_VERSION || 'snapshot'
