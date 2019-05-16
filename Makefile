@@ -90,6 +90,12 @@ html:
 	hugo -s docs -d ../release/html/docs --cleanDestinationDir
 .PHONY: html
 
+## Generate Web UI
+ui:
+	echo ">>> Building Web UI..."
+	cd ui && npm install --silent && REACT_APP_VERSION=${VERSION} npm run build
+.PHONY: ui
+
 ## Create archive
 archive: release/$(EXECUTABLE)
 	echo ">>> Creating release/$(ARCHIVE) archive..."
