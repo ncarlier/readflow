@@ -85,7 +85,7 @@ export const ArticlesPage = (props: AllProps) => {
     }
     console.log('fetching more articles...')
     await fetchMore({
-      variables: { ...req, afterCursor: data.articles.endCursor, category: null },
+      variables: { ...req, afterCursor: data.articles.endCursor, category: category ? category.id : null },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev
         const nbFetchedArticles = fetchMoreResult.articles.entries.length
