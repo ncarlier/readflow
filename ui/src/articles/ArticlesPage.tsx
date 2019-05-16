@@ -130,10 +130,10 @@ export const ArticlesPage = (props: AllProps) => {
           emptyMessage={EmptyMessage({ mode })}
           filter={a => a.status === req.status}
           hasMore={d.articles.hasNext}
-          refetch={refetch}
+          refetch={() => refetch()}
           fetchMoreArticles={fetchMoreArticles}
         />
-        {mode !== DisplayMode.history && <AddButton category={category} onSuccess={refetch} />}
+        {mode !== DisplayMode.history && <AddButton category={category} onSuccess={() => refetch()} />}
       </>
     ),
     Other: () => (
@@ -157,7 +157,7 @@ export const ArticlesPage = (props: AllProps) => {
       title={title}
       actions={
         <ArticlesPageMenu
-          refresh={refetch}
+          refresh={() => refetch()}
           markAllAsRead={req.status == 'unread' ? markAllAsRead : undefined}
           mode={mode}
         />
