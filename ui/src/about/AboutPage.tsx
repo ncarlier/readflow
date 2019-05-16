@@ -2,6 +2,7 @@ import React from 'react'
 
 import Center from '../common/Center'
 import Page from '../common/Page'
+import { VERSION } from '../constants'
 import styles from './AboutPage.module.css'
 
 export default () => (
@@ -10,6 +11,7 @@ export default () => (
       <h1>
         <img src={process.env.PUBLIC_URL + '/logo.svg'} />
       </h1>
+      <span>({VERSION})</span>
       <p>Read your Internet article flow in one place with complete peace of mind and freedom.</p>
       <ul>
         <li>

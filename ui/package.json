@@ -39,7 +39,7 @@
   },
   "scripts": {
     "start": "react-scripts start && cra-append-sw --mode dev ./public/custom-sw.js",
-    "build": "npm run lint && react-scripts build && cra-append-sw ./public/custom-sw.js",
+    "build": "npm run lint && REACT_APP_VERSION=`git describe --always --dirty` react-scripts build && cra-append-sw ./public/custom-sw.js",
     "test": "react-scripts test",
     "lint": "eslint './src/**/*.{ts,tsx}'"
   },
