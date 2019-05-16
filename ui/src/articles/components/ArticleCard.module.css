@@ -20,7 +20,6 @@
   object-fit: cover;
   max-height: inherit;
   width: inherit;
-  height: 100%;
 }
 
 .summary > p {
