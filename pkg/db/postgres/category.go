@@ -131,7 +131,8 @@ func (pg *DB) GetCategoryByUserIDAndTitle(userID uint, title string) (*model.Cat
 }
 
 // GetCategoriesByUserID returns categories of an user from DB
-func (pg *DB) GetCategoriesByUserID(userID uint) ([]model.Category, error) {
+func (pg *DB) GetCategoriesByUserID(userID uint) ([]*model.Category, error) {
+	var result []*model.Category
 	rows, err := pg.db.Query(`
 		SELECT
 			id,
@@ -145,11 +146,9 @@ func (pg *DB) GetCategoriesByUserID(userID uint) ([]model.Category, error) {
 		userID,
 	)
 	if err != nil {
-		return nil, err
+		return result, err
 	}
 	defer rows.Close()
-
-	var result []model.Category
 
 	for rows.Next() {
 		category := model.Category{}
@@ -163,7 +162,7 @@ func (pg *DB) GetCategoriesByUserID(userID uint) ([]model.Category, error) {
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, category)
+		result = append(result, &category)
 	}
 	err = rows.Err()
 	if err != nil {

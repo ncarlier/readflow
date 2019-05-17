@@ -68,6 +68,19 @@ var articleType = graphql.NewObject(
 			"status": &graphql.Field{
 				Type: articleStatus,
 			},
+			"category": &graphql.Field{
+				Type: categoryType,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					article, ok := p.Source.(*model.Article)
+					if !ok {
+						return nil, errors.New("no article received by category resolver")
+					}
+					if article.CategoryID != nil {
+						return service.Lookup().GetCategory(p.Context, *article.CategoryID)
+					}
+					return nil, nil
+				},
+			},
 			"published_at": &graphql.Field{
 				Type: graphql.String,
 			},
@@ -96,6 +109,20 @@ var articlesType = graphql.NewObject(
 			},
 			"entries": &graphql.Field{
 				Type: graphql.NewList(articleType),
+			},
+		},
+	},
+)
+
+var articleStatusResponseType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "ArticleStatusResponseType",
+		Fields: graphql.Fields{
+			"article": &graphql.Field{
+				Type: articleType,
+			},
+			"_all": &graphql.Field{
+				Type: categoryType,
 			},
 		},
 	},
@@ -192,7 +219,7 @@ func articleResolver(p graphql.ResolveParams) (interface{}, error) {
 // MUTATIONS
 
 var updateArticleStatusMutationField = &graphql.Field{
-	Type:        articleType,
+	Type:        articleStatusResponseType,
 	Description: "update article status (read or unread)",
 	Args: graphql.FieldConfigArgument{
 		"id": &graphql.ArgumentConfig{
@@ -216,11 +243,17 @@ func updateArticleStatusResolver(p graphql.ResolveParams) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return article, nil
+	response := &model.ArticleStatusResponse{
+		Article: article,
+		All: &model.Category{
+			Title: "_all",
+		},
+	}
+	return response, nil
 }
 
 var markAllArticlesAsReadMutationField = &graphql.Field{
-	Type:        graphql.Int,
+	Type:        graphql.NewList(categoryType),
 	Description: "set all articles (of a category if provided) to read status",
 	Args: graphql.FieldConfigArgument{
 		"category": &graphql.ArgumentConfig{
@@ -236,11 +269,11 @@ func markAllArticlesAsReadResolver(p graphql.ResolveParams) (interface{}, error)
 		category = &val
 	}
 
-	nb, err := service.Lookup().MarkAllArticlesAsRead(p.Context, category)
+	_, err := service.Lookup().MarkAllArticlesAsRead(p.Context, category)
 	if err != nil {
 		return nil, err
 	}
-	return nb, nil
+	return categoriesResolver(p)
 }
 
 var addArticleMutationField = &graphql.Field{

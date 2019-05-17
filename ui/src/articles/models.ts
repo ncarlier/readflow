@@ -1,3 +1,5 @@
+import { Category } from '../categories/models'
+
 export interface Article {
   id: number
   title: string
@@ -6,6 +8,7 @@ export interface Article {
   image: string
   url: string
   status: string
+  category?: Category
   isOffline?: boolean
   published_at: string
   created_at: string

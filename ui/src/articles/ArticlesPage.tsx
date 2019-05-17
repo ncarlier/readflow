@@ -99,6 +99,11 @@ export const ArticlesPage = (props: AllProps) => {
     })
   }, [data])
 
+  const refresh = useCallback(async () => {
+    const { errors: err } = await refetch()
+    if (err) console.error(err)
+  }, [refetch])
+
   const markAllArticlesAsReadMutation = useMutation<{ category?: number }>(MarkAllArticlesAsRead)
 
   const markAllArticlesAsRead = async () => {
@@ -106,7 +111,7 @@ export const ArticlesPage = (props: AllProps) => {
       await markAllArticlesAsReadMutation({
         variables: { category: category ? category.id : null }
       })
-      await refetch()
+      await refresh()
     } catch (err) {
       showMessage(getGQLError(err), true)
     }
@@ -130,10 +135,10 @@ export const ArticlesPage = (props: AllProps) => {
           emptyMessage={EmptyMessage({ mode })}
           filter={a => a.status === req.status}
           hasMore={d.articles.hasNext}
-          refetch={() => refetch()}
+          refetch={refresh}
           fetchMoreArticles={fetchMoreArticles}
         />
-        {mode !== DisplayMode.history && <AddButton category={category} onSuccess={() => refetch()} />}
+        {mode !== DisplayMode.history && <AddButton category={category} onSuccess={refresh} />}
       </>
     ),
     Other: () => (
@@ -157,7 +162,7 @@ export const ArticlesPage = (props: AllProps) => {
       title={title}
       actions={
         <ArticlesPageMenu
-          refresh={() => refetch()}
+          refresh={refresh}
           markAllAsRead={req.status == 'unread' ? markAllAsRead : undefined}
           mode={mode}
         />

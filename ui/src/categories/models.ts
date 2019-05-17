@@ -1,6 +1,7 @@
 export interface Category {
   id?: number
   title: string
+  unread?: number
   created_at?: string
   updated_at?: string
 }

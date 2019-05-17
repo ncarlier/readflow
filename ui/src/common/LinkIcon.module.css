@@ -17,3 +17,12 @@
 .link > span {
   flex: 1 1 auto;
 }
+
+.badge {
+  line-height: 1.5em;
+  padding: 0 .5em;
+  display: block;
+  border-radius: 1.5em;
+  float: right;
+  font-size: small;
+}

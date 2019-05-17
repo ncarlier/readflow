@@ -5,6 +5,7 @@ export const GetCategories = gql`
     categories {
       id
       title
+      unread
       created_at
       updated_at
     }

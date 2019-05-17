@@ -66,7 +66,7 @@ export const CategoriesTab = ({ match, showMessage }: AllProps) => {
   const render = matchResponse<GetCategoriesResponse>({
     Loading: () => <Loader />,
     Error: err => <ErrorPanel title="Unable to fetch categories">{err.message}</ErrorPanel>,
-    Data: data => <CategoriesTable data={data.categories} onSelected={onSelectedHandler} />,
+    Data: data => <CategoriesTable data={data.categories.filter(c => c.id !== null)} onSelected={onSelectedHandler} />,
     Other: () => <ErrorPanel>Unable to fetch categories with no obvious reason :(</ErrorPanel>
   })
 

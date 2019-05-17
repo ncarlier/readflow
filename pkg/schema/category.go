@@ -6,6 +6,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/tooling"
 
 	"github.com/graphql-go/graphql"
+	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
@@ -18,6 +19,21 @@ var categoryType = graphql.NewObject(
 			},
 			"title": &graphql.Field{
 				Type: graphql.String,
+			},
+			"unread": &graphql.Field{
+				Type: graphql.Int,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					category, ok := p.Source.(*model.Category)
+					if !ok {
+						return nil, errors.New("no category received by unread resolver")
+					}
+					status := "unread"
+					req := model.ArticlesPageRequest{
+						Category: category.ID,
+						Status:   &status,
+					}
+					return service.Lookup().CountArticles(p.Context, req)
+				},
 			},
 			"created_at": &graphql.Field{
 				Type: graphql.DateTime,
@@ -41,6 +57,9 @@ func categoriesResolver(p graphql.ResolveParams) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+	categories = append(categories, &model.Category{
+		Title: "_all",
+	})
 	return categories, nil
 }
 

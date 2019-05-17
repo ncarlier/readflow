@@ -9,7 +9,7 @@ import (
 )
 
 // GetCategories get categories from current user
-func (reg *Registry) GetCategories(ctx context.Context) (*[]model.Category, error) {
+func (reg *Registry) GetCategories(ctx context.Context) ([]*model.Category, error) {
 	uid := getCurrentUserFromContext(ctx)
 
 	categories, err := reg.db.GetCategoriesByUserID(uid)
@@ -17,10 +17,8 @@ func (reg *Registry) GetCategories(ctx context.Context) (*[]model.Category, erro
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
 		).Msg("unable to get categories")
-		return nil, err
 	}
-
-	return &categories, err
+	return categories, err
 }
 
 // GetCategory get a category of the current user

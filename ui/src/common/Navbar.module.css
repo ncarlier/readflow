@@ -65,6 +65,15 @@
   color: var(--navbar-link-active-color);
 }
 
+.links :global(a.active) > span {
+  background-color: var(--navbar-link-active-color);
+}
+
+.links a > span {
+  background-color: var(--navbar-link-color);
+  color: var(--navbar-bg-color);
+}
+
 .links a > i {
   padding-right: 10px;
   font-size: 1.4em;

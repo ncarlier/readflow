@@ -17,13 +17,14 @@ interface IProps {
   active?: boolean
   onClick?: (event: MouseEvent) => void
   title?: string
+  badge?: string | number
   children: ReactNode
 }
 
 type Props = IProps & IPropsFromState
 
 export const LinkIcon = (props: Props) => {
-  const { children, icon, to, active, router, ...attrs } = props
+  const { children, badge, icon, to, active, router, ...attrs } = props
   const { pathname } = router.location
 
   let className = styles.link
@@ -37,6 +38,7 @@ export const LinkIcon = (props: Props) => {
       <a {...attrs} style={{ position: 'relative' }} className={className}>
         <Icon name={icon} />
         {children}
+        {!!badge && <span className={styles.badge}>{badge}</span>}
         <Ink />
       </a>
     )
@@ -46,6 +48,7 @@ export const LinkIcon = (props: Props) => {
     <Link {...attrs} to={to} style={{ position: 'relative' }} className={className}>
       <Icon name={icon} />
       {children}
+      {!!badge && <span className={styles.badge}>{badge}</span>}
       <Ink />
     </Link>
   )

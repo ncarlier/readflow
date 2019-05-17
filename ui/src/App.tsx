@@ -46,10 +46,11 @@ const client = new ApolloClient({
       })
     }
   },
-  onError: ({ networkError }) => {
-    if (networkError) {
-      console.log('networkError:', networkError.name, networkError.message)
-      if (networkError.message === 'login_required') {
+  onError: err => {
+    console.error(err)
+    if (err.networkError) {
+      console.log('networkError:', err.networkError.name, err.networkError.message)
+      if (err.networkError.message === 'login_required') {
         authService.login()
       }
     }

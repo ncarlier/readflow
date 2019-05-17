@@ -13,6 +13,10 @@ export const GetArticles = gql`
         url
         image
         status
+        category {
+          id
+          title
+        }
         created_at
       }
     }
@@ -28,6 +32,10 @@ export const GetArticle = gql`
       html
       url
       status
+      category {
+        id
+        title
+      }
       created_at
     }
   }
@@ -43,6 +51,10 @@ export const GetFullArticle = gql`
       url
       image
       status
+      category {
+        id
+        title
+      }
       created_at
     }
   }
@@ -51,9 +63,19 @@ export const GetFullArticle = gql`
 export const UpdateArticleStatus = gql`
   mutation updateArticleStatus($id: ID!, $status: status!) {
     updateArticleStatus(id: $id, status: $status) {
-      id
-      status
-      updated_at
+      article {
+        id
+        status
+        category {
+          id
+          unread
+        }
+        updated_at
+      }
+      _all {
+        id
+        unread
+      }
     }
   }
 `
@@ -66,7 +88,10 @@ export const ArchiveArticle = gql`
 
 export const MarkAllArticlesAsRead = gql`
   mutation markAllArticlesAsRead($category: ID) {
-    markAllArticlesAsRead(category: $category)
+    markAllArticlesAsRead(category: $category) {
+      id
+      unread
+    }
   }
 `
 export const AddNewArticle = gql`
@@ -79,6 +104,10 @@ export const AddNewArticle = gql`
       url
       image
       status
+      category {
+        id
+        unread
+      }
       created_at
     }
   }

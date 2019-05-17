@@ -66,6 +66,12 @@ type ArticlesPageResponse struct {
 	Entries    []*Article
 }
 
+// ArticleStatusResponse is the response structure of an article status modification
+type ArticleStatusResponse struct {
+	Article *Article  `json:"article,omitempty"`
+	All     *Category `json:"_all,omitempty"`
+}
+
 // ArticleBuilder is a builder to create an Article
 type ArticleBuilder struct {
 	article *Article
