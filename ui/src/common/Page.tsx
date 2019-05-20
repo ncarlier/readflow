@@ -4,6 +4,7 @@ import { useModal } from 'react-modal-hook'
 
 import { usePageTitle } from '../hooks'
 import useKeyboard from '../hooks/useKeyboard'
+import useScrollMemory from '../hooks/useScrollMemory'
 import Appbar from './Appbar'
 import Content from './Content'
 import { isMobileDevice } from './device'
@@ -33,6 +34,7 @@ export default (props: Props) => {
     </InfoDialog>
   ))
   useKeyboard('?', showShortcutsModal)
+  useScrollMemory('page-content')
 
   // const small = useMedia('(max-width: 400px)')
   // const large = useMedia('(min-width: 767px)')
@@ -53,7 +55,7 @@ export default (props: Props) => {
       <section>
         {navbarIsOpen && <div id="navbar-fog" className={styles.fog} onClick={toggleNavbar} />}
         <Appbar title={title} onClickMenu={toggleNavbar} actions={actions} />
-        <Content>{children}</Content>
+        <Content id="page-content">{children}</Content>
         <Snackbar />
       </section>
     </div>
