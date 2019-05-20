@@ -26,6 +26,7 @@ type Props = IProps & IPropsFromState
 export const LinkIcon = (props: Props) => {
   const { children, badge, icon, to, active, router, ...attrs } = props
   const { pathname } = router.location
+  const { id, title, onClick } = attrs
 
   let className = styles.link
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -35,7 +36,7 @@ export const LinkIcon = (props: Props) => {
 
   if (!to) {
     return (
-      <a {...attrs} style={{ position: 'relative' }} className={className}>
+      <a {...{ id, title, onClick }} style={{ position: 'relative' }} className={className}>
         <Icon name={icon} />
         {children}
         {!!badge && <span className={styles.badge}>{badge}</span>}
@@ -45,7 +46,7 @@ export const LinkIcon = (props: Props) => {
   }
 
   return (
-    <Link {...attrs} to={to} style={{ position: 'relative' }} className={className}>
+    <Link {...{ id, title, onClick }} to={to} style={{ position: 'relative' }} className={className}>
       <Icon name={icon} />
       {children}
       {!!badge && <span className={styles.badge}>{badge}</span>}
