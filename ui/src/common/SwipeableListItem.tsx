@@ -11,12 +11,12 @@ interface Props {
 
 export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
   // Drag & Drop
-  let dragStartX = 0
-  let left = 0
-  let dragged = false
+  const dragStartX = useRef(0)
+  const left = useRef(0)
+  const dragged = useRef(false)
 
   // FPS Limit
-  let startTime = 0
+  const startTime = useRef(0)
   const fpsInterval = 1000 / 60
 
   // Refs
@@ -27,30 +27,30 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
   const updatePosition = () => {
     if (dragged) requestAnimationFrame(updatePosition)
     const now = Date.now()
-    const elapsed = now - startTime
+    const elapsed = now - startTime.current
 
     const $bg = bgRef.current
     const $el = elementRef.current
     if (dragged && elapsed > fpsInterval && $bg && $el) {
-      $el.style.transform = `translateX(${left}px)`
-      const opacity = Math.abs(left) / 100
+      $el.style.transform = `translateX(${left.current}px)`
+      const opacity = Math.abs(left.current) / 100
       if (opacity < 1 && opacity.toFixed(2) !== $bg.style.opacity) {
         $bg.style.opacity = opacity.toFixed(2)
       }
       if (opacity >= 1) {
         $bg.style.opacity = '1'
       }
-      startTime = Date.now()
+      startTime.current = Date.now()
     }
   }
 
   const onDragStart = (clientX: number) => {
     const $el = elementRef.current
     if ($el) {
-      dragged = true
-      dragStartX = clientX
+      dragged.current = true
+      dragStartX.current = clientX
       $el.className = styles.item
-      startTime = Date.now()
+      startTime.current = Date.now()
       requestAnimationFrame(updatePosition)
     }
   }
@@ -59,13 +59,13 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
     const $el = elementRef.current
     const $wrapper = wrapperRef.current
     if (dragged && $el && $wrapper) {
-      dragged = false
-      if (left < $el.offsetWidth * threshold * -1) {
-        left = -$el.offsetWidth * 2
+      dragged.current = false
+      if (left.current < $el.offsetWidth * threshold * -1) {
+        left.current = -$el.offsetWidth * 2
         $wrapper.style.maxHeight = '0'
         onSwipe()
       } else {
-        left = 0
+        left.current = 0
       }
 
       $el.className = styles.bouncing
@@ -74,17 +74,17 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
   }
 
   const onMouseMove = (evt: MouseEvent) => {
-    const l = evt.clientX - dragStartX
+    const l = evt.clientX - dragStartX.current
     if (l < 0) {
-      left = l
+      left.current = l
     }
   }
 
   const onTouchMove = (evt: TouchEvent) => {
     const touch = evt.targetTouches[0]
-    const l = touch.clientX - dragStartX
+    const l = touch.clientX - dragStartX.current
     if (l < 0) {
-      left = l
+      left.current = l
     }
   }
 
