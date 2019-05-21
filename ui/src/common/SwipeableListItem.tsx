@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { ReactNode, useEffect, useRef } from 'react'
 
 import styles from './SwipeableListItem.module.css'
@@ -30,9 +29,9 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
     const now = Date.now()
     const elapsed = now - startTime
 
-    if (dragged && elapsed > fpsInterval) {
-      const $bg = bgRef.current!
-      const $el = elementRef.current!
+    const $bg = bgRef.current
+    const $el = elementRef.current
+    if (dragged && elapsed > fpsInterval && $bg && $el) {
       $el.style.transform = `translateX(${left}px)`
       const opacity = Math.abs(left) / 100
       if (opacity < 1 && opacity.toFixed(2) !== $bg.style.opacity) {
@@ -46,18 +45,20 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
   }
 
   const onDragStart = (clientX: number) => {
-    const $el = elementRef.current!
-    dragged = true
-    dragStartX = clientX
-    $el.className = styles.item
-    startTime = Date.now()
-    requestAnimationFrame(updatePosition)
+    const $el = elementRef.current
+    if ($el) {
+      dragged = true
+      dragStartX = clientX
+      $el.className = styles.item
+      startTime = Date.now()
+      requestAnimationFrame(updatePosition)
+    }
   }
 
   const onDragEnd = () => {
-    if (dragged) {
-      const $el = elementRef.current!
-      const $wrapper = wrapperRef.current!
+    const $el = elementRef.current
+    const $wrapper = wrapperRef.current
+    if (dragged && $el && $wrapper) {
       dragged = false
       if (left < $el.offsetWidth * threshold * -1) {
         left = -$el.offsetWidth * 2
