@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useState } from 'react'
+import React, { ReactNode, useCallback, useRef, useState } from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import { useModal } from 'react-modal-hook'
 
@@ -27,6 +27,7 @@ export default (props: Props) => {
   const { children, title, subtitle, className, actions } = props
 
   usePageTitle(title, subtitle)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const [showShortcutsModal, hideShortcutsModal] = useModal(() => (
     <InfoDialog title="Shortcuts" onOk={hideShortcutsModal}>
@@ -34,7 +35,7 @@ export default (props: Props) => {
     </InfoDialog>
   ))
   useKeyboard('?', showShortcutsModal)
-  useScrollMemory('page-content')
+  useScrollMemory(contentRef)
 
   // const small = useMedia('(max-width: 400px)')
   // const large = useMedia('(min-width: 767px)')
@@ -55,7 +56,7 @@ export default (props: Props) => {
       <section>
         {navbarIsOpen && <div id="navbar-fog" className={styles.fog} onClick={toggleNavbar} />}
         <Appbar title={title} onClickMenu={toggleNavbar} actions={actions} />
-        <Content id="page-content">{children}</Content>
+        <Content ref={contentRef}>{children}</Content>
         <Snackbar />
       </section>
     </div>

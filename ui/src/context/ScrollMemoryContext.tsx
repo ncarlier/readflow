@@ -32,8 +32,9 @@ const ScrollMemoryProvider = ({ children }: Props) => {
     // console.log('scrollMemoryContext:init')
     window.addEventListener('popstate', onPopState)
     return () => {
-      // console.log('scrollMemoryContext:destroy')
+      //console.log('scrollMemoryContext:destroy')
       window.removeEventListener('popstate', onPopState)
+      setState(0)
     }
   })
 

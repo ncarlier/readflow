@@ -1,15 +1,13 @@
-import { useContext, useEffect } from 'react'
+import { RefObject, useContext, useEffect } from 'react'
 
 import { ScrollMemoryContext, setScrollPosition } from '../context/ScrollMemoryContext'
 
-export default (target: string) => {
+export default (ref: RefObject<HTMLDivElement>) => {
   const scrollPosition = useContext(ScrollMemoryContext)
   useEffect(() => {
-    if (scrollPosition > 0) {
-      const $el = document.getElementById(target)
-      if ($el) {
-        $el.scrollTo(0, scrollPosition)
-      }
+    if (ref.current && scrollPosition > 0) {
+      // console.log(`restoring scroll position: ${scrollPosition}`)
+      ref.current.scrollTo(0, scrollPosition)
     }
   }, [scrollPosition])
 
@@ -24,10 +22,13 @@ export default (target: string) => {
   }
 
   useEffect(() => {
-    const $el = target ? document.getElementById(target) || window : window
-    $el.addEventListener('scroll', handleScroll)
+    if (ref.current) {
+      ref.current.addEventListener('scroll', handleScroll)
+    }
     return () => {
-      $el.removeEventListener('scroll', handleScroll)
+      if (ref.current) {
+        ref.current.removeEventListener('scroll', handleScroll)
+      }
     }
   })
 }
