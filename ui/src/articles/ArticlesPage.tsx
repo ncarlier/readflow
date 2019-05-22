@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 
@@ -68,6 +68,7 @@ type AllProps = Props & RouteComponentProps & IMessageDispatchProps
 
 export const ArticlesPage = (props: AllProps) => {
   const { category, match, showMessage } = props
+  const [reloading, setReloading] = useState(false)
 
   // Get display mode
   let mode = match.url.startsWith('/history') ? DisplayMode.history : DisplayMode.unread
@@ -76,9 +77,8 @@ export const ArticlesPage = (props: AllProps) => {
   // Build GQL request
   const req = buildArticlesRequest(mode, props)
 
-  const { data, error, loading, fetchMore, refetch, networkStatus } = useQuery<GetArticlesResponse>(GetArticles, {
-    variables: req,
-    notifyOnNetworkStatusChange: true
+  const { data, error, loading, fetchMore, refetch } = useQuery<GetArticlesResponse>(GetArticles, {
+    variables: req
   })
 
   const fetchMoreArticles = useCallback(async () => {
@@ -103,10 +103,12 @@ export const ArticlesPage = (props: AllProps) => {
 
   const refresh = useCallback(async () => {
     console.log('re-fetching articles...')
+    setReloading(true)
     const { errors } = await refetch()
     if (errors) {
       console.error(errors)
     }
+    setReloading(false)
   }, [refetch])
 
   const markAllArticlesAsReadMutation = useMutation<{ category?: number }>(MarkAllArticlesAsRead)
@@ -176,7 +178,7 @@ export const ArticlesPage = (props: AllProps) => {
         />
       }
     >
-      {render(data, error, loading || networkStatus === 4)}
+      {render(data, error, loading || reloading)}
     </Page>
   )
 }
