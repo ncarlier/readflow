@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 import { useFormState } from 'react-use-form-state'
@@ -12,7 +12,7 @@ import FormTextareaField from '../../common/FormTextareaField'
 import { getGQLError, isValidForm } from '../../common/helpers'
 import HelpLink from '../../common/HelpLink'
 import Panel from '../../common/Panel'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
@@ -28,11 +28,12 @@ interface AddRuleFormFields {
   priority: number
 }
 
-type AllProps = RouteComponentProps<{}> & IMessageDispatchProps
+type AllProps = RouteComponentProps<{}>
 
-export const AddRuleForm = ({ history, showMessage }: AllProps) => {
+export default ({ history }: AllProps) => {
   usePageTitle('Settings - Add new rule')
 
+  const { showMessage } = useContext(MessageContext)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text, textarea, select }] = useFormState<AddRuleFormFields>({ rule: '', alias: '', priority: 0 })
   const onMountValidator = useOnMountInputValidator(formState.validity)
@@ -44,7 +45,7 @@ export const AddRuleForm = ({ history, showMessage }: AllProps) => {
         variables: rule,
         update: updateCacheAfterCreate
       })
-      showMessage(`New rule: ${res.data.createOrUpdateRule.id}`)
+      showMessage(`New rule: ${res.data.createOrUpdateRule.alias}`)
       history.goBack()
     } catch (err) {
       setErrorMessage(getGQLError(err))
@@ -123,5 +124,3 @@ export const AddRuleForm = ({ history, showMessage }: AllProps) => {
     </Panel>
   )
 }
-
-export default connectMessageDispatch(AddRuleForm)

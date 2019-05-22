@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 import { useFormState } from 'react-use-form-state'
@@ -9,7 +9,7 @@ import FormInputField from '../../common/FormInputField'
 import FormSelectField from '../../common/FormSelectField'
 import { getGQLError, isValidForm } from '../../common/helpers'
 import Panel from '../../common/Panel'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
@@ -25,13 +25,14 @@ interface AddArchiveServiceFormFields {
   isDefault: boolean
 }
 
-type AllProps = RouteComponentProps<{}> & IMessageDispatchProps
+type AllProps = RouteComponentProps<{}>
 
-export const AddArchiveServiceForm = ({ history, showMessage }: AllProps) => {
+export default ({ history }: AllProps) => {
   usePageTitle('Settings - Add new archive provider')
 
   const [config, setConfig] = useState<any>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { showMessage } = useContext(MessageContext)
   const [formState, { text, checkbox, select }] = useFormState<AddArchiveServiceFormFields>({
     provider: '',
     alias: '',
@@ -47,7 +48,7 @@ export const AddArchiveServiceForm = ({ history, showMessage }: AllProps) => {
         variables: service,
         update: updateCacheAfterCreate
       })
-      showMessage(`New archive service: ${res.data.createOrUpdateArchiver.id}`)
+      showMessage(`New archive service: ${res.data.createOrUpdateArchiver.alias}`)
       history.goBack()
     } catch (err) {
       setErrorMessage(getGQLError(err))
@@ -111,5 +112,3 @@ export const AddArchiveServiceForm = ({ history, showMessage }: AllProps) => {
     </Panel>
   )
 }
-
-export default connectMessageDispatch(AddArchiveServiceForm)

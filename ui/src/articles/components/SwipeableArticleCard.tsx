@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 
 import { getGQLError } from '../../common/helpers'
 import Icon from '../../common/Icon'
 import SwipeableListItem from '../../common/SwipeableListItem'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import { Article, UpdateArticleStatusRequest } from '../models'
 import { UpdateArticleStatus } from '../queries'
 import ArticleCard from './ArticleCard'
@@ -14,16 +14,16 @@ interface Props {
   article: Article
 }
 
-type AllProps = Props & IMessageDispatchProps
-
 const Background = ({ icon }: { icon: string }) => (
   <div className={styles.background}>
     <Icon name={icon} />
   </div>
 )
 
-export const SwipeableArticleCard = (props: AllProps) => {
-  const { article, showMessage } = props
+export default (props: Props) => {
+  const { article } = props
+
+  const { showErrorMessage } = useContext(MessageContext)
   const updateArticleStatusMutation = useMutation<UpdateArticleStatusRequest>(UpdateArticleStatus)
 
   const updateArticleStatus = async (status: string) => {
@@ -32,7 +32,7 @@ export const SwipeableArticleCard = (props: AllProps) => {
         variables: { id: article.id, status }
       })
     } catch (err) {
-      showMessage(getGQLError(err), true)
+      showErrorMessage(getGQLError(err))
     }
   }
 
@@ -49,5 +49,3 @@ export const SwipeableArticleCard = (props: AllProps) => {
     </SwipeableListItem>
   )
 }
-
-export default connectMessageDispatch(SwipeableArticleCard)

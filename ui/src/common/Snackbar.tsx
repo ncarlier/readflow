@@ -1,11 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
-import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
 
-import { ApplicationState } from '../store'
-import * as messageActions from '../store/message/actions'
-import { MessageState } from '../store/message/types'
+import { MessageContext } from '../context/MessageContext'
 import { classNames } from './helpers'
 import styles from './Snackbar.module.css'
 
@@ -13,13 +9,13 @@ interface Props {
   ttl?: number
 }
 
-type AllProps = Props & IPropsFromState & IPropsFromDispatch
+export default ({ ttl = 5000 }: Props) => {
+  const { message, showMessage } = useContext(MessageContext)
 
-export const Snackbar = ({ ttl = 5000, message, showMessage }: AllProps) => {
   useEffect(() => {
     if (ttl && message.text && !message.isError) {
       const timeout = setTimeout(() => {
-        showMessage(null)
+        showMessage('')
       }, ttl)
       return () => {
         clearTimeout(timeout)
@@ -35,31 +31,10 @@ export const Snackbar = ({ ttl = 5000, message, showMessage }: AllProps) => {
         <div className={className}>
           <div className={styles.label}>{message.text}</div>
           <div className={styles.actions}>
-            <button onClick={() => showMessage(null)}>dismiss</button>
+            <button onClick={() => showMessage('')}>dismiss</button>
           </div>
         </div>
       )}
     </ReactCSSTransitionGroup>
   )
 }
-
-interface IPropsFromState {
-  message: MessageState
-}
-
-const mapStateToProps = ({ message }: ApplicationState): IPropsFromState => ({
-  message
-})
-
-interface IPropsFromDispatch {
-  showMessage: typeof messageActions.showMessage
-}
-
-const mapDispatchToProps = (dispatch: Dispatch): IPropsFromDispatch => ({
-  showMessage: (msg: string | null) => dispatch(messageActions.showMessage(msg))
-})
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Snackbar)

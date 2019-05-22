@@ -1,6 +1,6 @@
 import { History } from 'history'
 /* eslint-disable @typescript-eslint/camelcase */
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
@@ -11,7 +11,7 @@ import FormSelectField from '../../common/FormSelectField'
 import FormTextareaField from '../../common/FormTextareaField'
 import { getGQLError, isValidForm } from '../../common/helpers'
 import HelpLink from '../../common/HelpLink'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
@@ -31,9 +31,8 @@ interface Props {
   history: History
 }
 
-type AllProps = Props & IMessageDispatchProps
-
-export const EditRuleForm = ({ data, history, showMessage }: AllProps) => {
+export default ({ data, history }: Props) => {
+  const { showMessage } = useContext(MessageContext)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text, select, textarea }] = useFormState<EditRuleFormFields>({
     alias: data.alias,
@@ -128,5 +127,3 @@ export const EditRuleForm = ({ data, history, showMessage }: AllProps) => {
     </>
   )
 }
-
-export default connectMessageDispatch(EditRuleForm)

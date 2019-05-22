@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 
 import ButtonIcon from '../../common/ButtonIcon'
 import { getGQLError } from '../../common/helpers'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import useKeyboard from '../../hooks/useKeyboard'
 import { Article, UpdateArticleStatusRequest } from '../models'
 import { UpdateArticleStatus } from '../queries'
@@ -15,11 +15,10 @@ interface Props {
   onSuccess?: (article: Article) => void
 }
 
-type AllProps = Props & IMessageDispatchProps
+export default (props: Props) => {
+  const { article, floating = false, keyboard = false, onSuccess } = props
 
-export const MarkAsButton = (props: AllProps) => {
-  const { article, floating = false, keyboard = false, showMessage, onSuccess } = props
-
+  const { showErrorMessage } = useContext(MessageContext)
   const [loading, setLoading] = useState(false)
   const updateArticleStatusMutation = useMutation<UpdateArticleStatusRequest>(UpdateArticleStatus)
 
@@ -34,7 +33,7 @@ export const MarkAsButton = (props: AllProps) => {
       if (onSuccess) onSuccess(article)
     } catch (err) {
       setLoading(false)
-      showMessage(getGQLError(err), true)
+      showErrorMessage(getGQLError(err))
     }
   }
 
@@ -71,5 +70,3 @@ export const MarkAsButton = (props: AllProps) => {
     />
   )
 }
-
-export default connectMessageDispatch(MarkAsButton)

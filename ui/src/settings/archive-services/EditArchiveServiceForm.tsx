@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { History } from 'history'
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
@@ -9,7 +9,7 @@ import FormCheckboxField from '../../common/FormCheckboxField'
 import FormInputField from '../../common/FormInputField'
 import FormSelectField from '../../common/FormSelectField'
 import { getGQLError, isValidForm } from '../../common/helpers'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
@@ -29,9 +29,7 @@ interface Props {
   history: History
 }
 
-type AllProps = Props & IMessageDispatchProps
-
-export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps) => {
+export default ({ data, history }: Props) => {
   const [config, setConfig] = useState<any>(JSON.parse(data.config))
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text, select, checkbox }] = useFormState<EditArchiveServiceFormFields>({
@@ -41,6 +39,7 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
   })
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const editArchiveServiceMutation = useMutation<ArchiveService>(CreateOrUpdateArchiveService)
+  const { showMessage } = useContext(MessageContext)
 
   const editArchiveService = async (service: ArchiveService) => {
     try {
@@ -104,5 +103,3 @@ export const EditArchiveServiceForm = ({ data, history, showMessage }: AllProps)
     </>
   )
 }
-
-export default connectMessageDispatch(EditArchiveServiceForm)

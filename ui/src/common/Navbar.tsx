@@ -20,19 +20,20 @@ export default () => {
     Error: err => <span>{err.message}</span>,
     Data: data => (
       <ul>
-        {data.categories
-          .filter(c => c.id !== null)
-          .map(category => (
-            <li key={`cat-${category.id}`}>
-              <LinkIcon
-                to={`/categories/${category.id}`}
-                icon="bookmark"
-                badge={category.unread ? category.unread : undefined}
-              >
-                {category.title}
-              </LinkIcon>
-            </li>
-          ))}
+        {data.categories &&
+          data.categories
+            .filter(c => c.id !== null)
+            .map(category => (
+              <li key={`cat-${category.id}`}>
+                <LinkIcon
+                  to={`/categories/${category.id}`}
+                  icon="bookmark"
+                  badge={category.unread ? category.unread : undefined}
+                >
+                  {category.title}
+                </LinkIcon>
+              </li>
+            ))}
       </ul>
     ),
     Other: () => <span>Unable to fetch categories!</span>

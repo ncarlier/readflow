@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
@@ -8,7 +8,7 @@ import ConfirmDialog from '../../common/ConfirmDialog'
 import { getGQLError, matchResponse } from '../../common/helpers'
 import Loader from '../../common/Loader'
 import Panel from '../../common/Panel'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import ApiKeysTable, { OnSelectedFn } from './ApiKeysTable'
@@ -16,15 +16,16 @@ import { updateCacheAfterDelete } from './cache'
 import { GetApiKeysResponse } from './models'
 import { DeleteApiKeys, GetApiKeys } from './queries'
 
-type AllProps = RouteComponentProps<{}> & IMessageDispatchProps
+type AllProps = RouteComponentProps<{}>
 
-export const ApiKeysTab = ({ match, showMessage }: AllProps) => {
+export default ({ match }: AllProps) => {
   usePageTitle('Settings - API keys')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetApiKeysResponse>(GetApiKeys)
   const deleteApiKeysMutation = useMutation<{ ids: number[] }>(DeleteApiKeys)
+  const { showMessage } = useContext(MessageContext)
 
   const onSelectedHandler: OnSelectedFn = keys => {
     setSelection(keys)
@@ -95,5 +96,3 @@ export const ApiKeysTab = ({ match, showMessage }: AllProps) => {
     </Panel>
   )
 }
-
-export default connectMessageDispatch(ApiKeysTab)

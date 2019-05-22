@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 
@@ -7,7 +7,7 @@ import { getGQLError, getURLParam, matchResponse } from '../common/helpers'
 import Loader from '../common/Loader'
 import Page from '../common/Page'
 import Panel from '../common/Panel'
-import { connectMessageDispatch, IMessageDispatchProps } from '../containers/MessageContainer'
+import { MessageContext } from '../context/MessageContext'
 import ErrorPanel from '../error/ErrorPanel'
 import AddButton from './components/AddButton'
 import ArticleList from './components/ArticleList'
@@ -64,10 +64,12 @@ const EmptyMessage = ({ mode }: { mode: DisplayMode }) => {
   }
 }
 
-type AllProps = Props & RouteComponentProps & IMessageDispatchProps
+type AllProps = Props & RouteComponentProps
 
-export const ArticlesPage = (props: AllProps) => {
-  const { category, match, showMessage } = props
+export default (props: AllProps) => {
+  const { category, match } = props
+
+  const { showErrorMessage } = useContext(MessageContext)
   const [reloading, setReloading] = useState(false)
 
   // Get display mode
@@ -120,7 +122,7 @@ export const ArticlesPage = (props: AllProps) => {
       })
       await refresh()
     } catch (err) {
-      showMessage(getGQLError(err), true)
+      showErrorMessage(getGQLError(err))
     }
   }
 
@@ -182,5 +184,3 @@ export const ArticlesPage = (props: AllProps) => {
     </Page>
   )
 }
-
-export default connectMessageDispatch(ArticlesPage)

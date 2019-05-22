@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 import { useFormState } from 'react-use-form-state'
@@ -10,7 +10,7 @@ import Button from '../../common/Button'
 import FormInputField from '../../common/FormInputField'
 import { getGQLError, isValidForm } from '../../common/helpers'
 import Panel from '../../common/Panel'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
@@ -19,15 +19,16 @@ interface AddCategoryFormFields {
   title: string
 }
 
-type AllProps = RouteComponentProps<{}> & IMessageDispatchProps
+type AllProps = RouteComponentProps<{}>
 
-export const AddCategoryForm = ({ history, showMessage }: AllProps) => {
+export default ({ history }: AllProps) => {
   usePageTitle('Settings - Add new category')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<AddCategoryFormFields>()
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const addCategoryMutation = useMutation<Category>(CreateOrUpdateCategory)
+  const { showMessage } = useContext(MessageContext)
 
   const addNewCategory = async (category: Category) => {
     try {
@@ -84,5 +85,3 @@ export const AddCategoryForm = ({ history, showMessage }: AllProps) => {
     </Panel>
   )
 }
-
-export default connectMessageDispatch(AddCategoryForm)

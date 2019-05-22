@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useApolloClient } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
 
 import ConfirmDialog from '../../common/ConfirmDialog'
 import Kbd from '../../common/Kbd'
 import LinkIcon from '../../common/LinkIcon'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
 import { connectOfflineDispatch, IOfflineDispatchProps } from '../../containers/OfflineContainer'
+import { MessageContext } from '../../context/MessageContext'
 import { Article, GetArticleResponse } from '../models'
 import { GetFullArticle } from '../queries'
 
@@ -15,10 +15,11 @@ interface Props {
   keyboard?: boolean
 }
 
-type AllProps = Props & IMessageDispatchProps & IOfflineDispatchProps
+type AllProps = Props & IOfflineDispatchProps
 
 export const OfflineLink = (props: AllProps) => {
-  const { article, keyboard = false, saveOfflineArticle, removeOfflineArticle, showMessage } = props
+  const { article, keyboard = false, saveOfflineArticle, removeOfflineArticle } = props
+  const { showMessage, showErrorMessage } = useContext(MessageContext)
 
   const client = useApolloClient()
 
@@ -37,7 +38,7 @@ export const OfflineLink = (props: AllProps) => {
         throw new Error(errors[0])
       }
     } catch (err) {
-      showMessage(err.message, true)
+      showErrorMessage(err.message)
     }
   }
 
@@ -46,7 +47,7 @@ export const OfflineLink = (props: AllProps) => {
       await removeOfflineArticle(article)
       showMessage(`Article removed from offline storage: ${article.title}`)
     } catch (err) {
-      showMessage(err.message, true)
+      showErrorMessage(err.message)
     }
   }
 
@@ -78,4 +79,4 @@ export const OfflineLink = (props: AllProps) => {
   )
 }
 
-export default connectOfflineDispatch(connectMessageDispatch(OfflineLink))
+export default connectOfflineDispatch(OfflineLink)

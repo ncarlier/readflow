@@ -5,8 +5,6 @@ import { all, fork } from 'redux-saga/effects'
 import { offlineArticlesReducer } from './offline/store/reducer'
 import { articlesSaga } from './offline/store/sagas'
 import { OfflineArticlesState } from './offline/store/types'
-import { messageReducer } from './store/message/reducer'
-import { MessageState } from './store/message/types'
 
 // The top-level state object.
 //
@@ -15,7 +13,6 @@ import { MessageState } from './store/message/types'
 export interface ApplicationState {
   offlineArticles: OfflineArticlesState
   router: RouterState
-  message: MessageState
 }
 
 // Additional props for connected React components. This prop is passed by default with `connect()`
@@ -24,8 +21,7 @@ export interface ConnectedReduxProps<A extends Action = AnyAction> {
 }
 
 export const reducers = {
-  offlineArticles: offlineArticlesReducer,
-  message: messageReducer
+  offlineArticles: offlineArticlesReducer
 }
 
 // Here we use `redux-saga` to trigger actions asynchronously. `redux-saga` uses something called a

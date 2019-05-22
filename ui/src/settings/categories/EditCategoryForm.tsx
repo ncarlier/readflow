@@ -1,5 +1,5 @@
 import { History } from 'history'
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
@@ -9,7 +9,7 @@ import { CreateOrUpdateCategory } from '../../categories/queries'
 import Button from '../../common/Button'
 import FormInputField from '../../common/FormInputField'
 import { getGQLError, isValidForm } from '../../common/helpers'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 
@@ -22,13 +22,12 @@ interface Props {
   history: History
 }
 
-type AllProps = Props & IMessageDispatchProps
-
-export const EditCategoryForm = ({ category, history, showMessage }: AllProps) => {
+export default ({ category, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<EditCategoryFormFields>({ title: category.title })
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const editCategoryMutation = useMutation<Category>(CreateOrUpdateCategory)
+  const { showMessage } = useContext(MessageContext)
 
   const editCategory = async (category: Category) => {
     try {
@@ -84,5 +83,3 @@ export const EditCategoryForm = ({ category, history, showMessage }: AllProps) =
     </>
   )
 }
-
-export default connectMessageDispatch(EditCategoryForm)

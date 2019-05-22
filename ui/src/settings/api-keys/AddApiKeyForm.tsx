@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 import { useFormState } from 'react-use-form-state'
@@ -7,7 +7,7 @@ import Button from '../../common/Button'
 import FormInputField from '../../common/FormInputField'
 import { getGQLError, isValidForm } from '../../common/helpers'
 import Panel from '../../common/Panel'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
@@ -18,15 +18,16 @@ interface AddApiKeyFormFields {
   alias: string
 }
 
-type AllProps = RouteComponentProps<{}> & IMessageDispatchProps
+type AllProps = RouteComponentProps<{}>
 
-export const AddApiKeyForm = ({ history, showMessage }: AllProps) => {
+export default ({ history }: AllProps) => {
   usePageTitle('Settings - Add new API key')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<AddApiKeyFormFields>()
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const addApiKeyMutation = useMutation<AddApiKeyFormFields>(CreateOrUpdateApiKey)
+  const { showMessage } = useContext(MessageContext)
 
   const addApiKey = async (apiKey: { alias: string | null }) => {
     try {
@@ -34,7 +35,7 @@ export const AddApiKeyForm = ({ history, showMessage }: AllProps) => {
         variables: apiKey,
         update: updateCacheAfterCreate
       })
-      showMessage(`New API key: ${res.data.createOrUpdateAPIKey.id}`)
+      showMessage(`New API key: ${res.data.createOrUpdateAPIKey.alias}`)
       // console.log('New API key', res)
       history.goBack()
     } catch (err) {
@@ -84,5 +85,3 @@ export const AddApiKeyForm = ({ history, showMessage }: AllProps) => {
     </Panel>
   )
 }
-
-export default connectMessageDispatch(AddApiKeyForm)

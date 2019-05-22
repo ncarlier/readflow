@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
 import { connect } from 'react-redux'
@@ -13,20 +13,21 @@ import ConfirmDialog from '../../common/ConfirmDialog'
 import { getGQLError, matchResponse } from '../../common/helpers'
 import Loader from '../../common/Loader'
 import Panel from '../../common/Panel'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
-import * as messageActions from '../../store/message/actions'
 import CategoriesTable, { OnSelectedFn } from './CategoriesTable'
 
-type AllProps = RouteComponentProps<{}> & IPropsFromDispatch
+type AllProps = RouteComponentProps<{}>
 
-export const CategoriesTab = ({ match, showMessage }: AllProps) => {
+export default ({ match }: AllProps) => {
   usePageTitle('Settings - Categories')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
   const deleteCategoriesMutation = useMutation<{ ids: number[] }>(DeleteCategories)
+  const { showMessage } = useContext(MessageContext)
 
   const onSelectedHandler: OnSelectedFn = keys => {
     setSelection(keys)
@@ -97,16 +98,3 @@ export const CategoriesTab = ({ match, showMessage }: AllProps) => {
     </Panel>
   )
 }
-
-interface IPropsFromDispatch {
-  showMessage: typeof messageActions.showMessage
-}
-
-const mapDispatchToProps = (dispatch: Dispatch): IPropsFromDispatch => ({
-  showMessage: (msg: string | null) => dispatch(messageActions.showMessage(msg))
-})
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(CategoriesTab)

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
@@ -8,7 +8,7 @@ import ConfirmDialog from '../../common/ConfirmDialog'
 import { getGQLError, matchResponse } from '../../common/helpers'
 import Loader from '../../common/Loader'
 import Panel from '../../common/Panel'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import { updateCacheAfterDelete } from './cache'
@@ -16,15 +16,16 @@ import { GetRulesResponse } from './models'
 import { DeleteRules, GetRules } from './queries'
 import RulesTable, { OnSelectedFn } from './RulesTable'
 
-type AllProps = RouteComponentProps<{}> & IMessageDispatchProps
+type AllProps = RouteComponentProps<{}>
 
-export const RulesTab = ({ match, showMessage }: AllProps) => {
+export default ({ match }: AllProps) => {
   usePageTitle('Settings - Rules')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetRulesResponse>(GetRules)
   const deleteRulesMutation = useMutation<{ ids: number[] }>(DeleteRules)
+  const { showMessage } = useContext(MessageContext)
 
   const onSelectedHandler: OnSelectedFn = keys => {
     setSelection(keys)
@@ -93,5 +94,3 @@ export const RulesTab = ({ match, showMessage }: AllProps) => {
     </Panel>
   )
 }
-
-export default connectMessageDispatch(RulesTab)

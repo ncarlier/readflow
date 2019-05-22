@@ -1,12 +1,12 @@
 import { History } from 'history'
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
 import Button from '../../common/Button'
 import FormInputField from '../../common/FormInputField'
 import { getGQLError, isValidForm } from '../../common/helpers'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
@@ -22,13 +22,12 @@ interface Props {
   history: History
 }
 
-type AllProps = Props & IMessageDispatchProps
-
-export const EditApiKeyForm = ({ data, history, showMessage }: AllProps) => {
+export default ({ data, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<EditApiKeyFormFields>({ alias: data.alias })
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const editApiKeyMutation = useMutation<ApiKey>(CreateOrUpdateApiKey)
+  const { showMessage } = useContext(MessageContext)
 
   const editApiKey = async (apiKey: { id: number; alias: string }) => {
     try {
@@ -85,5 +84,3 @@ export const EditApiKeyForm = ({ data, history, showMessage }: AllProps) => {
     </>
   )
 }
-
-export default connectMessageDispatch(EditApiKeyForm)

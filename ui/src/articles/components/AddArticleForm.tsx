@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
@@ -8,7 +8,7 @@ import FormInputField from '../../common/FormInputField'
 import { getGQLError, isValidForm } from '../../common/helpers'
 import Loader from '../../common/Loader'
 import Panel from '../../common/Panel'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { AddNewArticleRequest, Article } from '../models'
@@ -25,11 +25,10 @@ interface Props {
   onCancel: (e: any) => void
 }
 
-type AllProps = Props & IMessageDispatchProps
-
-const AddArticleForm = ({ value, category, onSuccess, onCancel, showMessage }: AllProps) => {
+export default ({ value, category, onSuccess, onCancel }: Props) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { showMessage } = useContext(MessageContext)
   const [formState, { url }] = useFormState<AddArticleFormFields>({ url: value })
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const addArticleMutation = useMutation<AddNewArticleRequest>(AddNewArticle)
@@ -92,5 +91,3 @@ const AddArticleForm = ({ value, category, onSuccess, onCancel, showMessage }: A
     </Panel>
   )
 }
-
-export default connectMessageDispatch(AddArticleForm)

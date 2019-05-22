@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 
 import { getGQLError } from '../../common/helpers'
 import Kbd from '../../common/Kbd'
 import LinkIcon from '../../common/LinkIcon'
 import Loader from '../../common/Loader'
-import { connectMessageDispatch, IMessageDispatchProps } from '../../containers/MessageContainer'
+import { MessageContext } from '../../context/MessageContext'
 import { ArchiveService } from '../../settings/archive-services/models'
 import { Article } from '../models'
 import { ArchiveArticle } from '../queries'
@@ -22,11 +22,10 @@ interface Props {
   keyboard?: boolean
 }
 
-type AllProps = Props & IMessageDispatchProps
-
-export const ArchiveLink = (props: AllProps) => {
+export default (props: Props) => {
   const [loading, setLoading] = useState(false)
-  const { article, service, showMessage, keyboard = false } = props
+  const { article, service, keyboard = false } = props
+  const { showMessage, showErrorMessage } = useContext(MessageContext)
 
   const archiveArticleMutation = useMutation<ArchiveArticleFields>(ArchiveArticle)
 
@@ -38,7 +37,7 @@ export const ArchiveLink = (props: AllProps) => {
       })
       showMessage(`Article sent to ${service.alias}: ${article.title}`)
     } catch (err) {
-      showMessage(getGQLError(err), true)
+      showErrorMessage(getGQLError(err))
     } finally {
       setLoading(false)
     }
@@ -55,5 +54,3 @@ export const ArchiveLink = (props: AllProps) => {
     </LinkIcon>
   )
 }
-
-export default connectMessageDispatch(ArchiveLink)
