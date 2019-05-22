@@ -112,3 +112,11 @@ export const AddNewArticle = gql`
     }
   }
 `
+
+export const GetNbNewArticles = gql`
+  query articles($category: Int) {
+    articles(limit: 1, status: unread, category: $category) {
+      totalCount
+    }
+  }
+`

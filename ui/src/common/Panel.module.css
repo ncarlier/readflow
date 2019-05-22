@@ -1,6 +1,6 @@
 .panel {
   composes: container from global;
-  margin-top: 5vh;
+  margin-top: 3vh;
   margin-bottom: 3vh;
   max-width: 936px;
   display: flex;

@@ -13,6 +13,7 @@ import AddButton from './components/AddButton'
 import ArticleList from './components/ArticleList'
 import { DisplayMode } from './components/ArticlesDisplayMode'
 import ArticlesPageMenu from './components/ArticlesPageMenu'
+import NewArticlesAvailable from './components/NewArticlesAvailable'
 import { GetArticlesRequest, GetArticlesResponse } from './models'
 import { GetArticles, MarkAllArticlesAsRead } from './queries'
 
@@ -75,8 +76,9 @@ export const ArticlesPage = (props: AllProps) => {
   // Build GQL request
   const req = buildArticlesRequest(mode, props)
 
-  const { data, error, loading, fetchMore, refetch } = useQuery<GetArticlesResponse>(GetArticles, {
-    variables: req
+  const { data, error, loading, fetchMore, refetch, networkStatus } = useQuery<GetArticlesResponse>(GetArticles, {
+    variables: req,
+    notifyOnNetworkStatusChange: true
   })
 
   const fetchMoreArticles = useCallback(async () => {
@@ -100,8 +102,11 @@ export const ArticlesPage = (props: AllProps) => {
   }, [data])
 
   const refresh = useCallback(async () => {
-    const { errors: err } = await refetch()
-    if (err) console.error(err)
+    console.log('re-fetching articles...')
+    const { errors } = await refetch()
+    if (errors) {
+      console.error(errors)
+    }
   }, [refetch])
 
   const markAllArticlesAsReadMutation = useMutation<{ category?: number }>(MarkAllArticlesAsRead)
@@ -130,6 +135,9 @@ export const ArticlesPage = (props: AllProps) => {
     ),
     Data: d => (
       <>
+        {mode === DisplayMode.unread && (
+          <NewArticlesAvailable current={d.articles.totalCount} category={category} refresh={refetch} />
+        )}
         <ArticleList
           articles={d.articles.entries}
           emptyMessage={EmptyMessage({ mode })}
@@ -168,7 +176,7 @@ export const ArticlesPage = (props: AllProps) => {
         />
       }
     >
-      {render(data, error, loading)}
+      {render(data, error, loading || networkStatus === 4)}
     </Page>
   )
 }

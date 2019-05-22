@@ -6,10 +6,12 @@ body {
   margin: auto;
   background: #fafafa;
 }
+img, figure {
+  height: auto;
+}
 img, figure, iframe {
   display: block;
   max-width: 100%;
-  height: auto;
   margin: 0;
 }
 pre, code {
