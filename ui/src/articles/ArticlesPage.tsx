@@ -53,6 +53,11 @@ const buildTitle = (mode: DisplayMode, status: string, category?: Category) => {
   return title
 }
 
+const computeTotalArticles = (data: GetArticlesResponse, status: string) => {
+  const delta = data.articles.entries.filter(a => a.status !== status).length
+  return data.articles.totalCount - delta
+}
+
 const EmptyMessage = ({ mode }: { mode: DisplayMode }) => {
   switch (mode) {
     case DisplayMode.category:
@@ -140,7 +145,7 @@ export default (props: AllProps) => {
     Data: d => (
       <>
         {mode === DisplayMode.unread && (
-          <NewArticlesAvailable current={d.articles.totalCount} category={category} refresh={refresh} />
+          <NewArticlesAvailable current={computeTotalArticles(d, req.status)} category={category} refresh={refresh} />
         )}
         <ArticleList
           articles={d.articles.entries}
@@ -163,8 +168,7 @@ export default (props: AllProps) => {
   // Build title
   let title = buildTitle(mode, req.status, category)
   if (data && data.articles) {
-    const delta = data.articles.entries.filter(a => a.status !== req.status).length
-    const totalCount = data.articles.totalCount - delta
+    const totalCount = computeTotalArticles(data, req.status)
     const plural = totalCount > 1 ? ' articles ' : ' article '
     title = totalCount + plural + title
   } else title = ' '

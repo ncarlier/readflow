@@ -42,7 +42,7 @@ export default ({ current, category, refresh }: Props) => {
     }
   }, [refresh])
 
-  const getNbArticlesToRead = async () => {
+  const getNbArticlesToRead = async (lastCount: number) => {
     // console.log('getNbArticlesToRead...')
     try {
       const { errors, data } = await client.query<GetArticlesResponse>({
@@ -51,7 +51,7 @@ export default ({ current, category, refresh }: Props) => {
         variables: { category: category ? category.id : undefined }
       })
       if (data) {
-        const delta = data.articles.totalCount - current
+        const delta = data.articles.totalCount - lastCount
         setNbItems(delta)
       }
       if (errors) {
@@ -63,11 +63,13 @@ export default ({ current, category, refresh }: Props) => {
   }
 
   useEffect(() => {
-    const timer = setInterval(() => getNbArticlesToRead(), 60000)
+    console.log('NewArticlesAvailable: init', current)
+    const timer = setInterval(() => getNbArticlesToRead(current), 60000)
     return () => {
+      console.log('NewArticlesAvailable: cleanup')
       clearInterval(timer)
     }
-  }, [])
+  }, [current])
 
   switch (true) {
     case loading:
