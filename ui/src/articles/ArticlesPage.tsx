@@ -140,14 +140,14 @@ export default (props: AllProps) => {
     Data: d => (
       <>
         {mode === DisplayMode.unread && (
-          <NewArticlesAvailable current={d.articles.totalCount} category={category} refresh={refetch} />
+          <NewArticlesAvailable current={d.articles.totalCount} category={category} refresh={refresh} />
         )}
         <ArticleList
           articles={d.articles.entries}
           emptyMessage={EmptyMessage({ mode })}
           filter={a => a.status === req.status}
           hasMore={d.articles.hasNext}
-          refetch={refresh}
+          refetch={refetch}
           fetchMoreArticles={fetchMoreArticles}
         />
         {mode !== DisplayMode.history && <AddButton category={category} onSuccess={refresh} />}

@@ -74,7 +74,7 @@ export default ({ current, category, refresh }: Props) => {
       return <Loader />
     case nbItems != 0:
       return (
-        <Panel>
+        <Panel style={{flex: '0 0 auto'}}>
           <Button onClick={reload}>{renderLabel(nbItems)}</Button>
         </Panel>
       )

@@ -25,13 +25,13 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
   const elementRef = useRef<HTMLDivElement>(null)
 
   const updatePosition = () => {
-    if (dragged) requestAnimationFrame(updatePosition)
+    if (dragged.current) requestAnimationFrame(updatePosition)
     const now = Date.now()
     const elapsed = now - startTime.current
 
     const $bg = bgRef.current
     const $el = elementRef.current
-    if (dragged && elapsed > fpsInterval && $bg && $el) {
+    if (dragged.current && elapsed > fpsInterval && $bg && $el) {
       $el.style.transform = `translateX(${left.current}px)`
       const opacity = Math.abs(left.current) / 100
       if (opacity < 1 && opacity.toFixed(2) !== $bg.style.opacity) {
@@ -39,6 +39,11 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
       }
       if (opacity >= 1) {
         $bg.style.opacity = '1'
+      }
+      if (left.current < $el.offsetWidth * threshold * -1) {
+        $bg.style.color = 'white'
+      } else {
+        $bg.style.color = 'rgba(255, 255, 255, 0.3)'
       }
       startTime.current = Date.now()
     }
@@ -58,7 +63,7 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
   const onDragEnd = () => {
     const $el = elementRef.current
     const $wrapper = wrapperRef.current
-    if (dragged && $el && $wrapper) {
+    if (dragged.current && $el && $wrapper) {
       dragged.current = false
       if (left.current < $el.offsetWidth * threshold * -1) {
         left.current = -$el.offsetWidth * 2
@@ -69,7 +74,7 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
       }
 
       $el.className = styles.bouncing
-      $el.style.transform = `translateX(${left}px)`
+      $el.style.transform = `translateX(${left.current}px)`
     }
   }
 
@@ -90,22 +95,34 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
 
   const onDragStartMouse = (evt: React.MouseEvent) => {
     onDragStart(evt.clientX)
-    window.addEventListener('mousemove', onMouseMove)
+    const $el = wrapperRef.current
+    if ($el) {
+      $el.addEventListener('mousemove', onMouseMove)
+    }
   }
 
   const onDragStartTouch = (evt: React.TouchEvent) => {
     const touch = evt.targetTouches[0]
     onDragStart(touch.clientX)
-    window.addEventListener('touchmove', onTouchMove)
+    const $el = wrapperRef.current
+    if ($el) {
+      $el.addEventListener('touchmove', onTouchMove)
+    }
   }
 
   const onDragEndMouse = () => {
-    window.removeEventListener('mousemove', onMouseMove)
+    const $el = wrapperRef.current
+    if ($el) {
+      $el.removeEventListener('mousemove', onMouseMove)
+    }
     onDragEnd()
   }
 
   const onDragEndTouch = () => {
-    window.removeEventListener('touchmove', onTouchMove)
+    const $el = wrapperRef.current
+    if ($el) {
+      $el.removeEventListener('touchmove', onTouchMove)
+    }
     onDragEnd()
   }
 

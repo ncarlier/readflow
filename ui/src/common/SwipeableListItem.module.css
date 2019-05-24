@@ -27,9 +27,9 @@
   justify-content: flex-end;
   align-items: center;
 
-  padding-right: 16px;
-  color: white;
-  background-color: #663bb7;
+  padding-right: 32px;
+  color: rgba(255, 255, 255, 0.3);
+  background-color: var(--button-primary-color);
   box-sizing: border-box;
 }
 
