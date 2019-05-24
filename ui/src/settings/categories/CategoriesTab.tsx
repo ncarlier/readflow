@@ -1,9 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
-import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
-import { Dispatch } from 'redux'
 
 import { updateCacheAfterDelete } from '../../categories/cache'
 import { GetCategoriesResponse } from '../../categories/models'
