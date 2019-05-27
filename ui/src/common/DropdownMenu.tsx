@@ -1,4 +1,4 @@
-import React, { createRef, ReactNode, useEffect } from 'react'
+import React, { createRef, ReactNode, useEffect, MouseEventHandler } from 'react'
 
 import ButtonIcon from './ButtonIcon'
 import styles from './DropdownMenu.module.css'
@@ -16,11 +16,17 @@ export default ({ children }: Props) => {
     if (ref.current) {
       const isButton = $el.parentElement && $el.parentElement.tagName === 'BUTTON'
       const $details = $el.closest('details')
-      if (isButton && $details === ref.current && $details.hasAttribute('open')) {
-        e.preventDefault()
+      if (!isButton || $details !== ref.current) {
+        ref.current.removeAttribute('open')
       }
-      ref.current.removeAttribute('open')
     }
+  }
+
+  const handleClickMenu: MouseEventHandler = (e) => {
+    e.preventDefault()
+    const $el = e.currentTarget
+    const $summary: any = $el.parentNode
+    $summary.click()
   }
 
   useEffect(() => {
@@ -33,7 +39,7 @@ export default ({ children }: Props) => {
   return (
     <details ref={ref} className={styles.menu}>
       <summary>
-        <ButtonIcon icon="more_vert" />
+        <ButtonIcon icon="more_vert" onClick={handleClickMenu}/>
       </summary>
       <nav className={styles.nav} tabIndex={-1}>
         {children}
