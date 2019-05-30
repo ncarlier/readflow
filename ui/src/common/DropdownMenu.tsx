@@ -1,4 +1,4 @@
-import React, { createRef, ReactNode, useEffect, MouseEventHandler, CSSProperties } from 'react'
+import React, { createRef, CSSProperties, MouseEventHandler, ReactNode, useEffect } from 'react'
 
 import ButtonIcon from './ButtonIcon'
 import styles from './DropdownMenu.module.css'
@@ -23,7 +23,7 @@ export default ({ children, style }: Props) => {
     }
   }
 
-  const handleClickMenu: MouseEventHandler = (e) => {
+  const handleClickMenu: MouseEventHandler = e => {
     e.preventDefault()
     const $el = e.currentTarget
     const $summary: any = $el.parentNode
@@ -40,7 +40,7 @@ export default ({ children, style }: Props) => {
   return (
     <details ref={ref} className={styles.menu}>
       <summary>
-        <ButtonIcon icon="more_vert" onClick={handleClickMenu}/>
+        <ButtonIcon icon="more_vert" onClick={handleClickMenu} />
       </summary>
       <nav className={styles.nav} style={style} tabIndex={-1}>
         {children}

@@ -1,14 +1,14 @@
 import React from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 
+import { classNames } from '../../common/helpers'
+import Icon from '../../common/Icon'
+import TimeAgo from '../../common/TimeAgo'
 import useKeyboard from '../../hooks/useKeyboard'
 import { Article } from '../models'
 import styles from './ArticleCard.module.css'
 import ArticleMenu from './ArticleMenu'
-import Icon from '../../common/Icon'
-import TimeAgo from '../../common/TimeAgo'
-import { classNames } from '../../common/helpers';
-import MarkAsButton from './MarkAsButton';
+import MarkAsButton from './MarkAsButton'
 
 interface Props {
   article: Article
@@ -35,15 +35,13 @@ export default withRouter((props: AllProps) => {
 
   return (
     <article className={classNames(styles.card, activeClass)}>
-      { article.image && (
-        <Link to={readMorePath} title="View details" className={styles.illustration}>
-          <img src={article.image} alt="Illustration" onError={(e) => e.currentTarget.classList.add(styles.broken)} />
+      {article.image && (
+        <Link to={readMorePath} title={'View details' + kbs} className={styles.illustration}>
+          <img src={article.image} alt="Illustration" onError={e => e.currentTarget.classList.add(styles.broken)} />
         </Link>
       )}
-      <Link to={readMorePath} title="View details" className={styles.content}>
-        <header>
-          {article.title}
-        </header>
+      <Link to={readMorePath} title={'View details' + kbs} className={styles.content}>
+        <header>{article.title}</header>
         {article.text && <p>{article.text}</p>}
       </Link>
       <footer>
@@ -54,7 +52,7 @@ export default withRouter((props: AllProps) => {
           </a>
         )}
         <TimeAgo dateTime={article.created_at} />
-        <ArticleMenu article={article} keyboard={isActive} style={menuStyle}/>
+        <ArticleMenu article={article} keyboard={isActive} style={menuStyle} />
         {!article.isOffline && <MarkAsButton article={article} onSuccess={onRemove} keyboard={isActive} />}
       </footer>
     </article>
