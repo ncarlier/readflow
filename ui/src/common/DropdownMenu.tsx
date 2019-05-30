@@ -1,13 +1,14 @@
-import React, { createRef, ReactNode, useEffect, MouseEventHandler } from 'react'
+import React, { createRef, ReactNode, useEffect, MouseEventHandler, CSSProperties } from 'react'
 
 import ButtonIcon from './ButtonIcon'
 import styles from './DropdownMenu.module.css'
 
 interface Props {
   children: ReactNode
+  style?: CSSProperties
 }
 
-export default ({ children }: Props) => {
+export default ({ children, style }: Props) => {
   const ref = createRef<HTMLDetailsElement>()
 
   const handleClickOutside = (e: MouseEvent) => {
@@ -41,7 +42,7 @@ export default ({ children }: Props) => {
       <summary>
         <ButtonIcon icon="more_vert" onClick={handleClickMenu}/>
       </summary>
-      <nav className={styles.nav} tabIndex={-1}>
+      <nav className={styles.nav} style={style} tabIndex={-1}>
         {children}
       </nav>
     </details>

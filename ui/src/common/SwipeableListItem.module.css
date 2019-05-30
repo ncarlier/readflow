@@ -2,9 +2,10 @@
   width: 100%;
   align-items: center;
   box-sizing: border-box;
-  background-color: #fff;
+  background-color: transparent;
   height: 100%;
   display: flex;
+  border-radius: inherit;
 }
 
 .bouncing {
@@ -12,9 +13,9 @@
   width: 100%;
   align-items: center;
   box-sizing: border-box;
-  background-color: #fff;
   height: 100%;
   display: flex;
+  border-radius: inherit;
 }
 
 .background {
@@ -26,6 +27,7 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+  border-radius: inherit;
 
   padding-right: 32px;
   color: rgba(255, 255, 255, 0.3);
@@ -40,4 +42,5 @@
   transform-origin: top;
   overflow: hidden;
   width: 100%;
+  border-radius: inherit;
 }

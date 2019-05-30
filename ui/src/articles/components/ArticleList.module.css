@@ -6,8 +6,9 @@
 }
 
 .item {
-  margin-bottom: 1em;
+  margin: 1em;
   outline: none;
+  border-radius: 10px;
 }
 
 @media (max-width: 767px) {
@@ -15,8 +16,8 @@
     padding: 0;
   }
   .item {
-    margin-bottom: 0;
-    border-bottom: 1px solid var(--separator-default-color);
+    margin: 1em;
+    box-shadow: 0 2px 15px 2px #c1c1c17a;
   }
   .item header, .item footer {
     border: none;

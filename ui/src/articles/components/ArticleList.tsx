@@ -8,9 +8,9 @@ import { useMedia } from '../../hooks'
 import useInfiniteScroll from '../../hooks/useInfiniteScroll'
 import useKeyboard from '../../hooks/useKeyboard'
 import { Article } from '../models'
-import ArticleCard from './ArticleCard'
 import styles from './ArticleList.module.css'
 import SwipeableArticleCard from './SwipeableArticleCard'
+import ArticleCard from './ArticleCard'
 
 interface Props {
   articles: Article[]

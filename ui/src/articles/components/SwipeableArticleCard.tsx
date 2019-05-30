@@ -7,8 +7,8 @@ import SwipeableListItem from '../../common/SwipeableListItem'
 import { MessageContext } from '../../context/MessageContext'
 import { Article, UpdateArticleStatusRequest } from '../models'
 import { UpdateArticleStatus } from '../queries'
-import ArticleCard from './ArticleCard'
 import styles from './SwipeableArticleCard.module.css'
+import ArticleCard from './ArticleCard'
 
 interface Props {
   article: Article

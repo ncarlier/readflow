@@ -15,7 +15,7 @@ const renderLabel = (nb: number) => {
     case nb === 1:
       return 'View new article'
     case nb < 0:
-      return 'View new articles'
+      return 'Refresh'
     default:
       return ''
   }
@@ -63,10 +63,8 @@ export default ({ current, category, refresh }: Props) => {
   }
 
   useEffect(() => {
-    console.log('NewArticlesAvailable: init', current)
     const timer = setInterval(() => getNbArticlesToRead(current), 60000)
     return () => {
-      console.log('NewArticlesAvailable: cleanup')
       clearInterval(timer)
     }
   }, [current])

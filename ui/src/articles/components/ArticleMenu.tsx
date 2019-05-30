@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 
 import DropdownMenu from '../../common/DropdownMenu'
@@ -14,11 +14,13 @@ import ShareLink from './ShareLink'
 interface Props {
   article: Article
   keyboard?: boolean
+  style?: CSSProperties
 }
 
 type AllProps = Props
 
 export default (props: AllProps) => {
+  const { style, ...attrs } = props
   const nvg: any = window.navigator
 
   const { data, error, loading } = useQuery<GetArchiveServicesResponse>(GetArchiveServices)
@@ -33,22 +35,22 @@ export default (props: AllProps) => {
     Data: ({ archivers }) =>
       archivers.map(service => (
         <li key={`as-${service.id}`}>
-          <ArchiveLink service={service} {...props} />
+          <ArchiveLink service={service} {...attrs} />
         </li>
       )),
     Other: () => <li>Unknown error</li>
   })
 
   return (
-    <DropdownMenu>
+    <DropdownMenu style={style}>
       <ul>
         {nvg.share && (
           <li>
-            <ShareLink {...props} />
+            <ShareLink {...attrs} />
           </li>
         )}
         <li>
-          <OfflineLink {...props} />
+          <OfflineLink {...attrs} />
         </li>
         {renderArchiveServices(data, error, loading)}
       </ul>
