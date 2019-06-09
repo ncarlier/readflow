@@ -11,6 +11,10 @@
   border-radius: 10px;
 }
 
+.item:last-child {
+  margin-bottom: 100px;
+}
+
 @media (max-width: 767px) {
   .list {
     padding: 0;
