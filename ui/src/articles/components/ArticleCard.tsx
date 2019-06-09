@@ -7,6 +7,7 @@ import TimeAgo from '../../common/TimeAgo'
 import useKeyboard from '../../hooks/useKeyboard'
 import { Article } from '../models'
 import styles from './ArticleCard.module.css'
+import ArticleImage from './ArticleImage'
 import ArticleMenu from './ArticleMenu'
 import MarkAsButton from './MarkAsButton'
 
@@ -37,7 +38,7 @@ export default withRouter((props: AllProps) => {
     <article className={classNames(styles.card, activeClass)}>
       {article.image && (
         <Link to={readMorePath} title={'View details' + kbs} className={styles.illustration}>
-          <img src={article.image} alt="Illustration" onError={e => e.currentTarget.classList.add(styles.broken)} />
+          <ArticleImage src={article.image} />
         </Link>
       )}
       <Link to={readMorePath} title={'View details' + kbs} className={styles.content}>

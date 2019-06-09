@@ -18,6 +18,7 @@ type Config struct {
 	LogPretty         *bool
 	LogLevel          *string
 	SentryDSN         *string
+	ImageProxy        *string
 }
 
 var config = &Config{
@@ -31,6 +32,7 @@ var config = &Config{
 	LogPretty:         flag.Bool("log-pretty", getBoolEnv("LOG_PRETTY", false), "Output human readable logs"),
 	LogLevel:          flag.String("log-level", getEnv("LOG_LEVEL", "info"), "Log level (debug, info, warn, error)"),
 	SentryDSN:         flag.String("sentry-dsn", getEnv("SENTRY_DSN", ""), "Sentry DSN URL"),
+	ImageProxy:        flag.String("image-proxy", getEnv("IMAGE_PROXY", ""), "Image proxy service (passthrough if empty)"),
 }
 
 func init() {

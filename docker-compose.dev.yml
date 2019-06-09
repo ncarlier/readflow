@@ -13,3 +13,11 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-testpwd}
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
+  #######################################
+  # Imaginary: Image proxy
+  #######################################
+  imaginary:
+    image: h2non/imaginary:latest
+    command: -enable-url-source
+    ports:
+      - "${IMAGINARY:-9000}:9000"

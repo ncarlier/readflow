@@ -18,6 +18,18 @@ services:
     labels:
       - "traefik.enable=false"
 
+  #######################################
+  # Imaginary: Image proxy
+  #######################################
+  imaginary:
+    image: h2non/imaginary:latest
+    command: -enable-url-source
+    restart: always
+    networks:
+      - internal
+    labels:
+      - "traefik.enable=false"
+
   ########################################
   # API
   ########################################
@@ -35,25 +47,26 @@ services:
       - APP_BROKER=${EVENT_BROKER}
       - APP_SENTRY_DSN=${SENTRY_DSN}
       - APP_LISTEN_METRICS=:9090
+      - APP_IMAGE_PROXY=http://imaginary:9000
     labels:
       - "traefik.port=8080"
       - "traefik.frontend.rule=Host:api.${FQDN}"
       - "traefik.docker.network=${GW_NETWORK_NAME}"
 
-  ########################################
-  # Webapp
-  ########################################
-  app:
-    build: ./ui/
-    image: "ncarlier/readflow-app:latest"
-    restart: always
-    networks:
-      - web
-      - internal
-    labels:
-      - "traefik.port=80"
-      - "traefik.frontend.rule=Host:${FQDN}"
-      - "traefik.docker.network=${GW_NETWORK_NAME}"
+#  ########################################
+#  # Webapp
+#  ########################################
+#  app:
+#    build: ./ui/
+#    image: "ncarlier/readflow-app:latest"
+#    restart: always
+#    networks:
+#      - web
+#      - internal
+#    labels:
+#      - "traefik.port=80"
+#      - "traefik.frontend.rule=Host:${FQDN}"
+#      - "traefik.docker.network=${GW_NETWORK_NAME}"
 
 networks:
   web:

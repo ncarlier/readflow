@@ -47,6 +47,12 @@ var routes = Routes{
 	},
 	Route{
 		[]string{"GET"},
+		"/img",
+		false,
+		imgProxyHandler,
+	},
+	Route{
+		[]string{"GET"},
 		"/healthz",
 		false,
 		healthz,
