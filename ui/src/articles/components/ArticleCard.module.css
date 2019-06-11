@@ -16,6 +16,12 @@
   flex: 1;
   padding: 1em 1em 0em 1em;
 }
+.content > h3 {
+  margin: 0;
+  font-size: small;
+  font-variant: all-small-caps;
+  font-weight: normal;
+}
 .content > header {
   color: black;
   font-size: larger;
