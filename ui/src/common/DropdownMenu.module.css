@@ -20,9 +20,11 @@
   right: 0;
   z-index: 99;
   width: auto;
-  color: black;
   font-weight: 400;
   font-size: initial;
+  background-color: var(--panel-body-color);
+  color: var(--panel-text-color);
+  box-shadow: 0 2px 15px 2px var(--panel-shadow-color);
 }
 
 .nav ul {
@@ -33,7 +35,7 @@
 }
 
 .nav > ul > li {
-  border-top: 1px solid #d4d4d4;
+  border-top: 1px solid var(--separator-default-color);
   margin: 0;
 }
 

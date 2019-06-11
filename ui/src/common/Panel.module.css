@@ -5,6 +5,7 @@
   max-width: 936px;
   display: flex;
   flex-direction: column;
+  color: var(--panel-text-color);
 }
 
 .panel:hover {

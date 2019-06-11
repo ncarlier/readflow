@@ -21,10 +21,9 @@
   }
   .item {
     margin: 1em;
-    box-shadow: 0 2px 15px 2px #c1c1c17a;
+    box-shadow: 0 2px 15px 2px var(--panel-shadow-color);
   }
   .item header, .item footer {
     border: none;
-    background-color: white;
   }
 }
