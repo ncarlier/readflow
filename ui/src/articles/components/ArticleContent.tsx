@@ -8,16 +8,21 @@ interface Props {
   article: Article
 }
 
+const { PUBLIC_URL } = process.env
+
+const getHTMLContent = (body: string) => `
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="${PUBLIC_URL}/readable.css">
+    <script src="${PUBLIC_URL}/readable.js"></script>
+  </head>
+  <body>${body}</body>
+</html>
+`
+
 export default ({ article }: Props) => {
   const contentRef = useRef<HTMLDivElement>(null)
-
-  var cssLink = document.createElement('link')
-  cssLink.href = process.env.PUBLIC_URL + '/readable.css'
-  cssLink.rel = 'stylesheet'
-  cssLink.type = 'text/css'
-  var script = document.createElement('script')
-  script.setAttribute('type', 'text/javascript')
-  script.setAttribute('src', process.env.PUBLIC_URL + '/readable.js')
 
   useEffect(() => {
     if (contentRef.current) {
@@ -26,9 +31,7 @@ export default ({ article }: Props) => {
       let doc = ifrm.contentWindow ? ifrm.contentWindow.document : ifrm.contentDocument
       if (doc) {
         doc.open()
-        doc.write(article.html || article.text)
-        doc.head.appendChild(cssLink)
-        doc.head.appendChild(script)
+        doc.write(getHTMLContent(article.html || article.text))
         // Keyboard events have to propagate outside the iframe
         doc.onkeydown = function(e: KeyboardEvent) {
           switch (e.keyCode) {
