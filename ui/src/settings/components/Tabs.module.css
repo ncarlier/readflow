@@ -18,7 +18,7 @@
 .tabs :global(a.active),
 .tabs a:active {
   opacity: 1;
-  border-bottom: 3px solid white;
+  border-bottom: 3px solid var(--button-primary-text-color);
 }
 
 @media (max-width: 520px) {

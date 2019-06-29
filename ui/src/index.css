@@ -12,7 +12,7 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--main-bg-color)
+  background-color: var(--main-bg-color);
 }
 
 .hidden {
@@ -56,10 +56,9 @@ table {
 table thead th {
   font-size: .95rem;
   font-weight: 500;
-  color: rgba(0,0,0,.54);
   border-top-width: 0;
   border-bottom-width: 1px;
-  border-bottom: 2px solid rgba(0,0,0,.06);
+  border-bottom: 2px solid var(--table-separator);
   vertical-align: bottom;
 }
 
@@ -97,12 +96,8 @@ input[type=checkbox] {
   font-size: 24px;
   width: 1em;
   height: 1em;
-  background: #fff;
-  border: 1px solid #ccc;
-}
-
-input[type="checkbox"]:checked {
-  background-color: var(--header-bg-color);
+  background: var(--input-bg-color);
+  border: 1px solid var(--separator-default-color);
 }
 
 input[type="checkbox"]:checked::before {
@@ -110,5 +105,9 @@ input[type="checkbox"]:checked::before {
   font-weight: 500;
   content: 'done';
   display: block;
-  color: white;
+  color: var(--button-primary-color);
+}
+
+[data-theme="dark"] img {
+  filter: brightness(50%);
 }

@@ -18,15 +18,7 @@ type AllProps = Props
 export default ({ article, to, children }: AllProps) => (
   <header className={styles.header}>
     <h1>
-      <small>
-        <TimeAgo dateTime={article.created_at} />
-        {article.url != '' && (
-          <a href={article.url} target="_blank" rel="noopener noreferrer" title="Open original article">
-            {new URL(article.url).hostname}
-            <Icon name="open_in_new" />
-          </a>
-        )}
-      </small>
+      {article.category && <small>{article.category.title}</small>}
       <span>
         {to ? (
           <Link to={to} title="View details">
@@ -36,6 +28,15 @@ export default ({ article, to, children }: AllProps) => (
           article.title
         )}
       </span>
+      <small>
+        {article.url != '' && (
+          <a href={article.url} target="_blank" rel="noopener noreferrer" title="Open original article">
+            {new URL(article.url).hostname}
+            <Icon name="open_in_new" />
+          </a>
+        )}
+        <TimeAgo dateTime={article.created_at} />
+      </small>
     </h1>
     <div className={styles.actions}>{children}</div>
   </header>

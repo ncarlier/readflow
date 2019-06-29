@@ -15,9 +15,10 @@ self.addEventListener('push', function(event) {
   let title = data.title || 'Something has happened'
   let body = data.body || "Here's something you might want to check out."
   const icon = 'logo.png'
+  const badge = 'favicon-96x96.png'
   const tag = 'readflow-notification'
 
-  event.waitUntil(self.registration.showNotification(title, { body, icon, tag }))
+  event.waitUntil(self.registration.showNotification(title, { body, icon, tag, badge }))
 })
 
 self.addEventListener('notificationclick', function(event) {

@@ -99,9 +99,10 @@ export default (props: AllProps) => {
         if (!fetchMoreResult) return prev
         const nbFetchedArticles = fetchMoreResult.articles.entries.length
         console.log(nbFetchedArticles + ' article(s) fetched')
+        const entries = prev.articles.entries.filter(a => a.status == req.status)
         const articles = {
           ...fetchMoreResult.articles,
-          entries: [...prev.articles.entries, ...fetchMoreResult.articles.entries]
+          entries: [...entries, ...fetchMoreResult.articles.entries]
         }
         return { articles }
       }

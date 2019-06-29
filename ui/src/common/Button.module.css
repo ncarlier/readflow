@@ -21,7 +21,7 @@
 }
 
 .primary {
-  color: #fff;
+  color: var(--button-primary-text-color);
   background-color: var(--button-primary-color);
 }
 
@@ -30,7 +30,7 @@
 }
 
 .danger {
-  color: #fff;
+  color: var(--button-danger-text-color);
   background-color: var(--button-danger-color);
 }
 

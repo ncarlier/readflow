@@ -4,20 +4,26 @@
   margin: auto;
   display: flex;
   flex-wrap: wrap;
-  background-color: #fff;
+  background-color: var(--panel-body-color);
   border-radius: inherit;
-  box-shadow: 0 2px 15px 2px #c1c1c17a;
-  color: #828282;
+  box-shadow: 0 2px 15px 2px var(--panel-shadow-color);
+  color: var(--panel-text-color-alt);
   overflow: hidden;
 }
-
 
 .content {
   flex: 1;
   padding: 1em 1em 0em 1em;
 }
+.content > h3 {
+  margin: 0;
+  font-size: small;
+  font-variant: all-small-caps;
+  font-weight: normal;
+}
 .content > header {
-  color: black;
+  color: var(--panel-text-color);
+  background-color: var(--panel-body-color);
   font-size: larger;
   padding-bottom: .5em;
 }
@@ -40,6 +46,7 @@
   align-items: center;
   border-radius: inherit;
   width: 100%;
+  background-color: var(--panel-body-color);
 }
 .card > footer time {
   flex: 1 1 auto;

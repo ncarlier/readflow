@@ -42,6 +42,7 @@ export default withRouter((props: AllProps) => {
         </Link>
       )}
       <Link to={readMorePath} title={'View details' + kbs} className={styles.content}>
+        {article.category && <h3>{article.category.title}</h3>}
         <header>{article.title}</header>
         {article.text && <p>{article.text}</p>}
       </Link>
