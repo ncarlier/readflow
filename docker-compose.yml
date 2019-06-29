@@ -23,7 +23,7 @@ services:
   #######################################
   imaginary:
     image: h2non/imaginary:latest
-    command: -enable-url-source
+    command: -enable-url-source -http-cache-ttl 172800
     restart: always
     networks:
       - internal
