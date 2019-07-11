@@ -2,6 +2,7 @@ import { History } from 'history'
 import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
+import { getHostname } from '../../common/helpers'
 import Icon from '../../common/Icon'
 import TimeAgo from '../../common/TimeAgo'
 import { Article } from '../models'
@@ -31,7 +32,7 @@ export default ({ article, to, children }: AllProps) => (
       <small>
         {article.url != '' && (
           <a href={article.url} target="_blank" rel="noopener noreferrer" title="Open original article">
-            {new URL(article.url).hostname}
+            {getHostname(article.url)}
             <Icon name="open_in_new" />
           </a>
         )}

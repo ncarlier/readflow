@@ -117,3 +117,11 @@ export function preventBookmarkletClick(e: MouseEvent<any>) {
 export function getOnlineStatus() {
   return typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean' ? navigator.onLine : true
 }
+
+export function getHostname(_url: string) {
+  try {
+    return new URL(_url).hostname
+  } catch (e) {
+    return _url
+  }
+}

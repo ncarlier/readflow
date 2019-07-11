@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 
-import { classNames } from '../../common/helpers'
+import { classNames, getHostname } from '../../common/helpers'
 import Icon from '../../common/Icon'
 import TimeAgo from '../../common/TimeAgo'
 import useKeyboard from '../../hooks/useKeyboard'
@@ -49,7 +49,7 @@ export default withRouter((props: AllProps) => {
       <footer>
         {article.url != '' && (
           <a href={article.url} target="_blank" rel="noopener noreferrer" title="Open original article">
-            {new URL(article.url).hostname}
+            {getHostname(article.url)}
             <Icon name="open_in_new" />
           </a>
         )}
