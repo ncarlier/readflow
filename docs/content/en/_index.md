@@ -13,7 +13,7 @@ personal news reader service.
 
 * [Add](read-flow) web pages to your reading flow that have been cleaned of unwanted content
 * [Organize](read-flow/organize) your reading flows
-* Be [notifed](read-flow/notifications) when your reading feed contains new articles
+* Be [notified](read-flow/notifications) when your reading feed contains new articles
 * [Integrate third-party services](third-party) to extend capabilities
 
 ## Contribute to this documentation
