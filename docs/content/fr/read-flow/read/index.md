@@ -12,11 +12,11 @@ Les flux de lecture sont organisés de la façon suivante:
 
 Pour marquer un article comme lu, vous devez cliquer sur le bouton de marquage.
 Si vous utiliser un mobile, vous pouvez également faire glisser l'article sur la gauche.
-Il disparetra et sera marqué comme lu.
+Il disparaîtra et sera marqué comme lu.
 
 ![](images/mark-as-read.png)
 
-L'article disparait alors du flux de lecture et peut être retrouvé dans l'historique.
+L'article disparaît alors du flux de lecture et peut être retrouvé dans l'historique.
 
 Il est possible de le remettre dans le flux de lecture depuis l'historique en cliquant à nouveau sur le bouton de marquage.
 
