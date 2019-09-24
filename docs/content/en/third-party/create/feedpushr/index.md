@@ -9,83 +9,54 @@ weight = 2
 [Feedpushr](https://github.com/ncarlier/feedpushr) is a powerful open source RSS feed aggregator able to process and send articles to third party services.
 And among these services, we have readflow.
 
-## Using the binary
+## Start Feedpushr
 
-To use readflow with feedpushr, you must use and configure its plugin:
+To execute Feedpushr you have several possibilities:
 
-```bash
-$ # Set readflow URL
-$ export APP_READFLOW_URL=https://api.readflow.app
-$ # Set API key
-$ export APP_READFLOW_API_KEY=d70*************456
-$ # Start feedpushr
-$ feedpushr --log-pretty --plugin ./feedpushr-readflow.so --output readflow://
-```
-
-## Using Docker
-
-Create the following `config.env` file:
+Use [Go](https://golang.org/) to compile and install the binary:
 
 ```bash
-APP_PLUGINS=feedpushr-readflow.so                                           
-APP_READFLOW_URL=https://api.readflow.app
-APP_READFLOW_API_KEY=<YOUR API KEY>
-APP_OUTPUTS=readflow://
-APP_FILTERS=fetch://#fetch,minify://#minify
-APP_LOG_PRETTY=true
+$ go get -v github.com/ncarlier/feedpushr
+$ feedpushr --log-pretty --log-level debug
 ```
 
-Start Docker:
+Or download the binary from the [source repository](https://github.com/ncarlier/feedpushr/releases):
 
 ```bash
-$ docker run -d --name feedpushr -p 8080:8080 --env-file=config.env ncarlier/feedpushr-contrib
+$ sudo curl -s https://raw.githubusercontent.com/ncarlier/feedpushr/master/install.sh | bash
+$ feedpushr --log-pretty --log-level debug
 ```
 
-## Using Docker Compose
-
-Create the following `docker-compose.yml` file:
-
-```yaml
-version: "3"
-services:
-  feedpushr:
-    image: "ncarlier/feedpushr-contrib:latest"
-    restart: always
-    ports:
-      - "${PORT:-8080}:8080"
-    environment:
-      - APP_DB=boltdb://var/opt/feedpushr/data.db
-      - APP_PLUGINS=feedpushr-readflow.so
-      - APP_OUTPUTS=readflow://
-      - "APP_FILTERS=fetch://#fetch,minify://#minify"
-      - APP_LOG_PRETTY=true
-      - APP_DELAY=5m
-      - APP_READFLOW_URL=${READFLOW_URL:-https://api.readflow.app}
-      - APP_READFLOW_API_KEY=${READFLOW_API_KEY}
-    volumes:
-      - feedpushr-data:/var/opt/feedpushr
-
-volumes:
-  feedpushr-data:
-```
-
-Customize the configuration with an `.env` file:
+Or use [Docker](https://www.docker.com):
 
 ```bash
-PORT=8080
-READFLOW_API_KEY=<YOUR API KEY>
+$ docker run -d --name=feedpushr ncarlier/feedpushr feedpushr --log-pretty --log-level debug
 ```
 
-Start Compose:
+You can also launch Feedpushr in "desktop mode" by clicking on the `feedpushr-agent` executable. Feedpushr will then be accessible from an icon in your taskbar.
 
-```bash
-$ docker-compose up -d
-```
+## Configure Feedpushr
 
-## The UI
+You should be able to access the [Feedpushr Web UI](http://localhost:8080/ui/) :
 
-You should see this on the [feedpushr UI](http://localhost:8080/ui):
+![](images/feedpushr-feeds.png)
 
-![](images/feedpushr-ui.png)
+Go to the `Outputs` configuration page:
 
-You can then import your OPML subscriptions into feedpushr and see your articles in readflow.
+![](images/feedpushr-outputs-1.png)
+
+Click on the `+` button to add an output and choose the readflow component.
+
+Configure the component as follows:
+
+- `Alias`: Enter a short description (ex: `To my readflow`).
+- `URL`: Leave this field blank to use https://readflow.app or enter the API URL if you are using another instance.
+- `API KEY`: Enter the API key [configured in readflow](../integration-api/api-key).
+
+![](images/feedpushr-add-output.png)
+
+Activate the new output:
+
+![](images/feedpushr-outputs-2.png)
+
+You can then import your OPML subscriptions into Feedpushr and see new articles in readflow.

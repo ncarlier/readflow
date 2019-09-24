@@ -6,86 +6,58 @@ weight = 2
 
 ![](images/feedpushr.png)
 
-[Feedpushr](https://github.com/ncarlier/feedpushr) est un puissant aggrégateur Open Source de flux RSS capable de traiter et envoyer les articles vers des serices tiers.
+[Feedpushr](https://github.com/ncarlier/feedpushr) est un puissant aggrégateur Open Source de flux RSS capable de traiter et envoyer les articles vers des services tiers.
 Et parmi ces services, nous avons readflow.
 
-## En utilisant l'exécutable
+## Lancer Feedpushr
 
-Pour utiliser readflow avec feedpushr, vous devez utiliser et configurer son plugin:
+Pour exécuter Feedpushr vous avez plusieurs possibilités:
 
-```bash
-$ # Configurer l'URL de readflow
-$ export APP_READFLOW_URL=https://api.readflow.app
-$ # Configurer la clé d'API
-$ export APP_READFLOW_API_KEY=d70*************456
-$ # Lancer feedpushr
-$ feedpushr --log-pretty --plugin ./feedpushr-readflow.so --output readflow://
-```
-
-## En utilisant Docker
-
-Créer le fichier de configuration suivant (`config.env`):
+Utiliser [Go](https://golang.org/) pour compiler et installer le binaire:
 
 ```bash
-APP_PLUGINS=feedpushr-readflow.so                                           
-APP_READFLOW_URL=https://api.readflow.app
-APP_READFLOW_API_KEY=<YOUR API KEY>
-APP_OUTPUTS=readflow://
-APP_FILTERS=fetch://#fetch,minify://#minify
-APP_LOG_PRETTY=true
+$ go get -v github.com/ncarlier/feedpushr
+$ feedpushr --log-pretty --log-level debug
 ```
 
-Lancer Docker:
+Ou télécharger le binaire depuis le [dépot de source](https://github.com/ncarlier/feedpushr/releases):
 
 ```bash
-$ docker run -d --name feedpushr -p 8080:8080 --env-file=conf.env ncarlier/feedpushr-contrib
+$ sudo curl -s https://raw.githubusercontent.com/ncarlier/feedpushr/master/install.sh | bash
+$ feedpushr --log-pretty --log-level debug
 ```
 
-## En utilisant Docker Compose
-
-Créer le fichier `docker-compose.yml` :
-
-```yaml
-version: "3"
-services:
-  feedpushr:
-    image: "ncarlier/feedpushr-contrib:latest"
-    restart: always
-    ports:
-      - "${PORT:-8080}:8080"
-    environment:
-      - APP_DB=boltdb://var/opt/feedpushr/data.db
-      - APP_PLUGINS=feedpushr-readflow.so
-      - APP_OUTPUTS=readflow://
-      - "APP_FILTERS=fetch://#fetch,minify://#minify"
-      - APP_LOG_PRETTY=true
-      - APP_DELAY=5m
-      - APP_READFLOW_URL=${READFLOW_URL:-https://api.readflow.app}
-      - APP_READFLOW_API_KEY=${READFLOW_API_KEY}
-    volumes:
-      - feedpushr-data:/var/opt/feedpushr
-
-volumes:
-  feedpushr-data:
-```
-
-Personaliser la configuration avec un fichier `.env` :
+Ou utiliser [Docker](https://www.docker.com):
 
 ```bash
-PORT=8080
-READFLOW_API_KEY=<YOUR API KEY>
+$ docker run -d --name=feedpushr ncarlier/feedpushr feedpushr --log-pretty --log-level debug
 ```
 
-Lancer Compose:
+Vous pouvez également lancer Feedpushr en *"mode bureau"* en cliquant sur l'exécutable `feedpushr-agent`.
+Feedpushr sera alors accessible depuis un icone dans votre bare des tâches.
 
-```bash
-$ docker-compose up -d
-```
+## Configurer Feedpushr
 
-## The UI
+Vous devriez pouvoir acceder à [la console Web de Feedpushr](http://localhost:8080/ui/) :
 
-Vous devriez voir ceci sur [l'IHM de feedpushr](http://localhost:8080/ui) :
+![](images/feedpushr-feeds.png)
 
-![](images/feedpushr-ui.png)
+Aller sur la page de configuration des sorties (`Outputs`):
 
-Vous pouvez ensuite importer vos abonnements OPML dans feedpushr et voir vos articles arriver dans readflow.
+![](images/feedpushr-outputs-1.png)
+
+Cliquer sur le bouton `+` pour ajouter une sortie et choisir le composant `readflow`.
+
+Configurer le composant comme suit:
+
+- `Alias`: Saisir une courte description (ex: `Vers mon readflow`).
+- `URL`: Laisser ce champ vide pour utiliser https://readflow.app ou saisir l'URL de l'API si vous utilisez une autre instance.
+- `API KEY`: Saisir la clé d'API [configurée dans readflow](../integration-api/api-key).
+
+![](images/feedpushr-add-output.png)
+
+Activer la nouvelle sortie:
+
+![](images/feedpushr-outputs-2.png)
+
+Vous pouvez ensuite importer vos abonnements OPML dans feedpushr et voir des nouveaux articles dans readflow.
