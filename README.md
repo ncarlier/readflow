@@ -1,7 +1,7 @@
 # readflow
 
 [![Build Status](https://travis-ci.org/ncarlier/readflow.svg?branch=master)](https://travis-ci.org/ncarlier/readflow)
-[![Image size](https://images.microbadger.com/badges/image/ncarlier/readflow.svg)](https://microbadger.com/images/ncarlier/readflow)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ncarlier/readflow)](https://goreportcard.com/report/github.com/ncarlier/readflow)
 [![Docker pulls](https://img.shields.io/docker/pulls/ncarlier/readflow.svg)](https://hub.docker.com/r/ncarlier/readflow/)
 
 Read your Internet article flow in one place with complete peace of mind and freedom.
