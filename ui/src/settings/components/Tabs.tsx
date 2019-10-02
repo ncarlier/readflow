@@ -1,6 +1,6 @@
 import React from 'react'
 
-import LinkIcon from '../../common/LinkIcon'
+import LinkIcon from '../../components/LinkIcon'
 import styles from './Tabs.module.css'
 
 interface TabItem {

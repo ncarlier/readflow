@@ -2,9 +2,9 @@ import { History } from 'history'
 import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
-import { getHostname } from '../../common/helpers'
-import Icon from '../../common/Icon'
-import TimeAgo from '../../common/TimeAgo'
+import { getHostname } from '../../helpers'
+import Icon from '../../components/Icon'
+import TimeAgo from '../../components/TimeAgo'
 import { Article } from '../models'
 import styles from './ArticleHeader.module.css'
 

@@ -1,9 +1,9 @@
 import React, { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
-import ButtonIcon from '../../common/ButtonIcon'
-import Center from '../../common/Center'
-import Empty from '../../common/Empty'
-import Panel from '../../common/Panel'
+import ButtonIcon from '../../components/ButtonIcon'
+import Center from '../../components/Center'
+import Empty from '../../components/Empty'
+import Panel from '../../components/Panel'
 import { useMedia } from '../../hooks'
 import useInfiniteScroll from '../../hooks/useInfiniteScroll'
 import useKeyboard from '../../hooks/useKeyboard'

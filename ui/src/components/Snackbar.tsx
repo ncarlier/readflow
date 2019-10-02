@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import { MessageContext } from '../context/MessageContext'
-import { classNames } from './helpers'
+import { classNames } from '../helpers'
 import styles from './Snackbar.module.css'
 
 interface Props {

@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom'
 
 import App from './App'
 import authService from './auth'
-import { getOnlineStatus } from './common/helpers'
+import { getOnlineStatus } from './helpers'
 import configureStore from './configureStore'
 import { setupNotification } from './notification'
 import * as serviceWorker from './serviceWorker'

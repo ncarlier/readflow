@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react'
 
-import Button from '../common/Button'
-import Page from '../common/Page'
-import Panel from '../common/Panel'
+import Button from '../components/Button'
+import Page from '../components/Page'
+import Panel from '../components/Panel'
 import ErrorPanel from './ErrorPanel'
 
 interface Props {

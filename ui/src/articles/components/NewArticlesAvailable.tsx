@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useApolloClient } from 'react-apollo-hooks'
 
 import { Category } from '../../categories/models'
-import Button from '../../common/Button'
-import Loader from '../../common/Loader'
-import Panel from '../../common/Panel'
+import Button from '../../components/Button'
+import Loader from '../../components/Loader'
+import Panel from '../../components/Panel'
 import { GetArticlesResponse } from '../models'
 import { GetNbNewArticles } from '../queries'
 

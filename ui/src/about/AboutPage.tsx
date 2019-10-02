@@ -1,7 +1,7 @@
 import React from 'react'
 
-import Center from '../common/Center'
-import Page from '../common/Page'
+import Center from '../components/Center'
+import Page from '../components/Page'
 import { VERSION } from '../constants'
 import styles from './AboutPage.module.css'
 

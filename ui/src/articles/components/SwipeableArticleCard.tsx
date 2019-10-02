@@ -1,9 +1,9 @@
 import React, { useCallback, useContext } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 
-import { getGQLError } from '../../common/helpers'
-import Icon from '../../common/Icon'
-import SwipeableListItem from '../../common/SwipeableListItem'
+import { getGQLError } from '../../helpers'
+import Icon from '../../components/Icon'
+import SwipeableListItem from '../../components/SwipeableListItem'
 import { MessageContext } from '../../context/MessageContext'
 import { Article, UpdateArticleStatusRequest } from '../models'
 import { UpdateArticleStatus } from '../queries'

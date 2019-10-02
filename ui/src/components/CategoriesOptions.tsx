@@ -3,7 +3,7 @@ import { useQuery } from 'react-apollo-hooks'
 
 import { GetCategoriesResponse } from '../categories/models'
 import { GetCategories } from '../categories/queries'
-import { matchResponse } from './helpers'
+import { matchResponse } from '../helpers'
 
 export default () => {
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)

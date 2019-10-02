@@ -3,8 +3,8 @@ import React, { FormEvent, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { Category } from '../../categories/models'
-import Empty from '../../common/Empty'
-import TimeAgo from '../../common/TimeAgo'
+import Empty from '../../components/Empty'
+import TimeAgo from '../../components/TimeAgo'
 
 export interface OnSelectedFn {
   (ids: number[]): void

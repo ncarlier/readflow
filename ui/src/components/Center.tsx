@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import styles from './Center.module.css'
-import { classNames } from './helpers'
+import { classNames } from '../helpers'
 
 interface Props {
   children: ReactNode

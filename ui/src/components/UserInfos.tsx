@@ -5,7 +5,7 @@ import { useQuery } from 'react-apollo-hooks'
 
 import authService from '../auth'
 import ErrorPanel from '../error/ErrorPanel'
-import { matchResponse } from './helpers'
+import { matchResponse } from '../helpers'
 import Loader from './Loader'
 import TimeAgo from './TimeAgo'
 import styles from './UserInfos.module.css'

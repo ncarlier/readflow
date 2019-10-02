@@ -1,7 +1,7 @@
 import React, { forwardRef, ReactNode, Ref } from 'react'
 import { BaseInputProps } from 'react-use-form-state'
 
-import { classNames } from './helpers'
+import { classNames } from '../helpers'
 
 interface Props {
   label: string

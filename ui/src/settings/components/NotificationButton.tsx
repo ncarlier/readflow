@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useApolloClient, useMutation } from 'react-apollo-hooks'
 
-import ButtonIcon from '../../common/ButtonIcon'
+import ButtonIcon from '../../components/ButtonIcon'
 import { CreatePushSubscriptionResponse, DeletePushSubscriptionResponse, GetDeviceResponse } from './models'
 import { CreatePushSubscription, DeletePushSubscription, GetDevice } from './queries'
 

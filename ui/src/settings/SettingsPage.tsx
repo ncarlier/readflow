@@ -1,9 +1,9 @@
 import React from 'react'
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
 
-import ButtonIcon from '../common/ButtonIcon'
-import Content from '../common/Content'
-import Page from '../common/Page'
+import ButtonIcon from '../components/ButtonIcon'
+import Content from '../components/Content'
+import Page from '../components/Page'
 import AddApiKeyForm from './api-keys/AddApiKeyForm'
 import ApiKeysTab from './api-keys/ApiKeysTab'
 import EditApiKeyTab from './api-keys/EditApiKeyTab'

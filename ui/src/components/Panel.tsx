@@ -1,6 +1,6 @@
 import React, { forwardRef, ReactNode, Ref } from 'react'
 
-import { classNames } from './helpers'
+import { classNames } from '../helpers'
 import styles from './Panel.module.css'
 
 interface Props {

@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
 import { useModal } from 'react-modal-hook'
 
-import ConfirmDialog from '../../common/ConfirmDialog'
-import DropdownMenu from '../../common/DropdownMenu'
-import Kbd from '../../common/Kbd'
-import LinkIcon from '../../common/LinkIcon'
+import ConfirmDialog from '../../components/ConfirmDialog'
+import DropdownMenu from '../../components/DropdownMenu'
+import Kbd from '../../components/Kbd'
+import LinkIcon from '../../components/LinkIcon'
 import { connectRouter, IRouterDispatchProps, IRouterStateProps } from '../../containers/RouterContainer'
 import { DisplayMode } from './ArticlesDisplayMode'
 

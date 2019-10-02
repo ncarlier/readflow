@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 
-import ButtonIcon from '../../common/ButtonIcon'
-import { getGQLError } from '../../common/helpers'
+import ButtonIcon from '../../components/ButtonIcon'
+import { getGQLError } from '../../helpers'
 import { MessageContext } from '../../context/MessageContext'
 import useKeyboard from '../../hooks/useKeyboard'
 import { Article, UpdateArticleStatusRequest } from '../models'

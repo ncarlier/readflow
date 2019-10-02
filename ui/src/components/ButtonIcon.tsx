@@ -4,7 +4,7 @@ import Ink from 'react-ink'
 import { Link } from 'react-router-dom'
 
 import styles from './ButtonIcon.module.css'
-import { classNames } from './helpers'
+import { classNames } from '../helpers'
 import Icon from './Icon'
 
 interface Props {

@@ -1,7 +1,7 @@
 import React, { forwardRef, ReactNode, Ref } from 'react'
 import { BaseInputProps, Omit } from 'react-use-form-state'
 
-import { classNames } from './helpers'
+import { classNames } from '../helpers'
 
 interface Props {
   label: string
@@ -20,12 +20,11 @@ export default forwardRef((props: AllProps, ref: Ref<any>) => {
 
   return (
     <div className={className}>
-      <textarea {...rest} />
+      <select {...rest}>{children}</select>
       <label htmlFor={rest.name} className="control-label">
         {label}
       </label>
       <i className="bar" />
-      {children}
     </div>
   )
 })

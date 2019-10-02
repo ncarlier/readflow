@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { ApplicationState } from '../store'
-import { classNames } from './helpers'
+import { classNames } from '../helpers'
 import Icon from './Icon'
 import styles from './LinkIcon.module.css'
 

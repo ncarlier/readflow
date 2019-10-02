@@ -2,9 +2,9 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
-import ButtonIcon from '../common/ButtonIcon'
-import { URLRegExp } from '../common/helpers'
-import Page from '../common/Page'
+import ButtonIcon from '../components/ButtonIcon'
+import { URLRegExp } from '../helpers'
+import Page from '../components/Page'
 import AddArticleForm from './components/AddArticleForm'
 
 type AllProps = RouteComponentProps

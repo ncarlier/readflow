@@ -1,9 +1,9 @@
 import React, { CSSProperties } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 
-import DropdownMenu from '../../common/DropdownMenu'
-import { matchResponse } from '../../common/helpers'
-import Loader from '../../common/Loader'
+import DropdownMenu from '../../components/DropdownMenu'
+import { matchResponse } from '../../helpers'
+import Loader from '../../components/Loader'
 import { GetArchiveServicesResponse } from '../../settings/archive-services/models'
 import { GetArchiveServices } from '../../settings/archive-services/queries'
 import { Article } from '../models'

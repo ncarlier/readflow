@@ -1,10 +1,10 @@
 import React, { FormEvent, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import Empty from '../../common/Empty'
-import { getBookmarklet, preventBookmarkletClick } from '../../common/helpers'
-import Icon from '../../common/Icon'
-import TimeAgo from '../../common/TimeAgo'
+import Empty from '../../components/Empty'
+import { getBookmarklet, preventBookmarkletClick } from '../../helpers'
+import Icon from '../../components/Icon'
+import TimeAgo from '../../components/TimeAgo'
 import { ApiKey } from './models'
 
 export interface OnSelectedFn {

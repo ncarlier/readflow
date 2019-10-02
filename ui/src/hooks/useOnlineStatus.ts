@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { getOnlineStatus } from '../common/helpers'
+import { getOnlineStatus } from '../helpers'
 
 export default () => {
   const [onlineStatus, setOnlineStatus] = useState(getOnlineStatus())

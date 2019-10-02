@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 
-import LinkIcon from '../../common/LinkIcon'
+import LinkIcon from '../../components/LinkIcon'
 import { Article } from '../models'
 
 interface Props {

@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 
-import { classNames, getHostname } from '../../common/helpers'
-import Icon from '../../common/Icon'
-import TimeAgo from '../../common/TimeAgo'
+import { classNames, getHostname } from '../../helpers'
+import Icon from '../../components/Icon'
+import TimeAgo from '../../components/TimeAgo'
 import useKeyboard from '../../hooks/useKeyboard'
 import { Article } from '../models'
 import styles from './ArticleCard.module.css'

@@ -2,8 +2,8 @@
 import React, { FormEvent, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import Empty from '../../common/Empty'
-import TimeAgo from '../../common/TimeAgo'
+import Empty from '../../components/Empty'
+import TimeAgo from '../../components/TimeAgo'
 import { ArchiveService } from './models'
 
 export interface OnSelectedFn {
