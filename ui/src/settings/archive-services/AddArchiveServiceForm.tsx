@@ -14,7 +14,7 @@ import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
-import { ArchiveService } from './models'
+import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
 import WebhookConfigForm from './providers/WebhookConfigForm'
 import { CreateOrUpdateArchiveService } from './queries'
@@ -40,7 +40,7 @@ export default ({ history }: AllProps) => {
   })
   const onMountValidator = useOnMountInputValidator(formState.validity)
 
-  const addArchiveServiceMutation = useMutation<ArchiveService>(CreateOrUpdateArchiveService)
+  const addArchiveServiceMutation = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(CreateOrUpdateArchiveService)
 
   const addArchiveService = async (service: ArchiveService) => {
     try {
@@ -48,7 +48,7 @@ export default ({ history }: AllProps) => {
         variables: service,
         update: updateCacheAfterCreate
       })
-      showMessage(`New archive service: ${res.data.createOrUpdateArchiver.alias}`)
+      showMessage(`New archive service: ${res.data!.createOrUpdateArchiver.alias}`)
       history.goBack()
     } catch (err) {
       setErrorMessage(getGQLError(err))

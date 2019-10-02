@@ -15,7 +15,7 @@ import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
-import { Rule } from './models'
+import { Rule, CreateOrUpdateRuleResponse } from './models'
 import PriorityOptions from './PriorityOptions'
 import { CreateOrUpdateRule } from './queries'
 
@@ -41,7 +41,7 @@ export default ({ data, history }: Props) => {
     category_id: data.category_id
   })
   const onMountValidator = useOnMountInputValidator(formState.validity)
-  const editRuleMutation = useMutation<Rule>(CreateOrUpdateRule)
+  const editRuleMutation = useMutation<CreateOrUpdateRuleResponse, Rule>(CreateOrUpdateRule)
 
   const editRule = async (rule: Rule) => {
     try {

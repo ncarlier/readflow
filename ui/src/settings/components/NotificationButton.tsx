@@ -35,7 +35,7 @@ export default () => {
         variables: { id: pushId }
       })
       if (errors) {
-        throw new Error(errors[0])
+        throw new Error(errors[0].message)
       }
     } catch (err) {
       setError(err)
@@ -62,9 +62,9 @@ export default () => {
             sub: JSON.stringify(subscription)
           }
         })
-        const _id = res.data.createPushSubscription.id
-        setId(_id)
-        localStorage.setItem(DEVICE_ID, _id)
+        const _id = res.data!.createPushSubscription.id
+        setId(_id.toString())
+        localStorage.setItem(DEVICE_ID, _id.toString())
       }
     } catch (err) {
       setError(err)

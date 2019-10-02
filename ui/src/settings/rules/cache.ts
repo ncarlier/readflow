@@ -3,7 +3,10 @@ import { DataProxy } from 'apollo-cache'
 import { CreateOrUpdateRuleResponse, GetRulesResponse } from './models'
 import { GetRule, GetRules } from './queries'
 
-export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data: CreateOrUpdateRuleResponse }) => {
+export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data?: CreateOrUpdateRuleResponse | null }) => {
+  if (!mutationResult || !mutationResult.data) {
+    return
+  }
   const created = mutationResult.data.createOrUpdateRule
   const previousData = proxy.readQuery<GetRulesResponse>({
     query: GetRules
@@ -14,8 +17,8 @@ export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data:
   }
 }
 
-export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data: CreateOrUpdateRuleResponse }) => {
-  if (!mutationResult) {
+export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data?: CreateOrUpdateRuleResponse| null }) => {
+  if (!mutationResult || !mutationResult.data) {
     return
   }
   const updated = mutationResult.data.createOrUpdateRule

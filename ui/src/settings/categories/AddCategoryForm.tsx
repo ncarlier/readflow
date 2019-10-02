@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router'
 import { useFormState } from 'react-use-form-state'
 
 import { updateCacheAfterCreate } from '../../categories/cache'
-import { Category } from '../../categories/models'
+import { Category, CreateOrUpdateCategoryResponse } from '../../categories/models'
 import { CreateOrUpdateCategory } from '../../categories/queries'
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
@@ -27,7 +27,7 @@ export default ({ history }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<AddCategoryFormFields>()
   const onMountValidator = useOnMountInputValidator(formState.validity)
-  const addCategoryMutation = useMutation<Category>(CreateOrUpdateCategory)
+  const addCategoryMutation = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)
 
   const addNewCategory = async (category: Category) => {

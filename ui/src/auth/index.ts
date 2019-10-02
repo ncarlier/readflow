@@ -8,7 +8,7 @@ export interface User {
 }
 
 export interface AuthService {
-  getUser: () => Promise<User>
+  getUser: () => Promise<User | null>
   getAccountUrl: () => string
   login: () => Promise<any>
   renewToken: () => Promise<User>

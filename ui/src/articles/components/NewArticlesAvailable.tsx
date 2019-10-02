@@ -55,7 +55,7 @@ export default ({ current, category, refresh }: Props) => {
         setNbItems(delta)
       }
       if (errors) {
-        throw new Error(errors[0])
+        throw new Error(errors[0].message)
       }
     } catch (err) {
       console.error(err)

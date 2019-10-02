@@ -3,18 +3,18 @@ import { DataProxy } from 'apollo-cache'
 import { CreateOrUpdateCategoryResponse, GetCategoriesResponse } from './models'
 import { GetCategories, GetCategory } from './queries'
 
-export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data: CreateOrUpdateCategoryResponse }) => {
+export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data?: CreateOrUpdateCategoryResponse | null }) => {
   const previousData = proxy.readQuery<GetCategoriesResponse>({
     query: GetCategories
   })
-  if (previousData && mutationResult) {
+  if (previousData && mutationResult && mutationResult.data) {
     previousData.categories.unshift(mutationResult.data.createOrUpdateCategory)
   }
   proxy.writeQuery({ data: previousData, query: GetCategories })
 }
 
-export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data: CreateOrUpdateCategoryResponse }) => {
-  if (!mutationResult) {
+export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data?: CreateOrUpdateCategoryResponse | null }) => {
+  if (!mutationResult || !mutationResult.data) {
     return
   }
   const updated = mutationResult.data.createOrUpdateCategory

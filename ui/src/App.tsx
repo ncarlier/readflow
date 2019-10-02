@@ -35,7 +35,7 @@ const client = new ApolloClient({
   request: async operation => {
     let user = await authService.getUser()
     if (user === null) {
-      authService.login()
+      return authService.login()
     }
     if (user.expired) {
       user = await authService.renewToken()

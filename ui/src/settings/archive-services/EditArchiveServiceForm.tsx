@@ -13,7 +13,7 @@ import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
-import { ArchiveService } from './models'
+import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
 import WebhookConfigForm from './providers/WebhookConfigForm'
 import { CreateOrUpdateArchiveService } from './queries'
@@ -38,7 +38,7 @@ export default ({ data, history }: Props) => {
     is_default: data.is_default
   })
   const onMountValidator = useOnMountInputValidator(formState.validity)
-  const editArchiveServiceMutation = useMutation<ArchiveService>(CreateOrUpdateArchiveService)
+  const editArchiveServiceMutation = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(CreateOrUpdateArchiveService)
   const { showMessage } = useContext(MessageContext)
 
   const editArchiveService = async (service: ArchiveService) => {

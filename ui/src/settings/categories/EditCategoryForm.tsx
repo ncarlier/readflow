@@ -4,7 +4,7 @@ import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
 import { updateCacheAfterUpdate } from '../../categories/cache'
-import { Category } from '../../categories/models'
+import { Category, CreateOrUpdateCategoryResponse } from '../../categories/models'
 import { CreateOrUpdateCategory } from '../../categories/queries'
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
@@ -26,7 +26,7 @@ export default ({ category, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<EditCategoryFormFields>({ title: category.title })
   const onMountValidator = useOnMountInputValidator(formState.validity)
-  const editCategoryMutation = useMutation<Category>(CreateOrUpdateCategory)
+  const editCategoryMutation = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)
 
   const editCategory = async (category: Category) => {

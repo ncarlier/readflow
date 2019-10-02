@@ -10,7 +10,11 @@ import {
   saveError,
   saveSuccess,
   selectError,
-  selectSuccess
+  selectSuccess,
+  fetchRequest,
+  saveRequest,
+  removeRequest,
+  selectRequest
 } from './actions'
 import { OfflineArticlesActionTypes } from './types'
 
@@ -18,7 +22,7 @@ import { OfflineArticlesActionTypes } from './types'
 // "generator function", which you can read about here:
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
 
-function* handleFetch({ payload }: { payload: GetArticlesQuery }) {
+function* handleFetch({ payload }: ReturnType<typeof fetchRequest>) {
   try {
     // To call async functions, use redux-saga's `call()`.
     const res = yield call(getArticles, payload)
@@ -37,7 +41,7 @@ function* handleFetch({ payload }: { payload: GetArticlesQuery }) {
   }
 }
 
-function* handleSave({ payload }: { payload: Article }) {
+function* handleSave({ payload }: ReturnType<typeof saveRequest>) {
   try {
     const res = yield call(saveArticle, { ...payload, isOffline: true })
 
@@ -55,7 +59,7 @@ function* handleSave({ payload }: { payload: Article }) {
   }
 }
 
-function* handleRemove({ payload }: { payload: Article }) {
+function* handleRemove({ payload }: ReturnType<typeof removeRequest>) {
   try {
     const res = yield call(removeArticle, payload)
 
@@ -73,7 +77,7 @@ function* handleRemove({ payload }: { payload: Article }) {
   }
 }
 
-function* handleSelect({ payload }: { payload: number }) {
+function* handleSelect({ payload }: ReturnType<typeof selectRequest>) {
   try {
     // To call async functions, use redux-saga's `call()`.
     const res = yield call(getArticle, payload)

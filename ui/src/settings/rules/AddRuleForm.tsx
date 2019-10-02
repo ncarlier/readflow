@@ -17,7 +17,7 @@ import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
-import { Rule } from './models'
+import { Rule, CreateOrUpdateRuleResponse } from './models'
 import PriorityOptions from './PriorityOptions'
 import { CreateOrUpdateRule } from './queries'
 
@@ -37,7 +37,7 @@ export default ({ history }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text, textarea, select }] = useFormState<AddRuleFormFields>({ rule: '', alias: '', priority: 0 })
   const onMountValidator = useOnMountInputValidator(formState.validity)
-  const addRuleMutation = useMutation<Rule>(CreateOrUpdateRule)
+  const addRuleMutation = useMutation<CreateOrUpdateRuleResponse, Rule>(CreateOrUpdateRule)
 
   const addRule = async (rule: Rule) => {
     try {
@@ -45,7 +45,7 @@ export default ({ history }: AllProps) => {
         variables: rule,
         update: updateCacheAfterCreate
       })
-      showMessage(`New rule: ${res.data.createOrUpdateRule.alias}`)
+      showMessage(`New rule: ${res.data!.createOrUpdateRule.alias}`)
       history.goBack()
     } catch (err) {
       setErrorMessage(getGQLError(err))

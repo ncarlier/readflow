@@ -13,7 +13,7 @@ import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import ArchiveServicesTable, { OnSelectedFn } from './ArchiveServicesTable'
 import { updateCacheAfterDelete } from './cache'
-import { GetArchiveServicesResponse } from './models'
+import { GetArchiveServicesResponse, DeleteArchiveServiceResponse, DeleteArchiveServiceRequest } from './models'
 import { DeleteArchiveServices, GetArchiveServices } from './queries'
 
 type AllProps = RouteComponentProps<{}>
@@ -24,7 +24,7 @@ export default ({ match }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetArchiveServicesResponse>(GetArchiveServices)
-  const deleteArchiveServicesMutation = useMutation<{ ids: number[] }>(DeleteArchiveServices)
+  const deleteArchiveServicesMutation = useMutation<DeleteArchiveServiceResponse, DeleteArchiveServiceRequest>(DeleteArchiveServices)
   const { showMessage } = useContext(MessageContext)
 
   const onSelectedHandler: OnSelectedFn = keys => {
@@ -38,7 +38,7 @@ export default ({ match }: AllProps) => {
         update: updateCacheAfterDelete(ids)
       })
       setSelection([])
-      const nb = res.data.deleteArchivers
+      const nb = res.data!.deleteArchivers
       showMessage(nb > 1 ? `${nb} archive services removed` : 'Archive service removed')
     } catch (err) {
       setErrorMessage(getGQLError(err))

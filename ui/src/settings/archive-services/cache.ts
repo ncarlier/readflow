@@ -6,8 +6,11 @@ import { GetArchiveService, GetArchiveServices } from './queries'
 
 export const updateCacheAfterCreate = (
   proxy: DataProxy,
-  mutationResult: { data: CreateOrUpdateArchiveServiceResponse }
+  mutationResult: { data?: CreateOrUpdateArchiveServiceResponse | null }
 ) => {
+  if (!mutationResult || !mutationResult.data) {
+    return
+  }
   const created = mutationResult.data.createOrUpdateArchiver
   const previousData = proxy.readQuery<GetArchiveServicesResponse>({
     query: GetArchiveServices
@@ -26,9 +29,9 @@ export const updateCacheAfterCreate = (
 
 export const updateCacheAfterUpdate = (
   proxy: DataProxy,
-  mutationResult: { data: CreateOrUpdateArchiveServiceResponse }
+  mutationResult: { data?: CreateOrUpdateArchiveServiceResponse | null }
 ) => {
-  if (!mutationResult) {
+  if (!mutationResult || !mutationResult.data) {
     return
   }
   const updated = mutationResult.data.createOrUpdateArchiver

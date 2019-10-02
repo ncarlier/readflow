@@ -11,7 +11,7 @@ import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
-import { AddNewArticleRequest, Article } from '../models'
+import { AddNewArticleRequest, Article, AddNewArticleResponse } from '../models'
 import { AddNewArticle } from '../queries'
 
 interface AddArticleFormFields {
@@ -31,7 +31,7 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
   const { showMessage } = useContext(MessageContext)
   const [formState, { url }] = useFormState<AddArticleFormFields>({ url: value })
   const onMountValidator = useOnMountInputValidator(formState.validity)
-  const addArticleMutation = useMutation<AddNewArticleRequest>(AddNewArticle)
+  const addArticleMutation = useMutation<AddNewArticleResponse, AddNewArticleRequest>(AddNewArticle)
 
   const addArticle = async (form: AddArticleFormFields) => {
     setLoading(true)
@@ -40,7 +40,7 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
       const variables = { ...form, category: categoryID }
       const res = await addArticleMutation({ variables })
       setLoading(false)
-      const article = res.data.addArticle
+      const article = res.data!.addArticle
       onSuccess(article)
       showMessage(`New article: ${article.title}`)
     } catch (err) {

@@ -18,6 +18,10 @@ export interface CreateOrUpdateCategoryResponse {
   createOrUpdateCategory: Category
 }
 
+export interface DeleteCategoriesRequest {
+  ids: number[]
+}
+
 export interface DeleteCategoriesResponse {
   deleteCategories: number
 }

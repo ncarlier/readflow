@@ -3,18 +3,18 @@ import { DataProxy } from 'apollo-cache'
 import { CreateOrUpdateApiKeyResponse, GetApiKeysResponse } from './models'
 import { GetApiKey, GetApiKeys } from './queries'
 
-export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data: CreateOrUpdateApiKeyResponse }) => {
+export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data?: CreateOrUpdateApiKeyResponse | null }) => {
   const previousData = proxy.readQuery<GetApiKeysResponse>({
     query: GetApiKeys
   })
-  if (previousData) {
+  if (previousData && mutationResult.data) {
     previousData.apiKeys.unshift(mutationResult.data.createOrUpdateAPIKey)
     proxy.writeQuery({ data: previousData, query: GetApiKeys })
   }
 }
 
-export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data: CreateOrUpdateApiKeyResponse }) => {
-  if (!mutationResult) {
+export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data?: CreateOrUpdateApiKeyResponse | null }) => {
+  if (!mutationResult || !mutationResult.data) {
     return
   }
   const updated = mutationResult.data.createOrUpdateAPIKey

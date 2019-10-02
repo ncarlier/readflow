@@ -12,7 +12,7 @@ import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import { updateCacheAfterDelete } from './cache'
-import { GetRulesResponse } from './models'
+import { GetRulesResponse, DeleteRuleResponse, DeleteRuleRequest } from './models'
 import { DeleteRules, GetRules } from './queries'
 import RulesTable, { OnSelectedFn } from './RulesTable'
 
@@ -24,7 +24,7 @@ export default ({ match }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetRulesResponse>(GetRules)
-  const deleteRulesMutation = useMutation<{ ids: number[] }>(DeleteRules)
+  const deleteRulesMutation = useMutation<DeleteRuleResponse, DeleteRuleRequest>(DeleteRules)
   const { showMessage } = useContext(MessageContext)
 
   const onSelectedHandler: OnSelectedFn = keys => {
@@ -38,7 +38,7 @@ export default ({ match }: AllProps) => {
         update: updateCacheAfterDelete(ids)
       })
       setSelection([])
-      const nb = res.data.deleteArchivers
+      const nb = res.data!.deleteRules
       showMessage(nb > 1 ? `${nb} rules removed` : 'Rule removed')
     } catch (err) {
       setErrorMessage(getGQLError(err))

@@ -53,3 +53,7 @@ export interface AddNewArticleRequest {
   url: string
   category?: number
 }
+
+export interface AddNewArticleResponse {
+  addArticle: Article
+}

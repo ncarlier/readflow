@@ -19,3 +19,11 @@ export interface GetRuleResponse {
 export interface CreateOrUpdateRuleResponse {
   createOrUpdateRule: Rule
 }
+
+export interface DeleteRuleRequest {
+  ids: number[]
+}
+
+export interface DeleteRuleResponse {
+  deleteRules: number
+}

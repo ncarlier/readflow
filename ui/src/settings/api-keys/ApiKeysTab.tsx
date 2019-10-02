@@ -13,7 +13,7 @@ import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import ApiKeysTable, { OnSelectedFn } from './ApiKeysTable'
 import { updateCacheAfterDelete } from './cache'
-import { GetApiKeysResponse } from './models'
+import { GetApiKeysResponse, DeleteApiKeyRequest, DeleteApiKeyResponse } from './models'
 import { DeleteApiKeys, GetApiKeys } from './queries'
 
 type AllProps = RouteComponentProps<{}>
@@ -24,8 +24,9 @@ export default ({ match }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetApiKeysResponse>(GetApiKeys)
-  const deleteApiKeysMutation = useMutation<{ ids: number[] }>(DeleteApiKeys)
+  const deleteApiKeysMutation = useMutation<DeleteApiKeyResponse, DeleteApiKeyRequest>(DeleteApiKeys)
   const { showMessage } = useContext(MessageContext)
+
 
   const onSelectedHandler: OnSelectedFn = keys => {
     setSelection(keys)
@@ -39,7 +40,7 @@ export default ({ match }: AllProps) => {
       })
       setSelection([])
       // console.log('API keys removed', res)
-      const nb = res.data.deleteAPIKeys
+      const nb = res.data!.deleteAPIKeys
       showMessage(nb > 1 ? `${nb} API keys removed` : 'API key removed')
     } catch (err) {
       setErrorMessage(getGQLError(err))

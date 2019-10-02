@@ -19,3 +19,11 @@ export interface GetArchiveServiceResponse {
 export interface CreateOrUpdateArchiveServiceResponse {
   createOrUpdateArchiver: ArchiveService
 }
+
+export interface DeleteArchiveServiceRequest {
+  ids: number[]
+}
+
+export interface DeleteArchiveServiceResponse {
+  deleteArchivers: number
+}

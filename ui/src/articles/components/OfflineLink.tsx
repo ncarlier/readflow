@@ -35,7 +35,7 @@ export const OfflineLink = (props: AllProps) => {
         showMessage(`Article put offline: ${article.title}`)
       }
       if (errors) {
-        throw new Error(errors[0])
+        throw new Error(errors[0].message)
       }
     } catch (err) {
       showErrorMessage(err.message)

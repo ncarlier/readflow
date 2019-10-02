@@ -4,7 +4,7 @@ import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
 
 import { updateCacheAfterDelete } from '../../categories/cache'
-import { GetCategoriesResponse } from '../../categories/models'
+import { GetCategoriesResponse, DeleteCategoriesResponse, DeleteCategoriesRequest } from '../../categories/models'
 import { DeleteCategories, GetCategories } from '../../categories/queries'
 import Button from '../../components/Button'
 import ConfirmDialog from '../../components/ConfirmDialog'
@@ -24,7 +24,7 @@ export default ({ match }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
-  const deleteCategoriesMutation = useMutation<{ ids: number[] }>(DeleteCategories)
+  const deleteCategoriesMutation = useMutation<DeleteCategoriesResponse, DeleteCategoriesRequest>(DeleteCategories)
   const { showMessage } = useContext(MessageContext)
 
   const onSelectedHandler: OnSelectedFn = keys => {
@@ -39,7 +39,7 @@ export default ({ match }: AllProps) => {
       })
       setSelection([])
       // console.log('Categories removed', res)
-      const nb = res.data.deleteCategories
+      const nb = res.data!.deleteCategories
       showMessage(nb > 1 ? `${nb} categories removed` : 'Category removed')
     } catch (err) {
       setErrorMessage(getGQLError(err))

@@ -13,6 +13,7 @@ import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
 import { CreateOrUpdateApiKey } from './queries'
+import { CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest } from './models';
 
 interface AddApiKeyFormFields {
   alias: string
@@ -26,16 +27,16 @@ export default ({ history }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<AddApiKeyFormFields>()
   const onMountValidator = useOnMountInputValidator(formState.validity)
-  const addApiKeyMutation = useMutation<AddApiKeyFormFields>(CreateOrUpdateApiKey)
+  const addApiKeyMutation = useMutation<CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest>(CreateOrUpdateApiKey)
   const { showMessage } = useContext(MessageContext)
 
-  const addApiKey = async (apiKey: { alias: string | null }) => {
+  const addApiKey = async (apiKey: CreateOrUpdateApiKeyRequest) => {
     try {
       const res = await addApiKeyMutation({
         variables: apiKey,
         update: updateCacheAfterCreate
       })
-      showMessage(`New API key: ${res.data.createOrUpdateAPIKey.alias}`)
+      showMessage(`New API key: ${res.data!.createOrUpdateAPIKey.alias}`)
       // console.log('New API key', res)
       history.goBack()
     } catch (err) {

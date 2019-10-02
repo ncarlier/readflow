@@ -15,6 +15,19 @@ export interface GetApiKeyResponse {
   apiKey: ApiKey
 }
 
+export interface CreateOrUpdateApiKeyRequest {
+  id?: number
+  alias: string
+}
+
 export interface CreateOrUpdateApiKeyResponse {
   createOrUpdateAPIKey: ApiKey
+}
+
+export interface DeleteApiKeyRequest {
+  ids: number[]
+}
+
+export interface DeleteApiKeyResponse {
+  deleteAPIKeys: number
 }
