@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { RouteComponentProps, withRouter } from 'react-router'
 
@@ -8,6 +8,7 @@ import LinkIcon from '../components/LinkIcon'
 import Loader from '../components/Loader'
 import Offline from '../components/Offline'
 import UserInfos from '../components/UserInfos'
+import { NavbarContext } from '../context/NavbarContext'
 import { matchResponse } from '../helpers'
 import useOnlineStatus from '../hooks/useOnlineStatus'
 import styles from './Navbar.module.css'
@@ -16,10 +17,17 @@ export default withRouter(({ location }: RouteComponentProps) => {
   const { pathname } = location
   const isOnline = useOnlineStatus()
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
+  const navbar = useContext(NavbarContext)
 
   const isCategoryActive = (id?: number) => {
     const _path = `/categories/${id}`
     return !!id && (pathname === _path || pathname.startsWith(`${_path}/`))
+  }
+
+  const menuAutoClose = () => {
+    if (window.innerWidth <= 767) {
+      setTimeout(navbar.close, 300)
+    }
   }
 
   const renderCategories = matchResponse<GetCategoriesResponse>({
@@ -36,6 +44,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
                   to={`/categories/${category.id}`}
                   active={isCategoryActive(category.id)}
                   icon="bookmark"
+                  onClick={menuAutoClose}
                   badge={category.unread ? category.unread : undefined}
                 >
                   {category.title}
@@ -69,17 +78,28 @@ export default withRouter(({ location }: RouteComponentProps) => {
           <span>Articles</span>
           <ul>
             <li>
-              <LinkIcon to="/unread" icon="view_list" badge={total} active={pathname.startsWith('/unread')}>
+              <LinkIcon
+                to="/unread"
+                icon="view_list"
+                badge={total}
+                active={pathname.startsWith('/unread')}
+                onClick={menuAutoClose}
+              >
                 Articles to read
               </LinkIcon>
             </li>
             <li>
-              <LinkIcon to="/offline" icon="signal_wifi_off" active={pathname.startsWith('/offline')}>
+              <LinkIcon
+                to="/offline"
+                icon="signal_wifi_off"
+                active={pathname.startsWith('/offline')}
+                onClick={menuAutoClose}
+              >
                 Offline articles
               </LinkIcon>
             </li>
             <li>
-              <LinkIcon to="/history" icon="history" active={pathname.startsWith('/history')}>
+              <LinkIcon to="/history" icon="history" active={pathname.startsWith('/history')} onClick={menuAutoClose}>
                 History
               </LinkIcon>
             </li>
@@ -96,6 +116,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
                 id="navbar-link-settings"
                 to="/settings"
                 icon="settings"
+                onClick={menuAutoClose}
                 active={pathname.startsWith('/settings')}
               >
                 Settings

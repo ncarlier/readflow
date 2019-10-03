@@ -10,6 +10,7 @@ import { Store } from 'redux'
 import authService from './auth'
 import { API_BASE_URL } from './constants'
 import { MessageProvider } from './context/MessageContext'
+import { NavbarProvider } from './context/NavbarContext'
 import AppLayout from './layout/AppLayout'
 import Routes from './routes'
 import { ApplicationState } from './store'
@@ -65,11 +66,13 @@ export default function App({ store, history /*, theme*/ }: Props) {
       <ApolloProvider client={client}>
         <ModalProvider>
           <MessageProvider>
-            <ConnectedRouter history={history}>
-              <AppLayout>
-                <Routes />
-              </AppLayout>
-            </ConnectedRouter>
+            <NavbarProvider>
+              <ConnectedRouter history={history}>
+                <AppLayout>
+                  <Routes />
+                </AppLayout>
+              </ConnectedRouter>
+            </NavbarProvider>
           </MessageProvider>
         </ModalProvider>
       </ApolloProvider>
