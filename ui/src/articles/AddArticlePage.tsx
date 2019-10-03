@@ -4,10 +4,12 @@ import { RouteComponentProps } from 'react-router-dom'
 
 import ButtonIcon from '../components/ButtonIcon'
 import { URLRegExp } from '../helpers'
-import Page from '../components/Page'
+import Page from '../layout/Page'
 import AddArticleForm from './components/AddArticleForm'
 
 type AllProps = RouteComponentProps
+
+const Actions = () => <ButtonIcon to="/unread" icon="arrow_back" title="back to the list" />
 
 export default ({ location, history }: AllProps) => {
   const params = new URLSearchParams(location.search)
@@ -30,7 +32,7 @@ export default ({ location, history }: AllProps) => {
   const redirect = () => history.replace('/unread')
 
   return (
-    <Page title="Add new article" actions={<ButtonIcon to="/unread" icon="arrow_back" title="back to the list" />}>
+    <Page title="Add new article" actions={<Actions />}>
       <AddArticleForm value={value} onCancel={redirect} onSuccess={redirect} />
     </Page>
   )

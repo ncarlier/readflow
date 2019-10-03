@@ -11,6 +11,7 @@ import authService from './auth'
 import { API_BASE_URL } from './constants'
 import { MessageProvider } from './context/MessageContext'
 import { ScrollMemoryProvider } from './context/ScrollMemoryContext'
+import AppLayout from './layout/AppLayout'
 import Routes from './routes'
 import { ApplicationState } from './store'
 
@@ -66,9 +67,9 @@ export default function App({ store, history /*, theme*/ }: Props) {
         <ModalProvider>
           <MessageProvider>
             <ConnectedRouter history={history}>
-              <ScrollMemoryProvider>
+              <AppLayout>
                 <Routes />
-              </ScrollMemoryProvider>
+              </AppLayout>
             </ConnectedRouter>
           </MessageProvider>
         </ModalProvider>

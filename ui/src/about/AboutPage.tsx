@@ -1,8 +1,8 @@
 import React from 'react'
 
 import Center from '../components/Center'
-import Page from '../components/Page'
 import { VERSION } from '../constants'
+import Page from '../layout/Page'
 import styles from './AboutPage.module.css'
 
 export default () => (

@@ -1,16 +1,15 @@
-import React, { ReactNode, useCallback } from 'react'
+import React, { ReactNode } from 'react'
 
+import ButtonIcon from '../components/ButtonIcon'
 import styles from './Appbar.module.css'
-import ButtonIcon from './ButtonIcon'
 
 interface Props {
   title?: string
-  onClickMenu: Function
   actions?: ReactNode
 }
 
-export default ({ title, onClickMenu, actions }: Props) => {
-  const handleOnClickMenu = useCallback(() => onClickMenu(), [onClickMenu])
+export default ({ title, actions }: Props) => {
+  const handleOnClickMenu = () => true
 
   return (
     <div className={styles.appBar}>

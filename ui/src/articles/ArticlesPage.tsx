@@ -3,12 +3,13 @@ import { useMutation, useQuery } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 
 import { Category } from '../categories/models'
-import { getGQLError, getURLParam, matchResponse } from '../helpers'
 import Loader from '../components/Loader'
-import Page from '../components/Page'
 import Panel from '../components/Panel'
 import { MessageContext } from '../context/MessageContext'
 import ErrorPanel from '../error/ErrorPanel'
+import { getGQLError, getURLParam, matchResponse } from '../helpers'
+import Appbar from '../layout/Appbar'
+import Page from '../layout/Page'
 import AddButton from './components/AddButton'
 import ArticleList from './components/ArticleList'
 import { DisplayMode } from './components/ArticlesDisplayMode'
@@ -174,17 +175,16 @@ export default (props: AllProps) => {
     title = totalCount + plural + title
   } else title = ' '
 
+  const $actions = (
+    <ArticlesPageMenu
+      refresh={refresh}
+      markAllAsRead={req.status == 'unread' ? markAllAsRead : undefined}
+      mode={mode}
+    />
+  )
+
   return (
-    <Page
-      title={title}
-      actions={
-        <ArticlesPageMenu
-          refresh={refresh}
-          markAllAsRead={req.status == 'unread' ? markAllAsRead : undefined}
-          mode={mode}
-        />
-      }
-    >
+    <Page title={title} header={<Appbar title={title} actions={$actions} />}>
       {render(data, error, loading || reloading)}
     </Page>
   )

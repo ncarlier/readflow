@@ -2,8 +2,8 @@ import React from 'react'
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
 
 import ButtonIcon from '../components/ButtonIcon'
-import Content from '../components/Content'
-import Page from '../components/Page'
+import Appbar from '../layout/Appbar'
+import Page from '../layout/Page'
 import AddApiKeyForm from './api-keys/AddApiKeyForm'
 import ApiKeysTab from './api-keys/ApiKeysTab'
 import EditApiKeyTab from './api-keys/EditApiKeyTab'
@@ -29,39 +29,42 @@ const items = [
 
 type AllProps = RouteComponentProps<{}>
 
-export default ({ match }: AllProps) => (
-  <Page
-    title=""
-    actions={
-      <>
-        <a href="https://about.readflow.app/docs/en/" rel="noreferrer noopener" target="_blank">
-          Go to docs
-        </a>
-        <NotificationButton />
-      </>
-    }
-  >
+const Actions = () => (
+  <>
+    <a href="https://about.readflow.app/docs/en/" rel="noreferrer noopener" target="_blank">
+      Go to docs
+    </a>
+    <NotificationButton />
+  </>
+)
+
+const PageHeader = () => (
+  <>
+    <Appbar actions={<Actions />} />
     <Header>
       <h1>Settings</h1>
       <ButtonIcon icon="info" to="/about" title="About" />
       <Tabs items={items} />
     </Header>
-    <Content>
-      <Switch>
-        <Route exact path={match.path + '/categories'} component={CategoriesTab} />
-        <Route exact path={match.path + '/categories/add'} component={AddCategoryForm} />
-        <Route exact path={match.path + '/categories/:id'} component={EditCategoryTab} />
-        <Route exact path={match.path + '/api-keys'} component={ApiKeysTab} />
-        <Route exact path={match.path + '/api-keys/add'} component={AddApiKeyForm} />
-        <Route exact path={match.path + '/api-keys/:id'} component={EditApiKeyTab} />
-        <Route exact path={match.path + '/archive-services'} component={ArchiveServiceTab} />
-        <Route exact path={match.path + '/archive-services/add'} component={AddArchiveServiceForm} />
-        <Route exact path={match.path + '/archive-services/:id'} component={EditArchiveServiceTab} />
-        <Route exact path={match.path + '/rules'} component={RulesTab} />
-        <Route exact path={match.path + '/rules/add'} component={AddRuleForm} />
-        <Route exact path={match.path + '/rules/:id'} component={EditRuleTab} />
-        <Redirect exact from={match.path} to={match.path + '/categories'} />
-      </Switch>
-    </Content>
+  </>
+)
+
+export default ({ match }: AllProps) => (
+  <Page header={<PageHeader />}>
+    <Switch>
+      <Route exact path={match.path + '/categories'} component={CategoriesTab} />
+      <Route exact path={match.path + '/categories/add'} component={AddCategoryForm} />
+      <Route exact path={match.path + '/categories/:id'} component={EditCategoryTab} />
+      <Route exact path={match.path + '/api-keys'} component={ApiKeysTab} />
+      <Route exact path={match.path + '/api-keys/add'} component={AddApiKeyForm} />
+      <Route exact path={match.path + '/api-keys/:id'} component={EditApiKeyTab} />
+      <Route exact path={match.path + '/archive-services'} component={ArchiveServiceTab} />
+      <Route exact path={match.path + '/archive-services/add'} component={AddArchiveServiceForm} />
+      <Route exact path={match.path + '/archive-services/:id'} component={EditArchiveServiceTab} />
+      <Route exact path={match.path + '/rules'} component={RulesTab} />
+      <Route exact path={match.path + '/rules/add'} component={AddRuleForm} />
+      <Route exact path={match.path + '/rules/:id'} component={EditRuleTab} />
+      <Redirect exact from={match.path} to={match.path + '/categories'} />
+    </Switch>
   </Page>
 )

@@ -1,15 +1,15 @@
-.page {
+.layout {
   display: flex;
   height: inherit;
 }
 
-.page > span > aside {
+.layout > span > aside {
   width: 256px;
   height: 100%;
   flex-shrink: 0;
 }
 
-.page > section {
+.layout > section {
   flex-grow: 1;
   flex-basis: auto;
   overflow: hidden;
@@ -26,7 +26,7 @@
 }
 
 @media (max-width: 767px) {
-  .page > span > aside {
+  .layout > span > aside {
     position: fixed;
     z-index: 1100;
   }

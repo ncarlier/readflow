@@ -1,19 +1,26 @@
 import React from 'react'
 import { useQuery } from 'react-apollo-hooks'
+import { RouteComponentProps, withRouter } from 'react-router'
 
 import { GetCategoriesResponse } from '../categories/models'
 import { GetCategories } from '../categories/queries'
-import useOnlineStatus from '../hooks/useOnlineStatus'
+import LinkIcon from '../components/LinkIcon'
+import Loader from '../components/Loader'
+import Offline from '../components/Offline'
+import UserInfos from '../components/UserInfos'
 import { matchResponse } from '../helpers'
-import LinkIcon from './LinkIcon'
-import Loader from './Loader'
+import useOnlineStatus from '../hooks/useOnlineStatus'
 import styles from './Navbar.module.css'
-import Offline from './Offline'
-import UserInfos from './UserInfos'
 
-export default () => {
+export default withRouter(({ location }: RouteComponentProps) => {
+  const { pathname } = location
   const isOnline = useOnlineStatus()
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
+
+  const isCategoryActive = (id?: number) => {
+    const _path = `/categories/${id}`
+    return !!id && (pathname === _path || pathname.startsWith(`${_path}/`))
+  }
 
   const renderCategories = matchResponse<GetCategoriesResponse>({
     Loading: () => <Loader />,
@@ -27,6 +34,7 @@ export default () => {
               <li key={`cat-${category.id}`}>
                 <LinkIcon
                   to={`/categories/${category.id}`}
+                  active={isCategoryActive(category.id)}
                   icon="bookmark"
                   badge={category.unread ? category.unread : undefined}
                 >
@@ -61,17 +69,17 @@ export default () => {
           <span>Articles</span>
           <ul>
             <li>
-              <LinkIcon to="/unread" icon="view_list" badge={total}>
+              <LinkIcon to="/unread" icon="view_list" badge={total} active={pathname.startsWith('/unread')}>
                 Articles to read
               </LinkIcon>
             </li>
             <li>
-              <LinkIcon to="/offline" icon="signal_wifi_off">
+              <LinkIcon to="/offline" icon="signal_wifi_off" active={pathname.startsWith('/offline')}>
                 Offline articles
               </LinkIcon>
             </li>
             <li>
-              <LinkIcon to="/history" icon="history">
+              <LinkIcon to="/history" icon="history" active={pathname.startsWith('/history')}>
                 History
               </LinkIcon>
             </li>
@@ -84,7 +92,12 @@ export default () => {
         <li className={styles.links}>
           <ul>
             <li>
-              <LinkIcon id="navbar-link-settings" to="/settings" icon="settings">
+              <LinkIcon
+                id="navbar-link-settings"
+                to="/settings"
+                icon="settings"
+                active={pathname.startsWith('/settings')}
+              >
                 Settings
               </LinkIcon>
             </li>
@@ -93,4 +106,4 @@ export default () => {
       </ul>
     </nav>
   )
-}
+})
