@@ -5,14 +5,14 @@ import { RouteComponentProps } from 'react-router'
 
 import Button from '../../components/Button'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import { getGQLError, matchResponse } from '../../helpers'
 import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import { updateCacheAfterDelete } from './cache'
-import { GetRulesResponse, DeleteRuleResponse, DeleteRuleRequest } from './models'
+import { DeleteRuleRequest, DeleteRuleResponse, GetRulesResponse } from './models'
 import { DeleteRules, GetRules } from './queries'
 import RulesTable, { OnSelectedFn } from './RulesTable'
 
@@ -38,8 +38,10 @@ export default ({ match }: AllProps) => {
         update: updateCacheAfterDelete(ids)
       })
       setSelection([])
-      const nb = res.data!.deleteRules
-      showMessage(nb > 1 ? `${nb} rules removed` : 'Rule removed')
+      if (res.data) {
+        const nb = res.data.deleteRules
+        showMessage(nb > 1 ? `${nb} rules removed` : 'Rule removed')
+      }
     } catch (err) {
       setErrorMessage(getGQLError(err))
     }

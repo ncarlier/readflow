@@ -8,9 +8,9 @@ import Button from '../../components/Button'
 import FormCheckboxField from '../../components/FormCheckboxField'
 import FormInputField from '../../components/FormInputField'
 import FormSelectField from '../../components/FormSelectField'
-import { getGQLError, isValidForm } from '../../helpers'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, isValidForm } from '../../helpers'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
 import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
@@ -38,7 +38,9 @@ export default ({ data, history }: Props) => {
     is_default: data.is_default
   })
   const onMountValidator = useOnMountInputValidator(formState.validity)
-  const editArchiveServiceMutation = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(CreateOrUpdateArchiveService)
+  const editArchiveServiceMutation = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(
+    CreateOrUpdateArchiveService
+  )
   const { showMessage } = useContext(MessageContext)
 
   const editArchiveService = async (service: ArchiveService) => {

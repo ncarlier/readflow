@@ -5,12 +5,12 @@ import { useFormState } from 'react-use-form-state'
 
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
-import { getGQLError, isValidForm } from '../../helpers'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, isValidForm } from '../../helpers'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
-import { ApiKey, CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest } from './models'
+import { ApiKey, CreateOrUpdateApiKeyRequest, CreateOrUpdateApiKeyResponse } from './models'
 import { CreateOrUpdateApiKey } from './queries'
 
 interface EditApiKeyFormFields {
@@ -26,7 +26,9 @@ export default ({ data, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<EditApiKeyFormFields>({ alias: data.alias })
   const onMountValidator = useOnMountInputValidator(formState.validity)
-  const editApiKeyMutation = useMutation<CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest>(CreateOrUpdateApiKey)
+  const editApiKeyMutation = useMutation<CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest>(
+    CreateOrUpdateApiKey
+  )
   const { showMessage } = useContext(MessageContext)
 
   const editApiKey = async (apiKey: CreateOrUpdateApiKeyRequest) => {

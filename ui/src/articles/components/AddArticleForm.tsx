@@ -5,13 +5,13 @@ import { useFormState } from 'react-use-form-state'
 import { Category } from '../../categories/models'
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
-import { getGQLError, isValidForm } from '../../helpers'
 import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, isValidForm } from '../../helpers'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
-import { AddNewArticleRequest, Article, AddNewArticleResponse } from '../models'
+import { AddNewArticleRequest, AddNewArticleResponse, Article } from '../models'
 import { AddNewArticle } from '../queries'
 
 interface AddArticleFormFields {
@@ -40,9 +40,11 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
       const variables = { ...form, category: categoryID }
       const res = await addArticleMutation({ variables })
       setLoading(false)
-      const article = res.data!.addArticle
-      onSuccess(article)
-      showMessage(`New article: ${article.title}`)
+      if (res.data) {
+        const article = res.data.addArticle
+        onSuccess(article)
+        showMessage(`New article: ${article.title}`)
+      }
     } catch (err) {
       setLoading(false)
       setErrorMessage(getGQLError(err))

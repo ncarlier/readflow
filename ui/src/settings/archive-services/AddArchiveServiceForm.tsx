@@ -7,10 +7,10 @@ import Button from '../../components/Button'
 import FormCheckboxField from '../../components/FormCheckboxField'
 import FormInputField from '../../components/FormInputField'
 import FormSelectField from '../../components/FormSelectField'
-import { getGQLError, isValidForm } from '../../helpers'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, isValidForm } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
@@ -40,7 +40,9 @@ export default ({ history }: AllProps) => {
   })
   const onMountValidator = useOnMountInputValidator(formState.validity)
 
-  const addArchiveServiceMutation = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(CreateOrUpdateArchiveService)
+  const addArchiveServiceMutation = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(
+    CreateOrUpdateArchiveService
+  )
 
   const addArchiveService = async (service: ArchiveService) => {
     try {
@@ -48,7 +50,9 @@ export default ({ history }: AllProps) => {
         variables: service,
         update: updateCacheAfterCreate
       })
-      showMessage(`New archive service: ${res.data!.createOrUpdateArchiver.alias}`)
+      if (res.data) {
+        showMessage(`New archive service: ${res.data.createOrUpdateArchiver.alias}`)
+      }
       history.goBack()
     } catch (err) {
       setErrorMessage(getGQLError(err))

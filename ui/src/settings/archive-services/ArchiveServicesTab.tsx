@@ -5,15 +5,15 @@ import { RouteComponentProps } from 'react-router'
 
 import Button from '../../components/Button'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import { getGQLError, matchResponse } from '../../helpers'
 import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import ArchiveServicesTable, { OnSelectedFn } from './ArchiveServicesTable'
 import { updateCacheAfterDelete } from './cache'
-import { GetArchiveServicesResponse, DeleteArchiveServiceResponse, DeleteArchiveServiceRequest } from './models'
+import { DeleteArchiveServiceRequest, DeleteArchiveServiceResponse, GetArchiveServicesResponse } from './models'
 import { DeleteArchiveServices, GetArchiveServices } from './queries'
 
 type AllProps = RouteComponentProps<{}>
@@ -24,7 +24,9 @@ export default ({ match }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetArchiveServicesResponse>(GetArchiveServices)
-  const deleteArchiveServicesMutation = useMutation<DeleteArchiveServiceResponse, DeleteArchiveServiceRequest>(DeleteArchiveServices)
+  const deleteArchiveServicesMutation = useMutation<DeleteArchiveServiceResponse, DeleteArchiveServiceRequest>(
+    DeleteArchiveServices
+  )
   const { showMessage } = useContext(MessageContext)
 
   const onSelectedHandler: OnSelectedFn = keys => {
@@ -38,8 +40,10 @@ export default ({ match }: AllProps) => {
         update: updateCacheAfterDelete(ids)
       })
       setSelection([])
-      const nb = res.data!.deleteArchivers
-      showMessage(nb > 1 ? `${nb} archive services removed` : 'Archive service removed')
+      if (res.data) {
+        const nb = res.data.deleteArchivers
+        showMessage(nb > 1 ? `${nb} archive services removed` : 'Archive service removed')
+      }
     } catch (err) {
       setErrorMessage(getGQLError(err))
     }

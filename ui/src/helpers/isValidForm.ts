@@ -1,5 +1,6 @@
-import { FormState } from "react-use-form-state"
-import { FormMountValidity } from "../hooks/useOnMountInputValidator"
+import { FormState } from 'react-use-form-state'
+
+import { FormMountValidity } from '../hooks/useOnMountInputValidator'
 
 export function isValidForm(formState: FormState<any>, onMountValidator: FormMountValidity<any>) {
   const validity = { ...onMountValidator.validity, ...formState.validity }

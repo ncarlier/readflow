@@ -4,15 +4,15 @@ import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
 
 import { updateCacheAfterDelete } from '../../categories/cache'
-import { GetCategoriesResponse, DeleteCategoriesResponse, DeleteCategoriesRequest } from '../../categories/models'
+import { DeleteCategoriesRequest, DeleteCategoriesResponse, GetCategoriesResponse } from '../../categories/models'
 import { DeleteCategories, GetCategories } from '../../categories/queries'
 import Button from '../../components/Button'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import { getGQLError, matchResponse } from '../..//helpers'
 import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import CategoriesTable, { OnSelectedFn } from './CategoriesTable'
 
@@ -39,8 +39,10 @@ export default ({ match }: AllProps) => {
       })
       setSelection([])
       // console.log('Categories removed', res)
-      const nb = res.data!.deleteCategories
-      showMessage(nb > 1 ? `${nb} categories removed` : 'Category removed')
+      if (res.data) {
+        const nb = res.data.deleteCategories
+        showMessage(nb > 1 ? `${nb} categories removed` : 'Category removed')
+      }
     } catch (err) {
       setErrorMessage(getGQLError(err))
     }

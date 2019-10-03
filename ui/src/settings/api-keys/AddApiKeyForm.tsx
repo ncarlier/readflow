@@ -5,15 +5,15 @@ import { useFormState } from 'react-use-form-state'
 
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
-import { getGQLError, isValidForm } from '../../helpers'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, isValidForm } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
+import { CreateOrUpdateApiKeyRequest, CreateOrUpdateApiKeyResponse } from './models'
 import { CreateOrUpdateApiKey } from './queries'
-import { CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest } from './models';
 
 interface AddApiKeyFormFields {
   alias: string
@@ -36,9 +36,11 @@ export default ({ history }: AllProps) => {
         variables: apiKey,
         update: updateCacheAfterCreate
       })
-      showMessage(`New API key: ${res.data!.createOrUpdateAPIKey.alias}`)
-      // console.log('New API key', res)
-      history.goBack()
+      if (res.data) {
+        showMessage(`New API key: ${res.data.createOrUpdateAPIKey.alias}`)
+        // console.log('New API key', res)
+        history.goBack()
+      }
     } catch (err) {
       setErrorMessage(getGQLError(err))
     }

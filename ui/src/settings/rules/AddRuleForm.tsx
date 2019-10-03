@@ -9,15 +9,15 @@ import CategoriesOptions from '../../components/CategoriesOptions'
 import FormInputField from '../../components/FormInputField'
 import FormSelectField from '../../components/FormSelectField'
 import FormTextareaField from '../../components/FormTextareaField'
-import { getGQLError, isValidForm } from '../../helpers'
 import HelpLink from '../../components/HelpLink'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, isValidForm } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
-import { Rule, CreateOrUpdateRuleResponse } from './models'
+import { CreateOrUpdateRuleResponse, Rule } from './models'
 import PriorityOptions from './PriorityOptions'
 import { CreateOrUpdateRule } from './queries'
 
@@ -45,8 +45,10 @@ export default ({ history }: AllProps) => {
         variables: rule,
         update: updateCacheAfterCreate
       })
-      showMessage(`New rule: ${res.data!.createOrUpdateRule.alias}`)
-      history.goBack()
+      if (res.data) {
+        showMessage(`New rule: ${res.data.createOrUpdateRule.alias}`)
+        history.goBack()
+      }
     } catch (err) {
       setErrorMessage(getGQLError(err))
     }

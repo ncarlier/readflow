@@ -5,15 +5,15 @@ import { RouteComponentProps } from 'react-router'
 
 import Button from '../../components/Button'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import { getGQLError, matchResponse } from '../../helpers'
 import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import ApiKeysTable, { OnSelectedFn } from './ApiKeysTable'
 import { updateCacheAfterDelete } from './cache'
-import { GetApiKeysResponse, DeleteApiKeyRequest, DeleteApiKeyResponse } from './models'
+import { DeleteApiKeyRequest, DeleteApiKeyResponse, GetApiKeysResponse } from './models'
 import { DeleteApiKeys, GetApiKeys } from './queries'
 
 type AllProps = RouteComponentProps<{}>
@@ -27,7 +27,6 @@ export default ({ match }: AllProps) => {
   const deleteApiKeysMutation = useMutation<DeleteApiKeyResponse, DeleteApiKeyRequest>(DeleteApiKeys)
   const { showMessage } = useContext(MessageContext)
 
-
   const onSelectedHandler: OnSelectedFn = keys => {
     setSelection(keys)
   }
@@ -40,8 +39,10 @@ export default ({ match }: AllProps) => {
       })
       setSelection([])
       // console.log('API keys removed', res)
-      const nb = res.data!.deleteAPIKeys
-      showMessage(nb > 1 ? `${nb} API keys removed` : 'API key removed')
+      if (res.data) {
+        const nb = res.data.deleteAPIKeys
+        showMessage(nb > 1 ? `${nb} API keys removed` : 'API key removed')
+      }
     } catch (err) {
       setErrorMessage(getGQLError(err))
     }

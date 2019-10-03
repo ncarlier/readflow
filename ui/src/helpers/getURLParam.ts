@@ -1,4 +1,3 @@
-
 export function getURLParam<T>(params: URLSearchParams, name: string, fallback: T): T {
   let result = fallback
   if (params.has(name)) {

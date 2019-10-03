@@ -62,9 +62,11 @@ export default () => {
             sub: JSON.stringify(subscription)
           }
         })
-        const _id = res.data!.createPushSubscription.id
-        setId(_id.toString())
-        localStorage.setItem(DEVICE_ID, _id.toString())
+        if (res.data) {
+          const _id = res.data.createPushSubscription.id
+          setId(_id.toString())
+          localStorage.setItem(DEVICE_ID, _id.toString())
+        }
       }
     } catch (err) {
       setError(err)
