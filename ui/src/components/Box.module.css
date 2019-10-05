@@ -1,0 +1,20 @@
+
+.box {
+  background-color: #c4c4c461;
+  padding: 1em;
+}
+
+.box > legend {
+  display: contents;
+  font-size: larger;
+}
+
+.box > p {
+  font-style: italic;
+  color: gray;
+}
+
+.danger {
+  color: var(--button-danger-text-color);
+  background-color: var(--button-danger-color);
+}

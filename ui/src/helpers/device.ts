@@ -25,3 +25,5 @@ const isMobile = {
 }
 
 export const isMobileDevice = () => isMobile.any()
+
+export const isInstalled = () => window.matchMedia('(display-mode: standalone)').matches

@@ -6,10 +6,15 @@ import ReactDOM from 'react-dom'
 
 import App from './App'
 import authService from './auth'
-import { getOnlineStatus } from './helpers'
 import configureStore from './configureStore'
+import { getOnlineStatus } from './helpers'
 import { setupNotification } from './notification'
 import * as serviceWorker from './serviceWorker'
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault()
+  window.deferredPrompt = e
+})
 
 const run = () => {
   const history = createBrowserHistory()
