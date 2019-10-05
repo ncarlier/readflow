@@ -11,11 +11,6 @@ import { getOnlineStatus } from './helpers'
 import { setupNotification } from './notification'
 import * as serviceWorker from './serviceWorker'
 
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault()
-  window.deferredPrompt = e
-})
-
 const run = () => {
   const history = createBrowserHistory()
   const initialState = window.initialReduxState

@@ -94,9 +94,9 @@ export function register(config?: Config) {
       return
     }
 
-    window.addEventListener('beforeinstallprompt', (e: any) => {
+    window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault()
-      e.prompt()
+      window.deferredPrompt = e
     })
 
     window.addEventListener('load', () => {
