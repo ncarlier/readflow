@@ -8,7 +8,6 @@ import App from './App'
 import authService from './auth'
 import configureStore from './configureStore'
 import { getOnlineStatus } from './helpers'
-import { setupNotification } from './notification'
 import * as serviceWorker from './serviceWorker'
 
 const run = () => {
@@ -17,7 +16,6 @@ const run = () => {
   const store = configureStore(history, initialState)
   ReactDOM.render(<App store={store} history={history} />, document.getElementById('root'))
   serviceWorker.register()
-  setupNotification()
   localStorage.setItem('last_run', new Date().toISOString())
 }
 

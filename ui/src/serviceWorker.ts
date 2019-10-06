@@ -1,5 +1,3 @@
-import { subscribePush } from './notification'
-
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
@@ -17,8 +15,6 @@ function registerValidSW(swUrl: string, config?: Config) {
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {
-      // Subscribe to Push manager
-      subscribePush(registration)
       // Update
       registration.onupdatefound = () => {
         const installingWorker = registration.installing
