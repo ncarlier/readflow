@@ -16,4 +16,5 @@ type ArticleRepository interface {
 	DeleteArticle(article model.Article) error
 	MarkAllArticlesAsRead(uid uint, categoryID *uint) (int64, error)
 	DeleteReadArticlesOlderThan(delay time.Duration) (int64, error)
+	DeleteAllReadArticles(uid uint) (int64, error)
 }

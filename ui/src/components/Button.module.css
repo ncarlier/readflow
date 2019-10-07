@@ -37,3 +37,12 @@
 .danger:hover {
   background-color: var(--button-danger-hover-color);
 }
+
+.warning {
+  color: var(--button-warning-text-color);
+  background-color: var(--button-warning-color);
+}
+
+.warning:hover {
+  background-color: var(--button-warning-hover-color);
+}

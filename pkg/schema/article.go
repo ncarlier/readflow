@@ -307,3 +307,17 @@ func addArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 	}
 	return article, nil
 }
+
+var cleanHistoryMutationField = &graphql.Field{
+	Type:        graphql.NewList(categoryType),
+	Description: "remove all read articles",
+	Resolve:     cleanHistoryResolver,
+}
+
+func cleanHistoryResolver(p graphql.ResolveParams) (interface{}, error) {
+	_, err := service.Lookup().CleanHistory(p.Context)
+	if err != nil {
+		return nil, err
+	}
+	return categoriesResolver(p)
+}

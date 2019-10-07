@@ -95,3 +95,15 @@ func (reg *Registry) GetCurrentUser(ctx context.Context) (*model.User, error) {
 
 	return user, nil
 }
+
+// DeleteAccount delete current user account
+func (reg *Registry) DeleteAccount(ctx context.Context) (bool, error) {
+	user, err := reg.GetCurrentUser(ctx)
+	if err != nil {
+		return false, err
+	}
+	if err = reg.db.DeleteUser(*user); err != nil {
+		return false, err
+	}
+	return true, nil
+}

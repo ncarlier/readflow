@@ -37,6 +37,7 @@ var rootMutation = graphql.NewObject(
 			"addArticle":             addArticleMutationField,
 			"updateArticleStatus":    updateArticleStatusMutationField,
 			"markAllArticlesAsRead":  markAllArticlesAsReadMutationField,
+			"cleanHistory":           cleanHistoryMutationField,
 			"createOrUpdateAPIKey":   createOrUpdateAPIKeyMutationField,
 			"deleteAPIKeys":          deleteAPIKeysMutationField,
 			"createOrUpdateArchiver": createOrUpdateArchiverMutationField,
@@ -46,6 +47,7 @@ var rootMutation = graphql.NewObject(
 			"deleteRules":            deleteRulesMutationField,
 			"createPushSubscription": createPushSubscriptionMutationField,
 			"deletePushSubscription": deletePushSubscriptionMutationField,
+			"deleteAccount":          deleteAccountMutationField,
 		},
 	},
 )
