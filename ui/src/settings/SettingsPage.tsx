@@ -14,7 +14,6 @@ import AddCategoryForm from './categories/AddCategoryForm'
 import CategoriesTab from './categories/CategoriesTab'
 import EditCategoryTab from './categories/EditCategoryTab'
 import Header from './components/Header'
-import NotificationButton from './components/NotificationButton'
 import Tabs from './components/Tabs'
 import PreferencesTab from './preferences/PreferencesTab'
 import AddRuleForm from './rules/AddRuleForm'
@@ -32,12 +31,9 @@ const items = [
 type AllProps = RouteComponentProps<{}>
 
 const Actions = () => (
-  <>
-    <a href="https://about.readflow.app/docs/en/" rel="noreferrer noopener" target="_blank">
-      Go to docs
-    </a>
-    <NotificationButton />
-  </>
+  <a href="https://about.readflow.app/docs/en/" rel="noreferrer noopener" target="_blank">
+    Go to docs
+  </a>
 )
 
 const PageHeader = () => (
