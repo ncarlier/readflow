@@ -37,3 +37,13 @@ func meResolver(p graphql.ResolveParams) (interface{}, error) {
 	}
 	return user, nil
 }
+
+var deleteAccountMutationField = &graphql.Field{
+	Type:        graphql.Boolean,
+	Description: "delete account and all relative data",
+	Resolve:     deleteAccountResolver,
+}
+
+func deleteAccountResolver(p graphql.ResolveParams) (interface{}, error) {
+	return service.Lookup().DeleteAccount(p.Context)
+}

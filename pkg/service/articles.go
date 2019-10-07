@@ -204,3 +204,21 @@ func (reg *Registry) HydrateArticle(ctx context.Context, article *model.Article)
 
 	return err
 }
+
+// CleanHistory remove all read articles
+func (reg *Registry) CleanHistory(ctx context.Context) (int64, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	nb, err := reg.db.DeleteAllReadArticles(uid)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Msg("unable to purge history")
+		return 0, err
+	}
+	reg.logger.Debug().Uint(
+		"uid", uid,
+	).Msg("history purged")
+
+	return nb, nil
+}

@@ -117,3 +117,28 @@ func TestMarkAllArticlesAsRead(t *testing.T) {
 	assert.NotNil(t, res, "response shouldn't be nil")
 	assert.True(t, res.TotalCount == 0, "total count should be 0")
 }
+
+func TestDeleteAllReadArticles(t *testing.T) {
+	teardownTestCase := setupTestCase(t)
+	defer teardownTestCase(t)
+
+	status := "read"
+	req := model.ArticlesPageRequest{
+		Limit:  20,
+		Status: &status,
+	}
+
+	res, err := testDB.GetPaginatedArticlesByUserID(*testUser.ID, req)
+	assert.Nil(t, err, "error should be nil")
+	assert.NotNil(t, res, "response shouldn't be nil")
+	assert.True(t, res.TotalCount >= 0, "total count should be a positive integer")
+
+	nb, err := testDB.DeleteAllReadArticles(*testUser.ID)
+	assert.Nil(t, err, "error should be nil")
+	assert.Equal(t, res.TotalCount, uint(nb), "articles should have been deleted")
+
+	res, err = testDB.GetPaginatedArticlesByUserID(*testUser.ID, req)
+	assert.Nil(t, err, "error should be nil")
+	assert.NotNil(t, res, "response shouldn't be nil")
+	assert.True(t, res.TotalCount == 0, "total count should be 0")
+}

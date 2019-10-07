@@ -2,6 +2,8 @@ import React from 'react'
 
 import Panel from '../../components/Panel'
 import { usePageTitle } from '../../hooks'
+import CleanHistoryBox from './CleanHistoryBox'
+import DeleteAccountBox from './DeleteAccountBox'
 import InstallationBox from './InstallationBox'
 import NotificationBox from './NotificationBox'
 import classes from './PreferencesTab.module.css'
@@ -14,9 +16,14 @@ export default () => {
       <section>
         <h2>Device</h2>
         <hr />
-        <p>Preferences on this device.</p>
+        <p>Manage preferences on this device.</p>
         <InstallationBox />
         <NotificationBox />
+        <h2>Personal data</h2>
+        <hr />
+        <p>Data are yours and you have full control over it.</p>
+        <CleanHistoryBox />
+        <DeleteAccountBox />
       </section>
     </Panel>
   )

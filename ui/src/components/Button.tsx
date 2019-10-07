@@ -3,8 +3,8 @@ import React, { forwardRef, ReactNode } from 'react'
 import Ink from 'react-ink'
 import { Link } from 'react-router-dom'
 
-import styles from './Button.module.css'
 import { classNames } from '../helpers'
+import styles from './Button.module.css'
 import Icon from './Icon'
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
   icon?: string
   primary?: boolean
   danger?: boolean
+  warning?: boolean
   disabled?: boolean
   autoFocus?: boolean
   title?: string
@@ -22,11 +23,12 @@ interface Props {
 
 export default forwardRef<any, Props>((props, ref) => {
   // eslint-disable-next-line react/prop-types
-  const { icon, primary, danger, disabled, to, children, ...attrs } = props
+  const { icon, primary, danger, warning, disabled, to, children, ...attrs } = props
   const className = classNames(
     styles.button,
     primary && !disabled ? styles.primary : undefined,
-    danger && !disabled ? styles.danger : undefined
+    danger && !disabled ? styles.danger : undefined,
+    warning && !disabled ? styles.warning : undefined
   )
   const dataTest = primary ? 'btn-primary' : 'btn'
 

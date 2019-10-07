@@ -3,16 +3,28 @@
   background-color: #c4c4c461;
   padding: 1em;
   margin-bottom: 1em;
+  color: gray;
 }
 
 .box > legend {
   display: contents;
   font-size: larger;
+  color: black;
 }
 
 .box > p {
   font-style: italic;
-  color: gray;
+  color: inherit;
+}
+
+.warning {
+  color: var(--button-warning-text-color);
+  background-color: var(--button-warning-color);
+}
+
+.danger > legend,
+.warning > legend {
+  color: white
 }
 
 .danger {

@@ -222,3 +222,20 @@ func (pg *DB) DeleteReadArticlesOlderThan(delay time.Duration) (int64, error) {
 	}
 	return result.RowsAffected()
 }
+
+// DeleteAllReadArticles remove all read articles from the DB
+func (pg *DB) DeleteAllReadArticles(uid uint) (int64, error) {
+	query, args, _ := pg.psql.Delete(
+		"articles",
+	).Where(
+		sq.Eq{"status": "read"},
+	).Where(
+		sq.Eq{"user_id": uid},
+	).ToSql()
+
+	result, err := pg.db.Exec(query, args...)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
