@@ -25,3 +25,5 @@ require (
 	golang.org/x/net v0.0.0-20181201002055-351d144fa1fc
 	google.golang.org/appengine v1.5.0 // indirect
 )
+
+go 1.13
