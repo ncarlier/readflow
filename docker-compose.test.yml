@@ -16,7 +16,7 @@ services:
   # API
   ########################################
   api:
-    image: "golang:1.12"
+    image: "golang:1.13"
     restart: always
     depends_on:
       - db
