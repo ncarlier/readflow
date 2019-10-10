@@ -40,5 +40,5 @@ export default ({ category, onSuccess }: Props) => {
 
   useKeyboard('+', showAddModal)
 
-  return <ButtonIcon title="Add new article" onClick={showAddModal} floating icon="add" primary />
+  return <ButtonIcon title="Add new article" onClick={showAddModal} floating icon="add" variant="primary" />
 }

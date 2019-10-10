@@ -12,10 +12,11 @@ import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
 import ErrorPanel from '../error/ErrorPanel'
 import { matchResponse } from '../helpers'
 import Page from '../layout/Page'
+import { Link } from 'react-router-dom'
 
 type AllProps = RouteComponentProps<{ id: string }> & OfflineProps
 
-const Actions = () => <ButtonIcon to="/offline" icon="arrow_back" title="back to the list" />
+const Actions = () => <ButtonIcon as={Link} to="/offline" icon="arrow_back" title="back to the list" />
 
 export const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle }: AllProps) => {
   const { id } = match.params

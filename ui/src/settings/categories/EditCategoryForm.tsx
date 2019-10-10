@@ -12,6 +12,7 @@ import { getGQLError, isValidForm } from '../../helpers'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
+import { Link } from 'react-router-dom'
 
 interface EditCategoryFormFields {
   title: string
@@ -43,7 +44,7 @@ export default ({ category, history }: Props) => {
   }
 
   const handleOnSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+    (e: FormEvent | MouseEvent) => {
       e.preventDefault()
       if (!isValidForm(formState, onMountValidator)) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
@@ -73,10 +74,10 @@ export default ({ category, history }: Props) => {
         </form>
       </section>
       <footer>
-        <Button title="Back to categories" to="/settings/categories">
+        <Button title="Back to categories" as={Link} to="/settings/categories">
           Cancel
         </Button>
-        <Button title="Edit category" onClick={handleOnSubmit} primary>
+        <Button title="Edit category" onClick={handleOnSubmit} variant="primary">
           Update
         </Button>
       </footer>

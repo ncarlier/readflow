@@ -4,7 +4,12 @@ import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
 
 import { updateCacheAfterDelete } from '../../categories/cache'
-import { DeleteCategoriesRequest, DeleteCategoriesResponse, GetCategoriesResponse } from '../../categories/models'
+import {
+  DeleteCategoriesRequest,
+  DeleteCategoriesResponse,
+  GetCategoriesResponse,
+  Category
+} from '../../categories/models'
 import { DeleteCategories, GetCategories } from '../../categories/queries'
 import Button from '../../components/Button'
 import ConfirmDialog from '../../components/ConfirmDialog'
@@ -14,7 +19,28 @@ import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
-import CategoriesTable, { OnSelectedFn } from './CategoriesTable'
+import DataTable, { OnSelectedFn } from '../../components/DataTable'
+import { Link } from 'react-router-dom'
+import TimeAgo from '../../components/TimeAgo'
+
+const definition = [
+  {
+    title: 'Title',
+    render: (val: Category) => (
+      <Link title="Edit category" to={`/settings/categories/${val.id}`}>
+        {val.title}
+      </Link>
+    )
+  },
+  {
+    title: 'Created',
+    render: (val: Category) => <TimeAgo dateTime={val.created_at} />
+  },
+  {
+    title: 'Updated',
+    render: (val: Category) => <TimeAgo dateTime={val.updated_at} />
+  }
+]
 
 type AllProps = RouteComponentProps<{}>
 
@@ -67,7 +93,13 @@ export default ({ match }: AllProps) => {
   const render = matchResponse<GetCategoriesResponse>({
     Loading: () => <Loader />,
     Error: err => <ErrorPanel title="Unable to fetch categories">{err.message}</ErrorPanel>,
-    Data: data => <CategoriesTable data={data.categories.filter(c => c.id !== null)} onSelected={onSelectedHandler} />,
+    Data: data => (
+      <DataTable
+        definition={definition}
+        data={data.categories.filter(c => c.id !== null)}
+        onSelected={onSelectedHandler}
+      />
+    ),
     Other: () => <ErrorPanel>Unable to fetch categories with no obvious reason :(</ErrorPanel>
   })
 
@@ -75,14 +107,15 @@ export default ({ match }: AllProps) => {
     <Panel>
       <header>
         {selection.length > 0 && (
-          <Button id="remove-selection" title="Remove selection" danger onClick={showDeleteConfirmModal}>
+          <Button id="remove-selection" title="Remove selection" variant="danger" onClick={showDeleteConfirmModal}>
             Remove
           </Button>
         )}
         <Button
           id="add-new-category"
           title="Add new category"
-          primary
+          variant="primary"
+          as={Link}
           to={{
             pathname: match.path + '/add',
             state: { modal: true }

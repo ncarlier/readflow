@@ -7,6 +7,7 @@ import Kbd from '../../components/Kbd'
 import LinkIcon from '../../components/LinkIcon'
 import { connectRouter, IRouterDispatchProps, IRouterStateProps } from '../../containers/RouterContainer'
 import { DisplayMode } from './ArticlesDisplayMode'
+import { Link } from 'react-router-dom'
 
 interface Props {
   refresh: () => void
@@ -74,7 +75,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
           </LinkIcon>
         </li>
         <li>
-          <LinkIcon to={{ ...loc, search: toggleSortOrderQueryParam(loc.search) }} icon="sort">
+          <LinkIcon as={Link} to={{ ...loc, search: toggleSortOrderQueryParam(loc.search) }} icon="sort">
             <span>Invert sort order</span>
             <Kbd keys="shift+o" onKeypress={toggleSortOrder} />
           </LinkIcon>
@@ -89,7 +90,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
         )}
         {mode === DisplayMode.category && (
           <li>
-            <LinkIcon to={{ ...loc, search: toggleStatusQueryParam(loc.search) }} icon="history">
+            <LinkIcon as={Link} to={{ ...loc, search: toggleStatusQueryParam(loc.search) }} icon="history">
               <span>Toggle history</span>
               <Kbd keys="shift+h" onKeypress={toggleStatus} />
             </LinkIcon>

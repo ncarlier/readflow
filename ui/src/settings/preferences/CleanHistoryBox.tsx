@@ -55,7 +55,7 @@ export default () => {
   )
 
   return (
-    <Box title="History" warning>
+    <Box title="History" variant="warning">
       <p>
         Read articles are kept temporarily and deleted eventually.
         <br />

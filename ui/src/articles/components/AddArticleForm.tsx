@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useContext, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState, MouseEvent } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
@@ -52,7 +52,7 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
   }
 
   const handleOnSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+    (e: FormEvent | MouseEvent) => {
       e.preventDefault()
       if (!isValidForm(formState, onMountValidator)) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
@@ -86,7 +86,7 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
         <Button title="Back to API keys" onClick={onCancel}>
           Cancel
         </Button>
-        <Button title="Add new article" onClick={handleOnSubmit} primary>
+        <Button title="Add new article" onClick={handleOnSubmit} variant="primary">
           Add
         </Button>
       </footer>

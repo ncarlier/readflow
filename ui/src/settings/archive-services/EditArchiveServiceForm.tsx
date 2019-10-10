@@ -17,6 +17,7 @@ import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
 import WebhookConfigForm from './providers/WebhookConfigForm'
 import { CreateOrUpdateArchiveService } from './queries'
+import { Link } from 'react-router-dom'
 
 interface EditArchiveServiceFormFields {
   alias: string
@@ -57,7 +58,7 @@ export default ({ data, history }: Props) => {
   }
 
   const handleOnSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+    (e: FormEvent | MouseEvent) => {
       e.preventDefault()
       if (!isValidForm(formState, onMountValidator) || !config) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
@@ -95,10 +96,10 @@ export default ({ data, history }: Props) => {
         </form>
       </section>
       <footer>
-        <Button title="Back to archive services" to="/settings/archive-services">
+        <Button title="Back to archive services" as={Link} to="/settings/archive-services">
           Cancel
         </Button>
-        <Button title="Edit archive service" onClick={handleOnSubmit} primary>
+        <Button title="Edit archive service" onClick={handleOnSubmit} variant="primary">
           Update
         </Button>
       </footer>

@@ -54,7 +54,7 @@ export default (props: Props) => {
         loading={loading}
         floating={floating}
         icon="undo"
-        primary
+        variant="primary"
       />
     )
   }
@@ -66,7 +66,7 @@ export default (props: Props) => {
       loading={loading}
       floating={floating}
       icon="done"
-      primary
+      variant="primary"
     />
   )
 }

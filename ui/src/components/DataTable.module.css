@@ -1,0 +1,34 @@
+.data_table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  background-color: transparent;
+}
+
+.data_table thead th {
+  font-size: .95rem;
+  font-weight: 500;
+  border-top-width: 0;
+  border-bottom-width: 1px;
+  border-bottom: 2px solid var(--table-separator);
+  vertical-align: bottom;
+}
+
+.data_table thead th:first-child {
+  width: 1em;
+}
+
+.data_table td, table th {
+  padding: .75rem;
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+
+.data_table td a, table th a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.data_table th {
+  text-align: inherit;
+}

@@ -9,12 +9,50 @@ import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, matchResponse } from '../../helpers'
+import { getGQLError, matchResponse, getBookmarklet, preventBookmarkletClick } from '../../helpers'
 import { usePageTitle } from '../../hooks'
-import ApiKeysTable, { OnSelectedFn } from './ApiKeysTable'
 import { updateCacheAfterDelete } from './cache'
-import { DeleteApiKeyRequest, DeleteApiKeyResponse, GetApiKeysResponse } from './models'
+import { DeleteApiKeyRequest, DeleteApiKeyResponse, GetApiKeysResponse, ApiKey } from './models'
 import { DeleteApiKeys, GetApiKeys } from './queries'
+import { Link } from 'react-router-dom'
+import Icon from '../../components/Icon'
+import TimeAgo from '../../components/TimeAgo'
+import DataTable, { OnSelectedFn } from '../../components/DataTable'
+
+const definition = [
+  {
+    title: 'Title',
+    render: (val: ApiKey) => (
+      <Link title="Edit API key" to={`/settings/api-keys/${val.id}`}>
+        {val.alias}
+      </Link>
+    )
+  },
+  {
+    title: 'Token',
+    render: (val: ApiKey) => <span className="masked">{val.token}</span>
+  },
+  {
+    title: 'Bookmarklet',
+    render: (val: ApiKey) => (
+      <a title="Bookmark me!" href={getBookmarklet(val.token)} onClick={preventBookmarkletClick}>
+        <Icon name="bookmark" />
+      </a>
+    )
+  },
+  {
+    title: 'Last usage',
+    render: (val: ApiKey) => <TimeAgo dateTime={val.last_usage_at} />
+  },
+  {
+    title: 'Created',
+    render: (val: ApiKey) => <TimeAgo dateTime={val.created_at} />
+  },
+  {
+    title: 'Updated',
+    render: (val: ApiKey) => <TimeAgo dateTime={val.updated_at} />
+  }
+]
 
 type AllProps = RouteComponentProps<{}>
 
@@ -67,7 +105,7 @@ export default ({ match }: AllProps) => {
   const render = matchResponse<GetApiKeysResponse>({
     Loading: () => <Loader />,
     Error: err => <ErrorPanel title="Unable to fetch API keys">{err.message}</ErrorPanel>,
-    Data: data => <ApiKeysTable data={data.apiKeys} onSelected={onSelectedHandler} />,
+    Data: data => <DataTable definition={definition} data={data.apiKeys} onSelected={onSelectedHandler} />,
     Other: () => <ErrorPanel>Unable to fetch API keys with no obvious reason :(</ErrorPanel>
   })
 
@@ -75,14 +113,15 @@ export default ({ match }: AllProps) => {
     <Panel>
       <header>
         {selection.length > 0 && (
-          <Button id="remove-selection" title="Remove selection" danger onClick={showDeleteConfirmModal}>
+          <Button id="remove-selection" title="Remove selection" variant="danger" onClick={showDeleteConfirmModal}>
             Remove
           </Button>
         )}
         <Button
           id="add-new-api-key"
           title="Add new API key"
-          primary
+          variant="primary"
+          as={Link}
           to={{
             pathname: match.path + '/add',
             state: { modal: true }

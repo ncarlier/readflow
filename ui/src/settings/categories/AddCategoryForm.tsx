@@ -14,6 +14,7 @@ import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
+import { Link } from 'react-router-dom'
 
 interface AddCategoryFormFields {
   title: string
@@ -45,7 +46,7 @@ export default ({ history }: AllProps) => {
   }
 
   const handleOnSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+    (e: FormEvent | MouseEvent) => {
       e.preventDefault()
       if (!isValidForm(formState, onMountValidator)) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
@@ -75,10 +76,10 @@ export default ({ history }: AllProps) => {
         </form>
       </section>
       <footer>
-        <Button title="Back to categories" to="/settings/categories">
+        <Button title="Back to categories" as={Link} to="/settings/categories">
           Cancel
         </Button>
-        <Button title="Add category" onClick={handleOnSubmit} primary>
+        <Button title="Add category" onClick={handleOnSubmit} variant="primary">
           Add
         </Button>
       </footer>

@@ -12,6 +12,7 @@ import { NavbarContext } from '../context/NavbarContext'
 import { matchResponse } from '../helpers'
 import useOnlineStatus from '../hooks/useOnlineStatus'
 import styles from './Navbar.module.css'
+import { Link } from 'react-router-dom'
 
 export default withRouter(({ location }: RouteComponentProps) => {
   const { pathname } = location
@@ -41,6 +42,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
             .map(category => (
               <li key={`cat-${category.id}`}>
                 <LinkIcon
+                  as={Link}
                   to={`/categories/${category.id}`}
                   active={isCategoryActive(category.id)}
                   icon="bookmark"
@@ -79,6 +81,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
           <ul>
             <li>
               <LinkIcon
+                as={Link}
                 to="/unread"
                 icon="view_list"
                 badge={total}
@@ -90,6 +93,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
             </li>
             <li>
               <LinkIcon
+                as={Link}
                 to="/offline"
                 icon="signal_wifi_off"
                 active={pathname.startsWith('/offline')}
@@ -99,7 +103,13 @@ export default withRouter(({ location }: RouteComponentProps) => {
               </LinkIcon>
             </li>
             <li>
-              <LinkIcon to="/history" icon="history" active={pathname.startsWith('/history')} onClick={menuAutoClose}>
+              <LinkIcon
+                as={Link}
+                to="/history"
+                icon="history"
+                active={pathname.startsWith('/history')}
+                onClick={menuAutoClose}
+              >
                 History
               </LinkIcon>
             </li>
@@ -114,6 +124,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
             <li>
               <LinkIcon
                 id="navbar-link-settings"
+                as={Link}
                 to="/settings"
                 icon="settings"
                 onClick={menuAutoClose}

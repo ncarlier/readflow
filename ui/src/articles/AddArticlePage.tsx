@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps, Link } from 'react-router-dom'
 
 import ButtonIcon from '../components/ButtonIcon'
 import { URLRegExp } from '../helpers'
@@ -9,7 +9,7 @@ import AddArticleForm from './components/AddArticleForm'
 
 type AllProps = RouteComponentProps
 
-const Actions = () => <ButtonIcon to="/unread" icon="arrow_back" title="back to the list" />
+const Actions = () => <ButtonIcon as={Link} to="/unread" icon="arrow_back" title="back to the list" />
 
 export default ({ location, history }: AllProps) => {
   const params = new URLSearchParams(location.search)

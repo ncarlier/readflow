@@ -7,12 +7,11 @@ interface Props {
   title: string
   children: ReactNode
   className?: string
-  warning?: boolean
-  danger?: boolean
+  variant?: 'default' | 'warning' | 'danger'
 }
 
-export default ({ children, className, title, warning, danger }: Props) => (
-  <fieldset className={classNames(classes.box, className, danger ? classes.danger : warning ? classes.warning : null)}>
+export default ({ children, className, title, variant = 'default' }: Props) => (
+  <fieldset className={classNames(classes.box, className, classes[variant])}>
     <legend>{title}</legend>
     {children}
   </fieldset>

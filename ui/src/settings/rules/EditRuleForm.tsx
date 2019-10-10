@@ -18,6 +18,7 @@ import { updateCacheAfterUpdate } from './cache'
 import { Rule, CreateOrUpdateRuleResponse } from './models'
 import PriorityOptions from './PriorityOptions'
 import { CreateOrUpdateRule } from './queries'
+import { Link } from 'react-router-dom'
 
 interface EditRuleFormFields {
   alias: string
@@ -57,7 +58,7 @@ export default ({ data, history }: Props) => {
   }
 
   const handleOnSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+    (e: FormEvent | MouseEvent) => {
       e.preventDefault()
       if (!isValidForm(formState, onMountValidator)) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
@@ -117,10 +118,10 @@ export default ({ data, history }: Props) => {
         </form>
       </section>
       <footer>
-        <Button title="Back to rules" to="/settings/rules">
+        <Button title="Back to rules" as={Link} to="/settings/rules">
           Cancel
         </Button>
-        <Button title="Edit rule" onClick={handleOnSubmit} primary>
+        <Button title="Edit rule" onClick={handleOnSubmit} variant="primary">
           Update
         </Button>
       </footer>

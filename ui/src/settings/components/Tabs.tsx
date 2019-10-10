@@ -3,6 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router'
 
 import LinkIcon from '../../components/LinkIcon'
 import styles from './Tabs.module.css'
+import { Link } from 'react-router-dom'
 
 interface TabItem {
   key: string
@@ -20,6 +21,7 @@ export default withRouter(({ location: { pathname }, items }: Props & RouteCompo
       {items.map(item => (
         <li key={item.key}>
           <LinkIcon
+            as={Link}
             to={`/settings/${item.key}`}
             title={item.label}
             icon={item.icon}

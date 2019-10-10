@@ -11,10 +11,40 @@ import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
-import ArchiveServicesTable, { OnSelectedFn } from './ArchiveServicesTable'
 import { updateCacheAfterDelete } from './cache'
-import { DeleteArchiveServiceRequest, DeleteArchiveServiceResponse, GetArchiveServicesResponse } from './models'
+import {
+  DeleteArchiveServiceRequest,
+  DeleteArchiveServiceResponse,
+  GetArchiveServicesResponse,
+  ArchiveService
+} from './models'
 import { DeleteArchiveServices, GetArchiveServices } from './queries'
+import { Link } from 'react-router-dom'
+import TimeAgo from '../../components/TimeAgo'
+import DataTable, { OnSelectedFn } from '../../components/DataTable'
+
+const definition = [
+  {
+    title: 'Alias',
+    render: (val: ArchiveService) => (
+      <Link title="Edit archive service" to={`/settings/archive-services/${val.id}`}>
+        {val.alias} {val.is_default && '(default)'}
+      </Link>
+    )
+  },
+  {
+    title: 'Provider',
+    render: (val: ArchiveService) => val.provider
+  },
+  {
+    title: 'Created',
+    render: (val: ArchiveService) => <TimeAgo dateTime={val.created_at} />
+  },
+  {
+    title: 'Updated',
+    render: (val: ArchiveService) => <TimeAgo dateTime={val.updated_at} />
+  }
+]
 
 type AllProps = RouteComponentProps<{}>
 
@@ -68,7 +98,7 @@ export default ({ match }: AllProps) => {
   const render = matchResponse<GetArchiveServicesResponse>({
     Loading: () => <Loader />,
     Error: err => <ErrorPanel title="Unable to fetch archive services">{err.message}</ErrorPanel>,
-    Data: data => <ArchiveServicesTable data={data.archivers} onSelected={onSelectedHandler} />,
+    Data: data => <DataTable definition={definition} data={data.archivers} onSelected={onSelectedHandler} />,
     Other: () => <ErrorPanel>Unable to fetch archive services with no obvious reason :(</ErrorPanel>
   })
 
@@ -76,13 +106,14 @@ export default ({ match }: AllProps) => {
     <Panel>
       <header>
         {selection.length > 0 && (
-          <Button title="Remove selection" danger onClick={showDeleteConfirmModal}>
+          <Button title="Remove selection" variant="danger" onClick={showDeleteConfirmModal}>
             Remove
           </Button>
         )}
         <Button
           title="Add new archive service"
-          primary
+          variant="primary"
+          as={Link}
           to={{
             pathname: match.path + '/add',
             state: { modal: true }

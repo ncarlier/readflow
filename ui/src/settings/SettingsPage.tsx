@@ -19,6 +19,7 @@ import PreferencesTab from './preferences/PreferencesTab'
 import AddRuleForm from './rules/AddRuleForm'
 import EditRuleTab from './rules/EditRuleTab'
 import RulesTab from './rules/RulesTab'
+import { Link } from 'react-router-dom'
 
 const items = [
   { key: 'categories', label: 'Categories', icon: 'bookmarks' },
@@ -41,7 +42,7 @@ const PageHeader = () => (
     <Appbar actions={<Actions />} />
     <Header>
       <h1>Settings</h1>
-      <ButtonIcon icon="info" to="/about" title="About" />
+      <ButtonIcon icon="info" as={Link} to="/about" title="About" />
       <Tabs items={items} />
     </Header>
   </>

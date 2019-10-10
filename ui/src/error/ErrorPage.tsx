@@ -4,6 +4,7 @@ import Button from '../components/Button'
 import Panel from '../components/Panel'
 import Page from '../layout/Page'
 import ErrorPanel from './ErrorPanel'
+import { Link } from 'react-router-dom'
 
 interface Props {
   title?: string
@@ -16,7 +17,7 @@ export default ({ title = 'Error', children }: Props) => (
       <ErrorPanel
         title={title}
         actions={
-          <Button title="Back to home page" to="/" danger>
+          <Button title="Back to home page" as={Link} to="/" variant="danger">
             Dismiss
           </Button>
         }

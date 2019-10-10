@@ -14,6 +14,7 @@ import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
 import { CreateOrUpdateApiKeyRequest, CreateOrUpdateApiKeyResponse } from './models'
 import { CreateOrUpdateApiKey } from './queries'
+import { Link } from 'react-router-dom'
 
 interface AddApiKeyFormFields {
   alias: string
@@ -47,7 +48,7 @@ export default ({ history }: AllProps) => {
   }
 
   const handleOnSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
+    (e: FormEvent | MouseEvent) => {
       e.preventDefault()
       if (!isValidForm(formState, onMountValidator)) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
@@ -78,10 +79,10 @@ export default ({ history }: AllProps) => {
         </form>
       </section>
       <footer>
-        <Button title="Back to API keys" to="/settings/api-keys">
+        <Button title="Back to API keys" as={Link} to="/settings/api-keys">
           Cancel
         </Button>
-        <Button title="Add API key" onClick={handleOnSubmit} primary>
+        <Button title="Add API key" onClick={handleOnSubmit} variant="primary">
           Add
         </Button>
       </footer>

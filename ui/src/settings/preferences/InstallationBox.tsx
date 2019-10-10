@@ -15,7 +15,7 @@ const Install = ({ onClick }: InstallProps) => (
       <br />
       This will also activate extra feature such as sharing.
     </p>
-    <Button title="Install on your device" primary onClick={onClick}>
+    <Button title="Install on your device" variant="primary" onClick={onClick}>
       Install
     </Button>
   </>
