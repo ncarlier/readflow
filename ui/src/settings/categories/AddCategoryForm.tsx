@@ -8,7 +8,7 @@ import { Category, CreateOrUpdateCategoryResponse } from '../../categories/model
 import { CreateOrUpdateCategory } from '../../categories/queries'
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
-import { getGQLError, isValidForm } from '../../helpers'
+import { getGQLError, isValidForm, isValidInput } from '../../helpers'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
@@ -68,7 +68,7 @@ export default ({ history }: AllProps) => {
           <FormInputField
             label="Title"
             {...text('title')}
-            error={!formState.validity.title}
+            error={!isValidInput(formState, onMountValidator, 'title')}
             required
             autoFocus
             ref={onMountValidator.bind}

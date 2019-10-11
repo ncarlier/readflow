@@ -4,10 +4,17 @@ import { FormMountValidity } from '../hooks/useOnMountInputValidator'
 
 export function isValidForm(formState: FormState<any>, onMountValidator: FormMountValidity<any>) {
   const validity = { ...onMountValidator.validity, ...formState.validity }
-  Object.keys(formState.values).forEach(key => {
+  for (const key of Object.keys(formState.values)) {
     if (!validity[key]) {
       return false
     }
-  })
+  }
   return true
+}
+
+export function isValidInput(formState: FormState<any>, onMountValidator: FormMountValidity<any>, name: string) {
+  if (typeof formState.validity[name] === 'undefined') {
+    return onMountValidator.validity[name]
+  }
+  return formState.validity[name]
 }

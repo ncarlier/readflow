@@ -1,5 +1,5 @@
 import { History } from 'history'
-import React, { FormEvent, useCallback, useContext, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useState, useEffect } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
@@ -8,7 +8,7 @@ import { Category, CreateOrUpdateCategoryResponse } from '../../categories/model
 import { CreateOrUpdateCategory } from '../../categories/queries'
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
-import { getGQLError, isValidForm } from '../../helpers'
+import { getGQLError, isValidForm, isValidInput } from '../../helpers'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
@@ -66,7 +66,7 @@ export default ({ category, history }: Props) => {
           <FormInputField
             label="Title"
             {...text('title')}
-            error={!formState.validity.title}
+            error={!isValidInput(formState, onMountValidator, 'title')}
             required
             autoFocus
             ref={onMountValidator.bind}

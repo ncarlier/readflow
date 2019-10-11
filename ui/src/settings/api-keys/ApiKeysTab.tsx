@@ -9,15 +9,15 @@ import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, matchResponse, getBookmarklet, preventBookmarkletClick } from '../../helpers'
+import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import { updateCacheAfterDelete } from './cache'
 import { DeleteApiKeyRequest, DeleteApiKeyResponse, GetApiKeysResponse, ApiKey } from './models'
 import { DeleteApiKeys, GetApiKeys } from './queries'
 import { Link } from 'react-router-dom'
-import Icon from '../../components/Icon'
 import TimeAgo from '../../components/TimeAgo'
 import DataTable, { OnSelectedFn } from '../../components/DataTable'
+import Bookmarklet from './Bookmarklet'
 
 const definition = [
   {
@@ -34,11 +34,7 @@ const definition = [
   },
   {
     title: 'Bookmarklet',
-    render: (val: ApiKey) => (
-      <a title="Bookmark me!" href={getBookmarklet(val.token)} onClick={preventBookmarkletClick}>
-        <Icon name="bookmark" />
-      </a>
-    )
+    render: (val: ApiKey) => <Bookmarklet token={val.token} />
   },
   {
     title: 'Last usage',

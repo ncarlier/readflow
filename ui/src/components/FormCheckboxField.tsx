@@ -10,7 +10,7 @@ interface Props {
   error?: boolean
 }
 
-type AllProps = Props & CheckboxProps
+type AllProps = Props & CheckboxProps<any>
 
 export default (props: AllProps) => {
   const { error, label, ...rest } = props

@@ -13,7 +13,7 @@ import HelpLink from '../../components/HelpLink'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm } from '../../helpers'
+import { getGQLError, isValidForm, isValidInput } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
@@ -79,7 +79,7 @@ export default ({ history }: AllProps) => {
           <FormInputField
             label="Alias"
             {...text('alias')}
-            error={!formState.validity.alias}
+            error={!isValidInput(formState, onMountValidator, 'alias')}
             required
             autoFocus
             ref={onMountValidator.bind}
@@ -87,7 +87,7 @@ export default ({ history }: AllProps) => {
           <FormTextareaField
             label="Rule"
             {...textarea('rule')}
-            error={!formState.validity.rule}
+            error={!isValidInput(formState, onMountValidator, 'rule')}
             required
             ref={onMountValidator.bind}
           >
@@ -98,7 +98,7 @@ export default ({ history }: AllProps) => {
           <FormSelectField
             label="Priority"
             {...select('priority')}
-            error={!formState.validity.priority}
+            error={!isValidInput(formState, onMountValidator, 'priority')}
             required
             ref={onMountValidator.bind}
           >
@@ -107,7 +107,7 @@ export default ({ history }: AllProps) => {
           <FormSelectField
             label="Category"
             {...select('category_id')}
-            error={!formState.validity.category_id}
+            error={!isValidInput(formState, onMountValidator, 'category_id')}
             required
             ref={onMountValidator.bind}
           >

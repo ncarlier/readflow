@@ -9,7 +9,7 @@ import CategoriesOptions from '../../components/CategoriesOptions'
 import FormInputField from '../../components/FormInputField'
 import FormSelectField from '../../components/FormSelectField'
 import FormTextareaField from '../../components/FormTextareaField'
-import { getGQLError, isValidForm } from '../../helpers'
+import { getGQLError, isValidForm, isValidInput } from '../../helpers'
 import HelpLink from '../../components/HelpLink'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
@@ -81,7 +81,7 @@ export default ({ data, history }: Props) => {
           <FormInputField
             label="Alias"
             {...text('alias')}
-            error={!formState.validity.alias}
+            error={!isValidInput(formState, onMountValidator, 'alias')}
             required
             autoFocus
             ref={onMountValidator.bind}
@@ -89,7 +89,7 @@ export default ({ data, history }: Props) => {
           <FormTextareaField
             label="Rule"
             {...textarea('rule')}
-            error={!formState.validity.rule}
+            error={!isValidInput(formState, onMountValidator, 'rule')}
             required
             ref={onMountValidator.bind}
           >
@@ -100,7 +100,7 @@ export default ({ data, history }: Props) => {
           <FormSelectField
             label="Priority"
             {...select('priority')}
-            error={!formState.validity.priority}
+            error={!isValidInput(formState, onMountValidator, 'priority')}
             required
             ref={onMountValidator.bind}
           >
@@ -109,7 +109,7 @@ export default ({ data, history }: Props) => {
           <FormSelectField
             label="Category"
             {...select('category_id')}
-            error={!formState.validity.category_id}
+            error={!isValidInput(formState, onMountValidator, 'category_id')}
             required
             ref={onMountValidator.bind}
           >

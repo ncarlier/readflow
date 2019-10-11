@@ -1,4 +1,3 @@
-export * from './bookmarklet'
 export * from './device'
 export * from './classNames'
 export * from './getGQLError'

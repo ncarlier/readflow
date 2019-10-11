@@ -7,7 +7,7 @@ import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm } from '../../helpers'
+import { getGQLError, isValidForm, isValidInput } from '../../helpers'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterUpdate } from './cache'
 import { ApiKey, CreateOrUpdateApiKeyRequest, CreateOrUpdateApiKeyResponse } from './models'
@@ -69,7 +69,7 @@ export default ({ data, history }: Props) => {
           <FormInputField
             label="Alias"
             {...text('alias')}
-            error={!formState.validity.alias}
+            error={!isValidInput(formState, onMountValidator, 'alias')}
             required
             autoFocus
             ref={onMountValidator.bind}

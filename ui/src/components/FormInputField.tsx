@@ -12,7 +12,7 @@ interface Props {
   children?: ReactNode
 }
 
-type AllProps = Props & BaseInputProps
+type AllProps = Props & BaseInputProps<any>
 
 export default forwardRef((props: AllProps, ref: Ref<any>) => {
   const { error, label, children, ...rest } = { ...props, ref }

@@ -30,7 +30,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.8",
     "react-switch": "^5.0.1",
-    "react-use-form-state": "^0.9.1",
+    "react-use-form-state": "^0.11.0",
     "redux": "^4.0.4",
     "redux-devtools-extension": "^2.13.8",
     "redux-saga": "^1.1.1",

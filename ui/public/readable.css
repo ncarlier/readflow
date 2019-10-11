@@ -13,6 +13,9 @@ img, figure, iframe {
   max-width: 100%;
   margin: 0;
 }
+div {
+  max-width: 100%;
+}
 pre, code {
   overflow: auto;
 }

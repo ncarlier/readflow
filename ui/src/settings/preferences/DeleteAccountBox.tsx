@@ -50,7 +50,6 @@ export default () => {
 
   return (
     <Box title="Account" variant="danger">
-      <p>DANGER ZONE</p>
       <p>When you delete your account, your profile, articles, settings will be permanently removed.</p>
       <Button title="Delete my account" onClick={showDeleteAccountModal}>
         Delete account

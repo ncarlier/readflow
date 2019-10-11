@@ -10,7 +10,7 @@ import FormSelectField from '../../components/FormSelectField'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm } from '../../helpers'
+import { getGQLError, isValidForm, isValidInput } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
@@ -85,7 +85,7 @@ export default ({ history }: AllProps) => {
           <FormInputField
             label="Alias"
             {...text('alias')}
-            error={!formState.validity.alias}
+            error={!isValidInput(formState, onMountValidator, 'alias')}
             required
             autoFocus
             ref={onMountValidator.bind}
@@ -93,7 +93,7 @@ export default ({ history }: AllProps) => {
           <FormSelectField
             label="Provider"
             {...select('provider')}
-            error={!formState.validity.provider}
+            error={!isValidInput(formState, onMountValidator, 'provider')}
             required
             ref={onMountValidator.bind}
           >

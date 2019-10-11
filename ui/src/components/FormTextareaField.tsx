@@ -11,7 +11,7 @@ interface Props {
   children?: ReactNode
 }
 
-type AllProps = Props & Omit<BaseInputProps, 'type'>
+type AllProps = Props & Omit<BaseInputProps<any>, 'type'>
 
 export default forwardRef((props: AllProps, ref: Ref<any>) => {
   const { error, label, children, ...rest } = { ...props, ref }
