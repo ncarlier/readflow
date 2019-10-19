@@ -11,14 +11,17 @@ import ErrorPanel from '../error/ErrorPanel'
 import { getURLParam, matchState } from '../helpers'
 import Page from '../layout/Page'
 import { GetArticlesQuery, GetArticlesResult } from './dao/articles'
+import useLocalConfiguration from '../hooks/useLocalConfiguration'
 
 type AllProps = OfflineProps & RouteComponentProps
 
 export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, location }: AllProps) => {
+  const [localConfig] = useLocalConfiguration()
+
   const params = new URLSearchParams(location.search)
   const query: GetArticlesQuery = {
-    limit: getURLParam<number>(params, 'limit', 10),
-    sortOrder: getURLParam<string>(params, 'sort', 'asc')
+    limit: getURLParam<number>(params, 'limit', localConfig.limit),
+    sortOrder: getURLParam<string>(params, 'sort', localConfig.sortOrders.offline)
   }
 
   const { data, error, loading } = offlineArticles
@@ -63,7 +66,7 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, loc
   }
 
   return (
-    <Page title={title} actions={<ArticlesPageMenu refresh={refetch} mode={DisplayMode.offline} />}>
+    <Page title={title} actions={<ArticlesPageMenu refresh={refetch} mode={DisplayMode.offline} req={query} />}>
       {render(data, error, loading)}
     </Page>
   )

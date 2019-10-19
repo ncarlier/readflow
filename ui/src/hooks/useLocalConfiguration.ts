@@ -2,18 +2,31 @@ import { useCallback, useEffect, useState } from 'react'
 
 const key = 'LocalConfiguration'
 
+export type SortOrder = 'asc' | 'desc'
+
+interface SortOrders {
+  unread: SortOrder
+  offline: SortOrder
+  history: SortOrder
+  [key: string]: SortOrder
+}
+
 export interface LocalConfiguration {
-  defaultSortOrder: string
-  sortOrders: Map<string, string>
+  sortOrders: SortOrders
+  limit: number
 }
 
 const initialConfiguration: LocalConfiguration = {
-  defaultSortOrder: 'asc',
-  sortOrders: new Map([['unread', 'asc'], ['offline', 'asc'], ['history', 'desc']])
+  sortOrders: {
+    unread: 'asc',
+    offline: 'asc',
+    history: 'desc'
+  },
+  limit: 10
 }
 
 export default (): [LocalConfiguration, (value: LocalConfiguration) => void] => {
-  const [state, updateState] = useState(() => {
+  const [state, updateState] = useState<LocalConfiguration>(() => {
     try {
       const localConfiguration = window.localStorage.getItem(key)
       if (localConfiguration === null) {

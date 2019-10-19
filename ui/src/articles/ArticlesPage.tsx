@@ -1,13 +1,12 @@
-import React, { useCallback, useContext, useState } from 'react'
-import { useMutation, useQuery } from 'react-apollo-hooks'
+import React, { useCallback, useState } from 'react'
+import { useQuery } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 
 import { Category } from '../categories/models'
 import Loader from '../components/Loader'
 import Panel from '../components/Panel'
-import { MessageContext } from '../context/MessageContext'
 import ErrorPanel from '../error/ErrorPanel'
-import { getGQLError, getURLParam, matchResponse } from '../helpers'
+import { getURLParam, matchResponse } from '../helpers'
 import Appbar from '../layout/Appbar'
 import Page from '../layout/Page'
 import AddButton from './components/AddButton'
@@ -16,30 +15,35 @@ import { DisplayMode } from './components/ArticlesDisplayMode'
 import ArticlesPageMenu from './components/ArticlesPageMenu'
 import NewArticlesAvailable from './components/NewArticlesAvailable'
 import { GetArticlesRequest, GetArticlesResponse } from './models'
-import { GetArticles, MarkAllArticlesAsRead } from './queries'
+import { GetArticles } from './queries'
+import useLocalConfiguration, { LocalConfiguration } from '../hooks/useLocalConfiguration'
 
 interface Props {
   category?: Category
 }
 
-const buildArticlesRequest = (mode: DisplayMode, props: AllProps) => {
+const buildArticlesRequest = (mode: DisplayMode, props: AllProps, localConfig: LocalConfiguration) => {
   const { category, location } = props
   const params = new URLSearchParams(location.search)
 
   const req: GetArticlesRequest = {
-    limit: getURLParam<number>(params, 'limit', 10),
-    sortOrder: getURLParam<string>(params, 'sort', 'asc'),
+    limit: getURLParam(params, 'limit', localConfig.limit),
+    sortOrder: getURLParam(params, 'sort', localConfig.sortOrders.unread),
     status: 'unread'
   }
   switch (mode) {
     case DisplayMode.history:
       req.status = 'read'
-      req.sortOrder = getURLParam<string>(params, 'sort', 'desc')
+      req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders.history)
       break
     case DisplayMode.category:
       if (category && category.id) {
         req.category = category.id
         req.status = getURLParam<string>(params, 'status', 'unread')
+        const sortKey = `cat_${category.id}`
+        if (localConfig.sortOrders.hasOwnProperty(sortKey)) {
+          req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders[sortKey])
+        }
       }
   }
 
@@ -75,15 +79,15 @@ type AllProps = Props & RouteComponentProps
 export default (props: AllProps) => {
   const { category, match } = props
 
-  const { showErrorMessage } = useContext(MessageContext)
   const [reloading, setReloading] = useState(false)
+  const [localConfig] = useLocalConfiguration()
 
   // Get display mode
   let mode = match.url.startsWith('/history') ? DisplayMode.history : DisplayMode.unread
   mode = category ? DisplayMode.category : mode
 
   // Build GQL request
-  const req = buildArticlesRequest(mode, props)
+  const req = buildArticlesRequest(mode, props, localConfig)
 
   const { data, error, loading, fetchMore, refetch } = useQuery<GetArticlesResponse>(GetArticles, {
     variables: req
@@ -119,23 +123,6 @@ export default (props: AllProps) => {
     }
     setReloading(false)
   }, [refetch])
-
-  const markAllArticlesAsReadMutation = useMutation<{ category?: number }>(MarkAllArticlesAsRead)
-
-  const markAllArticlesAsRead = async () => {
-    try {
-      await markAllArticlesAsReadMutation({
-        variables: { category: category ? category.id : null }
-      })
-      await refresh()
-    } catch (err) {
-      showErrorMessage(getGQLError(err))
-    }
-  }
-
-  const markAllAsRead = useCallback(() => {
-    markAllArticlesAsRead()
-  }, [category])
 
   const render = matchResponse<GetArticlesResponse>({
     Loading: () => <Loader />,
@@ -175,13 +162,7 @@ export default (props: AllProps) => {
     title = totalCount + plural + title
   } else title = ' '
 
-  const $actions = (
-    <ArticlesPageMenu
-      refresh={refresh}
-      markAllAsRead={req.status == 'unread' ? markAllAsRead : undefined}
-      mode={mode}
-    />
-  )
+  const $actions = <ArticlesPageMenu refresh={refresh} req={req} mode={mode} />
 
   return (
     <Page title={title} header={<Appbar title={title} actions={$actions} />}>

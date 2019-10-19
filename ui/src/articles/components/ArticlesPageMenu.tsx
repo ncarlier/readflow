@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { useModal } from 'react-modal-hook'
 
 import ConfirmDialog from '../../components/ConfirmDialog'
@@ -6,59 +6,110 @@ import DropdownMenu from '../../components/DropdownMenu'
 import Kbd from '../../components/Kbd'
 import LinkIcon from '../../components/LinkIcon'
 import { connectRouter, IRouterDispatchProps, IRouterStateProps } from '../../containers/RouterContainer'
-import { DisplayMode } from './ArticlesDisplayMode'
 import { Link } from 'react-router-dom'
+import { GetArticlesRequest } from '../models'
+import { useMutation } from 'react-apollo-hooks'
+import { MarkAllArticlesAsRead } from '../queries'
+import { MessageContext } from '../../context/MessageContext'
+import { getGQLError } from '../../helpers'
+import { Location } from 'history'
+import useLocalConfiguration from '../../hooks/useLocalConfiguration'
+import { DisplayMode } from './ArticlesDisplayMode'
 
 interface Props {
   refresh: () => void
-  markAllAsRead?: () => void
+  req: GetArticlesRequest
   mode: DisplayMode
 }
 
 type AllProps = Props & IRouterStateProps & IRouterDispatchProps
 
-function toggleSortOrderQueryParam(qs: string) {
-  const params = new URLSearchParams(qs)
-  params.set('sort', params.get('sort') === 'desc' ? 'asc' : 'desc')
-  return params.toString()
+function revertSortOrder(order: string) {
+  return order == 'asc' ? 'desc' : 'asc'
 }
 
-function toggleStatusQueryParam(qs: string) {
-  const params = new URLSearchParams(qs)
-  params.set('status', params.get('status') === 'read' ? 'unread' : 'read')
-  return params.toString()
+function revertStatus(status: string) {
+  return status == 'read' ? 'unread' : 'read'
+}
+
+function getLocationWithSortParam(loc: Location, order: 'asc' | 'desc') {
+  const params = new URLSearchParams(loc.search)
+  params.set('sort', order)
+  return { ...loc, search: params.toString() }
+}
+
+function getLocationWithStatusParam(loc: Location, status: 'read' | 'unread') {
+  const params = new URLSearchParams(loc.search)
+  params.set('status', status)
+  return { ...loc, search: params.toString() }
 }
 
 export const ArticlesPageMenu = (props: AllProps) => {
-  const { refresh, markAllAsRead, mode, router, push } = props
+  const { refresh, req, mode, router, push } = props
   let { location: loc } = router
+
+  const { showErrorMessage } = useContext(MessageContext)
+  const [localConfig, setLocalConfig] = useLocalConfiguration()
+  const markAllArticlesAsReadMutation = useMutation<{ category?: number }>(MarkAllArticlesAsRead)
+
+  const markAllAsRead = useCallback(async () => {
+    try {
+      await markAllArticlesAsReadMutation({
+        variables: { category: req.category }
+      })
+      await refresh()
+    } catch (err) {
+      showErrorMessage(getGQLError(err))
+    }
+  }, [req])
+
+  const updateLocalConfigSortOrder = useCallback(() => {
+    const orders = localConfig.sortOrders
+    const order = revertSortOrder(req.sortOrder)
+    let key = ''
+    switch (mode) {
+      case DisplayMode.category:
+        key = `cat_${req.category}`
+        break
+      case DisplayMode.history:
+        key = 'history'
+        break
+      case DisplayMode.offline:
+        key = 'offline'
+        break
+      default:
+        key = 'unread'
+        break
+    }
+    if (!(orders.hasOwnProperty(key) && orders[key] == order)) {
+      orders[key] = order
+      setLocalConfig({ ...localConfig, sortOrders: orders })
+    }
+  }, [req, mode, localConfig])
 
   const toggleSortOrder = useCallback(
     (event: KeyboardEvent) => {
       event.preventDefault()
-      push({ ...loc, search: toggleSortOrderQueryParam(loc.search) })
+      updateLocalConfigSortOrder()
+      push(getLocationWithSortParam(loc, revertSortOrder(req.sortOrder)))
       return false
     },
-    [loc]
+    [loc, req]
   )
 
   const toggleStatus = useCallback(
     (event: KeyboardEvent) => {
       event.preventDefault()
-      push({ ...loc, search: toggleStatusQueryParam(loc.search) })
+      push(getLocationWithStatusParam(loc, revertStatus(req.status)))
       return false
     },
-    [loc]
+    [loc, req]
   )
-
   const [showMarkAllAsReadDialog, hideMarkAllAsReadDialog] = useModal(() => (
     <ConfirmDialog
       title="Mark all as read?"
       confirmLabel="Do it"
-      onConfirm={() => {
-        if (markAllAsRead) markAllAsRead()
-        hideMarkAllAsReadDialog()
-      }}
+      onConfirm={() => markAllAsRead().then(hideMarkAllAsReadDialog)}
       onCancel={hideMarkAllAsReadDialog}
     >
       Are you sure to mark ALL articles as read?
@@ -75,12 +126,17 @@ export const ArticlesPageMenu = (props: AllProps) => {
           </LinkIcon>
         </li>
         <li>
-          <LinkIcon as={Link} to={{ ...loc, search: toggleSortOrderQueryParam(loc.search) }} icon="sort">
-            <span>Invert sort order</span>
+          <LinkIcon
+            as={Link}
+            to={getLocationWithSortParam(loc, revertSortOrder(req.sortOrder))}
+            onClick={updateLocalConfigSortOrder}
+            icon="sort"
+          >
+            <span>{req.sortOrder == 'asc' ? 'Recent articles first' : 'Older articles first'}</span>
             <Kbd keys="shift+o" onKeypress={toggleSortOrder} />
           </LinkIcon>
         </li>
-        {markAllAsRead && (
+        {req.status == 'unread' && (
           <li>
             <LinkIcon onClick={showMarkAllAsReadDialog} icon="done_all">
               <span>Mark all as read</span>
@@ -88,10 +144,10 @@ export const ArticlesPageMenu = (props: AllProps) => {
             </LinkIcon>
           </li>
         )}
-        {mode === DisplayMode.category && (
+        {!!req.category && (
           <li>
-            <LinkIcon as={Link} to={{ ...loc, search: toggleStatusQueryParam(loc.search) }} icon="history">
-              <span>Toggle history</span>
+            <LinkIcon as={Link} to={getLocationWithStatusParam(loc, revertStatus(req.status))} icon="history">
+              <span>{req.status == 'read' ? 'View unread articles' : 'View read articles'}</span>
               <Kbd keys="shift+h" onKeypress={toggleStatus} />
             </LinkIcon>
           </li>
