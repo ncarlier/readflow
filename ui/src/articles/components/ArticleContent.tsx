@@ -1,23 +1,32 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import mousetrap from 'mousetrap'
 import React, { useEffect, useRef } from 'react'
 
 import { Article } from '../models'
 import styles from './ArticleContent.module.css'
 
+const css = require('!!raw-loader!./readable.css')
+
 interface Props {
   article: Article
 }
-
-const { PUBLIC_URL } = process.env
 
 const getHTMLContent = (body: string) => `
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="${PUBLIC_URL}/readable.css">
-    <script src="${PUBLIC_URL}/readable.js"></script>
+    <style>
+      ${css.default}
+    </style>
   </head>
-  <body>${body}</body>
+  <body>
+    ${body}
+    <script>
+window.onload = function() {
+  document.querySelectorAll('a').forEach(a => a.setAttribute('target', '_blank'))
+}
+    </script>
+  </body>
 </html>
 `
 
