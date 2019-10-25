@@ -4,12 +4,13 @@ import Center from '../components/Center'
 import { VERSION } from '../constants'
 import Page from '../layout/Page'
 import styles from './AboutPage.module.css'
+import logo from './logo.svg'
 
 export default () => (
   <Page title="About">
     <Center className={styles.about}>
       <h1>
-        <img src={process.env.PUBLIC_URL + '/logo.svg'} />
+        <img src={logo} />
       </h1>
       <span>({VERSION})</span>
       <p>Read your Internet article flow in one place with complete peace of mind and freedom.</p>

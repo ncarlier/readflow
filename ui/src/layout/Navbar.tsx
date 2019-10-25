@@ -1,22 +1,22 @@
 import React, { useContext } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { RouteComponentProps, withRouter } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import { GetCategoriesResponse } from '../categories/models'
 import { GetCategories } from '../categories/queries'
 import LinkIcon from '../components/LinkIcon'
 import Loader from '../components/Loader'
+import NetworkStatus from '../components/NetworkStatus'
 import Offline from '../components/Offline'
 import UserInfos from '../components/UserInfos'
 import { NavbarContext } from '../context/NavbarContext'
 import { matchResponse } from '../helpers'
-import useOnlineStatus from '../hooks/useOnlineStatus'
+import logo from './logo_header.svg'
 import styles from './Navbar.module.css'
-import { Link } from 'react-router-dom'
 
 export default withRouter(({ location }: RouteComponentProps) => {
   const { pathname } = location
-  const isOnline = useOnlineStatus()
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
   const navbar = useContext(NavbarContext)
 
@@ -71,26 +71,32 @@ export default withRouter(({ location }: RouteComponentProps) => {
       <ul>
         <li>
           <h1>
-            <img src={process.env.PUBLIC_URL + '/logo_white.svg'} />
+            <img src={logo} />
           </h1>
-          {isOnline && <UserInfos />}
-          {!isOnline && <Offline />}
+          <NetworkStatus status="online">
+            <UserInfos />
+          </NetworkStatus>
+          <NetworkStatus status="offline">
+            <Offline />
+          </NetworkStatus>
         </li>
         <li className={styles.links}>
           <span>Articles</span>
           <ul>
-            <li>
-              <LinkIcon
-                as={Link}
-                to="/unread"
-                icon="view_list"
-                badge={total}
-                active={pathname.startsWith('/unread')}
-                onClick={menuAutoClose}
-              >
-                Articles to read
-              </LinkIcon>
-            </li>
+            <NetworkStatus status="online">
+              <li>
+                <LinkIcon
+                  as={Link}
+                  to="/unread"
+                  icon="view_list"
+                  badge={total}
+                  active={pathname.startsWith('/unread')}
+                  onClick={menuAutoClose}
+                >
+                  Articles to read
+                </LinkIcon>
+              </li>
+            </NetworkStatus>
             <li>
               <LinkIcon
                 as={Link}
@@ -102,39 +108,43 @@ export default withRouter(({ location }: RouteComponentProps) => {
                 Offline articles
               </LinkIcon>
             </li>
-            <li>
-              <LinkIcon
-                as={Link}
-                to="/history"
-                icon="history"
-                active={pathname.startsWith('/history')}
-                onClick={menuAutoClose}
-              >
-                History
-              </LinkIcon>
-            </li>
+            <NetworkStatus status="online">
+              <li>
+                <LinkIcon
+                  as={Link}
+                  to="/history"
+                  icon="history"
+                  active={pathname.startsWith('/history')}
+                  onClick={menuAutoClose}
+                >
+                  History
+                </LinkIcon>
+              </li>
+            </NetworkStatus>
           </ul>
         </li>
-        <li className={styles.links}>
-          <span>Categories</span>
-          {isOnline && renderCategories(data, error, loading)}
-        </li>
-        <li className={styles.links}>
-          <ul>
-            <li>
-              <LinkIcon
-                id="navbar-link-settings"
-                as={Link}
-                to="/settings"
-                icon="settings"
-                onClick={menuAutoClose}
-                active={pathname.startsWith('/settings')}
-              >
-                Settings
-              </LinkIcon>
-            </li>
-          </ul>
-        </li>
+        <NetworkStatus status="online">
+          <li className={styles.links}>
+            <span>Categories</span>
+            {renderCategories(data, error, loading)}
+          </li>
+          <li className={styles.links}>
+            <ul>
+              <li>
+                <LinkIcon
+                  id="navbar-link-settings"
+                  as={Link}
+                  to="/settings"
+                  icon="settings"
+                  onClick={menuAutoClose}
+                  active={pathname.startsWith('/settings')}
+                >
+                  Settings
+                </LinkIcon>
+              </li>
+            </ul>
+          </li>
+        </NetworkStatus>
       </ul>
     </nav>
   )

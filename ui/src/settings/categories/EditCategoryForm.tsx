@@ -1,6 +1,7 @@
 import { History } from 'history'
-import React, { FormEvent, useCallback, useContext, useState, useEffect } from 'react'
+import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
+import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
 import { updateCacheAfterUpdate } from '../../categories/cache'
@@ -8,11 +9,10 @@ import { Category, CreateOrUpdateCategoryResponse } from '../../categories/model
 import { CreateOrUpdateCategory } from '../../categories/queries'
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
-import { getGQLError, isValidForm, isValidInput } from '../../helpers'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, isValidForm, isValidInput } from '../../helpers'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
-import { Link } from 'react-router-dom'
 
 interface EditCategoryFormFields {
   title: string
