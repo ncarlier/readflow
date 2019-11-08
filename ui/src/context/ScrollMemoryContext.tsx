@@ -23,6 +23,7 @@ const ScrollMemoryProvider = ({ children }: Props) => {
       const pos = cache.get(key)
       // console.log(`restoring scroll position for ${key}: ${pos}`)
       setState(pos || 0)
+      cache.delete(key)
     } else {
       setState(0)
     }
@@ -32,8 +33,9 @@ const ScrollMemoryProvider = ({ children }: Props) => {
     // console.log('scrollMemoryContext:init')
     window.addEventListener('popstate', onPopState)
     return () => {
-      //console.log('scrollMemoryContext:destroy')
+      // console.log('scrollMemoryContext:destroy')
       window.removeEventListener('popstate', onPopState)
+      cache.delete(location.pathname)
       setState(0)
     }
   })

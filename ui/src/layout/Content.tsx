@@ -1,6 +1,5 @@
 import React, { ReactNode, useRef } from 'react'
 
-import { ScrollMemoryProvider } from '../context/ScrollMemoryContext'
 import useScrollMemory from '../hooks/useScrollMemory'
 import styles from './Content.module.css'
 
@@ -13,10 +12,8 @@ export default ({ children }: Props) => {
   useScrollMemory(ref)
 
   return (
-    <ScrollMemoryProvider>
-      <section ref={ref} className={styles.content}>
-        {children}
-      </section>
-    </ScrollMemoryProvider>
+    <section ref={ref} className={styles.content}>
+      {children}
+    </section>
   )
 }

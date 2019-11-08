@@ -11,6 +11,7 @@ import authService from './auth'
 import { API_BASE_URL } from './constants'
 import { MessageProvider } from './context/MessageContext'
 import { NavbarProvider } from './context/NavbarContext'
+import { ScrollMemoryProvider } from './context/ScrollMemoryContext'
 import AppLayout from './layout/AppLayout'
 import Routes from './routes'
 import { ApplicationState } from './store'
@@ -67,11 +68,13 @@ export default function App({ store, history /*, theme*/ }: Props) {
         <ModalProvider>
           <MessageProvider>
             <NavbarProvider>
-              <ConnectedRouter history={history}>
-                <AppLayout>
-                  <Routes />
-                </AppLayout>
-              </ConnectedRouter>
+              <ScrollMemoryProvider>
+                <ConnectedRouter history={history}>
+                  <AppLayout>
+                    <Routes />
+                  </AppLayout>
+                </ConnectedRouter>
+              </ScrollMemoryProvider>
             </NavbarProvider>
           </MessageProvider>
         </ModalProvider>
