@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom'
 import TimeAgo from '../../components/TimeAgo'
 import DataTable, { OnSelectedFn } from '../../components/DataTable'
 import Bookmarklet from './Bookmarklet'
+import Masked from '../../components/Masked'
 
 const definition = [
   {
@@ -30,7 +31,7 @@ const definition = [
   },
   {
     title: 'Token',
-    render: (val: ApiKey) => <span className="masked">{val.token}</span>
+    render: (val: ApiKey) => <Masked value={val.token} />
   },
   {
     title: 'Bookmarklet',
