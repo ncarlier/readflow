@@ -10,6 +10,7 @@ import { classNames, isMobileDevice } from '../helpers'
 import useKeyboard from '../hooks/useKeyboard'
 import classes from './AppLayout.module.css'
 import Navbar from './Navbar'
+import UpdateAvailableNotification from '../components/UpdateAvailableNotification'
 
 interface Props {
   children: ReactNode
@@ -44,6 +45,7 @@ export default (props: Props) => {
       <section>
         {navbar.opened && <div id="navbar-fog" className={classes.fog} onClick={() => navbar.close()} />}
         {children}
+        <UpdateAvailableNotification />
         <Snackbar />
       </section>
     </div>

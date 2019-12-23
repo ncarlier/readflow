@@ -1,8 +1,10 @@
 import React, { createContext, ReactNode, useState } from 'react'
 
+type MessageType = 'error' | 'warning' | 'info'
+
 interface Message {
   text: string
-  isError: boolean
+  variant: MessageType
 }
 
 interface MessageContextType {
@@ -12,7 +14,7 @@ interface MessageContextType {
 }
 
 const MessageContext = createContext<MessageContextType>({
-  message: { text: '', isError: false },
+  message: { text: '', variant: 'info' },
   showMessage: () => true,
   showErrorMessage: () => true
 })
@@ -22,10 +24,10 @@ interface Props {
 }
 
 const MessageProvider = ({ children }: Props) => {
-  const [message, setMessage] = useState<Message>({ text: '', isError: false })
+  const [message, setMessage] = useState<Message>({ text: '', variant: 'info' })
 
-  const showMessage = (text: string) => setMessage({ text, isError: false })
-  const showErrorMessage = (text: string) => setMessage({ text, isError: true })
+  const showMessage = (text: string, variant: MessageType = 'info') => setMessage({ text, variant })
+  const showErrorMessage = (text: string) => setMessage({ text, variant: 'error' })
 
   return (
     <MessageContext.Provider value={{ message, showMessage, showErrorMessage }}>{children}</MessageContext.Provider>

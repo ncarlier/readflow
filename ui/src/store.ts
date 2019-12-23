@@ -5,12 +5,14 @@ import { all, fork } from 'redux-saga/effects'
 import { offlineArticlesReducer } from './offline/store/reducer'
 import { articlesSaga } from './offline/store/sagas'
 import { OfflineArticlesState } from './offline/store/types'
+import { AppState, appReducer } from './appStore'
 
 // The top-level state object.
 //
 // `connected-react-router` already injects the router state typings for us,
 // so we can ignore them here.
 export interface ApplicationState {
+  app: AppState
   offlineArticles: OfflineArticlesState
   router: RouterState
 }
@@ -21,6 +23,7 @@ export interface ConnectedReduxProps<A extends Action = AnyAction> {
 }
 
 export const reducers = {
+  app: appReducer,
   offlineArticles: offlineArticlesReducer
 }
 

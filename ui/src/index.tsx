@@ -9,13 +9,14 @@ import authService from './auth'
 import configureStore from './configureStore'
 import { getOnlineStatus } from './helpers'
 import * as serviceWorker from './serviceWorker'
+import { updateAvailable } from './appStore'
 
 const run = () => {
   const history = createBrowserHistory()
   const initialState = window.initialReduxState
   const store = configureStore(history, initialState)
   ReactDOM.render(<App store={store} history={history} />, document.getElementById('root'))
-  serviceWorker.register()
+  serviceWorker.register({ onUpdate: () => store.dispatch(updateAvailable()) })
   localStorage.setItem('last_run', new Date().toISOString())
 }
 

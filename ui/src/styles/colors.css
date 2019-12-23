@@ -1,5 +1,6 @@
 :root {
   --error-color: #cd5356;
+  --warning-color: #ff922f;
   --main-bg-color: #eaeff1;
   --navbar-bg-color: #18202c;
   --navbar-header-text-color: white;
@@ -34,6 +35,7 @@
 
 [data-theme="dark"] {
   --error-color: #cd5356;
+  --warning-color: #ff922f;
   --main-bg-color: #000000;
   --navbar-bg-color: #18202c;
   --navbar-header-text-color: white;

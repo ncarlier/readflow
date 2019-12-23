@@ -2,8 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import { MessageContext } from '../context/MessageContext'
-import { classNames } from '../helpers'
-import styles from './Snackbar.module.css'
+import Notification from './Notification'
 
 interface Props {
   ttl?: number
@@ -13,7 +12,7 @@ export default ({ ttl = 5000 }: Props) => {
   const { message, showMessage } = useContext(MessageContext)
 
   useEffect(() => {
-    if (ttl && message.text && !message.isError) {
+    if (ttl && message.text && message.variant === 'info') {
       const timeout = setTimeout(() => {
         showMessage('')
       }, ttl)
@@ -23,17 +22,12 @@ export default ({ ttl = 5000 }: Props) => {
     }
   }, [ttl, message])
 
-  const className = message.isError ? classNames(styles.snackbar, styles.error) : styles.snackbar
-
   return (
     <ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
       {message.text && (
-        <div className={className}>
-          <div className={styles.label}>{message.text}</div>
-          <div className={styles.actions}>
-            <button onClick={() => showMessage('')}>dismiss</button>
-          </div>
-        </div>
+        <Notification message={message.text} variant={message.variant}>
+          <button onClick={() => showMessage('')}>dismiss</button>
+        </Notification>
       )}
     </ReactCSSTransitionGroup>
   )
