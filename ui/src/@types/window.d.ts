@@ -3,5 +3,3 @@ interface Window {
   vapidPublicKey: string
   deferredPrompt: BeforeInstallPromptEvent
 }
-
-declare module 'react-swipe-to-delete-component'
