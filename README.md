@@ -66,7 +66,7 @@ You can access Web UI on http://localhost:8080/ui
 
 ## Documentation
 
-The documentation can be found here: https://about.readlow.app/docs
+The documentation can be found here: https://about.readflow.app/docs
 
 ## GraphQL API
 
