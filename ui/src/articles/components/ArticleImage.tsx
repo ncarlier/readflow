@@ -15,7 +15,6 @@ export default ({ src }: Props) => {
   return (
     <img
       src={src}
-      loading="lazy"
       srcSet={`${proxifyImageURL(src, 320)} 320w,
               ${proxifyImageURL(src, 767)} 767w`}
       sizes={mobileDisplay ? '100vw' : '320px'}
