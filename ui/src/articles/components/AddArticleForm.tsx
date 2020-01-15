@@ -9,13 +9,16 @@ import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm } from '../../helpers'
+import { getGQLError, isValidForm, isValidInput } from '../../helpers'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { AddNewArticleRequest, AddNewArticleResponse, Article } from '../models'
 import { AddNewArticle } from '../queries'
+import FormSelectField from '../../components/FormSelectField'
+import CategoriesOptions from '../../components/CategoriesOptions'
 
 interface AddArticleFormFields {
   url: string
+  category?: number
 }
 
 interface Props {
@@ -29,15 +32,17 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { showMessage } = useContext(MessageContext)
-  const [formState, { url }] = useFormState<AddArticleFormFields>({ url: value })
+  const [formState, { url, select }] = useFormState<AddArticleFormFields>({
+    url: value,
+    category: category ? category.id : undefined
+  })
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const addArticleMutation = useMutation<AddNewArticleResponse, AddNewArticleRequest>(AddNewArticle)
 
   const addArticle = async (form: AddArticleFormFields) => {
     setLoading(true)
     try {
-      const categoryID = category ? category.id : undefined
-      const variables = { ...form, category: categoryID }
+      const variables = { ...form }
       const res = await addArticleMutation({ variables })
       setLoading(false)
       if (res.data) {
@@ -75,11 +80,20 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
           <FormInputField
             label="URL"
             {...url('url')}
-            error={!formState.validity.url}
+            error={!isValidInput(formState, onMountValidator, 'url')}
             required
             autoFocus
             ref={onMountValidator.bind}
           />
+          <FormSelectField
+            label="Category"
+            {...select('category')}
+            error={!isValidInput(formState, onMountValidator, 'category')}
+            ref={onMountValidator.bind}
+          >
+            <option>Optional category</option>
+            <CategoriesOptions />
+          </FormSelectField>
         </form>
       </section>
       <footer>

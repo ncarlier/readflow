@@ -30,13 +30,13 @@ export default ({ category, match, history }: AllProps) => {
   let title = 'Articles to read'
   if (category) {
     title = category.title
-  }
-  if (match.path === '/history/:id') {
+  } else if (match.path === '/history/:id') {
     title = 'History'
   }
 
-  // useKeyboard('backspace', () => history.push(redirect))
-  useKeyboard('backspace', () => history.goBack())
+  const goBack = () => history.goBack()
+
+  useKeyboard('backspace', goBack)
 
   const { data, error, loading } = useQuery<GetArticleResponse>(GetArticle, {
     variables: { id }
@@ -58,7 +58,7 @@ export default ({ category, match, history }: AllProps) => {
               <ArticleMenu article={article} keyboard />
             </ArticleHeader>
             <ArticleContent article={article} />
-            <MarkAsButton article={article} floating onSuccess={() => history.goBack()} keyboard />
+            <MarkAsButton article={article} floating onSuccess={goBack} keyboard />
           </>
         )
       }
@@ -71,7 +71,7 @@ export default ({ category, match, history }: AllProps) => {
     <Page
       title={title}
       subtitle={data && data.article ? data.article.title : ''}
-      actions={<ButtonIcon onClick={history.goBack} icon="arrow_back" title="back to the list" />}
+      actions={<ButtonIcon onClick={goBack} icon="arrow_back" title="back to the list" />}
     >
       <Panel style={{ flex: '1 1 auto' }}>{render(data, error, loading)}</Panel>
     </Page>

@@ -8,16 +8,16 @@ import Panel from '../../components/Panel'
 import { GetArticlesResponse } from '../models'
 import { GetNbNewArticles } from '../queries'
 
-const renderLabel = (nb: number) => {
+const NewArticlesLabel = ({ nb }: { nb: number }) => {
   switch (true) {
     case nb > 1:
-      return `View ${nb} new articles`
+      return <>View {nb} new articles</>
     case nb === 1:
-      return 'View new article'
+      return <>View new article</>
     case nb < 0:
-      return 'Refresh'
+      return <>Refresh</>
     default:
-      return ''
+      return null
   }
 }
 
@@ -75,7 +75,9 @@ export default ({ current, category, refresh }: Props) => {
     case nbItems != 0:
       return (
         <Panel style={{ flex: '0 0 auto' }}>
-          <Button onClick={reload}>{renderLabel(nbItems)}</Button>
+          <Button onClick={reload}>
+            <NewArticlesLabel nb={nbItems} />
+          </Button>
         </Panel>
       )
     default:
