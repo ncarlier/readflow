@@ -29,7 +29,7 @@ $ go get -v github.com/ncarlier/readflow
 **Or** download the binary regarding your architecture:
 
 ```bash
-$ sudo curl -s https://raw.githubusercontent.com/ncarlier/readflow/master/install.sh | bash
+$ curl -s https://raw.githubusercontent.com/ncarlier/readflow/master/install.sh | bash
 ```
 
 **Or** use Docker:

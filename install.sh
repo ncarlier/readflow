@@ -24,22 +24,21 @@ base_download_url=`dirname $artefact_url`
 
 download_url=$base_download_url/readflow-$os-${arch}.tgz
 download_file=/tmp/readflow-$os-${arch}.tgz
-bin_target=/usr/local/bin
+bin_target=${1:-$HOME/.local/bin}
 
 echo "Downloading $download_url to $download_file ..."
-sudo curl -o $download_file --fail -L $download_url
+curl -o $download_file --fail -L $download_url
 [ $? != 0 ] && die "Unable to download binary for your architecture."
 
-echo "Extracting $download_file ..."
-sudo tar xvzf ${download_file} -C /tmp/
+echo "Extracting $download_file to $bin_target ..."
+[ -d $bin_target ] || mkdir -p $bin_target
+tar xvzf ${download_file} -C $bin_target
 [ $? != 0 ] && die "Unable to extract archive."
 
-echo "Moving binary to $bin_target ..."
-sudo mv /tmp/readflow $bin_target
-[ $? != 0 ] && die "Unable to move binary."
+echo "Cleaning..."
+rm $download_file \
+   $bin_target/LICENSE \
+   $bin_target/README.md
+[ $? != 0 ] && die "Unable to clean installation files."
 
-echo "Making $bin_target as executable ..."
-sudo chmod +x $bin_target/readflow
-[ $? != 0 ] && die "Unable to make the binary as executable."
-
-echo "Installation done. Type 'readflow' to start the server."
+echo "Installation done. Type '$bin_target/readflow' to start the server."
