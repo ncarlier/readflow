@@ -50,18 +50,18 @@ func main() {
 	// Configure the logger
 	logger.Configure(*conf.LogLevel, *conf.LogPretty, *conf.SentryDSN)
 
-	log.Debug().Msg("starting Nunux Reader server...")
+	log.Debug().Msg("starting readflow server...")
 
 	// Configure the DB
 	_db, err := db.Configure(*conf.DB)
 	if err != nil {
-		log.Fatal().Err(err).Msg("could not configure Database")
+		log.Fatal().Err(err).Msg("could not configure database")
 	}
 
 	// Configure Event Broker
 	_, err = eventbroker.Configure(*conf.Broker)
 	if err != nil {
-		log.Fatal().Err(err).Msg("could not configure Event Broker")
+		log.Fatal().Err(err).Msg("could not configure event broker")
 	}
 
 	// Init service registry
