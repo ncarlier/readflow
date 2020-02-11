@@ -13,18 +13,16 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ncarlier/readflow/pkg/job"
-	"github.com/ncarlier/readflow/pkg/metric"
-
-	eventbroker "github.com/ncarlier/readflow/pkg/event-broker"
-	_ "github.com/ncarlier/readflow/pkg/event-listener"
-	"github.com/ncarlier/readflow/pkg/service"
-
-	"github.com/ncarlier/readflow/pkg/db"
-
 	"github.com/ncarlier/readflow/pkg/api"
 	"github.com/ncarlier/readflow/pkg/config"
+	configflag "github.com/ncarlier/readflow/pkg/config/flag"
+	"github.com/ncarlier/readflow/pkg/db"
+	eventbroker "github.com/ncarlier/readflow/pkg/event-broker"
+	_ "github.com/ncarlier/readflow/pkg/event-listener"
+	"github.com/ncarlier/readflow/pkg/job"
 	"github.com/ncarlier/readflow/pkg/logger"
+	"github.com/ncarlier/readflow/pkg/metric"
+	"github.com/ncarlier/readflow/pkg/service"
 	"github.com/ncarlier/readflow/pkg/version"
 	"github.com/rs/zerolog/log"
 )
@@ -38,28 +36,35 @@ func init() {
 }
 
 func main() {
+	// Get global configuration
+	conf := config.Config{}
+	configflag.Bind(&conf, "READFLOW")
+
+	// Parse command line (and environment variables)
 	flag.Parse()
 
-	conf := config.Get()
-
-	if *conf.Version {
+	// Show version if asked
+	if *version.ShowVersion {
 		version.Print()
-		return
+		os.Exit(0)
 	}
 
+	// Export configurations vars
+	config.ExportVars(conf)
+
 	// Configure the logger
-	logger.Configure(*conf.LogLevel, *conf.LogPretty, *conf.SentryDSN)
+	logger.Configure(conf.LogLevel, conf.LogPretty, conf.SentryDSN)
 
 	log.Debug().Msg("starting readflow server...")
 
 	// Configure the DB
-	_db, err := db.Configure(*conf.DB)
+	_db, err := db.Configure(conf.DB)
 	if err != nil {
 		log.Fatal().Err(err).Msg("could not configure database")
 	}
 
 	// Configure Event Broker
-	_, err = eventbroker.Configure(*conf.Broker)
+	_, err = eventbroker.Configure(conf.Broker)
 	if err != nil {
 		log.Fatal().Err(err).Msg("could not configure event broker")
 	}
@@ -74,21 +79,21 @@ func main() {
 	scheduler := job.StartNewScheduler(_db)
 
 	server := &http.Server{
-		Addr:    *conf.ListenAddr,
-		Handler: api.NewRouter(conf),
+		Addr:    conf.ListenAddr,
+		Handler: api.NewRouter(&conf),
 	}
 
 	var metricsServer *http.Server
-	if *conf.ListenMetricsAddr != "" {
+	if conf.ListenMetricsAddr != "" {
 		metricsServer = &http.Server{
-			Addr:    *conf.ListenMetricsAddr,
+			Addr:    conf.ListenMetricsAddr,
 			Handler: metric.NewRouter(),
 		}
 		metric.StartCollectors(_db)
 		go func() {
-			log.Info().Str("listen", *conf.ListenMetricsAddr).Msg("metrics server started")
+			log.Info().Str("listen", conf.ListenMetricsAddr).Msg("metrics server started")
 			if err := metricsServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				log.Fatal().Err(err).Str("listen", *conf.ListenMetricsAddr).Msg("could not start metrics server")
+				log.Fatal().Err(err).Str("listen", conf.ListenMetricsAddr).Msg("could not start metrics server")
 			}
 		}()
 	}
@@ -122,10 +127,10 @@ func main() {
 
 	api.Start()
 
-	log.Info().Str("listen", *conf.ListenAddr).Msg("server started")
+	log.Info().Str("listen", conf.ListenAddr).Msg("server started")
 
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatal().Err(err).Str("listen", *conf.ListenAddr).Msg("could not start the server")
+		log.Fatal().Err(err).Str("listen", conf.ListenAddr).Msg("could not start the server")
 	}
 
 	<-done

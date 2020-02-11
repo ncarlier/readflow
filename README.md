@@ -40,23 +40,11 @@ $ docker run -d --name=readflow ncarlier/readflow
 
 ## Configuration
 
-You can configure the server by setting environment variables:
+Readflow can be configured by using command line parameters or by setting environment variables.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `APP_LISTEN` | `:8080` | Service listen address |
-| `APP_LISTEN_METRICS` | none | Metrics listen address |
-| `APP_DB` | `postgres://postgres:testpwd@localhost/reader_test` | Database connection string |
-| `APP_AUTHN` | `https://login.nunux.org/auth/realms/readflow` | Authentication method ("mock", "proxy" or OIDC if URL) |
-| `APP_BROKER` | none | External event broker URI for outgoing events |
-| `APP_PUBLIC_URL` | `https://api.readflow.app` | Public URL |
-| `APP_SENTRY_DSN` | none | Sentry DSN URL for error reporting |
-| `APP_LOG_LEVEL` | `info` | Logging level (`debug`, `info`, `warn` or `error`) |
-| `APP_LOG_PRETTY` | `false` | Plain text log output format if true (JSON otherwise) |
-| `APP_LOG_OUTPUT` | `stdout` | Log output target (`stdout` or `file://sample.log`) |
+Type `readflow -h` to display all parameters and related environment variables.
 
-You can also override these settings using program parameters.
-Type `readflow --help` to see options.
+All configuration variables are described in [etc/default/readflow.env](./etc/default/readflow.env) file.
 
 ## UI
 

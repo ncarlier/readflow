@@ -33,7 +33,7 @@ func Configure(uri string) (Broker, error) {
 		}
 		log.Info().Str("component", "broker").Str("uri", u.String()).Msg("using HTTP event broker")
 	default:
-		return nil, fmt.Errorf("unsuported event broker: %s", u.Scheme)
+		return nil, fmt.Errorf("unsupported event broker: %s", u.Scheme)
 	}
 	return instance, nil
 }

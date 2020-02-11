@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/model"
 )
@@ -43,7 +42,8 @@ func NewUserEvent(user model.User) *UserEvent {
 	evt.Action = event.CreateUser
 	evt.Issue = Issue{
 		Date: time.Now(),
-		URL:  config.Get().PublicURL,
+		// TODO: set proper issuer URL
+		// URL:  conf.PublicURL,
 	}
 	return evt
 }

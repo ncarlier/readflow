@@ -1,11 +1,10 @@
-
 package api
 
 import (
+	"io"
+	"net"
 	"net/http"
 	"strings"
-	"net"
-	"io"
 
 	"github.com/ncarlier/readflow/pkg/config"
 )
@@ -60,33 +59,33 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 		}
 
 		// Redirect if image proxy service not configured
-		if conf.ImageProxy == nil || *conf.ImageProxy == "" {
+		if conf.ImageProxy == "" {
 			http.Redirect(w, r, img, 301)
 			return
 		}
-		
+
 		// Build image proxy client
 		client := &http.Client{}
-		req, err := http.NewRequest("GET", *conf.ImageProxy + "/resize?" + q.Encode(), nil)
-        if err != nil {
+		req, err := http.NewRequest("GET", conf.ImageProxy+"/resize?"+q.Encode(), nil)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadGateway)
 			return
-        }
+		}
 
 		// Manage request headers
-        req.Header.Set("User-Agent", userAgent)
+		req.Header.Set("User-Agent", userAgent)
 		if clientIP, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
 			appendHostToXForwardHeader(req.Header, clientIP)
 		}
 		delHopHeaders(r.Header)
 
 		// Do proxy request
-        resp, err := client.Do(req)
-        if err != nil {
+		resp, err := client.Do(req)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadGateway)
 			return
-        }
-        defer resp.Body.Close()
+		}
+		defer resp.Body.Close()
 
 		// Create proxy response
 		delHopHeaders(resp.Header)

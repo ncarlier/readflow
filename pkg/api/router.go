@@ -23,7 +23,7 @@ func NewRouter(conf *config.Config) *http.ServeMux {
 		return fmt.Sprintf("%d", time.Now().UnixNano())
 	}
 
-	authMiddleware := middleware.Auth(*conf.AuthN)
+	authMiddleware := middleware.Auth(conf.AuthN)
 
 	for _, route := range routes {
 		var handler http.Handler
