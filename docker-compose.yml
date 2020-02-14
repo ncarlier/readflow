@@ -24,6 +24,12 @@ services:
   imaginary:
     image: h2non/imaginary:latest
     command: -enable-url-source -http-cache-ttl 172800
+    environment:
+      - MALLOC_ARENA_MAX=2
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
     restart: always
     networks:
       - internal
