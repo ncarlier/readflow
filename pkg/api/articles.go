@@ -1,7 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/ncarlier/readflow/pkg/config"
@@ -15,10 +18,32 @@ func articles(conf *config.Config) http.Handler {
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		articlesForm := []model.ArticleForm{}
+		articleForm := model.ArticleForm{}
 
-		if err := json.NewDecoder(r.Body).Decode(&articlesForm); err != nil {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
+		}
+		body = bytes.TrimSpace(body)
+		simpleObject := true
+		switch body[0] {
+		case byte('['):
+			simpleObject = false
+			err = json.Unmarshal(body, &articlesForm)
+		case byte('{'):
+			err = json.Unmarshal(body, &articleForm)
+		default: // ] or }
+			err = errors.New("Unexpected delimiter")
+		}
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if simpleObject {
+			articlesForm = append(articlesForm, articleForm)
 		}
 
 		articles := service.Lookup().CreateArticles(ctx, articlesForm)
