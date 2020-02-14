@@ -57,7 +57,7 @@ func init() {
 }
 
 func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv("APP_" + key); ok {
+	if value, ok := os.LookupEnv("READFLOW_" + key); ok {
 		return value
 	}
 	return fallback

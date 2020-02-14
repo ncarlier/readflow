@@ -4,7 +4,7 @@ go:
 services:
   - postgresql
 env:
-  - APP_DB=postgres://postgres@localhost/travis_ci_test?sslmode=disable
+  - READFLOW_DB=postgres://postgres@localhost/travis_ci_test?sslmode=disable
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 script:

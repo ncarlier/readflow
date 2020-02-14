@@ -25,8 +25,8 @@ services:
     working_dir: /app
     command: go run main.go
     environment:
-      - APP_AUTHN=mock
-      - APP_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-testpwd}@db/${POSTGRES_DB:-readflow_test}?sslmode=disable
+      - READFLOW_AUTHN=mock
+      - READFLOW_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-testpwd}@db/${POSTGRES_DB:-readflow_test}?sslmode=disable
     ports:
       - "${API_PORT:-8080}:8080"
 
