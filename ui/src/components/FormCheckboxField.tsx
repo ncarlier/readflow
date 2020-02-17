@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef, Ref } from 'react'
 import { CheckboxProps } from 'react-use-form-state'
 
 import { classNames } from '../helpers'
@@ -12,8 +12,8 @@ interface Props {
 
 type AllProps = Props & CheckboxProps<any>
 
-export default (props: AllProps) => {
-  const { error, label, ...rest } = props
+export default forwardRef((props: AllProps, ref: Ref<any>) => {
+  const { error, label, ...rest } = { ...props, ref }
   const className = classNames('checkbox', error ? 'has-error' : null)
   return (
     <div className={className}>
@@ -24,4 +24,4 @@ export default (props: AllProps) => {
       </label>
     </div>
   )
-}
+})

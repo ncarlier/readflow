@@ -1,6 +1,7 @@
 import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
+import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
 import Button from '../../components/Button'
@@ -18,7 +19,6 @@ import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
 import WebhookConfigForm from './providers/WebhookConfigForm'
 import { CreateOrUpdateArchiveService } from './queries'
-import { Link } from 'react-router-dom'
 
 interface AddArchiveServiceFormFields {
   alias: string
@@ -103,7 +103,7 @@ export default ({ history }: AllProps) => {
           </FormSelectField>
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} />}
           {formState.values.provider === 'webhook' && <WebhookConfigForm onChange={setConfig} />}
-          <FormCheckboxField label="To use by default" {...checkbox('isDefault')} />
+          <FormCheckboxField label="To use by default" {...checkbox('isDefault')} ref={onMountValidator.bind} />
         </form>
       </section>
       <footer>

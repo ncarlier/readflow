@@ -6,7 +6,7 @@ weight = 1
 
 The integration API is a simple URL accessible in POST with a JSON payload.
 
-The payload is an array of articles.
+The payload can be an article or an array of articles.
 An article can have the following structure:
 
 - `url`: The original URL of the article.

@@ -6,7 +6,8 @@ weight = 1
 
 L'API d'intégration est une simple URL accessible en POST avec un payload JSON.
 
-Le payload est un tableau d'articles. Un article peut avoir la structure suivant:
+Le payload peut être un article ou un tableau d'articles.
+Un article peut avoir la structure suivant :
 
 - `url`: L'URL d'origine de l'article.
 - `title`: Titre de l'article.
