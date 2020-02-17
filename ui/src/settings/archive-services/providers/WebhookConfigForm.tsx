@@ -71,7 +71,7 @@ export default ({ onChange, config = defaultConfig }: Props) => {
         error={!isValidInput(formState, onMountValidator, 'format')}
         ref={onMountValidator.bind}
       >
-        <HelpLink href="https://about.readflow.app/docs/en/read-flow/organize/rules/#syntax">
+        <HelpLink href="https://about.readflow.app/docs/en/third-party/archive/webhook/#format">
           View format syntax
         </HelpLink>
       </FormTextareaField>
