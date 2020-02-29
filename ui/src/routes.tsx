@@ -5,6 +5,7 @@ import AboutPage from './about/AboutPage'
 import ArticlesRoutes from './articles/Routes'
 import CategoryRoutes from './categories/Routes'
 import ErrorPage from './error/ErrorPage'
+import GraphiQLPage from './graphiql/GraphiQLPage'
 import OfflineRoutes from './offline/Routes'
 import SettingsPage from './settings/SettingsPage'
 
@@ -18,6 +19,7 @@ const Routes = () => (
     <Route path="/categories/:id" component={CategoryRoutes} />
     <Route path="/settings" component={SettingsPage} />
     <Route path="/about" component={AboutPage} />
+    <Route path="/graphiql" component={GraphiQLPage} />
     <Route component={() => <ErrorPage title="Not Found">Page not found</ErrorPage>} />
   </Switch>
 )

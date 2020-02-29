@@ -40,12 +40,6 @@ var routes = Routes{
 		graphqlHandler,
 	},
 	Route{
-		[]string{"GET", "POST"},
-		"/graphiql",
-		false,
-		graphiqlHandler,
-	},
-	Route{
 		[]string{"GET"},
 		"/img",
 		false,
