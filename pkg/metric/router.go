@@ -12,7 +12,7 @@ func NewRouter() *http.ServeMux {
 	router := http.NewServeMux()
 
 	handler := promhttp.Handler()
-	handler = middleware.Method([]string{"GET"})(handler)
+	handler = middleware.Methods("GET")(handler)
 	handler = middleware.Cors(handler)
 	handler = middleware.Logger(handler)
 	router.Handle("/metrics", handler)

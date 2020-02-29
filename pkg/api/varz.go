@@ -4,17 +4,10 @@ import (
 	"expvar"
 	"fmt"
 	"net/http"
-
-	"github.com/ncarlier/readflow/pkg/config"
 )
 
-func varz(conf *config.Config) http.Handler {
+func varz() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !isAdminRequest(r) {
-			http.Error(w, "Not authorized", 401)
-			return
-		}
-
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, "{\n")
 		first := true

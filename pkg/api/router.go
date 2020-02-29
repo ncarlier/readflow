@@ -6,36 +6,30 @@ import (
 	"time"
 
 	"github.com/ncarlier/readflow/pkg/config"
-	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/middleware"
 )
 
-func isAdminRequest(r *http.Request) bool {
-	isAdmin := r.Context().Value(constant.IsAdmin)
-	return isAdmin != nil && isAdmin.(bool)
+func nextRequestID() string {
+	return fmt.Sprintf("%d", time.Now().UnixNano())
+}
+
+var commonMiddlewares = []middleware.Middleware{
+	middleware.Cors,
+	middleware.Logger,
+	middleware.Tracing(nextRequestID),
 }
 
 // NewRouter creates router with declared routes
 func NewRouter(conf *config.Config) *http.ServeMux {
 	router := http.NewServeMux()
-
-	nextRequestID := func() string {
-		return fmt.Sprintf("%d", time.Now().UnixNano())
-	}
-
-	authMiddleware := middleware.Auth(conf.AuthN)
-
-	for _, route := range routes {
-		var handler http.Handler
-
-		handler = route.HandlerFunc(conf)
-		if route.AuthNRequired {
-			handler = authMiddleware(handler)
+	for _, route := range routes(conf) {
+		handler := route.Handler
+		for _, mw := range route.Middlewares {
+			handler = mw(handler)
 		}
-		handler = middleware.Method(route.Methods)(handler)
-		handler = middleware.Cors(handler)
-		handler = middleware.Logger(handler)
-		handler = middleware.Tracing(nextRequestID)(handler)
+		for _, mw := range commonMiddlewares {
+			handler = mw(handler)
+		}
 		router.Handle(route.Path, handler)
 	}
 

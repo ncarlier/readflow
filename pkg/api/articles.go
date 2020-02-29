@@ -7,15 +7,13 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/ncarlier/readflow/pkg/config"
-	"github.com/ncarlier/readflow/pkg/middleware"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
 // articles is the handler to post articles using API keys.
-func articles(conf *config.Config) http.Handler {
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func articles() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		articlesForm := []model.ArticleForm{}
 		articleForm := model.ArticleForm{}
@@ -71,5 +69,4 @@ func articles(conf *config.Config) http.Handler {
 		w.WriteHeader(status)
 		w.Write(data)
 	})
-	return middleware.APIKeyAuth(handler)
 }

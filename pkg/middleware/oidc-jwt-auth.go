@@ -68,7 +68,7 @@ func OpenIDConnectJWTAuth(authority string) Middleware {
 				inner.ServeHTTP(w, r.WithContext(ctx))
 				return
 			}
-			http.Error(w, "Not authorized", 403)
+			http.Error(w, "Unauthorized", 401)
 		})
 	}
 }

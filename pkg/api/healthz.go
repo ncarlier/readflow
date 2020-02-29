@@ -3,8 +3,6 @@ package api
 import (
 	"net/http"
 	"sync/atomic"
-
-	"github.com/ncarlier/readflow/pkg/config"
 )
 
 var (
@@ -21,7 +19,7 @@ func Start() {
 	atomic.StoreInt32(&healthy, 1)
 }
 
-func healthz(conf *config.Config) http.Handler {
+func healthz() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if atomic.LoadInt32(&healthy) == 1 {
 			w.WriteHeader(http.StatusNoContent)
