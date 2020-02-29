@@ -32,7 +32,7 @@ var categoryType = graphql.NewObject(
 						Category: category.ID,
 						Status:   &status,
 					}
-					return service.Lookup().CountArticles(p.Context, req)
+					return service.Lookup().CountCurrentUserArticles(p.Context, req)
 				},
 			},
 			"created_at": &graphql.Field{

@@ -35,7 +35,7 @@ func init() {
 				return
 			}
 
-			nb, err := service.Lookup().CountArticles(ctx, req)
+			nb, err := service.Lookup().CountCurrentUserArticles(ctx, req)
 			if err != nil {
 				log.Info().Err(err).Uint("id", uid).Msg("unable to send notification")
 				return

@@ -75,6 +75,23 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 // GetCurrentUser get current user
 func (reg *Registry) GetCurrentUser(ctx context.Context) (*model.User, error) {
 	uid := getCurrentUserFromContext(ctx)
+	return reg.GetUserByID(ctx, uid)
+}
+
+// DeleteAccount delete current user account
+func (reg *Registry) DeleteAccount(ctx context.Context) (bool, error) {
+	user, err := reg.GetCurrentUser(ctx)
+	if err != nil {
+		return false, err
+	}
+	if err = reg.db.DeleteUser(*user); err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// GetUserByID get current user
+func (reg *Registry) GetUserByID(ctx context.Context, uid uint) (*model.User, error) {
 	reg.logger.Debug().Uint(
 		"id", uid,
 	).Msg("getting user...")
@@ -94,16 +111,4 @@ func (reg *Registry) GetCurrentUser(ctx context.Context) (*model.User, error) {
 	user.Hash = tooling.Hash(strings.ToLower(user.Username))
 
 	return user, nil
-}
-
-// DeleteAccount delete current user account
-func (reg *Registry) DeleteAccount(ctx context.Context) (bool, error) {
-	user, err := reg.GetCurrentUser(ctx)
-	if err != nil {
-		return false, err
-	}
-	if err = reg.db.DeleteUser(*user); err != nil {
-		return false, err
-	}
-	return true, nil
 }

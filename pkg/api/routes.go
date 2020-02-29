@@ -46,6 +46,13 @@ func routes(conf *config.Config) Routes {
 			middleware.Methods("GET", "POST"),
 		),
 		route(
+			"/admin",
+			adminHandler(),
+			middleware.IsAdmin,
+			authnMiddleware,
+			middleware.Methods("GET", "POST"),
+		),
+		route(
 			"/img",
 			imgProxyHandler(conf),
 			middleware.Methods("GET"),

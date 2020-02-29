@@ -1,13 +1,14 @@
 import 'graphiql/graphiql.css'
 
 import React, { Suspense } from 'react'
+import { RouteComponentProps } from 'react-router'
 
 import authService from '../auth'
 import { API_BASE_URL } from '../constants'
 
 const GraphiQL = React.lazy(() => import('graphiql'))
 
-async function graphQLFetcher(graphQLParams: any) {
+const graphQLFetcher = (base: string) => async (graphQLParams: any) => {
   let user = await authService.getUser()
   if (user === null) {
     return authService.login()
@@ -20,7 +21,7 @@ async function graphQLFetcher(graphQLParams: any) {
   if (user.access_token) {
     headers.set('authorization', 'Bearer ' + user.access_token)
   }
-  return fetch(API_BASE_URL + '/graphql', {
+  return fetch(API_BASE_URL + base, {
     method: 'post',
     headers: headers,
     credentials: 'same-origin',
@@ -28,8 +29,15 @@ async function graphQLFetcher(graphQLParams: any) {
   }).then(response => response.json())
 }
 
-export default () => (
-  <Suspense fallback={<div>loading...</div>}>
-    <GraphiQL fetcher={graphQLFetcher} />
-  </Suspense>
-)
+type AllProps = RouteComponentProps
+
+export default ({ location }: AllProps) => {
+  const query = new URLSearchParams(location.search)
+  const basePath = query.has('admin') ? '/admin' : '/graphql'
+
+  return (
+    <Suspense fallback={<div>loading...</div>}>
+      <GraphiQL fetcher={graphQLFetcher(basePath)} />
+    </Suspense>
+  )
+}
