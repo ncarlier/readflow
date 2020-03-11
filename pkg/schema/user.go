@@ -15,6 +15,9 @@ var userType = graphql.NewObject(
 			"hash": &graphql.Field{
 				Type: graphql.String,
 			},
+			"plan": &graphql.Field{
+				Type: graphql.String,
+			},
 			"last_login_at": &graphql.Field{
 				Type: graphql.DateTime,
 			},
@@ -31,11 +34,7 @@ var meQueryField = &graphql.Field{
 }
 
 func meResolver(p graphql.ResolveParams) (interface{}, error) {
-	user, err := service.Lookup().GetCurrentUser(p.Context)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return service.Lookup().GetCurrentUser(p.Context)
 }
 
 var deleteAccountMutationField = &graphql.Field{

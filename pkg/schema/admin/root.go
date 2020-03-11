@@ -17,9 +17,19 @@ var rootQuery = graphql.NewObject(
 	},
 )
 
+var rootMutation = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "Mutation",
+		Fields: graphql.Fields{
+			"updateUser": updateUserMutationField,
+		},
+	},
+)
+
 func init() {
 	schema, err := graphql.NewSchema(graphql.SchemaConfig{
-		Query: rootQuery,
+		Query:    rootQuery,
+		Mutation: rootMutation,
 	})
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to create schema")

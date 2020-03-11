@@ -13,6 +13,14 @@ func TestCreateOrUpdateUser(t *testing.T) {
 	user := assertUserExists(t, "test-001")
 	assert.True(t, *user.ID > 0, "user ID should be a valid integer")
 	assert.True(t, !user.Enabled, "user should be disabled")
+
+	user.Enabled = true
+	user.Plan = "test"
+	user, err := testDB.CreateOrUpdateUser(*user)
+	assert.Nil(t, err, "error should be nil")
+	assert.True(t, user != nil, "user should not be nil")
+	assert.True(t, user.Enabled, "user should be enabled")
+	assert.Equal(t, "test", user.Plan, "unexpected user plan")
 }
 
 func TestDeleteUser(t *testing.T) {

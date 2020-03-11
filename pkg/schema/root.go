@@ -24,6 +24,7 @@ var rootQuery = graphql.NewObject(
 			"rules":      rulesQueryField,
 			"rule":       ruleQueryField,
 			"device":     deviceQueryField,
+			"plans":      plansQueryField,
 		},
 	},
 )

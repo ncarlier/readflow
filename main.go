@@ -23,6 +23,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/ncarlier/readflow/pkg/metric"
 	"github.com/ncarlier/readflow/pkg/service"
+	userplan "github.com/ncarlier/readflow/pkg/user-plan"
 	"github.com/ncarlier/readflow/pkg/version"
 	"github.com/rs/zerolog/log"
 )
@@ -57,26 +58,36 @@ func main() {
 
 	log.Debug().Msg("starting readflow server...")
 
-	// Configure the DB
-	_db, err := db.Configure(conf.DB)
-	if err != nil {
-		log.Fatal().Err(err).Msg("could not configure database")
-	}
-
 	// Configure Event Broker
-	_, err = eventbroker.Configure(conf.Broker)
+	_, err := eventbroker.Configure(conf.Broker)
 	if err != nil {
 		log.Fatal().Err(err).Msg("could not configure event broker")
 	}
 
-	// Init service registry
-	err = service.InitRegistry(_db)
+	// Configure user plans
+	userPlans, err := userplan.NewUserPlans(conf.UserPlans)
 	if err != nil {
+		log.Fatal().Err(err).Msg("unable to load user plans")
+	}
+	if userPlans.GetPlan("default") == nil {
+		log.Warn().Msg("no default user plan! This can lead to unexpected behavior.")
+	}
+
+	// Configure the DB
+	database, err := db.NewDB(conf.DB)
+	if err != nil {
+		log.Fatal().Err(err).Msg("could not configure database")
+	}
+
+	// Configure the service registry
+	err = service.Configure(database, userPlans)
+	if err != nil {
+		database.Close()
 		log.Fatal().Err(err).Msg("could not init service registry")
 	}
 
 	// Start job scheduler
-	scheduler := job.StartNewScheduler(_db)
+	scheduler := job.StartNewScheduler(database)
 
 	server := &http.Server{
 		Addr:    conf.ListenAddr,
@@ -89,7 +100,7 @@ func main() {
 			Addr:    conf.ListenMetricsAddr,
 			Handler: metric.NewRouter(),
 		}
-		metric.StartCollectors(_db)
+		metric.StartCollectors(database)
 		go func() {
 			log.Info().Str("listen", conf.ListenMetricsAddr).Msg("metrics server started")
 			if err := metricsServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -120,6 +131,10 @@ func main() {
 			if err := metricsServer.Shutdown(ctx); err != nil {
 				log.Fatal().Err(err).Msg("could not gracefully shutdown metrics server")
 			}
+		}
+
+		if err := database.Close(); err != nil {
+			log.Fatal().Err(err).Msg("could not gracefully shutdown database connection")
 		}
 
 		close(done)

@@ -1,13 +1,17 @@
 package dbtest
 
 import (
+	"context"
 	"os"
 	"testing"
 
 	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/db"
 	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/ncarlier/readflow/pkg/model"
+	"github.com/ncarlier/readflow/pkg/service"
+	userplan "github.com/ncarlier/readflow/pkg/user-plan"
 )
 
 var testDB db.DB
@@ -17,6 +21,8 @@ const defaultUsername = "test"
 const defaultDBConnString = "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable"
 
 var testUser *model.User
+
+var testContext context.Context
 
 func assertUserExists(t *testing.T, username string) *model.User {
 	user, err := testDB.GetUserByUsername(username)
@@ -44,11 +50,19 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 		t.Fatalf("unable to setup database: %v", err)
 	}
 	testUser = assertUserExists(t, defaultUsername)
+	testContext = context.Background()
+	testContext = context.WithValue(testContext, constant.UserID, *testUser.ID)
+	userPlans, _ := userplan.NewUserPlans("user-plans.yml")
+
+	service.Configure(testDB, userPlans)
+	if err != nil {
+		t.Fatalf("unable to setup service registry: %v", err)
+	}
+
 	return func(t *testing.T) {
 		t.Log("teardown test case")
 		defer testDB.Close()
-		// err := testDB.DeleteUser(*testUser)
-		// assert.Nil(t, err, "error should be nil")
+		testDB.DeleteUser(*testUser)
 	}
 }
 

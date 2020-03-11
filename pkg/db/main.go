@@ -21,24 +21,24 @@ type DB interface {
 	PropertiesRepository
 }
 
-// Configure the data store regarding the datasource URI
-func Configure(conn string) (DB, error) {
+// NewDB create new database provider regarding the datasource URI
+func NewDB(conn string) (DB, error) {
 	u, err := url.ParseRequestURI(conn)
 	if err != nil {
 		return nil, fmt.Errorf("invalid connection URL: %s", conn)
 	}
-	datastore := u.Scheme
+	provider := u.Scheme
 	var db DB
 
-	switch datastore {
+	switch provider {
 	case "postgres":
 		db, err = postgres.NewPostgreSQL(u)
 		if err != nil {
 			return nil, err
 		}
-		log.Info().Str("component", "store").Str("uri", u.String()).Msg("using PostgreSQL database")
+		log.Info().Str("component", "database").Str("uri", u.String()).Msg("using PostgreSQL database")
 	default:
-		return nil, fmt.Errorf("unsuported database: %s", datastore)
+		return nil, fmt.Errorf("unsupported database: %s", provider)
 	}
 	return db, nil
 }

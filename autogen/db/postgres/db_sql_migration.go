@@ -2,6 +2,7 @@
 
 package postgres
 
+// DatabaseSQLMigration is generated form a fileset
 var DatabaseSQLMigration = map[string]string{
 	"db_migration_1": `create table schema_version (
   version text not null
@@ -123,9 +124,13 @@ create table properties (
   primary key (rev)
 )
 `,
+	"db_migration_3": `alter table users add column plan varchar not null default 'default';
+`,
 }
 
+// DatabaseSQLMigrationChecksums is generated from a fileset and contains files checksums
 var DatabaseSQLMigrationChecksums = map[string]string{
 	"db_migration_1": "6b7ac5c1474bc400c1bbb642fcf3c161f51de7252350eaa261cb1ed796e72b67",
 	"db_migration_2": "0be0d1ef1e9481d61db425a7d54378f3667c091949525b9c285b18660b6e8a1d",
+	"db_migration_3": "5cd0d3628d990556c0b85739fd376c42244da7e98b66852b6411d27eda20c3fc",
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/tooling"
+	userplan "github.com/ncarlier/readflow/pkg/user-plan"
 )
 
 func getCurrentUserFromContext(ctx context.Context) uint {
@@ -57,6 +58,7 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 	user = &model.User{
 		Username: username,
 		Enabled:  true,
+		Plan:     "default",
 	}
 	user, err = reg.db.CreateOrUpdateUser(*user)
 	if err != nil {
@@ -74,8 +76,18 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 
 // GetCurrentUser get current user
 func (reg *Registry) GetCurrentUser(ctx context.Context) (*model.User, error) {
+	// TODO retrieve current user object from context
 	uid := getCurrentUserFromContext(ctx)
 	return reg.GetUserByID(ctx, uid)
+}
+
+// GetCurrentUserPlan get current user plan
+func (reg *Registry) GetCurrentUserPlan(ctx context.Context) (*userplan.UserPlan, error) {
+	user, err := reg.GetCurrentUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return reg.UserPlans.GetPlan(user.Plan), nil
 }
 
 // DeleteAccount delete current user account
@@ -111,4 +123,37 @@ func (reg *Registry) GetUserByID(ctx context.Context, uid uint) (*model.User, er
 	user.Hash = tooling.Hash(strings.ToLower(user.Username))
 
 	return user, nil
+}
+
+// UpdateUser update user account
+func (reg *Registry) UpdateUser(ctx context.Context, form model.UserForm) (*model.User, error) {
+	uid := getCurrentUserFromContext(ctx)
+	user, err := reg.db.GetUserByID(form.ID)
+	if err != nil || user == nil {
+		if user == nil {
+			err = errors.New("user not found")
+		}
+		reg.logger.Info().Err(err).Uint(
+			"uid", form.ID,
+		).Msg("unable to update user")
+		return nil, err
+	}
+
+	if form.Enabled != nil {
+		user.Enabled = *form.Enabled
+	}
+	if form.Plan != nil {
+		user.Plan = *form.Plan
+	}
+
+	// Self protection
+	if !user.Enabled && *user.ID == uid {
+		err = errors.New("disabling himself is forbidden")
+		reg.logger.Info().Err(err).Uint(
+			"uid", form.ID,
+		).Msg("unable to update user")
+		return nil, err
+	}
+
+	return reg.db.CreateOrUpdateUser(*user)
 }
