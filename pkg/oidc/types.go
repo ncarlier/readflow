@@ -1,7 +1,7 @@
 package oidc
 
-// OIDCConfiguration is the result from an OIDC discovery endpoint
-type OIDCConfiguration struct {
+// Configuration is the result from an OIDC discovery endpoint
+type Configuration struct {
 	Issuer                             string       `json:"issuer"`
 	JwksURI                            string       `json:"jwks_uri"`
 	AuthorizationEndpoint              string       `json:"authorization_endpoint"`

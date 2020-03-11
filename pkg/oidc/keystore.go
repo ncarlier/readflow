@@ -10,12 +10,12 @@ import (
 
 // Keystore OIDC keystore
 type Keystore struct {
-	conf  OIDCConfiguration
+	conf  Configuration
 	store sync.Map
 }
 
 // NewOIDCKeystore create a new OIDC keystore
-func NewOIDCKeystore(conf OIDCConfiguration) *Keystore {
+func NewOIDCKeystore(conf Configuration) *Keystore {
 	return &Keystore{
 		conf: conf,
 	}

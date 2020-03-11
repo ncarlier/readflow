@@ -65,11 +65,7 @@ var archiversQueryField = &graphql.Field{
 }
 
 func archiversResolver(p graphql.ResolveParams) (interface{}, error) {
-	archivers, err := service.Lookup().GetArchivers(p.Context)
-	if err != nil {
-		return nil, err
-	}
-	return archivers, nil
+	return service.Lookup().GetArchivers(p.Context)
 }
 
 var archiverQueryField = &graphql.Field{
@@ -87,11 +83,7 @@ func archiverResolver(p graphql.ResolveParams) (interface{}, error) {
 	if !ok {
 		return nil, errors.New("invalid archiver ID")
 	}
-	archiver, err := service.Lookup().GetArchiver(p.Context, id)
-	if err != nil {
-		return nil, err
-	}
-	return archiver, nil
+	return service.Lookup().GetArchiver(p.Context, id)
 }
 
 // MUTATIONS
@@ -138,11 +130,7 @@ func createOrUpdateArchiverResolver(p graphql.ResolveParams) (interface{}, error
 		IsDefault: isDefault,
 	}
 
-	archiver, err := service.Lookup().CreateOrUpdateArchiver(p.Context, form)
-	if err != nil {
-		return nil, err
-	}
-	return archiver, nil
+	return service.Lookup().CreateOrUpdateArchiver(p.Context, form)
 }
 
 var deleteArchiversMutationField = &graphql.Field{
@@ -168,11 +156,7 @@ func deleteArchiversResolver(p graphql.ResolveParams) (interface{}, error) {
 		}
 	}
 
-	nb, err := service.Lookup().DeleteArchivers(p.Context, ids)
-	if err != nil {
-		return nil, err
-	}
-	return nb, nil
+	return service.Lookup().DeleteArchivers(p.Context, ids)
 }
 
 var archiveArticleMutationField = &graphql.Field{

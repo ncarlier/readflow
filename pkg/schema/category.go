@@ -78,11 +78,7 @@ func categoryResolver(p graphql.ResolveParams) (interface{}, error) {
 	if !ok {
 		return nil, errors.New("invalid category ID")
 	}
-	category, err := service.Lookup().GetCategory(p.Context, id)
-	if err != nil {
-		return nil, err
-	}
-	return category, nil
+	return service.Lookup().GetCategory(p.Context, id)
 }
 
 // MUTATIONS
@@ -108,11 +104,7 @@ func createOrUpdateCategoryResolver(p graphql.ResolveParams) (interface{}, error
 	}
 	title, _ := p.Args["title"].(string)
 
-	category, err := service.Lookup().CreateOrUpdateCategory(p.Context, id, title)
-	if err != nil {
-		return nil, err
-	}
-	return category, nil
+	return service.Lookup().CreateOrUpdateCategory(p.Context, id, title)
 }
 
 var deleteCategoriesMutationField = &graphql.Field{
@@ -138,9 +130,5 @@ func deleteCategoriesResolver(p graphql.ResolveParams) (interface{}, error) {
 		}
 	}
 
-	nb, err := service.Lookup().DeleteCategories(p.Context, ids)
-	if err != nil {
-		return nil, err
-	}
-	return nb, nil
+	return service.Lookup().DeleteCategories(p.Context, ids)
 }

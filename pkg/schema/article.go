@@ -186,11 +186,7 @@ func articlesResolver(p graphql.ResolveParams) (interface{}, error) {
 		Status:      status,
 	}
 
-	articles, err := service.Lookup().GetArticles(p.Context, pageRequest)
-	if err != nil {
-		return nil, err
-	}
-	return articles, nil
+	return service.Lookup().GetArticles(p.Context, pageRequest)
 }
 
 var articleQueryField = &graphql.Field{
@@ -209,11 +205,7 @@ func articleResolver(p graphql.ResolveParams) (interface{}, error) {
 		return nil, errors.New("invalid article ID")
 	}
 
-	article, err := service.Lookup().GetArticle(p.Context, id)
-	if err != nil {
-		return nil, err
-	}
-	return article, nil
+	return service.Lookup().GetArticle(p.Context, id)
 }
 
 // MUTATIONS
@@ -301,11 +293,7 @@ func addArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 		CategoryID: category,
 	}
 
-	article, err := service.Lookup().CreateArticle(p.Context, form, service.ArticleCreationOptions{})
-	if err != nil {
-		return nil, err
-	}
-	return article, nil
+	return service.Lookup().CreateArticle(p.Context, form, service.ArticleCreationOptions{})
 }
 
 var cleanHistoryMutationField = &graphql.Field{

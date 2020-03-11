@@ -43,11 +43,7 @@ var apiKeysQueryField = &graphql.Field{
 }
 
 func apiKeysResolver(p graphql.ResolveParams) (interface{}, error) {
-	apiKeys, err := service.Lookup().GetAPIKeys(p.Context)
-	if err != nil {
-		return nil, err
-	}
-	return apiKeys, nil
+	return service.Lookup().GetAPIKeys(p.Context)
 }
 
 var apiKeyQueryField = &graphql.Field{
@@ -65,11 +61,7 @@ func apiKeyResolver(p graphql.ResolveParams) (interface{}, error) {
 	if !ok {
 		return nil, errors.New("invalid API key ID")
 	}
-	apiKey, err := service.Lookup().GetAPIKey(p.Context, id)
-	if err != nil {
-		return nil, err
-	}
-	return apiKey, nil
+	return service.Lookup().GetAPIKey(p.Context, id)
 }
 
 // MUTATIONS
@@ -95,11 +87,7 @@ func createOrUpdateAPIKeyResolver(p graphql.ResolveParams) (interface{}, error) 
 	}
 	alias, _ := p.Args["alias"].(string)
 
-	apiKey, err := service.Lookup().CreateOrUpdateAPIKey(p.Context, id, alias)
-	if err != nil {
-		return nil, err
-	}
-	return apiKey, nil
+	return service.Lookup().CreateOrUpdateAPIKey(p.Context, id, alias)
 }
 
 var deleteAPIKeysMutationField = &graphql.Field{
@@ -125,9 +113,5 @@ func deleteAPIKeysResolver(p graphql.ResolveParams) (interface{}, error) {
 		}
 	}
 
-	nb, err := service.Lookup().DeleteAPIKeys(p.Context, ids)
-	if err != nil {
-		return nil, err
-	}
-	return nb, nil
+	return service.Lookup().DeleteAPIKeys(p.Context, ids)
 }

@@ -86,9 +86,8 @@ func (pg *DB) updateRule(rule model.Rule) (*model.Rule, error) {
 func (pg *DB) CreateOrUpdateRule(rule model.Rule) (*model.Rule, error) {
 	if rule.ID != nil {
 		return pg.updateRule(rule)
-	} else {
-		return pg.createRule(rule)
 	}
+	return pg.createRule(rule)
 }
 
 // GetRuleByID get a rule from the DB

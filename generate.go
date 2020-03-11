@@ -18,10 +18,12 @@ const tpl = `// Code generated. DO NOT EDIT!
 
 package {{ .Package }}
 
+// {{ .Map }} is generated form a fileset
 var {{ .Map }} = map[string]string{
 {{ range $constant, $content := .Files }}` + "\t" + `"{{ $constant }}": ` + "`{{ $content }}`" + `,
 {{ end }}}
 
+// {{ .Map }}Checksums is generated from a fileset and contains files checksums
 var {{ .Map }}Checksums = map[string]string{
 {{ range $constant, $content := .Checksums }}` + "\t" + `"{{ $constant }}": "{{ $content }}",
 {{ end }}}

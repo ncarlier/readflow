@@ -71,11 +71,7 @@ func deviceResolver(p graphql.ResolveParams) (interface{}, error) {
 	if !ok {
 		return nil, errors.New("invalid device ID")
 	}
-	device, err := service.Lookup().GetDevice(p.Context, id)
-	if err != nil {
-		return nil, err
-	}
-	return device, nil
+	return service.Lookup().GetDevice(p.Context, id)
 }
 
 // MUTATIONS
@@ -93,11 +89,7 @@ var createPushSubscriptionMutationField = &graphql.Field{
 
 func createPushSubscriptionResolver(p graphql.ResolveParams) (interface{}, error) {
 	sub, _ := p.Args["sub"].(string)
-	device, err := service.Lookup().CreateDevice(p.Context, sub)
-	if err != nil {
-		return nil, err
-	}
-	return device, nil
+	return service.Lookup().CreateDevice(p.Context, sub)
 }
 
 var deletePushSubscriptionMutationField = &graphql.Field{
@@ -116,9 +108,5 @@ func deletePushSubscriptionResolver(p graphql.ResolveParams) (interface{}, error
 	if !ok {
 		return nil, errors.New("invalid device ID")
 	}
-	device, err := service.Lookup().DeleteDevice(p.Context, id)
-	if err != nil {
-		return nil, err
-	}
-	return device, nil
+	return service.Lookup().DeleteDevice(p.Context, id)
 }

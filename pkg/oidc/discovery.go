@@ -6,8 +6,8 @@ import (
 )
 
 // GetOIDCConfiguration get OIDC configuration from authority discovery endpoint
-func GetOIDCConfiguration(authority string) (OIDCConfiguration, error) {
-	var cfg = OIDCConfiguration{}
+func GetOIDCConfiguration(authority string) (Configuration, error) {
+	var cfg = Configuration{}
 
 	r1, err := http.Get(authority + "/.well-known/openid-configuration")
 	if err != nil {

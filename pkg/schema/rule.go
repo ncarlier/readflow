@@ -48,11 +48,7 @@ var rulesQueryField = &graphql.Field{
 }
 
 func rulesResolver(p graphql.ResolveParams) (interface{}, error) {
-	rules, err := service.Lookup().GetRules(p.Context)
-	if err != nil {
-		return nil, err
-	}
-	return rules, nil
+	return service.Lookup().GetRules(p.Context)
 }
 
 var ruleQueryField = &graphql.Field{
@@ -70,11 +66,7 @@ func ruleResolver(p graphql.ResolveParams) (interface{}, error) {
 	if !ok {
 		return nil, errors.New("invalid rule ID")
 	}
-	rule, err := service.Lookup().GetRule(p.Context, id)
-	if err != nil {
-		return nil, err
-	}
-	return rule, nil
+	return service.Lookup().GetRule(p.Context, id)
 }
 
 // MUTATIONS
@@ -125,11 +117,7 @@ func createOrUpdateRuleResolver(p graphql.ResolveParams) (interface{}, error) {
 		Priority:   priority,
 	}
 
-	rule, err := service.Lookup().CreateOrUpdateRule(p.Context, form)
-	if err != nil {
-		return nil, err
-	}
-	return rule, nil
+	return service.Lookup().CreateOrUpdateRule(p.Context, form)
 }
 
 var deleteRulesMutationField = &graphql.Field{
@@ -155,9 +143,5 @@ func deleteRulesResolver(p graphql.ResolveParams) (interface{}, error) {
 		}
 	}
 
-	nb, err := service.Lookup().DeleteRules(p.Context, ids)
-	if err != nil {
-		return nil, err
-	}
-	return nb, nil
+	return service.Lookup().DeleteRules(p.Context, ids)
 }
