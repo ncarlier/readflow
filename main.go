@@ -69,9 +69,6 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to load user plans")
 	}
-	if userPlans.GetPlan("default") == nil {
-		log.Warn().Msg("no default user plan! This can lead to unexpected behavior.")
-	}
 
 	// Configure the DB
 	database, err := db.NewDB(conf.DB)

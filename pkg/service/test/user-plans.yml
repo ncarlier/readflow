@@ -1,5 +1,6 @@
 user_plans:
-  default:
+  -
+    name: test
     total_articles: 5
     total_categories: 2
     total_rules: 5

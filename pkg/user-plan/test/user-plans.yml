@@ -1,13 +1,9 @@
 user_plans:
-  default:
+  -
+    name: starter
     total_articles: 200
     total_categories: 20
-    total_rules: 5
-    total_api_keys: 2
-    total_archive_services: 5
-  premium:
+  -
+    name: premium
     total_articles: 2000
     total_categories: 50
-    total_rules: 50
-    total_api_keys: 10
-    total_archive_services: 10

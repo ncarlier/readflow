@@ -7,6 +7,7 @@ import DeleteAccountBox from './DeleteAccountBox'
 import InstallationBox from './InstallationBox'
 import NotificationBox from './NotificationBox'
 import classes from './PreferencesTab.module.css'
+import UserPlanSection from './UserPlanSection'
 
 export default () => {
   usePageTitle('Settings - Preferences')
@@ -19,6 +20,7 @@ export default () => {
         <p>Manage preferences on this device.</p>
         <InstallationBox />
         <NotificationBox />
+        <UserPlanSection />
         <h2>Personal data</h2>
         <hr />
         <p>Data are yours and you have full control over it.</p>

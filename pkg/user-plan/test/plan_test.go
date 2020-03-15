@@ -19,14 +19,9 @@ func TestNewUserPlans(t *testing.T) {
 	assert.Nil(t, err, "error should be nil")
 	assert.Equal(t, 2, len(userPlans.Plans), "unexpected number of plan")
 	plan := userPlans.GetPlan("test")
-	assert.Equal(t, "default", plan.Name, "unexpected plan name")
+	assert.Equal(t, "starter", plan.Name, "unexpected plan name")
 	assert.Equal(t, uint(200), plan.TotalArticles, "unexpected total articles value")
 	plan = userPlans.GetPlan("premium")
 	assert.Equal(t, "premium", plan.Name, "unexpected plan name")
 	assert.Equal(t, uint(2000), plan.TotalArticles, "unexpected total articles value")
-
-	plans := userPlans.GetPlans()
-	assert.Equal(t, 2, len(plans), "")
-	assert.Equal(t, "default", plans[0].Name, "")
-	assert.Equal(t, uint(200), plans[0].TotalArticles, "")
 }

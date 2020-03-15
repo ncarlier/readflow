@@ -9,46 +9,35 @@ import (
 
 // UserPlan contains quota and feature of an user plan
 type UserPlan struct {
-	Name                 string `json:"name"`
-	TotalArticles        uint   `yaml:"total_articles" json:"total_articles"`
-	TotalCategories      uint   `yaml:"total_categories" json:"total_categories"`
-	TotalRules           uint   `yaml:"total_rules" json:"total_rules"`
-	TotalAPIKeys         uint   `yaml:"total_api_keys" json:"total_api_keys"`
-	TotalArchiveServices uint   `yaml:"total_archive_services" json:"total_archive_services"`
+	Name            string `yaml:"name" json:"name"`
+	TotalArticles   uint   `yaml:"total_articles" json:"total_articles"`
+	TotalCategories uint   `yaml:"total_categories" json:"total_categories"`
 }
 
 // UserPlans contains all user plans by name
 type UserPlans struct {
-	Plans map[string]UserPlan `yaml:"user_plans"`
+	Plans []UserPlan `yaml:"user_plans"`
 }
 
-// GetPlan return a plan by its name and fallback to default plan if missing
-// Returns nil if default plan is also missing
+// GetPlan return a plan by its name and fallback to first plan if missing
 func (p UserPlans) GetPlan(name string) (result *UserPlan) {
-	if plan, ok := p.Plans[name]; ok {
-		plan.Name = name
-		result = &plan
-	} else if plan, ok := p.Plans["default"]; ok {
-		plan.Name = "default"
-		result = &plan
+	if len(p.Plans) == 0 {
+		return nil
 	}
-	return
-}
-
-// GetPlans return all plans
-func (p UserPlans) GetPlans() []UserPlan {
-	plans := []UserPlan{}
-	for name, plan := range p.Plans {
-		plan.Name = name
-		plans = append(plans, plan)
+	for _, plan := range p.Plans {
+		if plan.Name == name {
+			return &plan
+		}
 	}
-	return plans
+	// Fallback to first plan
+	plan := p.Plans[0]
+	return &plan
 }
 
 // NewUserPlans create new user plans from definition file
 func NewUserPlans(filename string) (UserPlans, error) {
 	plans := UserPlans{
-		Plans: make(map[string]UserPlan),
+		Plans: []UserPlan{},
 	}
 	if filename == "" {
 		return plans, nil

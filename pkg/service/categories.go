@@ -21,6 +21,12 @@ func (reg *Registry) GetCategories(ctx context.Context) ([]*model.Category, erro
 	return categories, err
 }
 
+// CountCurrentUserCategories get totla categories of current user
+func (reg *Registry) CountCurrentUserCategories(ctx context.Context) (uint, error) {
+	uid := getCurrentUserFromContext(ctx)
+	return reg.db.CountCategoriesByUserID(uid)
+}
+
 // GetCategory get a category of the current user
 func (reg *Registry) GetCategory(ctx context.Context, id uint) (*model.Category, error) {
 	uid := getCurrentUserFromContext(ctx)
@@ -38,6 +44,31 @@ func (reg *Registry) GetCategory(ctx context.Context, id uint) (*model.Category,
 // CreateOrUpdateCategory create or update a category for current user
 func (reg *Registry) CreateOrUpdateCategory(ctx context.Context, id *uint, title string) (*model.Category, error) {
 	uid := getCurrentUserFromContext(ctx)
+
+	plan, err := reg.GetCurrentUserPlan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if plan != nil && id == nil {
+		// Check user quota
+		totalCategories, err := reg.CountCurrentUserCategories(ctx)
+		if err != nil {
+			reg.logger.Info().Err(err).Uint(
+				"uid", uid,
+			).Str("title", title).Msg("unable to create category")
+			return nil, err
+		}
+		if totalCategories >= plan.TotalCategories {
+			err = ErrUserQuotaReached
+			reg.logger.Info().Err(err).Uint(
+				"uid", uid,
+			).Str("title", title).Uint(
+				"total", plan.TotalCategories,
+			).Msg("unable to create category")
+			return nil, err
+		}
+	}
 
 	category := model.Category{
 		ID:     id,

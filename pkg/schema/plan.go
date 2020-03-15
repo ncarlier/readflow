@@ -15,6 +15,9 @@ var planType = graphql.NewObject(
 			"total_articles": &graphql.Field{
 				Type: graphql.Int,
 			},
+			"total_categories": &graphql.Field{
+				Type: graphql.Int,
+			},
 		},
 	},
 )
@@ -27,5 +30,5 @@ var plansQueryField = &graphql.Field{
 }
 
 func plansResolver(p graphql.ResolveParams) (interface{}, error) {
-	return service.Lookup().UserPlans.GetPlans(), nil
+	return service.Lookup().UserPlans.Plans, nil
 }

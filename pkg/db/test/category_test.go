@@ -44,6 +44,10 @@ func TestCreateOrUpdateCategory(t *testing.T) {
 	assert.NotNil(t, category, "category shouldn't be nil")
 	assert.NotNil(t, category.ID, "category ID shouldn't be nil")
 	assert.Equal(t, title, category.Title, "")
+
+	nb, err := testDB.CountCategoriesByUserID(*testUser.ID)
+	assert.Nil(t, err, "")
+	assert.True(t, nb >= 0, "")
 }
 
 func TestDeleteCategory(t *testing.T) {

@@ -171,6 +171,20 @@ func (pg *DB) GetCategoriesByUserID(userID uint) ([]*model.Category, error) {
 	return result, nil
 }
 
+// CountCategoriesByUserID returns total nb of categories of an user from the DB
+func (pg *DB) CountCategoriesByUserID(uid uint) (uint, error) {
+	counter := pg.psql.Select("count(*)").From(
+		"categories",
+	).Where(sq.Eq{"user_id": uid})
+	query, args, _ := counter.ToSql()
+
+	var count uint
+	if err := pg.db.QueryRow(query, args...).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 // DeleteCategory removes an category from the DB
 func (pg *DB) DeleteCategory(category model.Category) error {
 	result, err := pg.db.Exec(`

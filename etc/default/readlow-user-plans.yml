@@ -1,13 +1,9 @@
 user_plans:
-  default:
+  -
+    name: free to play
     total_articles: 200
-    total_categories: 20
-    total_rules: 5
-    total_api_keys: 2
-    total_archive_services: 5
-  premium:
+    total_categories: 10
+  -
+    name: friends and family
     total_articles: 2000
     total_categories: 50
-    total_rules: 50
-    total_api_keys: 10
-    total_archive_services: 10

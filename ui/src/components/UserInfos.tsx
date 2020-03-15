@@ -10,11 +10,12 @@ import Loader from './Loader'
 import TimeAgo from './TimeAgo'
 import styles from './UserInfos.module.css'
 
-const GetCurrentUser = gql`
+export const GetCurrentUser = gql`
   query {
     me {
       username
       hash
+      plan
       last_login_at
       created_at
     }
@@ -24,6 +25,7 @@ const GetCurrentUser = gql`
 interface User {
   username: string
   hash: string
+  plan: string
   created_at: string
   last_login_at: string
 }
