@@ -16,7 +16,6 @@ type DB interface {
 	ArticleRepository
 	APIKeyRepository
 	ArchiverRepository
-	RuleRepository
 	DeviceRepository
 	PropertiesRepository
 }

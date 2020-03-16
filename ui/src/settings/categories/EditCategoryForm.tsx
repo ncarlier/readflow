@@ -13,9 +13,12 @@ import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, isValidForm, isValidInput } from '../../helpers'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
+import FormTextareaField from '../../components/FormTextareaField'
+import HelpLink from '../../components/HelpLink'
 
 interface EditCategoryFormFields {
   title: string
+  rule: string
 }
 
 interface Props {
@@ -25,7 +28,7 @@ interface Props {
 
 export default ({ category, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [formState, { text }] = useFormState<EditCategoryFormFields>({ title: category.title })
+  const [formState, { text, textarea }] = useFormState<EditCategoryFormFields>({ title: category.title })
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const editCategoryMutation = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)
@@ -71,6 +74,17 @@ export default ({ category, history }: Props) => {
             autoFocus
             ref={onMountValidator.bind}
           />
+          <FormTextareaField
+            label="Rule"
+            {...textarea('rule')}
+            error={!isValidInput(formState, onMountValidator, 'rule')}
+            required
+            ref={onMountValidator.bind}
+          >
+            <HelpLink href="https://about.readflow.app/docs/en/read-flow/organize/rules/#syntax">
+              View rule syntax
+            </HelpLink>
+          </FormTextareaField>
         </form>
       </section>
       <footer>

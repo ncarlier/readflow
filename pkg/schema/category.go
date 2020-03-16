@@ -20,6 +20,9 @@ var categoryType = graphql.NewObject(
 			"title": &graphql.Field{
 				Type: graphql.String,
 			},
+			"rule": &graphql.Field{
+				Type: graphql.String,
+			},
 			"unread": &graphql.Field{
 				Type: graphql.Int,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
@@ -57,7 +60,7 @@ func categoriesResolver(p graphql.ResolveParams) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	categories = append(categories, &model.Category{
+	categories = append(categories, model.Category{
 		Title: "_all",
 	})
 	return categories, nil
@@ -91,7 +94,10 @@ var createOrUpdateCategoryMutationField = &graphql.Field{
 			Type: graphql.ID,
 		},
 		"title": &graphql.ArgumentConfig{
-			Type: graphql.NewNonNull(graphql.String),
+			Type: graphql.String,
+		},
+		"rule": &graphql.ArgumentConfig{
+			Type: graphql.String,
 		},
 	},
 	Resolve: createOrUpdateCategoryResolver,
@@ -102,9 +108,18 @@ func createOrUpdateCategoryResolver(p graphql.ResolveParams) (interface{}, error
 	if val, ok := tooling.ConvGQLStringToUint(p.Args["id"]); ok {
 		id = &val
 	}
-	title, _ := p.Args["title"].(string)
-
-	return service.Lookup().CreateOrUpdateCategory(p.Context, id, title)
+	form := model.CategoryForm{
+		ID: id,
+	}
+	if val, ok := p.Args["title"]; ok {
+		s := val.(string)
+		form.Title = &s
+	}
+	if val, ok := p.Args["rule"]; ok {
+		s := val.(string)
+		form.Rule = &s
+	}
+	return service.Lookup().CreateOrUpdateCategory(p.Context, form)
 }
 
 var deleteCategoriesMutationField = &graphql.Field{

@@ -13,14 +13,17 @@ import (
 
 // RuleProcessor define a rule processor
 type RuleProcessor struct {
-	rule       model.Rule
+	category   model.Category
 	expression expr.Node
 }
 
-// NewRuleProcessor reates a new rule processor
-func NewRuleProcessor(rule model.Rule) (*RuleProcessor, error) {
+// NewRuleProcessor creates a new rule processor
+func NewRuleProcessor(category model.Category) (*RuleProcessor, error) {
+	if category.Rule == "" {
+		return nil, nil
+	}
 	p, err := expr.Parse(
-		rule.Rule,
+		category.Rule,
 		expr.Define("title", ""),
 		expr.Define("text", ""),
 		expr.Define("url", ""),
@@ -31,7 +34,7 @@ func NewRuleProcessor(rule model.Rule) (*RuleProcessor, error) {
 		return nil, fmt.Errorf("invalid rule expression: %s", err)
 	}
 	return &RuleProcessor{
-		rule:       rule,
+		category:   category,
 		expression: p,
 	}, nil
 }
@@ -69,7 +72,7 @@ func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleForm) 
 	}
 	match := toBool(result)
 	if match {
-		article.CategoryID = rp.rule.CategoryID
+		article.CategoryID = rp.category.ID
 	}
 
 	return match, nil
@@ -78,15 +81,17 @@ func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleForm) 
 // ProcessorPipeline is a list of rule processor
 type ProcessorPipeline []*RuleProcessor
 
-// NewProcessorsPipeline creates a processor pipeline from a rules set
-func NewProcessorsPipeline(rules []model.Rule) (*ProcessorPipeline, error) {
+// NewProcessorsPipeline creates a processor pipeline from a category set
+func NewProcessorsPipeline(categories []model.Category) (*ProcessorPipeline, error) {
 	result := ProcessorPipeline{}
-	for _, rule := range rules {
-		processor, err := NewRuleProcessor(rule)
+	for _, category := range categories {
+		processor, err := NewRuleProcessor(category)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, processor)
+		if processor != nil {
+			result = append(result, processor)
+		}
 	}
 	return &result, nil
 }

@@ -3,59 +3,73 @@ package postgres
 import (
 	"database/sql"
 	"errors"
+	"strings"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-func (pg *DB) createCategory(category model.Category) (*model.Category, error) {
-	row := pg.db.QueryRow(`
-		INSERT INTO categories
-			(user_id, title)
-			VALUES
-			($1, $2)
-			RETURNING id, user_id, title, created_at
-		`,
-		category.UserID, category.Title,
-	)
-	result := model.Category{}
+var categoryColumns = []string{
+	"id",
+	"user_id",
+	"title",
+	"rule",
+	"created_at",
+	"updated_at",
+}
+
+func mapRowToCategory(row *sql.Row) (*model.Category, error) {
+	cat := &model.Category{}
 
 	err := row.Scan(
-		&result.ID,
-		&result.UserID,
-		&result.Title,
-		&result.CreatedAt,
+		&cat.ID,
+		&cat.UserID,
+		&cat.Title,
+		&cat.Rule,
+		&cat.CreatedAt,
+		&cat.UpdatedAt,
 	)
-	if err != nil {
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
 		return nil, err
 	}
-	return &result, nil
+	return cat, nil
+}
+func (pg *DB) createCategory(category model.Category) (*model.Category, error) {
+	query, args, _ := pg.psql.Insert(
+		"categories",
+	).Columns(
+		"user_id", "title", "rule",
+	).Values(
+		category.UserID,
+		category.Title,
+		category.Rule,
+	).Suffix(
+		"RETURNING " + strings.Join(categoryColumns, ","),
+	).ToSql()
+	row := pg.db.QueryRow(query, args...)
+	return mapRowToCategory(row)
 }
 
 func (pg *DB) updateCategory(category model.Category) (*model.Category, error) {
-	row := pg.db.QueryRow(`
-		UPDATE categories SET
-			title=$3,
-			updated_at=NOW()
-			WHERE id=$1 AND user_id=$2
-			RETURNING id, user_id, title, created_at, updated_at
-		`,
-		category.ID, category.UserID, category.Title,
-	)
-
-	result := model.Category{}
-
-	err := row.Scan(
-		&result.ID,
-		&result.UserID,
-		&result.Title,
-		&result.CreatedAt,
-		&result.UpdatedAt,
-	)
-	if err != nil {
-		return nil, err
+	update := map[string]interface{}{
+		"title":      category.Title,
+		"rule":       category.Rule,
+		"updated_at": "NOW()",
 	}
-	return &result, nil
+	query, args, _ := pg.psql.Update(
+		"categories",
+	).SetMap(update).Where(
+		sq.Eq{"id": category.ID},
+	).Where(
+		sq.Eq{"user_id": category.UserID},
+	).Suffix(
+		"RETURNING " + strings.Join(categoryColumns, ","),
+	).ToSql()
+
+	row := pg.db.QueryRow(query, args...)
+	return mapRowToCategory(row)
 }
 
 // CreateOrUpdateCategory creates or updates a category into the DB
@@ -68,101 +82,58 @@ func (pg *DB) CreateOrUpdateCategory(category model.Category) (*model.Category, 
 
 // GetCategoryByID returns a category from the DB
 func (pg *DB) GetCategoryByID(id uint) (*model.Category, error) {
-	row := pg.db.QueryRow(`
-		SELECT
-			id,
-			user_id,
-			title,
-			created_at,
-			updated_at
-		FROM categories
-		WHERE id = $1`,
-		id,
-	)
-
-	result := model.Category{}
-
-	err := row.Scan(
-		&result.ID,
-		&result.UserID,
-		&result.Title,
-		&result.CreatedAt,
-		&result.UpdatedAt,
-	)
-
-	if err == sql.ErrNoRows {
-		return nil, nil
-	} else if err != nil {
-		return nil, err
-	}
-	return &result, nil
+	query, args, _ := pg.psql.Select(categoryColumns...).From(
+		"categories",
+	).Where(
+		sq.Eq{"id": id},
+	).ToSql()
+	row := pg.db.QueryRow(query, args...)
+	return mapRowToCategory(row)
 }
 
 // GetCategoryByUserIDAndTitle returns a category of an user form the DB
-func (pg *DB) GetCategoryByUserIDAndTitle(userID uint, title string) (*model.Category, error) {
-	row := pg.db.QueryRow(`
-		SELECT
-			id,
-			user_id,
-			title,
-			created_at,
-			updated_at
-		FROM categories
-		WHERE user_id = $1 AND title = $2`,
-		userID, title,
-	)
+func (pg *DB) GetCategoryByUserIDAndTitle(uid uint, title string) (*model.Category, error) {
+	query, args, _ := pg.psql.Select(categoryColumns...).From(
+		"categories",
+	).Where(
+		sq.Eq{"user_id": uid},
+	).Where(
+		sq.Eq{"title": title},
+	).ToSql()
 
-	result := model.Category{}
-
-	err := row.Scan(
-		&result.ID,
-		&result.UserID,
-		&result.Title,
-		&result.CreatedAt,
-		&result.UpdatedAt,
-	)
-
-	if err == sql.ErrNoRows {
-		return nil, nil
-	} else if err != nil {
-		return nil, err
-	}
-	return &result, nil
+	row := pg.db.QueryRow(query, args...)
+	return mapRowToCategory(row)
 }
 
 // GetCategoriesByUserID returns categories of an user from DB
-func (pg *DB) GetCategoriesByUserID(userID uint) ([]*model.Category, error) {
-	var result []*model.Category
-	rows, err := pg.db.Query(`
-		SELECT
-			id,
-			user_id,
-			title,
-			created_at,
-			updated_at
-		FROM categories
-		WHERE user_id=$1
-		ORDER BY title ASC`,
-		userID,
-	)
+func (pg *DB) GetCategoriesByUserID(uid uint) ([]model.Category, error) {
+	query, args, _ := pg.psql.Select(categoryColumns...).From(
+		"categories",
+	).Where(
+		sq.Eq{"user_id": uid},
+	).OrderBy("title ASC").ToSql()
+	rows, err := pg.db.Query(query, args...)
 	if err != nil {
-		return result, err
+		return nil, err
 	}
 	defer rows.Close()
 
+	var result []model.Category
+
 	for rows.Next() {
-		category := model.Category{}
+		cat := model.Category{}
 		err = rows.Scan(
-			&category.ID,
-			&category.UserID,
-			&category.Title,
-			&category.CreatedAt,
-			&category.UpdatedAt,
+			&cat.ID,
+			&cat.UserID,
+			&cat.Title,
+			&cat.Rule,
+			&cat.CreatedAt,
+			&cat.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, &category)
+		result = append(result, cat)
 	}
 	err = rows.Err()
 	if err != nil {
@@ -187,12 +158,12 @@ func (pg *DB) CountCategoriesByUserID(uid uint) (uint, error) {
 
 // DeleteCategory removes an category from the DB
 func (pg *DB) DeleteCategory(category model.Category) error {
-	result, err := pg.db.Exec(`
-		DELETE FROM categories
-			WHERE id=$1 AND user_id=$2
-		`,
-		category.ID, category.UserID,
-	)
+	query, args, _ := pg.psql.Delete("categories").Where(
+		sq.Eq{"id": category.ID},
+	).Where(
+		sq.Eq{"user_id": category.UserID},
+	).ToSql()
+	result, err := pg.db.Exec(query, args...)
 	if err != nil {
 		return err
 	}

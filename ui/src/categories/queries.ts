@@ -17,6 +17,7 @@ export const GetCategory = gql`
     category(id: $id) {
       id
       title
+      rule
       created_at
       updated_at
     }
@@ -34,6 +35,7 @@ export const CreateOrUpdateCategory = gql`
     createOrUpdateCategory(id: $id, title: $title) {
       id
       title
+      rule
       created_at
       updated_at
     }

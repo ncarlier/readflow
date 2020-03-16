@@ -39,10 +39,11 @@ func TestCreateArticleInCategory(t *testing.T) {
 	defer teardownTestCase(t)
 
 	// Create category
-	categoryTitle := "test category"
-	cat, err := service.Lookup().CreateOrUpdateCategory(testContext, nil, categoryTitle)
+	categoryBuilder := model.NewCategoryBuilder()
+	categoryForm := categoryBuilder.Random().BuildForm()
+	cat, err := service.Lookup().CreateOrUpdateCategory(testContext, categoryForm)
 	assert.Nil(t, err, "")
-	assert.Equal(t, categoryTitle, cat.Title, "")
+	assert.Equal(t, *categoryForm.Title, cat.Title, "")
 	assert.Equal(t, *testUser.ID, *cat.UserID, "")
 
 	// Create article
@@ -63,22 +64,12 @@ func TestCreateArticleWithRuleEngine(t *testing.T) {
 	defer teardownTestCase(t)
 
 	// Create category
-	categoryTitle := "test category"
-	cat, err := service.Lookup().CreateOrUpdateCategory(testContext, nil, categoryTitle)
+	categoryBuilder := model.NewCategoryBuilder()
+	categoryForm := categoryBuilder.Random().Rule("title matches \"^Test\"").BuildForm()
+	cat, err := service.Lookup().CreateOrUpdateCategory(testContext, categoryForm)
 	assert.Nil(t, err, "")
-	assert.Equal(t, categoryTitle, cat.Title, "")
+	assert.Equal(t, *categoryForm.Title, cat.Title, "")
 	assert.Equal(t, *testUser.ID, *cat.UserID, "")
-
-	// Create rule
-	form := model.RuleForm{
-		Alias:      "test-rule",
-		CategoryID: *cat.ID,
-		Priority:   1,
-		Rule:       "title matches \"^Test\"",
-	}
-	rule, err := service.Lookup().CreateOrUpdateRule(testContext, form)
-	assert.Nil(t, err, "")
-	assert.Equal(t, form.Alias, rule.Alias, "")
 
 	// Create article
 	req := model.ArticleForm{

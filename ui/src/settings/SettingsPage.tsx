@@ -16,14 +16,10 @@ import EditCategoryTab from './categories/EditCategoryTab'
 import Header from './components/Header'
 import Tabs from './components/Tabs'
 import PreferencesTab from './preferences/PreferencesTab'
-import AddRuleForm from './rules/AddRuleForm'
-import EditRuleTab from './rules/EditRuleTab'
-import RulesTab from './rules/RulesTab'
 import { Link } from 'react-router-dom'
 
 const items = [
   { key: 'categories', label: 'Categories', icon: 'bookmarks' },
-  { key: 'rules', label: 'Rules', icon: 'directions' },
   { key: 'api-keys', label: 'API keys', icon: 'verified_users' },
   { key: 'archive-services', label: 'Archive service', icon: 'backup' },
   { key: 'preferences', label: 'Preferences', icon: 'build' }
@@ -60,9 +56,6 @@ export default ({ match }: AllProps) => (
       <Route exact path={match.path + '/archive-services'} component={ArchiveServiceTab} />
       <Route exact path={match.path + '/archive-services/add'} component={AddArchiveServiceForm} />
       <Route exact path={match.path + '/archive-services/:id'} component={EditArchiveServiceTab} />
-      <Route exact path={match.path + '/rules'} component={RulesTab} />
-      <Route exact path={match.path + '/rules/add'} component={AddRuleForm} />
-      <Route exact path={match.path + '/rules/:id'} component={EditRuleTab} />
       <Route exact path={match.path + '/preferences'} component={PreferencesTab} />
       <Redirect exact from={match.path} to={match.path + '/categories'} />
     </Switch>

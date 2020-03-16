@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const schemaVersion = 3
+const schemaVersion = 4
 
 // Migrate executes database migrations.
 func Migrate(db *sql.DB) {

@@ -15,9 +15,12 @@ import ErrorPanel from '../../error/ErrorPanel'
 import { usePageTitle } from '../../hooks'
 import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { Link } from 'react-router-dom'
+import HelpLink from '../../components/HelpLink'
+import FormTextareaField from '../../components/FormTextareaField'
 
 interface AddCategoryFormFields {
   title: string
+  rule: string
 }
 
 type AllProps = RouteComponentProps<{}>
@@ -26,7 +29,7 @@ export default ({ history }: AllProps) => {
   usePageTitle('Settings - Add new category')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [formState, { text }] = useFormState<AddCategoryFormFields>()
+  const [formState, { text, textarea }] = useFormState<AddCategoryFormFields>()
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const addCategoryMutation = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)
@@ -73,6 +76,17 @@ export default ({ history }: AllProps) => {
             autoFocus
             ref={onMountValidator.bind}
           />
+          <FormTextareaField
+            label="Rule"
+            {...textarea('rule')}
+            error={!isValidInput(formState, onMountValidator, 'rule')}
+            required
+            ref={onMountValidator.bind}
+          >
+            <HelpLink href="https://about.readflow.app/docs/en/read-flow/organize/rules/#syntax">
+              View rule syntax
+            </HelpLink>
+          </FormTextareaField>
         </form>
       </section>
       <footer>

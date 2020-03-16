@@ -3,6 +3,3 @@ user_plans:
     name: test
     total_articles: 5
     total_categories: 2
-    total_rules: 5
-    total_api_keys: 1
-    total_archive_services: 1

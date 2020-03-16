@@ -24,6 +24,7 @@ func assertCategoryExists(t *testing.T, userID *uint, title string) *model.Categ
 	assert.NotNil(t, category, "category shouldn't be nil")
 	assert.NotNil(t, category.ID, "category ID shouldn't be nil")
 	assert.Equal(t, title, category.Title, "")
+	assert.Equal(t, "", category.Rule, "")
 	return category
 }
 func TestCreateOrUpdateCategory(t *testing.T) {
@@ -36,7 +37,9 @@ func TestCreateOrUpdateCategory(t *testing.T) {
 	category := assertCategoryExists(t, testUser.ID, title)
 
 	title = "My updated category"
+	rule := "title matches \"test\""
 	category.Title = title
+	category.Rule = rule
 
 	// Update category
 	category, err := testDB.CreateOrUpdateCategory(*category)
@@ -44,6 +47,7 @@ func TestCreateOrUpdateCategory(t *testing.T) {
 	assert.NotNil(t, category, "category shouldn't be nil")
 	assert.NotNil(t, category.ID, "category ID shouldn't be nil")
 	assert.Equal(t, title, category.Title, "")
+	assert.Equal(t, rule, category.Rule, "")
 
 	nb, err := testDB.CountCategoriesByUserID(*testUser.ID)
 	assert.Nil(t, err, "")

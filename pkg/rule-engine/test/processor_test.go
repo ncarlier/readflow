@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/ncarlier/readflow/pkg/constant"
@@ -13,59 +14,55 @@ import (
 	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
 )
 
-func newTestRule(rule string, category uint) model.Rule {
-	id := uint(1)
-	return model.Rule{
-		ID:         &id,
-		Alias:      "test",
-		CategoryID: &category,
-		Rule:       rule,
-	}
+func newTestCategory(id uint, rule string) model.Category {
+	builder := model.NewCategoryBuilder()
+	category := builder.Random().Rule(rule).Build()
+	category.ID = &id
+	return *category
 }
 
 type testCase struct {
-	article  *model.ArticleForm
-	rule     string
-	category *uint
-	err      error
+	article       *model.ArticleForm
+	category      model.Category
+	expectedValue *uint
+	expectedError error
 }
 
 var testCases = []testCase{}
 
-var testCategory = uint(99)
-
 func init() {
+	expectedCategoryID := uint(42)
 	builder := model.NewArticleBuilder()
 	testCases = append(testCases, testCase{
-		article:  builder.Random().BuildForm(""),
-		rule:     "",
-		category: nil,
-		err:      errors.New("invalid rule expression: unexpected token EOF"),
+		article:       builder.Random().BuildForm(""),
+		category:      newTestCategory(42, "."),
+		expectedValue: nil,
+		expectedError: errors.New("invalid rule expression:"),
 	}, testCase{
-		article:  builder.Random().Title("foo").BuildForm(""),
-		rule:     "title == \"foo\"",
-		category: &testCategory,
-		err:      nil,
+		article:       builder.Random().Title("foo").BuildForm(""),
+		category:      newTestCategory(42, "title == \"foo\""),
+		expectedValue: &expectedCategoryID,
+		expectedError: nil,
 	}, testCase{
-		article:  builder.Random().Text("bar foo bar").BuildForm(""),
-		rule:     "text matches \"foo\"",
-		category: &testCategory,
-		err:      nil,
+		article:       builder.Random().Text("bar foo bar").BuildForm(""),
+		category:      newTestCategory(42, "text matches \"foo\""),
+		expectedValue: &expectedCategoryID,
+		expectedError: nil,
 	}, testCase{
-		article:  builder.Random().Text("bar bar bar").BuildForm(""),
-		rule:     "text matches \"foo\"",
-		category: nil,
-		err:      nil,
+		article:       builder.Random().Text("bar bar bar").BuildForm(""),
+		category:      newTestCategory(42, "text matches \"foo\""),
+		expectedValue: nil,
+		expectedError: nil,
 	}, testCase{
-		article:  builder.Random().BuildForm("foo,bar"),
-		rule:     "\"foo\" in tags",
-		category: &testCategory,
-		err:      nil,
+		article:       builder.Random().BuildForm("foo,bar"),
+		category:      newTestCategory(42, "\"foo\" in tags"),
+		expectedValue: &expectedCategoryID,
+		expectedError: nil,
 	}, testCase{
-		article:  builder.Random().BuildForm("foo,bar"),
-		rule:     "\"test\" not in tags",
-		category: &testCategory,
-		err:      nil,
+		article:       builder.Random().BuildForm("foo,bar"),
+		category:      newTestCategory(42, "\"test\" not in tags"),
+		expectedValue: &expectedCategoryID,
+		expectedError: nil,
 	})
 }
 
@@ -74,11 +71,10 @@ func TestRulesTestCases(t *testing.T) {
 
 	for idx, tc := range testCases {
 		prefix := fmt.Sprintf("#%d: ", idx)
-		rule := newTestRule(tc.rule, testCategory)
-		processor, err := ruleengine.NewRuleProcessor(rule)
-		if tc.err != nil {
+		processor, err := ruleengine.NewRuleProcessor(tc.category)
+		if tc.expectedError != nil {
 			assert.NotNil(t, err, prefix+"error should be not nil")
-			assert.Equal(t, tc.err.Error(), err.Error(), prefix+"error should be equal")
+			assert.True(t, strings.HasPrefix(err.Error(), tc.expectedError.Error()), prefix+"error should be equal")
 			assert.True(t, processor == nil, prefix+"processor should be nil")
 			continue
 		}
@@ -86,24 +82,24 @@ func TestRulesTestCases(t *testing.T) {
 		assert.True(t, processor != nil, prefix+"processor should not be nil")
 		applied, err := processor.Apply(ctx, tc.article)
 		assert.Nil(t, err, prefix+"error should be nil")
-		if tc.category == nil {
+		if tc.expectedValue == nil {
 			assert.True(t, !applied, prefix+"processor should not be applied")
 		} else {
 			assert.True(t, applied, prefix+"processor should be applied")
 			assert.True(t, tc.article.CategoryID != nil, prefix+"category should be not nil")
-			assert.Equal(t, *tc.category, *tc.article.CategoryID, prefix+"category should be updated")
+			assert.Equal(t, *tc.expectedValue, *tc.article.CategoryID, prefix+"category should be updated")
 		}
 	}
 }
 
 func TestProcessorPipeline(t *testing.T) {
 	ctx := context.TODO()
-	rules := []model.Rule{
-		newTestRule("title == \"test\"", uint(1)),
-		newTestRule("text matches \"foo\"", uint(2)),
-		newTestRule("\"foo\" in tags", uint(3)),
+	categories := []model.Category{
+		newTestCategory(1, "title == \"test\""),
+		newTestCategory(2, "text matches \"foo\""),
+		newTestCategory(3, "\"foo\" in tags"),
 	}
-	pipeline, err := ruleengine.NewProcessorsPipeline(rules)
+	pipeline, err := ruleengine.NewProcessorsPipeline(categories)
 	assert.Nil(t, err, "error should be nil")
 	assert.True(t, pipeline != nil, "pipeline should not be nil")
 
@@ -124,9 +120,8 @@ func TestProcessorPipeline(t *testing.T) {
 }
 func TestRuleProcessorWithContext(t *testing.T) {
 	ctx := context.WithValue(context.TODO(), constant.APIKeyAlias, "test")
-	categoryID := uint(9)
-	rule := newTestRule("key == \"test\"", categoryID)
-	processor, err := ruleengine.NewRuleProcessor(rule)
+	category := newTestCategory(9, "key == \"test\"")
+	processor, err := ruleengine.NewRuleProcessor(category)
 	assert.Nil(t, err, "error should be nil")
 	assert.True(t, processor != nil, "processor should not be nil")
 
@@ -136,5 +131,5 @@ func TestRuleProcessorWithContext(t *testing.T) {
 	assert.Nil(t, err, "error should be nil")
 	assert.True(t, applied, "processor should be applied")
 	assert.True(t, article.CategoryID != nil, "category should be not nil")
-	assert.Equal(t, categoryID, *article.CategoryID, "category should be updated")
+	assert.Equal(t, uint(9), *article.CategoryID, "category should be updated")
 }

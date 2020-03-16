@@ -126,6 +126,10 @@ create table properties (
 `,
 	"db_migration_3": `alter table users add column plan varchar not null default 'default';
 `,
+	"db_migration_4": `alter table categories add column rule text;
+
+update categories set rule=rules.rule from rules where rules.category_id = categories.id;
+`,
 }
 
 // DatabaseSQLMigrationChecksums is generated from a fileset and contains files checksums
@@ -133,4 +137,5 @@ var DatabaseSQLMigrationChecksums = map[string]string{
 	"db_migration_1": "6b7ac5c1474bc400c1bbb642fcf3c161f51de7252350eaa261cb1ed796e72b67",
 	"db_migration_2": "0be0d1ef1e9481d61db425a7d54378f3667c091949525b9c285b18660b6e8a1d",
 	"db_migration_3": "5cd0d3628d990556c0b85739fd376c42244da7e98b66852b6411d27eda20c3fc",
+	"db_migration_4": "d5fb83c15b523f15291310ff27d36c099c4ba68de2fd901c5ef5b70a18fedf65",
 }
