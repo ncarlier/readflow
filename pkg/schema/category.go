@@ -26,8 +26,16 @@ var categoryType = graphql.NewObject(
 			"unread": &graphql.Field{
 				Type: graphql.Int,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					category, ok := p.Source.(*model.Category)
-					if !ok {
+					var category = model.Category{}
+					switch p.Source.(type) {
+					case model.Category:
+						category, _ = p.Source.(model.Category)
+						break
+					case *model.Category:
+						cat, _ := p.Source.(*model.Category)
+						category = *cat
+						break
+					default:
 						return nil, errors.New("no category received by unread resolver")
 					}
 					status := "unread"

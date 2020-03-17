@@ -28,7 +28,10 @@ interface Props {
 
 export default ({ category, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [formState, { text, textarea }] = useFormState<EditCategoryFormFields>({ title: category.title })
+  const [formState, { text, textarea }] = useFormState<EditCategoryFormFields>({
+    title: category.title,
+    rule: category.rule
+  })
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const editCategoryMutation = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)

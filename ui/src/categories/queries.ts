@@ -31,8 +31,8 @@ export const DeleteCategories = gql`
 `
 
 export const CreateOrUpdateCategory = gql`
-  mutation createOrUpdateCategory($id: ID, $title: String!) {
-    createOrUpdateCategory(id: $id, title: $title) {
+  mutation createOrUpdateCategory($id: ID, $title: String, $rule: String) {
+    createOrUpdateCategory(id: $id, title: $title, rule: $rule) {
       id
       title
       rule
