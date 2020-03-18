@@ -1,5 +1,7 @@
 github.com/Masterminds/squirrel v1.1.0 h1:baP1qLdoQCeTw3ifCdOq2dkYc6vGcmRdaociKLbEJXs=
 github.com/Masterminds/squirrel v1.1.0/go.mod h1:yaPeOnPG5ZRwL9oKdTsO/prlkPbXWZlRVMQ/gGlzIuA=
+github.com/NYTimes/gziphandler v1.1.1 h1:ZUDjpQae29j0ryrS0u/B8HZfJBtBQHjqw2rQ2cqUQ3I=
+github.com/NYTimes/gziphandler v1.1.1/go.mod h1:n/CVRwUEOgIxrgPvAQhUUr9oeUtvrhMomdKFjzJNB0c=
 github.com/SherClockHolmes/webpush-go v1.1.0 h1:WjWbwo0Bf1Cbd8Yr0myrpYYlcN7VvQz/TVmUTjxL35g=
 github.com/SherClockHolmes/webpush-go v1.1.0/go.mod h1:Jbd13H6kOFZubRMAaEHQS+e0EpP/aSHtLKeo9gsyO5k=
 github.com/antonmedv/expr v1.1.4 h1:ReeidbMJQZsujmBaYdaCEtfAvSH5bd/HHApjhyorBlE=

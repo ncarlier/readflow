@@ -3,6 +3,8 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 
 	"github.com/ncarlier/readflow/pkg/config"
@@ -13,14 +15,25 @@ func nextRequestID() string {
 	return fmt.Sprintf("%d", time.Now().UnixNano())
 }
 
-var commonMiddlewares = []middleware.Middleware{
-	middleware.Cors,
-	middleware.Logger,
-	middleware.Tracing(nextRequestID),
+func buildOriginFromPublicURL(publicURL string) string {
+	if publicURL == "" {
+		return "*"
+	}
+	u, err := url.Parse(publicURL)
+	if err != nil {
+		return "*"
+	}
+	return fmt.Sprintf("%s://%s", u.Scheme, strings.TrimPrefix(u.Host, "api."))
 }
 
 // NewRouter creates router with declared routes
 func NewRouter(conf *config.Config) *http.ServeMux {
+	commonMiddlewares := []middleware.Middleware{
+		middleware.Cors(buildOriginFromPublicURL(conf.PublicURL)),
+		middleware.Gzip,
+		middleware.Logger,
+		middleware.Tracing(nextRequestID),
+	}
 	router := http.NewServeMux()
 	for _, route := range routes(conf) {
 		handler := route.Handler
