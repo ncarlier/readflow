@@ -1,7 +1,6 @@
 import React from 'react'
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
 
-import ButtonIcon from '../components/ButtonIcon'
 import Appbar from '../layout/Appbar'
 import Page from '../layout/Page'
 import AddApiKeyForm from './api-keys/AddApiKeyForm'
@@ -16,7 +15,7 @@ import EditCategoryTab from './categories/EditCategoryTab'
 import Header from './components/Header'
 import Tabs from './components/Tabs'
 import PreferencesTab from './preferences/PreferencesTab'
-import { Link } from 'react-router-dom'
+import AboutButton from './about/AboutButton'
 
 const items = [
   { key: 'categories', label: 'Categories', icon: 'bookmarks' },
@@ -38,7 +37,7 @@ const PageHeader = () => (
     <Appbar actions={<Actions />} />
     <Header>
       <h1>Settings</h1>
-      <ButtonIcon icon="info" as={Link} to="/about" title="About" />
+      <AboutButton />
       <Tabs items={items} />
     </Header>
   </>
