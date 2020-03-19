@@ -152,3 +152,8 @@ restore:
 	[ $$CONTINUE = "y" ] || [ $$CONTINUE = "Y" ] || (echo "Exiting."; exit 1;)
 	docker exec -i -u postgres readflow_db_1 pg_restore -C -d postgres < $(archive)
 .PHONY: restore
+
+## Open database client
+db-client:
+	docker exec -it -u postgres readflow_db_1 psql -U postgres
+.PHONY: db-client
