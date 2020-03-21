@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useContext } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 
@@ -16,7 +16,7 @@ import ArticlesPageMenu from './components/ArticlesPageMenu'
 import NewArticlesAvailable from './components/NewArticlesAvailable'
 import { GetArticlesRequest, GetArticlesResponse } from './models'
 import { GetArticles } from './queries'
-import useLocalConfiguration, { LocalConfiguration } from '../hooks/useLocalConfiguration'
+import { LocalConfigurationContext, LocalConfiguration } from '../context/LocalConfigurationContext'
 
 interface Props {
   category?: Category
@@ -80,14 +80,14 @@ export default (props: AllProps) => {
   const { category, match } = props
 
   const [reloading, setReloading] = useState(false)
-  const [localConfig] = useLocalConfiguration()
+  const { localConfiguration } = useContext(LocalConfigurationContext)
 
   // Get display mode
   let mode = match.url.startsWith('/history') ? DisplayMode.history : DisplayMode.unread
   mode = category ? DisplayMode.category : mode
 
   // Build GQL request
-  const req = buildArticlesRequest(mode, props, localConfig)
+  const req = buildArticlesRequest(mode, props, localConfiguration)
 
   const { data, error, loading, fetchMore, refetch } = useQuery<GetArticlesResponse>(GetArticles, {
     variables: req

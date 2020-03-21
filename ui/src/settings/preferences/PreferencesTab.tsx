@@ -6,6 +6,7 @@ import CleanHistoryBox from './CleanHistoryBox'
 import DeleteAccountBox from './DeleteAccountBox'
 import InstallationBox from './InstallationBox'
 import NotificationBox from './NotificationBox'
+import ThemeBox from './ThemeBox'
 import classes from './PreferencesTab.module.css'
 import UserPlanSection from './UserPlanSection'
 
@@ -20,6 +21,7 @@ export default () => {
         <p>Manage preferences on this device.</p>
         <InstallationBox />
         <NotificationBox />
+        <ThemeBox />
         <UserPlanSection />
         <h2>Personal data</h2>
         <hr />

@@ -11,9 +11,9 @@ import { GetArticlesRequest } from '../models'
 import { useMutation } from 'react-apollo-hooks'
 import { MarkAllArticlesAsRead } from '../queries'
 import { MessageContext } from '../../context/MessageContext'
+import { LocalConfigurationContext } from '../../context/LocalConfigurationContext'
 import { getGQLError } from '../../helpers'
 import { Location } from 'history'
-import useLocalConfiguration from '../../hooks/useLocalConfiguration'
 import { DisplayMode } from './ArticlesDisplayMode'
 
 interface Props {
@@ -49,7 +49,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
   let { location: loc } = router
 
   const { showErrorMessage } = useContext(MessageContext)
-  const [localConfig, setLocalConfig] = useLocalConfiguration()
+  const { localConfiguration, updateLocalConfiguration } = useContext(LocalConfigurationContext)
   const markAllArticlesAsReadMutation = useMutation<{ category?: number }>(MarkAllArticlesAsRead)
 
   const markAllAsRead = useCallback(async () => {
@@ -64,7 +64,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
   }, [req])
 
   const updateLocalConfigSortOrder = useCallback(() => {
-    const orders = localConfig.sortOrders
+    const orders = localConfiguration.sortOrders
     const order = revertSortOrder(req.sortOrder)
     let key = ''
     switch (mode) {
@@ -83,9 +83,9 @@ export const ArticlesPageMenu = (props: AllProps) => {
     }
     if (!(orders.hasOwnProperty(key) && orders[key] == order)) {
       orders[key] = order
-      setLocalConfig({ ...localConfig, sortOrders: orders })
+      updateLocalConfiguration({ ...localConfiguration, sortOrders: orders })
     }
-  }, [req, mode, localConfig])
+  }, [req, mode, localConfiguration])
 
   const toggleSortOrder = useCallback(
     (event: KeyboardEvent) => {

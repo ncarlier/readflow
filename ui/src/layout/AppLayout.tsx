@@ -11,6 +11,7 @@ import useKeyboard from '../hooks/useKeyboard'
 import classes from './AppLayout.module.css'
 import Navbar from './Navbar'
 import UpdateAvailableNotification from '../components/UpdateAvailableNotification'
+import useTheme from '../hooks/useTheme'
 
 interface Props {
   children: ReactNode
@@ -18,6 +19,9 @@ interface Props {
 
 export default (props: Props) => {
   const { children } = props
+
+  // Activate theme
+  useTheme()
 
   // Shortcuts global modal
   const [showShortcutsModal, hideShortcutsModal] = useModal(() => (

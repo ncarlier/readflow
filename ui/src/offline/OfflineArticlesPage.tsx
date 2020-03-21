@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useContext } from 'react'
 import { RouteComponentProps } from 'react-router'
 
 import ArticleList from '../articles/components/ArticleList'
@@ -11,17 +11,17 @@ import ErrorPanel from '../error/ErrorPanel'
 import { getURLParam, matchState } from '../helpers'
 import Page from '../layout/Page'
 import { GetArticlesQuery, GetArticlesResult } from './dao/articles'
-import useLocalConfiguration from '../hooks/useLocalConfiguration'
+import { LocalConfigurationContext } from '../context/LocalConfigurationContext'
 
 type AllProps = OfflineProps & RouteComponentProps
 
 export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, location }: AllProps) => {
-  const [localConfig] = useLocalConfiguration()
+  const { localConfiguration } = useContext(LocalConfigurationContext)
 
   const params = new URLSearchParams(location.search)
   const query: GetArticlesQuery = {
-    limit: getURLParam<number>(params, 'limit', localConfig.limit),
-    sortOrder: getURLParam<string>(params, 'sort', localConfig.sortOrders.offline)
+    limit: getURLParam<number>(params, 'limit', localConfiguration.limit),
+    sortOrder: getURLParam<string>(params, 'sort', localConfiguration.sortOrders.offline)
   }
 
   const { data, error, loading } = offlineArticles
