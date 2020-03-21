@@ -159,7 +159,7 @@ fieldset {
 .form-group textarea:valid,
 .form-group textarea.form-file,
 .form-group textarea.has-value {
-  color: #333;
+  color: var(--input-text-color);
 }
 .form-group select ~ .control-label,
 .form-group input:focus ~ .control-label,
@@ -198,7 +198,7 @@ fieldset {
   cursor: pointer;
   padding-left: 2rem;
   text-align: left;
-  color: #333;
+  color: var(--input-text-color);
   display: block;
 }
 .checkbox input,

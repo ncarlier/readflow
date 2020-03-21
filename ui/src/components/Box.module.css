@@ -1,9 +1,9 @@
 
 .box {
-  background-color: #c4c4c461;
+  background-color: var(--box-bg-color);
   padding: 1em;
   margin-bottom: 1em;
-  color: gray;
+  color: var(--box-text-color);
   position: relative;
   overflow: hidden !important;
 }
@@ -11,7 +11,7 @@
 .box > legend {
   display: contents;
   font-size: larger;
-  color: black;
+  color: var(--panel-text-color);
 }
 
 .box > p {

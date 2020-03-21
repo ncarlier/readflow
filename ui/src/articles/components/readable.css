@@ -1,7 +1,19 @@
+:root {
+  --text-color: #222;
+  --bold-text-color: #111;
+  --link-color: #009be5;
+
+}
+[data-theme="dark"] {
+  --text-color: #ccc;
+  --bold-text-color: #bbb;
+  --link-color: #fff;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   line-height: 1.6;
-  color: #222;
+  color: var(--text-color);
   padding: 1rem 1rem 4rem 1rem;
   margin: auto;
 }
@@ -20,8 +32,10 @@ pre, code {
   overflow: auto;
 }
 a {
-  color: #009be5;
+  color: var(--link-color);
 }
 h1, h2, strong {
-  color: #111;
+  color: var(--bold-text-color);
 }
+
+

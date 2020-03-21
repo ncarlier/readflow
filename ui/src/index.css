@@ -1,4 +1,5 @@
-@import './styles/colors.css';
+@import './styles/colors-light.css';
+@import './styles/colors-dark.css';
 @import './styles/vars.css';
 @import './styles/animations.css';
 @import './styles/md.css';
@@ -69,7 +70,8 @@ input[type="checkbox"]:checked::before {
   display: block;
   color: var(--button-primary-color);
 }
-
+/*
 [data-theme="dark"] img {
   filter: brightness(50%);
 }
+*/

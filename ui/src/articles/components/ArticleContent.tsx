@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import mousetrap from 'mousetrap'
-import React, { useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 
+import { LocalConfigurationContext } from '../../context/LocalConfigurationContext'
 import { Article } from '../models'
 import styles from './ArticleContent.module.css'
+
+const getMql = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
 
 const css = require('!!raw-loader!./readable.css')
 
@@ -11,7 +14,7 @@ interface Props {
   article: Article
 }
 
-const getHTMLContent = (body: string) => `
+const getHTMLContent = (body: string, theme: string) => `
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -19,7 +22,7 @@ const getHTMLContent = (body: string) => `
       ${css.default}
     </style>
   </head>
-  <body>
+  <body data-theme="${theme}">
     ${body}
     <script>
 window.onload = function() {
@@ -32,6 +35,12 @@ window.onload = function() {
 
 export default ({ article }: Props) => {
   const contentRef = useRef<HTMLDivElement>(null)
+  const { localConfiguration } = useContext(LocalConfigurationContext)
+  let { theme } = localConfiguration
+  if (theme == 'auto') {
+    const mql = getMql()
+    theme = mql && mql.matches ? 'dark' : 'light'
+  }
 
   useEffect(() => {
     if (contentRef.current) {
@@ -40,7 +49,7 @@ export default ({ article }: Props) => {
       let doc = ifrm.contentWindow ? ifrm.contentWindow.document : ifrm.contentDocument
       if (doc) {
         doc.open()
-        doc.write(getHTMLContent(article.html || article.text))
+        doc.write(getHTMLContent(article.html || article.text, theme))
         // Keyboard events have to propagate outside the iframe
         doc.onkeydown = function(e: KeyboardEvent) {
           switch (e.keyCode) {
