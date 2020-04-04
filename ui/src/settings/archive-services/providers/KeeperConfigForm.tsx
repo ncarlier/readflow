@@ -2,8 +2,8 @@ import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
 import FormInputField from '../../../components/FormInputField'
-import useOnMountInputValidator from '../../../hooks/useOnMountInputValidator'
 import { isValidInput } from '../../../helpers'
+import useOnMountInputValidator from '../../../hooks/useOnMountInputValidator'
 
 interface KeeperConfigFormFields {
   endpoint: string
@@ -34,12 +34,14 @@ export default ({ onChange, config = defaultConfig }: Props) => {
         {...url('endpoint')}
         error={!isValidInput(formState, onMountValidator, 'endpoint')}
         required
+        ref={onMountValidator.bind}
       />
       <FormInputField
         label="API key"
         {...text('api_key')}
         error={!isValidInput(formState, onMountValidator, 'api_key')}
         required
+        ref={onMountValidator.bind}
       />
     </>
   )
