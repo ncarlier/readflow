@@ -36,15 +36,17 @@ func mapRowToCategory(row *sql.Row) (*model.Category, error) {
 	}
 	return cat, nil
 }
-func (pg *DB) createCategory(category model.Category) (*model.Category, error) {
+
+// CreateCategoryForUser create a category for an user
+func (pg *DB) CreateCategoryForUser(uid uint, form model.CategoryCreateForm) (*model.Category, error) {
 	query, args, _ := pg.psql.Insert(
 		"categories",
 	).Columns(
 		"user_id", "title", "rule",
 	).Values(
-		category.UserID,
-		category.Title,
-		category.Rule,
+		uid,
+		form.Title,
+		form.Rule,
 	).Suffix(
 		"RETURNING " + strings.Join(categoryColumns, ","),
 	).ToSql()
@@ -52,32 +54,33 @@ func (pg *DB) createCategory(category model.Category) (*model.Category, error) {
 	return mapRowToCategory(row)
 }
 
-func (pg *DB) updateCategory(category model.Category) (*model.Category, error) {
+// UpdateCategoryForUser update a category for an user
+func (pg *DB) UpdateCategoryForUser(uid uint, form model.CategoryUpdateForm) (*model.Category, error) {
 	update := map[string]interface{}{
-		"title":      category.Title,
-		"rule":       category.Rule,
 		"updated_at": "NOW()",
+	}
+	if form.Title != nil {
+		update["title"] = *form.Title
+	}
+	if form.Rule != nil {
+		if *form.Rule == "" {
+			update["rule"] = nil
+		} else {
+			update["rule"] = *form.Rule
+		}
 	}
 	query, args, _ := pg.psql.Update(
 		"categories",
 	).SetMap(update).Where(
-		sq.Eq{"id": category.ID},
+		sq.Eq{"id": form.ID},
 	).Where(
-		sq.Eq{"user_id": category.UserID},
+		sq.Eq{"user_id": uid},
 	).Suffix(
 		"RETURNING " + strings.Join(categoryColumns, ","),
 	).ToSql()
 
 	row := pg.db.QueryRow(query, args...)
 	return mapRowToCategory(row)
-}
-
-// CreateOrUpdateCategory creates or updates a category into the DB
-func (pg *DB) CreateOrUpdateCategory(category model.Category) (*model.Category, error) {
-	if category.ID != nil {
-		return pg.updateCategory(category)
-	}
-	return pg.createCategory(category)
 }
 
 // GetCategoryByID returns a category from the DB
@@ -91,8 +94,8 @@ func (pg *DB) GetCategoryByID(id uint) (*model.Category, error) {
 	return mapRowToCategory(row)
 }
 
-// GetCategoryByUserIDAndTitle returns a category of an user form the DB
-func (pg *DB) GetCategoryByUserIDAndTitle(uid uint, title string) (*model.Category, error) {
+// GetCategoryByUserAndTitle returns a category of an user form the DB
+func (pg *DB) GetCategoryByUserAndTitle(uid uint, title string) (*model.Category, error) {
 	query, args, _ := pg.psql.Select(categoryColumns...).From(
 		"categories",
 	).Where(
@@ -105,8 +108,8 @@ func (pg *DB) GetCategoryByUserIDAndTitle(uid uint, title string) (*model.Catego
 	return mapRowToCategory(row)
 }
 
-// GetCategoriesByUserID returns categories of an user from DB
-func (pg *DB) GetCategoriesByUserID(uid uint) ([]model.Category, error) {
+// GetCategoriesByUser returns categories of an user from DB
+func (pg *DB) GetCategoriesByUser(uid uint) ([]model.Category, error) {
 	query, args, _ := pg.psql.Select(categoryColumns...).From(
 		"categories",
 	).Where(
@@ -142,8 +145,8 @@ func (pg *DB) GetCategoriesByUserID(uid uint) ([]model.Category, error) {
 	return result, nil
 }
 
-// CountCategoriesByUserID returns total nb of categories of an user from the DB
-func (pg *DB) CountCategoriesByUserID(uid uint) (uint, error) {
+// CountCategoriesByUser returns total nb of categories of an user from the DB
+func (pg *DB) CountCategoriesByUser(uid uint) (uint, error) {
 	counter := pg.psql.Select("count(*)").From(
 		"categories",
 	).Where(sq.Eq{"user_id": uid})
@@ -156,12 +159,12 @@ func (pg *DB) CountCategoriesByUserID(uid uint) (uint, error) {
 	return count, nil
 }
 
-// DeleteCategory removes an category from the DB
-func (pg *DB) DeleteCategory(category model.Category) error {
+// DeleteCategoryByUser removes an category from the DB
+func (pg *DB) DeleteCategoryByUser(uid uint, ID uint) error {
 	query, args, _ := pg.psql.Delete("categories").Where(
-		sq.Eq{"id": category.ID},
+		sq.Eq{"id": ID},
 	).Where(
-		sq.Eq{"user_id": category.UserID},
+		sq.Eq{"user_id": uid},
 	).ToSql()
 	result, err := pg.db.Exec(query, args...)
 	if err != nil {
@@ -181,7 +184,7 @@ func (pg *DB) DeleteCategory(category model.Category) error {
 }
 
 // DeleteCategories removes categories from the DB
-func (pg *DB) DeleteCategories(uid uint, ids []uint) (int64, error) {
+func (pg *DB) DeleteCategoriesByUser(uid uint, ids []uint) (int64, error) {
 	query, args, _ := pg.psql.Delete("categories").Where(
 		sq.Eq{"user_id": uid},
 	).Where(

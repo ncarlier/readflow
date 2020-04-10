@@ -81,7 +81,6 @@ export default ({ category, history }: Props) => {
             label="Rule"
             {...textarea('rule')}
             error={!isValidInput(formState, onMountValidator, 'rule')}
-            required
             ref={onMountValidator.bind}
           >
             <HelpLink href="https://about.readflow.app/docs/en/read-flow/organize/rules/#syntax">

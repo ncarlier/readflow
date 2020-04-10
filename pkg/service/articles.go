@@ -67,6 +67,7 @@ func (reg *Registry) UpdateArticleStatus(ctx context.Context, id uint, status st
 	}
 
 	article.Status = status
+	// TODO use more direct DAO
 	article, err = reg.db.CreateOrUpdateArticle(*article)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(

@@ -20,12 +20,13 @@ func TestCreateOrUpdateArticle(t *testing.T) {
 	defer teardownTestCase(t)
 
 	// Assert category exists
-	category := assertCategoryExists(t, testUser.ID, "My test category")
+	uid := *testUser.ID
+	category := assertCategoryExists(t, uid, "My test category")
 
 	// Create article test case
 	builder := model.NewArticleBuilder()
 	article := builder.UserID(
-		*testUser.ID,
+		uid,
 	).CategoryID(
 		*category.ID,
 	).Random().Build()
@@ -48,12 +49,13 @@ func TestDeleteArticle(t *testing.T) {
 	defer teardownTestCase(t)
 
 	// Assert category exists
-	category := assertCategoryExists(t, testUser.ID, "My test category")
+	uid := *testUser.ID
+	category := assertCategoryExists(t, uid, "My test category")
 
 	// Create article test case
 	builder := model.NewArticleBuilder()
 	article := builder.UserID(
-		*testUser.ID,
+		uid,
 	).CategoryID(
 		*category.ID,
 	).Random().Build()

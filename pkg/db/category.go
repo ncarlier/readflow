@@ -5,10 +5,11 @@ import "github.com/ncarlier/readflow/pkg/model"
 // CategoryRepository is the repository interface to manage categories
 type CategoryRepository interface {
 	GetCategoryByID(id uint) (*model.Category, error)
-	GetCategoryByUserIDAndTitle(uid uint, title string) (*model.Category, error)
-	GetCategoriesByUserID(uid uint) ([]model.Category, error)
-	CountCategoriesByUserID(uid uint) (uint, error)
-	CreateOrUpdateCategory(category model.Category) (*model.Category, error)
-	DeleteCategory(category model.Category) error
-	DeleteCategories(uid uint, ids []uint) (int64, error)
+	GetCategoryByUserAndTitle(uid uint, title string) (*model.Category, error)
+	GetCategoriesByUser(uid uint) ([]model.Category, error)
+	CountCategoriesByUser(uid uint) (uint, error)
+	CreateCategoryForUser(uid uint, form model.CategoryCreateForm) (*model.Category, error)
+	UpdateCategoryForUser(uid uint, form model.CategoryUpdateForm) (*model.Category, error)
+	DeleteCategoryByUser(uid uint, ID uint) error
+	DeleteCategoriesByUser(uid uint, ids []uint) (int64, error)
 }

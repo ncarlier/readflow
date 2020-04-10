@@ -15,10 +15,11 @@ import (
 )
 
 func newTestCategory(id uint, rule string) model.Category {
-	builder := model.NewCategoryBuilder()
-	category := builder.Random().Rule(rule).Build()
-	category.ID = &id
-	return *category
+	return model.Category{
+		ID:    &id,
+		Title: "Dummy category",
+		Rule:  &rule,
+	}
 }
 
 type testCase struct {

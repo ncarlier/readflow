@@ -19,11 +19,11 @@ type RuleProcessor struct {
 
 // NewRuleProcessor creates a new rule processor
 func NewRuleProcessor(category model.Category) (*RuleProcessor, error) {
-	if category.Rule == "" {
+	if category.Rule == nil || *category.Rule == "" {
 		return nil, nil
 	}
 	p, err := expr.Parse(
-		category.Rule,
+		*category.Rule,
 		expr.Define("title", ""),
 		expr.Define("text", ""),
 		expr.Define("url", ""),

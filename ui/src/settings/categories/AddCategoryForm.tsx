@@ -29,7 +29,10 @@ export default ({ history }: AllProps) => {
   usePageTitle('Settings - Add new category')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [formState, { text, textarea }] = useFormState<AddCategoryFormFields>()
+  const [formState, { text, textarea }] = useFormState<AddCategoryFormFields>({
+    title: '',
+    rule: ''
+  })
   const onMountValidator = useOnMountInputValidator(formState.validity)
   const addCategoryMutation = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)
@@ -80,7 +83,6 @@ export default ({ history }: AllProps) => {
             label="Rule"
             {...textarea('rule')}
             error={!isValidInput(formState, onMountValidator, 'rule')}
-            required
             ref={onMountValidator.bind}
           >
             <HelpLink href="https://about.readflow.app/docs/en/read-flow/organize/rules/#syntax">

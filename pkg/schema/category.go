@@ -112,22 +112,21 @@ var createOrUpdateCategoryMutationField = &graphql.Field{
 }
 
 func createOrUpdateCategoryResolver(p graphql.ResolveParams) (interface{}, error) {
-	var id *uint
-	if val, ok := tooling.ConvGQLStringToUint(p.Args["id"]); ok {
-		id = &val
+	title := tooling.GetGQLStringParameter("title", p.Args)
+	rule := tooling.GetGQLStringParameter("rule", p.Args)
+	if id, ok := tooling.ConvGQLStringToUint(p.Args["id"]); ok {
+		form := model.CategoryUpdateForm{
+			ID:    id,
+			Title: title,
+			Rule:  rule,
+		}
+		return service.Lookup().UpdateCategory(p.Context, form)
 	}
-	form := model.CategoryForm{
-		ID: id,
+	form := model.CategoryCreateForm{
+		Title: *title,
+		Rule:  rule,
 	}
-	if val, ok := p.Args["title"]; ok {
-		s := val.(string)
-		form.Title = &s
-	}
-	if val, ok := p.Args["rule"]; ok {
-		s := val.(string)
-		form.Rule = &s
-	}
-	return service.Lookup().CreateOrUpdateCategory(p.Context, form)
+	return service.Lookup().CreateCategory(p.Context, form)
 }
 
 var deleteCategoriesMutationField = &graphql.Field{

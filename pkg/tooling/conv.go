@@ -22,3 +22,12 @@ func ConvGQLIntToUint(val interface{}) (uint, bool) {
 	}
 	return 0, false
 }
+
+// GetGQLStringParameter return GraphQL string parameter
+func GetGQLStringParameter(name string, args map[string]interface{}) *string {
+	if val, ok := args[name]; ok {
+		s := val.(string)
+		return &s
+	}
+	return nil
+}

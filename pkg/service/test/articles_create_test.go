@@ -5,7 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/service"
 )
@@ -21,17 +22,17 @@ func TestCreateArticle(t *testing.T) {
 	}
 	opts := service.ArticleCreationOptions{}
 	art, err := service.Lookup().CreateArticle(testContext, req, opts)
-	assert.Nil(t, err, "")
-	assert.Equal(t, "ncarlier/readflow", art.Title, "")
-	assert.NotNil(t, art.URL, "")
-	assert.Equal(t, url, *art.URL, "")
-	assert.NotNil(t, art.Image, "")
-	assert.True(t, strings.HasPrefix(*art.Image, "https://repository-images.githubusercontent.com"), "")
-	assert.True(t, art.CategoryID == nil, "")
+	assert.Nil(t, err)
+	assert.Equal(t, "ncarlier/readflow", art.Title)
+	assert.NotNil(t, art.URL)
+	assert.Equal(t, url, *art.URL)
+	assert.NotNil(t, art.Image)
+	assert.True(t, strings.HasPrefix(*art.Image, "https://repository-images.githubusercontent.com"), "unexpected image URL")
+	assert.Nil(t, art.CategoryID)
 
 	// Create same article again
 	_, err = service.Lookup().CreateArticle(testContext, req, opts)
-	assert.Equal(t, "already exists", err.Error(), "")
+	assert.Equal(t, "already exists", err.Error())
 }
 
 func TestCreateArticleInCategory(t *testing.T) {
@@ -39,12 +40,13 @@ func TestCreateArticleInCategory(t *testing.T) {
 	defer teardownTestCase(t)
 
 	// Create category
-	categoryBuilder := model.NewCategoryBuilder()
-	categoryForm := categoryBuilder.Random().BuildForm()
-	cat, err := service.Lookup().CreateOrUpdateCategory(testContext, categoryForm)
-	assert.Nil(t, err, "")
-	assert.Equal(t, *categoryForm.Title, cat.Title, "")
-	assert.Equal(t, *testUser.ID, *cat.UserID, "")
+	uid := *testUser.ID
+	formBuilder := model.NewCategoryCreateFormBuilder()
+	form := formBuilder.Random().Build()
+	cat, err := service.Lookup().CreateCategory(testContext, *form)
+	assert.Nil(t, err)
+	assert.Equal(t, form.Title, cat.Title)
+	assert.Equal(t, uid, *cat.UserID)
 
 	// Create article
 	req := model.ArticleForm{
@@ -53,10 +55,10 @@ func TestCreateArticleInCategory(t *testing.T) {
 	}
 	opts := service.ArticleCreationOptions{}
 	art, err := service.Lookup().CreateArticle(testContext, req, opts)
-	assert.Nil(t, err, "")
-	assert.Equal(t, req.Title, art.Title, "")
-	assert.True(t, art.CategoryID != nil, "")
-	assert.Equal(t, *cat.ID, *art.CategoryID, "")
+	assert.Nil(t, err)
+	assert.Equal(t, req.Title, art.Title)
+	assert.NotNil(t, art.CategoryID)
+	assert.Equal(t, *cat.ID, *art.CategoryID)
 }
 
 func TestCreateArticleWithRuleEngine(t *testing.T) {
@@ -64,12 +66,13 @@ func TestCreateArticleWithRuleEngine(t *testing.T) {
 	defer teardownTestCase(t)
 
 	// Create category
-	categoryBuilder := model.NewCategoryBuilder()
-	categoryForm := categoryBuilder.Random().Rule("title matches \"^Test\"").BuildForm()
-	cat, err := service.Lookup().CreateOrUpdateCategory(testContext, categoryForm)
-	assert.Nil(t, err, "")
-	assert.Equal(t, *categoryForm.Title, cat.Title, "")
-	assert.Equal(t, *testUser.ID, *cat.UserID, "")
+	uid := *testUser.ID
+	formBuilder := model.NewCategoryCreateFormBuilder()
+	form := formBuilder.Random().Rule("title matches \"^Test\"").Build()
+	cat, err := service.Lookup().CreateCategory(testContext, *form)
+	assert.Nil(t, err)
+	assert.Equal(t, form.Title, cat.Title)
+	assert.Equal(t, uid, *cat.UserID)
 
 	// Create article
 	req := model.ArticleForm{

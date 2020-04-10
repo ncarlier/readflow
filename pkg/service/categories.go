@@ -13,7 +13,7 @@ import (
 func (reg *Registry) GetCategories(ctx context.Context) ([]model.Category, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	categories, err := reg.db.GetCategoriesByUserID(uid)
+	categories, err := reg.db.GetCategoriesByUser(uid)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -25,7 +25,7 @@ func (reg *Registry) GetCategories(ctx context.Context) ([]model.Category, error
 // CountCurrentUserCategories get total categories of current user
 func (reg *Registry) CountCurrentUserCategories(ctx context.Context) (uint, error) {
 	uid := getCurrentUserFromContext(ctx)
-	return reg.db.CountCategoriesByUserID(uid)
+	return reg.db.CountCategoriesByUser(uid)
 }
 
 // GetCategory get a category of the current user
@@ -42,17 +42,16 @@ func (reg *Registry) GetCategory(ctx context.Context, id uint) (*model.Category,
 	return category, nil
 }
 
-// CreateOrUpdateCategory create or update a category for current user
-func (reg *Registry) CreateOrUpdateCategory(ctx context.Context, form model.CategoryForm) (*model.Category, error) {
+// CreateCategory create a category for current user
+func (reg *Registry) CreateCategory(ctx context.Context, form model.CategoryCreateForm) (*model.Category, error) {
 	uid := getCurrentUserFromContext(ctx)
 
+	// Validate user quota
 	plan, err := reg.GetCurrentUserPlan(ctx)
 	if err != nil {
 		return nil, err
 	}
-
-	if plan != nil && form.ID == nil {
-		// Check user quota
+	if plan != nil {
 		totalCategories, err := reg.CountCurrentUserCategories(ctx)
 		if err != nil {
 			reg.logger.Info().Err(err).Uint(
@@ -71,29 +70,49 @@ func (reg *Registry) CreateOrUpdateCategory(ctx context.Context, form model.Cate
 		}
 	}
 
-	// Create category
-	builder := model.NewCategoryBuilder()
-	category := builder.Form(&form).UserID(uid).Build()
-
 	// Validate category's rule
-	_, err = ruleengine.NewRuleProcessor(*category)
-	if err != nil {
+	if err := validateCategoryRule(form.Rule); err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
 		).Msg("invalid category rule")
 		return nil, err
 	}
 
-	result, err := reg.db.CreateOrUpdateCategory(*category)
+	// Create category
+	result, err := reg.db.CreateCategoryForUser(uid, form)
 	if err != nil {
-		evt := reg.logger.Info().Err(err).Uint(
+		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
-		).Str("title", *form.Title)
-		if form.ID != nil {
-			evt.Uint("id", *form.ID).Msg("unable to update category")
-		} else {
-			evt.Msg("unable to create category")
-		}
+		).Str("title", form.Title).Msg("unabel to create category")
+		return nil, err
+	}
+
+	// Force to refresh the rule engine cache
+	reg.ruleEngineCache.Evict(uid)
+
+	return result, err
+}
+
+// UpdateCategory update a category for current user
+func (reg *Registry) UpdateCategory(ctx context.Context, form model.CategoryUpdateForm) (*model.Category, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	// Validate category's rule
+	if err := validateCategoryRule(form.Rule); err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Msg("invalid category rule")
+		return nil, err
+	}
+
+	// Update category
+	result, err := reg.db.UpdateCategoryForUser(uid, form)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Str("title", *form.Title).Uint(
+			"id", form.ID,
+		).Msg("unable to update category")
 		return nil, err
 	}
 
@@ -109,13 +128,10 @@ func (reg *Registry) DeleteCategory(ctx context.Context, id uint) (*model.Catego
 
 	category, err := reg.GetCategory(ctx, id)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Uint("id", id).Msg("unable to delete category")
 		return nil, err
 	}
 
-	err = reg.db.DeleteCategory(*category)
+	err = reg.db.DeleteCategoryByUser(uid, id)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -134,7 +150,7 @@ func (reg *Registry) DeleteCategories(ctx context.Context, ids []uint) (int64, e
 	uid := getCurrentUserFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
-	nb, err := reg.db.DeleteCategories(uid, ids)
+	nb, err := reg.db.DeleteCategoriesByUser(uid, ids)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -149,4 +165,16 @@ func (reg *Registry) DeleteCategories(ctx context.Context, ids []uint) (int64, e
 	reg.ruleEngineCache.Evict(uid)
 
 	return nb, nil
+}
+
+func validateCategoryRule(rule *string) error {
+	if rule == nil {
+		return nil
+	}
+	// Create dummy category in order to validate rule
+	builder := model.NewCategoryBuilder()
+	category := builder.Rule(*rule).Build()
+	// Validate category's rule
+	_, err := ruleengine.NewRuleProcessor(*category)
+	return err
 }

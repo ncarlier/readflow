@@ -3,74 +3,88 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-func assertCategoryExists(t *testing.T, userID *uint, title string) *model.Category {
-	category, err := testDB.GetCategoryByUserIDAndTitle(*userID, title)
-	assert.Nil(t, err, "error on getting category by user and title should be nil")
+func assertCategoryExists(t *testing.T, uid uint, title string) *model.Category {
+	category, err := testDB.GetCategoryByUserAndTitle(uid, title)
+	assert.Nil(t, err)
 	if category != nil {
 		return category
 	}
 
-	category = &model.Category{
-		UserID: userID,
-		Title:  title,
+	createForm := model.CategoryCreateForm{
+		Title: title,
 	}
 
-	category, err = testDB.CreateOrUpdateCategory(*category)
-	assert.Nil(t, err, "error on create/update category should be nil")
-	assert.NotNil(t, category, "category shouldn't be nil")
-	assert.NotNil(t, category.ID, "category ID shouldn't be nil")
-	assert.Equal(t, title, category.Title, "")
-	assert.Equal(t, "", category.Rule, "")
+	category, err = testDB.CreateCategoryForUser(uid, createForm)
+	assert.Nil(t, err)
+	assert.NotNil(t, category)
+	assert.NotNil(t, category.ID)
+	assert.Equal(t, title, category.Title)
+	assert.Nil(t, category.Rule)
 	return category
 }
-func TestCreateOrUpdateCategory(t *testing.T) {
+func TestCreateAndUpdateCategory(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	title := "My test category"
-
 	// Create category
-	category := assertCategoryExists(t, testUser.ID, title)
+	uid := *testUser.ID
+	title := "My test category"
+	category := assertCategoryExists(t, uid, title)
 
+	// Update category title
 	title = "My updated category"
+	update := model.CategoryUpdateForm{
+		ID:    *category.ID,
+		Title: &title,
+	}
+	category, err := testDB.UpdateCategoryForUser(uid, update)
+	assert.Nil(t, err)
+	assert.NotNil(t, category)
+	assert.NotNil(t, category.ID)
+	assert.Equal(t, title, category.Title)
+	assert.Nil(t, category.Rule)
+
+	// Update category title
 	rule := "title matches \"test\""
-	category.Title = title
-	category.Rule = rule
+	update = model.CategoryUpdateForm{
+		ID:   *category.ID,
+		Rule: &rule,
+	}
+	category, err = testDB.UpdateCategoryForUser(uid, update)
+	assert.Nil(t, err)
+	assert.NotNil(t, category)
+	assert.NotNil(t, category.ID)
+	assert.Equal(t, title, category.Title)
+	assert.Equal(t, rule, *category.Rule)
 
-	// Update category
-	category, err := testDB.CreateOrUpdateCategory(*category)
-	assert.Nil(t, err, "error on update category should be nil")
-	assert.NotNil(t, category, "category shouldn't be nil")
-	assert.NotNil(t, category.ID, "category ID shouldn't be nil")
-	assert.Equal(t, title, category.Title, "")
-	assert.Equal(t, rule, category.Rule, "")
-
-	nb, err := testDB.CountCategoriesByUserID(*testUser.ID)
-	assert.Nil(t, err, "")
-	assert.True(t, nb >= 0, "")
+	// Count categories of test user
+	nb, err := testDB.CountCategoriesByUser(uid)
+	assert.Nil(t, err)
+	assert.True(t, nb >= 0)
 }
 
 func TestDeleteCategory(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	title := "My updated category"
-
 	// Assert category exists
-	category := assertCategoryExists(t, testUser.ID, title)
+	uid := *testUser.ID
+	title := "My updated category"
+	category := assertCategoryExists(t, uid, title)
 
-	categories, err := testDB.GetCategoriesByUserID(*testUser.ID)
-	assert.Nil(t, err, "error should be nil")
+	categories, err := testDB.GetCategoriesByUser(uid)
+	assert.Nil(t, err)
 	assert.True(t, len(categories) > 0, "categories should not be empty")
 
-	err = testDB.DeleteCategory(*category)
-	assert.Nil(t, err, "error on delete should be nil")
+	err = testDB.DeleteCategoryByUser(uid, *category.ID)
+	assert.Nil(t, err)
 
-	category, err = testDB.GetCategoryByUserIDAndTitle(*testUser.ID, title)
-	assert.Nil(t, err, "error should be nil")
-	assert.True(t, category == nil, "category should be nil")
+	category, err = testDB.GetCategoryByUserAndTitle(uid, title)
+	assert.Nil(t, err)
+	assert.Nil(t, category)
 }

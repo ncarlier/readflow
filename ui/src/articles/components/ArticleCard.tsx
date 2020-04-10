@@ -38,7 +38,7 @@ export default withRouter((props: AllProps) => {
     <article className={classNames(styles.card, activeClass)}>
       {article.image && (
         <Link to={readMorePath} title={'View details' + kbs} className={styles.illustration}>
-          <ArticleImage src={article.image} />
+          <ArticleImage src={article.image} alt={article.title} />
         </Link>
       )}
       <Link to={readMorePath} title={'View details' + kbs} className={styles.content}>
