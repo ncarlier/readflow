@@ -113,24 +113,28 @@ var createOrUpdateArchiverMutationField = &graphql.Field{
 }
 
 func createOrUpdateArchiverResolver(p graphql.ResolveParams) (interface{}, error) {
-	var id *uint
-	if val, ok := tooling.ConvGQLStringToUint(p.Args["id"]); ok {
-		id = &val
+	alias := tooling.GetGQLStringParameter("alias", p.Args)
+	provider := tooling.GetGQLStringParameter("provider", p.Args)
+	config := tooling.GetGQLStringParameter("config", p.Args)
+	isDefault := tooling.GetGQLBoolParameter("is_default", p.Args)
+	if id, ok := tooling.ConvGQLStringToUint(p.Args["id"]); ok {
+		form := model.ArchiverUpdateForm{
+			ID:        id,
+			Alias:     alias,
+			Provider:  provider,
+			Config:    config,
+			IsDefault: isDefault,
+		}
+		return service.Lookup().UpdateArchiver(p.Context, form)
 	}
-	alias, _ := p.Args["alias"].(string)
-	provider, _ := p.Args["provider"].(string)
-	config, _ := p.Args["config"].(string)
-	isDefault, _ := p.Args["is_default"].(bool)
-
-	form := model.ArchiverForm{
-		ID:        id,
-		Alias:     alias,
-		Provider:  provider,
-		Config:    config,
-		IsDefault: isDefault,
+	builder := model.NewArchiverCreateFormBuilder()
+	builder.Alias(*alias).Provider(*provider).Config(*config)
+	if isDefault != nil && *isDefault {
+		builder.IsDefault(true)
 	}
+	form := builder.Build()
 
-	return service.Lookup().CreateOrUpdateArchiver(p.Context, form)
+	return service.Lookup().CreateArchiver(p.Context, *form)
 }
 
 var deleteArchiversMutationField = &graphql.Field{

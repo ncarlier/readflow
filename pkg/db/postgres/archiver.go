@@ -41,66 +41,87 @@ func mapRowToArchiver(row *sql.Row) (*model.Archiver, error) {
 	return archiver, nil
 }
 
-func (pg *DB) createArchiver(archiver model.Archiver) (*model.Archiver, error) {
+// CreateArchiverForUser creates an archiver into the DB
+func (pg *DB) CreateArchiverForUser(uid uint, form model.ArchiverCreateForm) (*model.Archiver, error) {
+	tx, err := pg.db.Begin()
+	if err != nil {
+		return nil, err
+	}
 	query, args, _ := pg.psql.Insert(
 		"archivers",
 	).Columns(
 		"user_id", "alias", "is_default", "provider", "config",
 	).Values(
-		archiver.UserID,
-		archiver.Alias,
-		archiver.IsDefault,
-		archiver.Provider,
-		archiver.Config,
+		uid,
+		form.Alias,
+		form.IsDefault,
+		form.Provider,
+		form.Config,
 	).Suffix(
 		"RETURNING " + strings.Join(archiverColumns, ","),
 	).ToSql()
 
 	row := pg.db.QueryRow(query, args...)
-	return mapRowToArchiver(row)
-}
-
-func (pg *DB) updateArchiver(archiver model.Archiver) (*model.Archiver, error) {
-	update := map[string]interface{}{
-		"alias":      archiver.Alias,
-		"is_default": archiver.IsDefault,
-		"provider":   archiver.Provider,
-		"config":     archiver.Config,
-		"updated_at": "NOW()",
-	}
-	query, args, _ := pg.psql.Update(
-		"archivers",
-	).SetMap(update).Where(
-		sq.Eq{"id": archiver.ID},
-	).Where(
-		sq.Eq{"user_id": archiver.UserID},
-	).Suffix(
-		"RETURNING " + strings.Join(archiverColumns, ","),
-	).ToSql()
-
-	row := pg.db.QueryRow(query, args...)
-	return mapRowToArchiver(row)
-}
-
-// CreateOrUpdateArchiver creates or updates an archiver into the DB
-func (pg *DB) CreateOrUpdateArchiver(archiver model.Archiver) (*model.Archiver, error) {
-	var result *model.Archiver
-	var err error
-
-	tx, err := pg.db.Begin()
-	if err != nil {
-		return nil, err
-	}
-
-	if archiver.ID != nil {
-		result, err = pg.updateArchiver(archiver)
-	} else {
-		result, err = pg.createArchiver(archiver)
-	}
+	result, err := mapRowToArchiver(row)
 	if err != nil {
 		tx.Rollback()
 		return nil, err
 	}
+
+	if result != nil && result.IsDefault {
+		// Unset previous archiver default
+		err = pg.setDefaultArchiver(result)
+		if err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+	}
+	return result, tx.Commit()
+}
+
+// UpdateArchiverForUser update an archiver of the DB
+func (pg *DB) UpdateArchiverForUser(uid uint, form model.ArchiverUpdateForm) (*model.Archiver, error) {
+	tx, err := pg.db.Begin()
+	if err != nil {
+		return nil, err
+	}
+	update := map[string]interface{}{
+		"updated_at": "NOW()",
+	}
+	if form.Alias != nil {
+		update["alias"] = *form.Alias
+	}
+	if form.Provider != nil {
+		update["provider"] = *form.Provider
+	}
+	if form.Config != nil {
+		update["config"] = *form.Config
+	}
+	if form.IsDefault != nil {
+		update["is_default"] = *form.IsDefault
+	}
+	query, args, err := pg.psql.Update(
+		"archivers",
+	).SetMap(update).Where(
+		sq.Eq{"id": form.ID},
+	).Where(
+		sq.Eq{"user_id": uid},
+	).Suffix(
+		"RETURNING " + strings.Join(archiverColumns, ","),
+	).ToSql()
+
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	row := pg.db.QueryRow(query, args...)
+	result, err := mapRowToArchiver(row)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
 	if result != nil && result.IsDefault {
 		// Unset previous archiver default
 		err = pg.setDefaultArchiver(result)
@@ -141,7 +162,7 @@ func (pg *DB) GetArchiverByID(id uint) (*model.Archiver, error) {
 
 // GetArchiverByUserIDAndAlias get an archiver from the DB.
 // Default archiver is returned if alias is nil.
-func (pg *DB) GetArchiverByUserIDAndAlias(uid uint, alias *string) (*model.Archiver, error) {
+func (pg *DB) GetArchiverByUserAndAlias(uid uint, alias *string) (*model.Archiver, error) {
 	selectBuilder := pg.psql.Select(archiverColumns...).From(
 		"archivers",
 	).Where(
@@ -159,8 +180,8 @@ func (pg *DB) GetArchiverByUserIDAndAlias(uid uint, alias *string) (*model.Archi
 	return mapRowToArchiver(row)
 }
 
-// GetArchiversByUserID returns archivers of an user from DB
-func (pg *DB) GetArchiversByUserID(uid uint) ([]model.Archiver, error) {
+// GetArchiversByUser returns archivers of an user from DB
+func (pg *DB) GetArchiversByUser(uid uint) ([]model.Archiver, error) {
 	query, args, _ := pg.psql.Select(archiverColumns...).From(
 		"archivers",
 	).Where(
@@ -198,10 +219,12 @@ func (pg *DB) GetArchiversByUserID(uid uint) ([]model.Archiver, error) {
 	return result, nil
 }
 
-// DeleteArchiver removes an archiver from the DB
-func (pg *DB) DeleteArchiver(archiver model.Archiver) error {
+// DeleteArchiverByUser removes an archiver from the DB
+func (pg *DB) DeleteArchiverByUser(uid uint, id uint) error {
 	query, args, _ := pg.psql.Delete("archivers").Where(
-		sq.Eq{"id": archiver.ID},
+		sq.Eq{"id": id},
+	).Where(
+		sq.Eq{"user_id": uid},
 	).ToSql()
 	result, err := pg.db.Exec(query, args...)
 	if err != nil {
@@ -220,8 +243,8 @@ func (pg *DB) DeleteArchiver(archiver model.Archiver) error {
 	return nil
 }
 
-// DeleteArchivers removes archivers from the DB
-func (pg *DB) DeleteArchivers(uid uint, ids []uint) (int64, error) {
+// DeleteArchiversByUser removes archivers from the DB
+func (pg *DB) DeleteArchiversByUser(uid uint, ids []uint) (int64, error) {
 	query, args, _ := pg.psql.Delete("archivers").Where(
 		sq.Eq{"user_id": uid},
 	).Where(

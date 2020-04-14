@@ -3,107 +3,123 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-func assertArchiverExists(t *testing.T, archiver model.Archiver) *model.Archiver {
-	result, err := testDB.GetArchiverByUserIDAndAlias(*archiver.UserID, &archiver.Alias)
-	assert.Nil(t, err, "error on getting archiver by user and alias should be nil")
+func assertArchiverExists(t *testing.T, uid uint, form model.ArchiverCreateForm) *model.Archiver {
+	result, err := testDB.GetArchiverByUserAndAlias(uid, &form.Alias)
+	assert.Nil(t, err)
 	if result != nil {
-		id := *result.ID
-		archiver.ID = &id
+		return result
 	}
 
-	result, err = testDB.CreateOrUpdateArchiver(archiver)
-	assert.Nil(t, err, "error on create/update archiver should be nil")
-	assert.NotNil(t, result, "archiver shouldn't be nil")
-	assert.NotNil(t, result.ID, "archiver ID shouldn't be nil")
-	assert.Equal(t, *archiver.UserID, *result.UserID, "")
-	assert.Equal(t, archiver.Alias, result.Alias, "")
-	assert.Equal(t, archiver.Provider, result.Provider, "")
-	assert.Equal(t, archiver.IsDefault, result.IsDefault, "")
+	result, err = testDB.CreateArchiverForUser(uid, form)
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+	assert.NotNil(t, result.ID)
+	assert.Equal(t, uid, *result.UserID)
+	assert.Equal(t, form.Alias, result.Alias)
+	assert.Equal(t, form.Provider, result.Provider)
+	assert.Equal(t, form.Config, result.Config)
+	assert.Equal(t, form.IsDefault, result.IsDefault)
 	return result
 }
-func TestCreateOrUpdateArchiver(t *testing.T) {
+func TestArchiverCRUD(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	archiver := model.Archiver{
-		Alias:    "My archiver",
-		UserID:   testUser.ID,
-		Provider: "test",
-		Config:   "{\"foo\": \"bar\"}",
+	// Create archiver
+	uid := *testUser.ID
+	builder := model.NewArchiverCreateFormBuilder()
+	create := builder.Alias(
+		"My test archiver",
+	).Dummy().Build()
+	archiver := assertArchiverExists(t, uid, *create)
+
+	alias := "My updated archiver"
+	update := model.ArchiverUpdateForm{
+		ID:    *archiver.ID,
+		Alias: &alias,
 	}
 
-	// Create archiver
-	newArchiver := assertArchiverExists(t, archiver)
-
-	newArchiver.Alias = "My updated archiver"
-
 	// Update archiver
-	updatedArchiver, err := testDB.CreateOrUpdateArchiver(*newArchiver)
-	assert.Nil(t, err, "error on update archiver should be nil")
-	assert.NotNil(t, updatedArchiver, "archiver shouldn't be nil")
-	assert.NotNil(t, updatedArchiver.ID, "archiver ID shouldn't be nil")
-	assert.Equal(t, newArchiver.Alias, updatedArchiver.Alias, "")
+	archiver, err := testDB.UpdateArchiverForUser(uid, update)
+	assert.Nil(t, err)
+	assert.NotNil(t, archiver)
+	assert.NotNil(t, archiver.ID)
+	assert.Equal(t, alias, archiver.Alias)
+	assert.Equal(t, create.Provider, archiver.Provider)
+	assert.Equal(t, create.Config, archiver.Config)
+	assert.Equal(t, create.IsDefault, archiver.IsDefault)
 
 	// Cleanup
-	err = testDB.DeleteArchiver(*updatedArchiver)
-	assert.Nil(t, err, "error on cleanup should be nil")
+	err = testDB.DeleteArchiverByUser(uid, *archiver.ID)
+	assert.Nil(t, err)
 }
 
 func TestDeleteArchiver(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	alias := "My archiver"
+	// Create archiver
+	uid := *testUser.ID
+	builder := model.NewArchiverCreateFormBuilder()
+	create := builder.Alias(
+		"My test archiver",
+	).Dummy().Build()
+	archiver := assertArchiverExists(t, uid, *create)
 
-	// Assert archiver exists
-	archiver := &model.Archiver{
-		Alias:    alias,
-		UserID:   testUser.ID,
-		Provider: "test",
-		Config:   "{\"foo\": \"bar\"}",
-	}
-	archiver = assertArchiverExists(t, *archiver)
+	// Retrieve archiver
+	archivers, err := testDB.GetArchiversByUser(uid)
+	assert.Nil(t, err)
+	assert.True(t, len(archivers) > 0)
 
-	archivers, err := testDB.GetArchiversByUserID(*testUser.ID)
-	assert.Nil(t, err, "error should be nil")
-	assert.True(t, len(archivers) > 0, "archivers should not be empty")
+	// Delete archiver
+	err = testDB.DeleteArchiverByUser(uid, *archiver.ID)
+	assert.Nil(t, err)
 
-	err = testDB.DeleteArchiver(*archiver)
-	assert.Nil(t, err, "error on delete should be nil")
-
-	archiver, err = testDB.GetArchiverByUserIDAndAlias(*testUser.ID, &alias)
-	assert.Nil(t, err, "error should be nil")
-	assert.True(t, archiver == nil, "archiver should be nil")
+	// Unable to retrieve deleted archiver
+	archiver, err = testDB.GetArchiverByUserAndAlias(uid, &create.Alias)
+	assert.Nil(t, err)
+	assert.Nil(t, archiver)
 }
 
 func TestUpdateDefaultArchiver(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	// Assert archiver exists
-	archiver := model.Archiver{
-		Alias:     "My default archiver",
-		UserID:    testUser.ID,
-		Provider:  "test",
-		Config:    "{\"foo\": \"bar\"}",
-		IsDefault: true,
-	}
-	firstArchiver := assertArchiverExists(t, archiver)
-	archiver.Alias = "My new default archiver"
-	assertArchiverExists(t, archiver)
+	// Create first default archiver
+	uid := *testUser.ID
+	builder := model.NewArchiverCreateFormBuilder()
+	create := builder.Alias(
+		"My default archiver",
+	).Dummy().IsDefault(true).Build()
+	first := assertArchiverExists(t, uid, *create)
+
+	// Create second default archiver
+	builder = model.NewArchiverCreateFormBuilder()
+	create = builder.Alias(
+		"My second archiver",
+	).Dummy().IsDefault(true).Build()
+	second := assertArchiverExists(t, uid, *create)
 
 	// Refresh first archiver
-	firstArchiver, err := testDB.GetArchiverByID(*firstArchiver.ID)
-	assert.Nil(t, err, "error should be nil")
-	assert.True(t, !firstArchiver.IsDefault, "archiver should not be the default anymore")
+	first, err := testDB.GetArchiverByID(*first.ID)
+	assert.Nil(t, err)
+	assert.False(t, first.IsDefault, "archiver should not be the default anymore")
 
 	// Test default archiver query
-	defaultArchiver, err := testDB.GetArchiverByUserIDAndAlias(*testUser.ID, nil)
-	assert.Nil(t, err, "error should be nil")
-	assert.True(t, defaultArchiver != nil, "default archiver should noty be nil")
-	assert.NotEqual(t, defaultArchiver.ID, firstArchiver.ID, "")
+	defaultArchiver, err := testDB.GetArchiverByUserAndAlias(uid, nil)
+	assert.Nil(t, err)
+	assert.NotNil(t, defaultArchiver)
+	assert.NotEqual(t, *first.ID, *defaultArchiver.ID)
+	assert.Equal(t, *second.ID, *defaultArchiver.ID)
+
+	// Cleanup
+	err = testDB.DeleteArchiverByUser(uid, *first.ID)
+	assert.Nil(t, err)
+	err = testDB.DeleteArchiverByUser(uid, *second.ID)
+	assert.Nil(t, err)
 }

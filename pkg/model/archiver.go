@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	"github.com/brianvoe/gofakeit"
 )
 
 // Archiver structure definition
@@ -18,50 +16,66 @@ type Archiver struct {
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
-// ArchiverForm structure definition
-type ArchiverForm struct {
-	ID        *uint
+// ArchiverCreateForm structure definition
+type ArchiverCreateForm struct {
 	Alias     string
 	IsDefault bool
 	Provider  string
 	Config    string
 }
 
-// ArchiverBuilder is a builder to create an Archiver
-type ArchiverBuilder struct {
-	archiver *Archiver
+// ArchiverUpdateForm structure definition
+type ArchiverUpdateForm struct {
+	ID        uint
+	Alias     *string
+	IsDefault *bool
+	Provider  *string
+	Config    *string
 }
 
-// NewArchiverBuilder creates new Archiver builder instance
-func NewArchiverBuilder() ArchiverBuilder {
-	archiver := &Archiver{}
-	return ArchiverBuilder{archiver}
+// ArchiverCreateFormBuilder is a builder to create an Archiver create form
+type ArchiverCreateFormBuilder struct {
+	form *ArchiverCreateForm
+}
+
+// NewArchiverCreateFormBuilder creates new Archiver builder instance
+func NewArchiverCreateFormBuilder() ArchiverCreateFormBuilder {
+	form := &ArchiverCreateForm{}
+	return ArchiverCreateFormBuilder{form}
 }
 
 // Build creates the archiver
-func (ab *ArchiverBuilder) Build() *Archiver {
-	return ab.archiver
+func (ab *ArchiverCreateFormBuilder) Build() *ArchiverCreateForm {
+	return ab.form
 }
 
-// Random fill archiver with random data
-func (ab *ArchiverBuilder) Random() *ArchiverBuilder {
-	gofakeit.Seed(0)
-	ab.archiver.Alias = gofakeit.Word()
+// Alias set alias
+func (ab *ArchiverCreateFormBuilder) Alias(alias string) *ArchiverCreateFormBuilder {
+	ab.form.Alias = alias
 	return ab
 }
 
-// UserID set archiver user ID
-func (ab *ArchiverBuilder) UserID(userID uint) *ArchiverBuilder {
-	ab.archiver.UserID = &userID
+// Provider set provider
+func (ab *ArchiverCreateFormBuilder) Provider(provider string) *ArchiverCreateFormBuilder {
+	ab.form.Provider = provider
 	return ab
 }
 
-// Form set archiver content using Form object
-func (ab *ArchiverBuilder) Form(form *ArchiverForm) *ArchiverBuilder {
-	ab.archiver.ID = form.ID
-	ab.archiver.Alias = form.Alias
-	ab.archiver.Provider = form.Provider
-	ab.archiver.Config = form.Config
-	ab.archiver.IsDefault = form.IsDefault
+// Config set config
+func (ab *ArchiverCreateFormBuilder) Config(config string) *ArchiverCreateFormBuilder {
+	ab.form.Config = config
+	return ab
+}
+
+// IsDefault set is default
+func (ab *ArchiverCreateFormBuilder) IsDefault(isDefault bool) *ArchiverCreateFormBuilder {
+	ab.form.IsDefault = isDefault
+	return ab
+}
+
+// Dummy fill archiver with test data
+func (ab *ArchiverCreateFormBuilder) Dummy() *ArchiverCreateFormBuilder {
+	ab.form.Provider = "dummy"
+	ab.form.Config = "{\"foo\": \"bar\"}"
 	return ab
 }

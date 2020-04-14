@@ -31,3 +31,12 @@ func GetGQLStringParameter(name string, args map[string]interface{}) *string {
 	}
 	return nil
 }
+
+// GetGQLBoolParameter return GraphQL string parameter
+func GetGQLBoolParameter(name string, args map[string]interface{}) *bool {
+	if val, ok := args[name]; ok {
+		s := val.(bool)
+		return &s
+	}
+	return nil
+}

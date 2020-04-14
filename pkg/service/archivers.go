@@ -15,7 +15,7 @@ import (
 func (reg *Registry) GetArchivers(ctx context.Context) (*[]model.Archiver, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	archivers, err := reg.db.GetArchiversByUserID(uid)
+	archivers, err := reg.db.GetArchiversByUser(uid)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -33,22 +33,23 @@ func (reg *Registry) GetArchiver(ctx context.Context, id uint) (*model.Archiver,
 	archiver, err := reg.db.GetArchiverByID(id)
 	if err != nil || archiver == nil || *archiver.UserID != uid {
 		if err == nil {
-			err = errors.New("Archiver not found")
+			err = ErrArchiverNotFound
 		}
 		return nil, err
 	}
 	return archiver, nil
 }
 
-// CreateOrUpdateArchiver create or update a archiver for current user
-func (reg *Registry) CreateOrUpdateArchiver(ctx context.Context, form model.ArchiverForm) (*model.Archiver, error) {
+// CreateArchiver create an archiver for current user
+func (reg *Registry) CreateArchiver(ctx context.Context, form model.ArchiverCreateForm) (*model.Archiver, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	builder := model.NewArchiverBuilder()
-	archiver := builder.UserID(uid).Form(&form).Build()
-
 	// Validate archiver configuration
-	_, err := archive.NewArchiveProvider(*archiver)
+	dummy := model.Archiver{
+		Provider: form.Provider,
+		Config:   form.Config,
+	}
+	_, err := archive.NewArchiveProvider(dummy)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -56,16 +57,46 @@ func (reg *Registry) CreateOrUpdateArchiver(ctx context.Context, form model.Arch
 		return nil, err
 	}
 
-	result, err := reg.db.CreateOrUpdateArchiver(*archiver)
+	result, err := reg.db.CreateArchiverForUser(uid, form)
 	if err != nil {
-		evt := reg.logger.Info().Err(err).Uint(
+		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
-		).Str("alias", form.Alias)
-		if form.ID != nil {
-			evt.Uint("id", *form.ID).Msg("unable to update archiver")
-		} else {
-			evt.Msg("unable to create archiver")
+		).Str("alias", form.Alias).Msg("unable to create archiver")
+		return nil, err
+	}
+	return result, err
+}
+
+// UpdateArchiver update a archiver for current user
+func (reg *Registry) UpdateArchiver(ctx context.Context, form model.ArchiverUpdateForm) (*model.Archiver, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	if form.Provider != nil && form.Config != nil {
+		// Validate archiver configuration
+		dummy := model.Archiver{
+			Provider: *form.Provider,
+			Config:   *form.Config,
 		}
+		_, err := archive.NewArchiveProvider(dummy)
+		if err != nil {
+			reg.logger.Info().Err(err).Uint(
+				"uid", uid,
+			).Msg("unable to configure archiver")
+			return nil, err
+		}
+	} else {
+		// Provider can only be modify with its configuration
+		form.Provider = nil
+		form.Config = nil
+	}
+
+	result, err := reg.db.UpdateArchiverForUser(uid, form)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Uint(
+			"id", form.ID,
+		).Msg("unable to update archiver")
 		return nil, err
 	}
 	return result, err
@@ -75,18 +106,12 @@ func (reg *Registry) CreateOrUpdateArchiver(ctx context.Context, form model.Arch
 func (reg *Registry) DeleteArchiver(ctx context.Context, id uint) (*model.Archiver, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	archiver, err := reg.db.GetArchiverByID(id)
-	if err != nil || archiver == nil || *archiver.UserID != uid {
-		if err == nil {
-			err = errors.New("archiver not found")
-		}
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Uint("id", id).Msg("unable to delete archiver")
+	archiver, err := reg.GetArchiver(ctx, id)
+	if err != nil {
 		return nil, err
 	}
 
-	err = reg.db.DeleteArchiver(*archiver)
+	err = reg.db.DeleteArchiverByUser(uid, id)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -101,7 +126,7 @@ func (reg *Registry) DeleteArchivers(ctx context.Context, ids []uint) (int64, er
 	uid := getCurrentUserFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
-	nb, err := reg.db.DeleteArchivers(uid, ids)
+	nb, err := reg.db.DeleteArchiversByUser(uid, ids)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -115,7 +140,7 @@ func (reg *Registry) DeleteArchivers(ctx context.Context, ids []uint) (int64, er
 }
 
 // ArchiveArticle archive an article using a archive provider
-func (reg *Registry) ArchiveArticle(ctx context.Context, idArticle uint, archiverAlias *string) error {
+func (reg *Registry) ArchiveArticle(ctx context.Context, idArticle uint, alias *string) error {
 	uid := getCurrentUserFromContext(ctx)
 
 	logger := reg.logger.With().Uint(
@@ -131,11 +156,11 @@ func (reg *Registry) ArchiveArticle(ctx context.Context, idArticle uint, archive
 		return err
 	}
 
-	if archiverAlias != nil {
-		logger = logger.With().Str("archiver", *archiverAlias).Logger()
+	if alias != nil {
+		logger = logger.With().Str("archiver", *alias).Logger()
 	}
 
-	archiverConf, err := reg.db.GetArchiverByUserIDAndAlias(uid, archiverAlias)
+	archiverConf, err := reg.db.GetArchiverByUserAndAlias(uid, alias)
 	if err != nil || archiverConf == nil {
 		if err == nil {
 			err = errors.New("archiver not found")
