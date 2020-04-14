@@ -3,8 +3,20 @@ package model
 import (
 	"time"
 
-	"github.com/ncarlier/readflow/pkg/tooling"
+	"github.com/google/uuid"
 )
+
+// APIKeyCreateForm structure definition
+type APIKeyCreateForm struct {
+	Alias string
+	Token string
+}
+
+// APIKeyUpdateForm structure definition
+type APIKeyUpdateForm struct {
+	ID    uint
+	Alias string
+}
 
 // APIKey structure definition
 type APIKey struct {
@@ -17,31 +29,25 @@ type APIKey struct {
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
 }
 
-// APIKeyBuilder is a builder to create an APIKey
-type APIKeyBuilder struct {
-	apiKey *APIKey
+// APIKeyCreateFormBuilder is a builder to create an APIKey create form
+type APIKeyCreateFormBuilder struct {
+	form *APIKeyCreateForm
 }
 
-// NewAPIKeyBuilder creates new APIKey builder instance
-func NewAPIKeyBuilder() APIKeyBuilder {
-	apiKey := &APIKey{}
-	return APIKeyBuilder{apiKey}
+// NewAPIKeyCreateFormBuilder creates new APIKey builder instance
+func NewAPIKeyCreateFormBuilder() APIKeyCreateFormBuilder {
+	form := &APIKeyCreateForm{}
+	return APIKeyCreateFormBuilder{form}
 }
 
 // Build creates the apiKey
-func (ab *APIKeyBuilder) Build() *APIKey {
-	ab.apiKey.Token, _ = tooling.NewUUID()
-	return ab.apiKey
-}
-
-// UserID set apiKey user ID
-func (ab *APIKeyBuilder) UserID(userID uint) *APIKeyBuilder {
-	ab.apiKey.UserID = userID
-	return ab
+func (ab *APIKeyCreateFormBuilder) Build() *APIKeyCreateForm {
+	ab.form.Token = uuid.New().String()
+	return ab.form
 }
 
 // Alias set apiKey alias
-func (ab *APIKeyBuilder) Alias(alias string) *APIKeyBuilder {
-	ab.apiKey.Alias = alias
+func (ab *APIKeyCreateFormBuilder) Alias(alias string) *APIKeyCreateFormBuilder {
+	ab.form.Alias = alias
 	return ab
 }

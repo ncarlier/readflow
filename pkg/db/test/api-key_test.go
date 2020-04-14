@@ -3,60 +3,65 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-func assertAPIKeyExists(t *testing.T, userID uint, alias string) *model.APIKey {
-	apiKey, err := testDB.GetAPIKeyByUserIDAndAlias(userID, alias)
-	assert.Nil(t, err, "error on getting apiKey by user and alias should be nil")
+func assertAPIKeyExists(t *testing.T, uid uint, alias string) *model.APIKey {
+	apiKey, err := testDB.GetAPIKeyByUserAndAlias(uid, alias)
+	assert.Nil(t, err)
 	if apiKey != nil {
 		return apiKey
 	}
 
-	builder := model.NewAPIKeyBuilder()
-	apiKey = builder.UserID(userID).Alias(alias).Build()
+	builder := model.NewAPIKeyCreateFormBuilder()
+	form := builder.Alias(alias).Build()
 
-	apiKey, err = testDB.CreateOrUpdateAPIKey(*apiKey)
-	assert.Nil(t, err, "error on create/update apiKey should be nil")
-	assert.NotNil(t, apiKey, "apiKey shouldn't be nil")
-	assert.NotNil(t, apiKey.ID, "apiKey ID shouldn't be nil")
-	assert.Equal(t, alias, apiKey.Alias, "")
-	assert.True(t, apiKey.Token != "", "apiKey token shouldn't be empty")
+	apiKey, err = testDB.CreateAPIKeyForUser(uid, *form)
+	assert.Nil(t, err)
+	assert.NotNil(t, apiKey)
+	assert.NotNil(t, apiKey.ID)
+	assert.Equal(t, alias, apiKey.Alias)
+	assert.NotEqual(t, "", apiKey.Token)
 	return apiKey
 }
 func TestCreateOrUpdateAPIKey(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
+	uid := *testUser.ID
 	alias := "My test apiKey"
 
-	assertAPIKeyExists(t, *testUser.ID, alias)
+	assertAPIKeyExists(t, uid, alias)
 }
 
 func TestDeleteAPIKey(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
+	uid := *testUser.ID
 	alias := "My apiKey"
 
 	// Assert apiKey exists
-	apiKey := assertAPIKeyExists(t, *testUser.ID, alias)
+	apiKey := assertAPIKeyExists(t, uid, alias)
 
-	err := testDB.DeleteAPIKey(*apiKey)
-	assert.Nil(t, err, "error on delete should be nil")
+	err := testDB.DeleteAPIKeyByUser(uid, *apiKey.ID)
+	assert.Nil(t, err)
 
 	apiKey, err = testDB.GetAPIKeyByToken(apiKey.Token)
-	assert.Nil(t, err, "error should be nil")
-	assert.True(t, apiKey == nil, "apiKey should be nil")
+	assert.Nil(t, err)
+	assert.Nil(t, apiKey)
 }
 
 func TestGetAPIKeysByUserID(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	apiKeys, err := testDB.GetAPIKeysByUserID(*testUser.ID)
-	assert.Nil(t, err, "error should be nil")
-	assert.NotNil(t, apiKeys, "apiKeys shouldn't be nil")
-	assert.True(t, len(apiKeys) >= 0, "apiKeys shouldn't be empty")
+	uid := *testUser.ID
+
+	apiKeys, err := testDB.GetAPIKeysByUser(uid)
+	assert.Nil(t, err)
+	assert.NotNil(t, apiKeys)
+	assert.True(t, len(apiKeys) >= 0)
 }

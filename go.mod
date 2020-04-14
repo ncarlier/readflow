@@ -12,6 +12,7 @@ require (
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-shiori/go-readability v0.0.0-20190324095406-2beec02f3f1e
 	github.com/go-sql-driver/mysql v1.4.1 // indirect
+	github.com/google/uuid v1.1.1
 	github.com/graphql-go/graphql v0.7.7
 	github.com/graphql-go/handler v0.2.3
 	github.com/kr/pretty v0.1.0 // indirect

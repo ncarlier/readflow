@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 
@@ -18,7 +17,7 @@ func (reg *Registry) GetAPIKeyByToken(token string) (*model.APIKey, error) {
 func (reg *Registry) GetAPIKeys(ctx context.Context) (*[]model.APIKey, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	apiKeys, err := reg.db.GetAPIKeysByUserID(uid)
+	apiKeys, err := reg.db.GetAPIKeysByUser(uid)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -36,30 +35,38 @@ func (reg *Registry) GetAPIKey(ctx context.Context, id uint) (*model.APIKey, err
 	apiKey, err := reg.db.GetAPIKeyByID(id)
 	if err != nil || apiKey == nil || apiKey.UserID != uid {
 		if err == nil {
-			err = errors.New("API key not found")
+			err = ErrAPIKeyNotFound
 		}
 		return nil, err
 	}
 	return apiKey, nil
 }
 
-// CreateOrUpdateAPIKey create or update an API key for current user
-func (reg *Registry) CreateOrUpdateAPIKey(ctx context.Context, id *uint, alias string) (*model.APIKey, error) {
+// CreateAPIKey create an API key for current user
+func (reg *Registry) CreateAPIKey(ctx context.Context, form model.APIKeyCreateForm) (*model.APIKey, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	builder := model.NewAPIKeyBuilder()
-	apiKey := builder.UserID(uid).Alias(alias).Build()
-	apiKey.ID = id
-	result, err := reg.db.CreateOrUpdateAPIKey(*apiKey)
+	result, err := reg.db.CreateAPIKeyForUser(uid, form)
 	if err != nil {
-		evt := reg.logger.Info().Err(err).Uint(
+		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
-		).Str("alias", alias)
-		if id != nil {
-			evt.Uint("id", *id).Msg("unable to update API key")
-		} else {
-			evt.Msg("unable to create API key")
-		}
+		).Str("alias", form.Alias).Msg("unable to create API key")
+		return nil, err
+	}
+	return result, err
+}
+
+// UpdateAPIKey update an API key for current user
+func (reg *Registry) UpdateAPIKey(ctx context.Context, form model.APIKeyUpdateForm) (*model.APIKey, error) {
+	uid := getCurrentUserFromContext(ctx)
+
+	result, err := reg.db.UpdateAPIKeyForUser(uid, form)
+	if err != nil {
+		reg.logger.Info().Err(err).Uint(
+			"uid", uid,
+		).Str("alias", form.Alias).Uint(
+			"id", form.ID,
+		).Msg("unable to update API key")
 		return nil, err
 	}
 	return result, err
@@ -69,18 +76,12 @@ func (reg *Registry) CreateOrUpdateAPIKey(ctx context.Context, id *uint, alias s
 func (reg *Registry) DeleteAPIKey(ctx context.Context, id uint) (*model.APIKey, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	apiKey, err := reg.db.GetAPIKeyByID(id)
-	if err != nil || apiKey == nil || apiKey.UserID != uid {
-		if err == nil {
-			err = errors.New("API key not found")
-		}
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Uint("id", id).Msg("unable to delete API key")
+	apiKey, err := reg.GetAPIKey(ctx, id)
+	if err != nil {
 		return nil, err
 	}
 
-	err = reg.db.DeleteAPIKey(*apiKey)
+	err = reg.db.DeleteAPIKeyByUser(uid, id)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -95,7 +96,7 @@ func (reg *Registry) DeleteAPIKeys(ctx context.Context, ids []uint) (int64, erro
 	uid := getCurrentUserFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
-	nb, err := reg.db.DeleteAPIKeys(uid, ids)
+	nb, err := reg.db.DeleteAPIKeysByUser(uid, ids)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,

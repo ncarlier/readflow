@@ -3,6 +3,7 @@ package schema
 import (
 	"errors"
 
+	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/tooling"
 
 	"github.com/graphql-go/graphql"
@@ -81,13 +82,17 @@ var createOrUpdateAPIKeyMutationField = &graphql.Field{
 }
 
 func createOrUpdateAPIKeyResolver(p graphql.ResolveParams) (interface{}, error) {
-	var id *uint
-	if val, ok := tooling.ConvGQLStringToUint(p.Args["id"]); ok {
-		id = &val
+	alias := tooling.GetGQLStringParameter("alias", p.Args)
+	if id, ok := tooling.ConvGQLStringToUint(p.Args["id"]); ok {
+		form := model.APIKeyUpdateForm{
+			ID:    id,
+			Alias: *alias,
+		}
+		return service.Lookup().UpdateAPIKey(p.Context, form)
 	}
-	alias, _ := p.Args["alias"].(string)
-
-	return service.Lookup().CreateOrUpdateAPIKey(p.Context, id, alias)
+	builder := model.NewAPIKeyCreateFormBuilder()
+	form := builder.Alias(*alias).Build()
+	return service.Lookup().CreateAPIKey(p.Context, *form)
 }
 
 var deleteAPIKeysMutationField = &graphql.Field{

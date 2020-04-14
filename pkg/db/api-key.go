@@ -6,9 +6,10 @@ import "github.com/ncarlier/readflow/pkg/model"
 type APIKeyRepository interface {
 	GetAPIKeyByID(id uint) (*model.APIKey, error)
 	GetAPIKeyByToken(token string) (*model.APIKey, error)
-	GetAPIKeyByUserIDAndAlias(userID uint, alias string) (*model.APIKey, error)
-	GetAPIKeysByUserID(userID uint) ([]model.APIKey, error)
-	CreateOrUpdateAPIKey(apiKey model.APIKey) (*model.APIKey, error)
-	DeleteAPIKey(apiKey model.APIKey) error
-	DeleteAPIKeys(uid uint, ids []uint) (int64, error)
+	GetAPIKeyByUserAndAlias(uid uint, alias string) (*model.APIKey, error)
+	GetAPIKeysByUser(uid uint) ([]model.APIKey, error)
+	CreateAPIKeyForUser(uid uint, form model.APIKeyCreateForm) (*model.APIKey, error)
+	UpdateAPIKeyForUser(uid uint, form model.APIKeyUpdateForm) (*model.APIKey, error)
+	DeleteAPIKeyByUser(uid uint, id uint) error
+	DeleteAPIKeysByUser(uid uint, ids []uint) (int64, error)
 }
