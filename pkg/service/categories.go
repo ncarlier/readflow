@@ -172,9 +172,10 @@ func validateCategoryRule(rule *string) error {
 		return nil
 	}
 	// Create dummy category in order to validate rule
-	builder := model.NewCategoryBuilder()
-	category := builder.Rule(*rule).Build()
+	category := model.Category{
+		Rule: rule,
+	}
 	// Validate category's rule
-	_, err := ruleengine.NewRuleProcessor(*category)
+	_, err := ruleengine.NewRuleProcessor(category)
 	return err
 }

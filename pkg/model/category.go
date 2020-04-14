@@ -2,6 +2,8 @@ package model
 
 import (
 	"time"
+
+	"github.com/brianvoe/gofakeit"
 )
 
 // Category structure definition
@@ -14,30 +16,44 @@ type Category struct {
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
-// CategoryBuilder is a builder to create an Category
-type CategoryBuilder struct {
-	category *Category
+// CategoryCreateForm structure definition
+type CategoryCreateForm struct {
+	Title string
+	Rule  *string
 }
 
-// NewCategoryBuilder creates new Category builder instance
-func NewCategoryBuilder() CategoryBuilder {
-	category := &Category{}
-	return CategoryBuilder{category}
+// CategoryUpdateForm structure definition
+type CategoryUpdateForm struct {
+	ID    uint
+	Title *string
+	Rule  *string
 }
 
-// Build creates the category
-func (cb *CategoryBuilder) Build() *Category {
-	return cb.category
+// CategoryCreateFormBuilder is a builder to create an CategoryCreateForm
+type CategoryCreateFormBuilder struct {
+	form *CategoryCreateForm
 }
 
-// Rule set category rule
-func (cb *CategoryBuilder) Rule(rule string) *CategoryBuilder {
-	cb.category.Rule = &rule
+// NewCategoryCreateFormBuilder creates new Category create form builder instance
+func NewCategoryCreateFormBuilder() CategoryCreateFormBuilder {
+	form := &CategoryCreateForm{}
+	return CategoryCreateFormBuilder{form}
+}
+
+// Build creates the category create form
+func (cb *CategoryCreateFormBuilder) Build() *CategoryCreateForm {
+	return cb.form
+}
+
+// Random fill category with random data
+func (cb *CategoryCreateFormBuilder) Random() *CategoryCreateFormBuilder {
+	gofakeit.Seed(0)
+	cb.form.Title = gofakeit.Word()
 	return cb
 }
 
-// UserID set category user ID
-func (cb *CategoryBuilder) UserID(userID uint) *CategoryBuilder {
-	cb.category.UserID = &userID
+// Rule set category rule
+func (cb *CategoryCreateFormBuilder) Rule(rule string) *CategoryCreateFormBuilder {
+	cb.form.Rule = &rule
 	return cb
 }
