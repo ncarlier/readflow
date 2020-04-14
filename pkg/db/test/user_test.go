@@ -3,7 +3,7 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateOrUpdateUser(t *testing.T) {
@@ -17,8 +17,8 @@ func TestCreateOrUpdateUser(t *testing.T) {
 	user.Enabled = true
 	user.Plan = "test"
 	user, err := testDB.CreateOrUpdateUser(*user)
-	assert.Nil(t, err, "error should be nil")
-	assert.True(t, user != nil, "user should not be nil")
+	assert.Nil(t, err)
+	assert.True(t, user != nil)
 	assert.True(t, user.Enabled, "user should be enabled")
 	assert.Equal(t, "test", user.Plan, "unexpected user plan")
 }
@@ -31,10 +31,9 @@ func TestDeleteUser(t *testing.T) {
 	user := assertUserExists(t, username)
 
 	err := testDB.DeleteUser(*user)
-	assert.Nil(t, err, "error should be nil")
+	assert.Nil(t, err)
 
 	user, err = testDB.GetUserByUsername(username)
-	assert.Nil(t, err, "error should be nil")
-	// assert.Nil(t, user, "user should be nil") // NOT WORKING
-	assert.True(t, user == nil, "user should be nil")
+	assert.Nil(t, err)
+	assert.Nil(t, user)
 }

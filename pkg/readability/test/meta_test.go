@@ -4,7 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/readflow/pkg/readability"
 )
 
@@ -20,11 +21,11 @@ var testCase = `<head>
 
 func TestExtract(t *testing.T) {
 	metas, err := readability.ExtractMetas(strings.NewReader(testCase))
-	assert.Nil(t, err, "error should be nil")
-	assert.Equal(t, 6, len(metas), "")
-	assert.Equal(t, "", metas["og:title"].Name, "")
-	assert.Equal(t, "og:title", metas["og:title"].Property, "")
-	assert.Equal(t, "test case", metas["og:title"].Content, "")
-	assert.Equal(t, "twitter description", *metas.GetContent("twitter:description", "description"), "")
-	assert.Equal(t, "iso-8859-1", metas["charset"].Content, "")
+	assert.Nil(t, err)
+	assert.Equal(t, 6, len(metas))
+	assert.Equal(t, "", metas["og:title"].Name)
+	assert.Equal(t, "og:title", metas["og:title"].Property)
+	assert.Equal(t, "test case", metas["og:title"].Content)
+	assert.Equal(t, "twitter description", *metas.GetContent("twitter:description", "description"))
+	assert.Equal(t, "iso-8859-1", metas["charset"].Content)
 }

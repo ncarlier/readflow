@@ -5,7 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	configflag "github.com/ncarlier/readflow/pkg/config/flag"
 )
 
@@ -23,14 +24,14 @@ func TestFlagBinding(t *testing.T) {
 	conf := &sampleConfig{}
 	err := configflag.Bind(conf, "FOO")
 	flag.CommandLine.Parse([]string{"-override", "test", "-override-array", "a", "-override-array", "b"})
-	assert.Nil(t, err, "error should be nil")
-	assert.Equal(t, "foo", conf.Label, "")
-	assert.Equal(t, "test", conf.Override, "")
-	assert.Equal(t, 2, conf.Count, "")
-	assert.Equal(t, false, conf.Debug, "")
-	assert.Equal(t, time.Second*30, conf.Timer, "")
-	assert.Equal(t, 2, len(conf.Array), "")
-	assert.Equal(t, "foo", conf.Array[0], "")
-	assert.Equal(t, 2, len(conf.OverrideArray), "")
-	assert.Equal(t, "a", conf.OverrideArray[0], "")
+	assert.Nil(t, err)
+	assert.Equal(t, "foo", conf.Label)
+	assert.Equal(t, "test", conf.Override)
+	assert.Equal(t, 2, conf.Count)
+	assert.Equal(t, false, conf.Debug)
+	assert.Equal(t, time.Second*30, conf.Timer)
+	assert.Equal(t, 2, len(conf.Array))
+	assert.Equal(t, "foo", conf.Array[0])
+	assert.Equal(t, 2, len(conf.OverrideArray))
+	assert.Equal(t, "a", conf.OverrideArray[0])
 }

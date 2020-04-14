@@ -4,7 +4,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/readflow/pkg/db"
 	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -20,7 +21,7 @@ var testUser *model.User
 
 func assertUserExists(t *testing.T, username string) *model.User {
 	user, err := testDB.GetUserByUsername(username)
-	assert.Nil(t, err, "error getting user by username should be nil")
+	assert.Nil(t, err)
 	if user != nil {
 		return user
 	}
@@ -29,9 +30,9 @@ func assertUserExists(t *testing.T, username string) *model.User {
 		Username: username,
 	}
 	user, err = testDB.CreateOrUpdateUser(*user)
-	assert.Nil(t, err, "error on create/update user should be nil")
-	assert.NotNil(t, user, "user shouldn't be nil")
-	assert.NotNil(t, user.ID, "user ID shouldn't be nil")
+	assert.Nil(t, err)
+	assert.NotNil(t, user)
+	assert.NotNil(t, user.ID)
 	assert.Equal(t, username, user.Username, "")
 	return user
 }
