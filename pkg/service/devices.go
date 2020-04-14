@@ -15,7 +15,7 @@ import (
 func (reg *Registry) GetDevices(ctx context.Context) (*[]model.Device, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	devices, err := reg.db.GetDevicesByUserID(uid)
+	devices, err := reg.db.GetDevicesByUser(uid)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -33,7 +33,7 @@ func (reg *Registry) GetDevice(ctx context.Context, id uint) (*model.Device, err
 	device, err := reg.db.GetDeviceByID(id)
 	if err != nil || device == nil || *device.UserID != uid {
 		if err == nil {
-			err = errors.New("Device not found")
+			err = ErrDeviceNotFound
 		}
 		return nil, err
 	}
@@ -69,18 +69,12 @@ func (reg *Registry) CreateDevice(ctx context.Context, sub string) (*model.Devic
 func (reg *Registry) DeleteDevice(ctx context.Context, id uint) (*model.Device, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	device, err := reg.db.GetDeviceByID(id)
-	if err != nil || device == nil || *device.UserID != uid {
-		if err == nil {
-			err = errors.New("device not found")
-		}
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Uint("id", id).Msg("unable to delete device")
+	device, err := reg.GetDevice(ctx, id)
+	if err != nil {
 		return nil, err
 	}
 
-	err = reg.db.DeleteDevice(*device)
+	err = reg.db.DeleteDevice(id)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -95,7 +89,7 @@ func (reg *Registry) DeleteDevices(ctx context.Context, ids []uint) (int64, erro
 	uid := getCurrentUserFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
-	nb, err := reg.db.DeleteDevices(uid, ids)
+	nb, err := reg.db.DeleteDevicesByUser(uid, ids)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,

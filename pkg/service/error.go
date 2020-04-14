@@ -11,5 +11,8 @@ var ErrAPIKeyNotFound = errors.New("API key not found")
 // ErrArchiverNotFound if an archiver is not found
 var ErrArchiverNotFound = errors.New("archiver not found")
 
+// ErrDeviceNotFound if a device is not found
+var ErrDeviceNotFound = errors.New("device not found")
+
 // ErrUserQuotaReached if an user reach its quota
 var ErrUserQuotaReached = errors.New("user quota reached")

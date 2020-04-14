@@ -42,7 +42,7 @@ func mapRowToDevice(row *sql.Row) (*model.Device, error) {
 
 // CreateDevice create a device
 func (pg *DB) CreateDevice(device model.Device) (*model.Device, error) {
-	dev, err := pg.GetDeviceByUserIDAndKey(*device.UserID, device.Key)
+	dev, err := pg.GetDeviceByUserAndKey(*device.UserID, device.Key)
 	if err != nil || dev != nil {
 		return dev, err
 	}
@@ -77,8 +77,8 @@ func (pg *DB) GetDeviceByID(id uint) (*model.Device, error) {
 	return mapRowToDevice(row)
 }
 
-// GetDeviceByUserIDAndKey get an device from the DB
-func (pg *DB) GetDeviceByUserIDAndKey(uid uint, key string) (*model.Device, error) {
+// GetDeviceByUserAndKey get an device from the DB
+func (pg *DB) GetDeviceByUserAndKey(uid uint, key string) (*model.Device, error) {
 	query, args, _ := pg.psql.Select(deviceColumns...).From(
 		"devices",
 	).Where(
@@ -91,8 +91,8 @@ func (pg *DB) GetDeviceByUserIDAndKey(uid uint, key string) (*model.Device, erro
 	return mapRowToDevice(row)
 }
 
-// GetDevicesByUserID returns devices of an user from DB
-func (pg *DB) GetDevicesByUserID(uid uint) ([]model.Device, error) {
+// GetDevicesByUser returns devices of an user from DB
+func (pg *DB) GetDevicesByUser(uid uint) ([]model.Device, error) {
 	query, args, _ := pg.psql.Select(deviceColumns...).From(
 		"devices",
 	).Where(
@@ -132,9 +132,9 @@ func (pg *DB) GetDevicesByUserID(uid uint) ([]model.Device, error) {
 }
 
 // DeleteDevice removes an device from the DB
-func (pg *DB) DeleteDevice(device model.Device) error {
+func (pg *DB) DeleteDevice(id uint) error {
 	query, args, _ := pg.psql.Delete("devices").Where(
-		sq.Eq{"id": device.ID},
+		sq.Eq{"id": id},
 	).ToSql()
 	result, err := pg.db.Exec(query, args...)
 	if err != nil {
@@ -153,8 +153,8 @@ func (pg *DB) DeleteDevice(device model.Device) error {
 	return nil
 }
 
-// DeleteDevices removes devices from the DB
-func (pg *DB) DeleteDevices(uid uint, ids []uint) (int64, error) {
+// DeleteDevicesByUser removes devices from the DB
+func (pg *DB) DeleteDevicesByUser(uid uint, ids []uint) (int64, error) {
 	query, args, _ := pg.psql.Delete("devices").Where(
 		sq.Eq{"user_id": uid},
 	).Where(
