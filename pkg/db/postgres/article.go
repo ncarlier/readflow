@@ -3,12 +3,12 @@ package postgres
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/ncarlier/readflow/pkg/model"
+	"github.com/ncarlier/readflow/pkg/tooling"
 )
 
 var articleColumns = []string{
@@ -71,73 +71,69 @@ func mapRowsToArticle(rows *sql.Rows, article *model.Article) error {
 	)
 }
 
-func (pg *DB) createArticle(article model.Article) (*model.Article, error) {
-	row := pg.db.QueryRow(fmt.Sprintf(`
-		INSERT INTO articles (
-				user_id,
-				category_id,
-				title,
-				text,
-				html,
-				url,
-				image,
-				hash,
-				status,
-				published_at
-			) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-			RETURNING %s
-		`, strings.Join(articleColumns, ",")),
-		article.UserID,
-		article.CategoryID,
-		article.Title,
-		article.Text,
-		article.HTML,
-		article.URL,
-		article.Image,
-		article.Hash,
-		article.Status,
-		article.PublishedAt,
-	)
-	return mapRowToArticle(row)
-}
-
-func (pg *DB) updateArticle(article model.Article) (*model.Article, error) {
-	row := pg.db.QueryRow(fmt.Sprintf(`
-		UPDATE articles SET
-			category_id = $3,
-			title = $4,
-			text = $5,
-			html = $6,
-			url = $7,
-			image = $8,
-			hash = $9,
-			status = $10,
-			published_at = $11,
-			updated_at=NOW()
-			WHERE id=$1 AND user_id=$2
-			RETURNING %s
-		`, strings.Join(articleColumns, ",")),
-		article.ID,
-		article.UserID,
-		article.CategoryID,
-		article.Title,
-		article.Text,
-		article.HTML,
-		article.URL,
-		article.Image,
-		article.Hash,
-		article.Status,
-		article.PublishedAt,
-	)
-	return mapRowToArticle(row)
-}
-
-// CreateOrUpdateArticle creates or updates a article into the DB
-func (pg *DB) CreateOrUpdateArticle(article model.Article) (*model.Article, error) {
-	if article.ID != nil {
-		return pg.updateArticle(article)
+// CreateArticleForUser creates an article into the DB
+func (pg *DB) CreateArticleForUser(uid uint, form model.ArticleCreateForm) (*model.Article, error) {
+	payload := form.Title
+	if form.URL != nil {
+		payload += *form.URL
 	}
-	return pg.createArticle(article)
+	if form.HTML != nil {
+		payload += *form.HTML
+	}
+	hash := tooling.Hash(payload)
+	query, args, _ := pg.psql.Insert(
+		"articles",
+	).Columns(
+		"user_id",
+		"category_id",
+		"title",
+		"text",
+		"html",
+		"url",
+		"image",
+		"hash",
+		"status",
+		"published_at",
+		"updated_at",
+	).Values(
+		uid,
+		form.CategoryID,
+		form.Title,
+		form.Text,
+		form.HTML,
+		form.URL,
+		form.Image,
+		hash,
+		"unread",
+		form.PublishedAt,
+		"NOW()",
+	).Suffix(
+		"RETURNING " + strings.Join(articleColumns, ","),
+	).ToSql()
+	row := pg.db.QueryRow(query, args...)
+	return mapRowToArticle(row)
+}
+
+// UpdateArticleForUser updates an article into the DB
+func (pg *DB) UpdateArticleForUser(uid uint, form model.ArticleUpdateForm) (*model.Article, error) {
+	update := map[string]interface{}{
+		"updated_at": "NOW()",
+	}
+	if form.Status != nil {
+		update["status"] = *form.Status
+	}
+	query, args, _ := pg.psql.Update(
+		"articles",
+	).SetMap(update).Where(
+		sq.Eq{"id": form.ID},
+	).Where(
+		sq.Eq{"user_id": uid},
+	).Suffix(
+		"RETURNING " + strings.Join(articleColumns, ","),
+	).ToSql()
+
+	row := pg.db.QueryRow(query, args...)
+	return mapRowToArticle(row)
 }
 
 // GetArticleByID returns an article by its ID from DB
@@ -151,12 +147,12 @@ func (pg *DB) GetArticleByID(id uint) (*model.Article, error) {
 }
 
 // DeleteArticle remove an article from the DB
-func (pg *DB) DeleteArticle(article model.Article) error {
+func (pg *DB) DeleteArticle(id uint) error {
 	result, err := pg.db.Exec(`
 		DELETE FROM articles
 			WHERE ID=$1
 		`,
-		article.ID,
+		id,
 	)
 	if err != nil {
 		return err
@@ -174,8 +170,8 @@ func (pg *DB) DeleteArticle(article model.Article) error {
 	return nil
 }
 
-// MarkAllArticlesAsRead set status to read for all articles of an user and a category
-func (pg *DB) MarkAllArticlesAsRead(uid uint, categoryID *uint) (int64, error) {
+// MarkAllArticlesAsReadByUser set status to read for all articles of an user and a category
+func (pg *DB) MarkAllArticlesAsReadByUser(uid uint, categoryID *uint) (int64, error) {
 	update := map[string]interface{}{
 		"status":     "read",
 		"updated_at": "NOW()",
@@ -223,8 +219,8 @@ func (pg *DB) DeleteReadArticlesOlderThan(delay time.Duration) (int64, error) {
 	return result.RowsAffected()
 }
 
-// DeleteAllReadArticles remove all read articles from the DB
-func (pg *DB) DeleteAllReadArticles(uid uint) (int64, error) {
+// DeleteAllReadArticlesByUser remove all read articles from the DB
+func (pg *DB) DeleteAllReadArticlesByUser(uid uint) (int64, error) {
 	query, args, _ := pg.psql.Delete(
 		"articles",
 	).Where(

@@ -3,13 +3,12 @@ package service
 import (
 	"context"
 
-	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
-
 	"github.com/ncarlier/readflow/pkg/model"
+	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
 )
 
 // ProcessArticleByRuleEngine apply user's rules on the article
-func (reg *Registry) ProcessArticleByRuleEngine(ctx context.Context, article *model.ArticleForm) error {
+func (reg *Registry) ProcessArticleByRuleEngine(ctx context.Context, article *model.ArticleCreateForm) error {
 	uid := getCurrentUserFromContext(ctx)
 	// Retrieve pipeline from cache
 	pipeline := reg.ruleEngineCache.Get(uid)

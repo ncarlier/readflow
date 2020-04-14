@@ -17,7 +17,7 @@ func TestCreateArticle(t *testing.T) {
 
 	// Create new article
 	url := "https://github.com/ncarlier/readflow"
-	req := model.ArticleForm{
+	req := model.ArticleCreateForm{
 		URL: &url,
 	}
 	opts := service.ArticleCreationOptions{}
@@ -49,7 +49,7 @@ func TestCreateArticleInCategory(t *testing.T) {
 	assert.Equal(t, uid, *cat.UserID)
 
 	// Create article
-	req := model.ArticleForm{
+	req := model.ArticleCreateForm{
 		Title:      "TestCreateArticleInCategory",
 		CategoryID: cat.ID,
 	}
@@ -75,7 +75,7 @@ func TestCreateArticleWithRuleEngine(t *testing.T) {
 	assert.Equal(t, uid, *cat.UserID)
 
 	// Create article
-	req := model.ArticleForm{
+	req := model.ArticleCreateForm{
 		Title: "TestCreateArticleWithRuleEngine",
 	}
 	opts := service.ArticleCreationOptions{}
@@ -92,7 +92,7 @@ func TestCreateArticlesExceedingQuota(t *testing.T) {
 
 	// Create 6 articles (quota is 5)
 	for i := 1; i <= 6; i++ {
-		req := model.ArticleForm{
+		req := model.ArticleCreateForm{
 			Title: fmt.Sprintf("TestCreateArticlesExceedingQuota-%d", i),
 		}
 		opts := service.ArticleCreationOptions{}

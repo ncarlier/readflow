@@ -15,7 +15,7 @@ func (reg *Registry) CountCurrentUserArticles(ctx context.Context, req model.Art
 
 // CountUserArticles count user articles
 func (reg *Registry) CountUserArticles(ctx context.Context, uid uint, req model.ArticlesPageRequest) (uint, error) {
-	result, err := reg.db.CountArticlesByUserID(uid, req)
+	result, err := reg.db.CountArticlesByUser(uid, req)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -29,7 +29,7 @@ func (reg *Registry) CountUserArticles(ctx context.Context, uid uint, req model.
 func (reg *Registry) GetArticles(ctx context.Context, req model.ArticlesPageRequest) (*model.ArticlesPageResponse, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	result, err := reg.db.GetPaginatedArticlesByUserID(uid, req)
+	result, err := reg.db.GetPaginatedArticlesByUser(uid, req)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -66,9 +66,12 @@ func (reg *Registry) UpdateArticleStatus(ctx context.Context, id uint, status st
 		return nil, err
 	}
 
-	article.Status = status
-	// TODO use more direct DAO
-	article, err = reg.db.CreateOrUpdateArticle(*article)
+	form := model.ArticleUpdateForm{
+		ID:     id,
+		Status: &status,
+	}
+
+	article, err = reg.db.UpdateArticleForUser(uid, form)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -78,7 +81,7 @@ func (reg *Registry) UpdateArticleStatus(ctx context.Context, id uint, status st
 	// TODO maybe too verbose... debug level is maybe an option here
 	reg.logger.Info().Uint(
 		"uid", uid,
-	).Uint("id", *article.ID).Str("status", article.Status).Msg("article status updated")
+	).Uint("id", id).Str("status", article.Status).Msg("article status updated")
 
 	return article, nil
 }
@@ -87,7 +90,7 @@ func (reg *Registry) UpdateArticleStatus(ctx context.Context, id uint, status st
 func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, categoryID *uint) (int64, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	nb, err := reg.db.MarkAllArticlesAsRead(uid, categoryID)
+	nb, err := reg.db.MarkAllArticlesAsReadByUser(uid, categoryID)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -105,7 +108,7 @@ func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, categoryID *uint
 func (reg *Registry) CleanHistory(ctx context.Context) (int64, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	nb, err := reg.db.DeleteAllReadArticles(uid)
+	nb, err := reg.db.DeleteAllReadArticlesByUser(uid)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,

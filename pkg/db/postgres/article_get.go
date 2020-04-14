@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	sq "github.com/Masterminds/squirrel"
+
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
@@ -26,8 +27,8 @@ func (pg *DB) CountArticles(status string) (uint, error) {
 	return count, nil
 }
 
-// CountArticlesByUserID returns total nb of articles of an user from the DB
-func (pg *DB) CountArticlesByUserID(uid uint, req model.ArticlesPageRequest) (uint, error) {
+// CountArticlesByUser returns total nb of articles of an user from the DB
+func (pg *DB) CountArticlesByUser(uid uint, req model.ArticlesPageRequest) (uint, error) {
 	counter := pg.psql.Select("count(*)").From(
 		"articles",
 	).Where(sq.Eq{"user_id": uid})
@@ -49,9 +50,9 @@ func (pg *DB) CountArticlesByUserID(uid uint, req model.ArticlesPageRequest) (ui
 	return count, nil
 }
 
-// GetPaginatedArticlesByUserID returns a paginated list of user's articles from the DB
-func (pg *DB) GetPaginatedArticlesByUserID(uid uint, req model.ArticlesPageRequest) (*model.ArticlesPageResponse, error) {
-	total, err := pg.CountArticlesByUserID(uid, req)
+// GetPaginatedArticlesByUser returns a paginated list of user's articles from the DB
+func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest) (*model.ArticlesPageResponse, error) {
+	total, err := pg.CountArticlesByUser(uid, req)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +100,7 @@ func (pg *DB) GetPaginatedArticlesByUserID(uid uint, req model.ArticlesPageReque
 		}
 		if index <= req.Limit {
 			result.Entries = append(result.Entries, article)
-			result.EndCursor = *article.ID
+			result.EndCursor = article.ID
 		} else {
 			result.HasNext = true
 		}

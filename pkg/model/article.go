@@ -6,11 +6,10 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit"
-	"github.com/ncarlier/readflow/pkg/tooling"
 )
 
-// ArticleForm API structure definition
-type ArticleForm struct {
+// ArticleCreateForm structure definition
+type ArticleCreateForm struct {
 	Title       string     `json:"title,omitempty"`
 	Text        *string    `json:"text,omitempty"`
 	HTML        *string    `json:"html,omitempty"`
@@ -21,6 +20,12 @@ type ArticleForm struct {
 	Tags        *string    `json:"tags,omitempty"`
 }
 
+// ArticleUpdateForm structure definition
+type ArticleUpdateForm struct {
+	ID     uint
+	Status *string
+}
+
 // Articles structure definition
 type Articles struct {
 	Articles []*Article
@@ -29,7 +34,7 @@ type Articles struct {
 
 // Article structure definition
 type Article struct {
-	ID          *uint      `json:"id,omitempty"`
+	ID          uint       `json:"id,omitempty"`
 	UserID      uint       `json:"user_id,omitempty"`
 	CategoryID  *uint      `json:"category_id,omitempty"`
 	Title       string     `json:"title,omitempty"`
@@ -72,99 +77,61 @@ type ArticleStatusResponse struct {
 	All     *Category `json:"_all,omitempty"`
 }
 
-// ArticleBuilder is a builder to create an Article
-type ArticleBuilder struct {
-	article *Article
+// ArticleCreateFormBuilder is a builder to create an Article create form
+type ArticleCreateFormBuilder struct {
+	form *ArticleCreateForm
 }
 
-// NewArticleBuilder creates new Article builder instance
-func NewArticleBuilder() ArticleBuilder {
-	article := &Article{}
-	return ArticleBuilder{article}
+// NewArticleCreateFormBuilder creates new Article create form builder instance
+func NewArticleCreateFormBuilder() ArticleCreateFormBuilder {
+	form := &ArticleCreateForm{}
+	return ArticleCreateFormBuilder{form}
 }
 
-// Build creates the article
-func (ab *ArticleBuilder) Build() *Article {
-	if ab.article.Status == "" {
-		ab.article.Status = "unread"
-	}
-	payload := ab.article.Title
-	if ab.article.URL != nil {
-		payload += *ab.article.URL
-	}
-	if ab.article.HTML != nil {
-		payload += *ab.article.HTML
-	}
-	ab.article.Hash = tooling.Hash(payload)
-	// log.Println(ab.article)
-	return ab.article
+// Build creates the article create form
+func (b *ArticleCreateFormBuilder) Build() *ArticleCreateForm {
+	return b.form
 }
 
-// BuildForm creates an article form
-func (ab *ArticleBuilder) BuildForm(tags string) *ArticleForm {
-	ab.Build()
-	return &ArticleForm{
-		Title:       ab.article.Title,
-		Text:        ab.article.Text,
-		HTML:        ab.article.HTML,
-		URL:         ab.article.URL,
-		Image:       ab.article.Image,
-		PublishedAt: ab.article.PublishedAt,
-		CategoryID:  ab.article.CategoryID,
-		Tags:        &tags,
-	}
-}
-
-// Random fill article with random data
-func (ab *ArticleBuilder) Random() *ArticleBuilder {
+// Random fill article create form with random data
+func (b *ArticleCreateFormBuilder) Random() *ArticleCreateFormBuilder {
+	b.form = &ArticleCreateForm{}
 	gofakeit.Seed(0)
-	ab.article.Title = gofakeit.Sentence(3)
+	b.form.Title = gofakeit.Sentence(3)
 	text := gofakeit.Paragraph(2, 2, 5, ".")
-	ab.article.Text = &text
-	html := fmt.Sprintf("<p>%s</p>", *ab.article.Text)
-	ab.article.HTML = &html
+	b.form.Text = &text
+	html := fmt.Sprintf("<p>%s</p>", *b.form.Text)
+	b.form.HTML = &html
 	image := gofakeit.ImageURL(320, 200)
-	ab.article.Image = &image
+	b.form.Image = &image
 	url := gofakeit.URL()
-	ab.article.URL = &url
+	b.form.URL = &url
 	publishedAt := gofakeit.Date()
-	ab.article.PublishedAt = &publishedAt
+	b.form.PublishedAt = &publishedAt
 
-	return ab
-}
-
-// UserID set article user ID
-func (ab *ArticleBuilder) UserID(userID uint) *ArticleBuilder {
-	ab.article.UserID = userID
-	return ab
+	return b
 }
 
 // CategoryID set article category ID
-func (ab *ArticleBuilder) CategoryID(categoryID uint) *ArticleBuilder {
-	ab.article.CategoryID = &categoryID
-	return ab
+func (b *ArticleCreateFormBuilder) CategoryID(categoryID uint) *ArticleCreateFormBuilder {
+	b.form.CategoryID = &categoryID
+	return b
 }
 
 // Title set article title
-func (ab *ArticleBuilder) Title(title string) *ArticleBuilder {
-	ab.article.Title = title
-	return ab
+func (b *ArticleCreateFormBuilder) Title(title string) *ArticleCreateFormBuilder {
+	b.form.Title = title
+	return b
 }
 
 // Text set article text
-func (ab *ArticleBuilder) Text(text string) *ArticleBuilder {
-	ab.article.Text = &text
-	return ab
+func (b *ArticleCreateFormBuilder) Text(text string) *ArticleCreateFormBuilder {
+	b.form.Text = &text
+	return b
 }
 
-// Form set article content using Form object
-func (ab *ArticleBuilder) Form(form *ArticleForm) *ArticleBuilder {
-	ab.article.Title = form.Title
-	ab.article.Text = form.Text
-	ab.article.HTML = form.HTML
-	ab.article.URL = form.URL
-	ab.article.Image = form.Image
-	ab.article.PublishedAt = form.PublishedAt
-	ab.article.CategoryID = form.CategoryID
-	return ab
+// Tags set article tags
+func (b *ArticleCreateFormBuilder) Tags(tags string) *ArticleCreateFormBuilder {
+	b.form.Tags = &tags
+	return b
 }

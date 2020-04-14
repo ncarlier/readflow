@@ -3,19 +3,20 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/ncarlier/readflow/pkg/assert"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-func assertNewArticle(t *testing.T, article *model.Article) *model.Article {
-	article, err := testDB.CreateOrUpdateArticle(*article)
-	assert.Nil(t, err, "error on create/update article should be nil")
-	assert.NotNil(t, article, "article shouldn't be nil")
-	assert.NotNil(t, article.ID, "article ID shouldn't be nil")
+func assertNewArticle(t *testing.T, uid uint, form model.ArticleCreateForm) *model.Article {
+	article, err := testDB.CreateArticleForUser(uid, form)
+	assert.Nil(t, err)
+	assert.NotNil(t, article)
+	assert.NotNil(t, article.ID)
 	return article
 }
 
-func TestCreateOrUpdateArticle(t *testing.T) {
+func TestCreateAndUpdateArticle(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
@@ -24,66 +25,51 @@ func TestCreateOrUpdateArticle(t *testing.T) {
 	category := assertCategoryExists(t, uid, "My test category")
 
 	// Create article test case
-	builder := model.NewArticleBuilder()
-	article := builder.UserID(
-		uid,
-	).CategoryID(
+	builder := model.NewArticleCreateFormBuilder()
+	create := builder.CategoryID(
 		*category.ID,
 	).Random().Build()
 
-	newArticle := assertNewArticle(t, article)
-	assert.Equal(t, article.Title, newArticle.Title, "")
-	assert.Equal(t, "unread", newArticle.Status, "article status should be unread")
+	article := assertNewArticle(t, uid, *create)
+	assert.Equal(t, create.Title, article.Title)
+	assert.Equal(t, "unread", article.Status, "article status should be unread")
+	updatedAt := *article.UpdatedAt
 
 	// Update article
-	newArticle.Status = "read"
-	updatedArticle, err := testDB.CreateOrUpdateArticle(*newArticle)
-	assert.Nil(t, err, "error should be nil")
-	assert.True(t, updatedArticle != nil, "article should not be nil")
-	assert.Equal(t, "read", updatedArticle.Status, "article status should be read")
-	assert.NotEqual(t, newArticle.UpdatedAt, updatedArticle.UpdatedAt, "")
-}
+	status := "read"
+	update := model.ArticleUpdateForm{
+		ID:     article.ID,
+		Status: &status,
+	}
+	article, err := testDB.UpdateArticleForUser(uid, update)
+	assert.Nil(t, err)
+	assert.NotNil(t, article)
+	assert.Equal(t, "read", article.Status, "article status should be read")
+	assert.NotEqual(t, updatedAt, *article.UpdatedAt)
 
-func TestDeleteArticle(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
-	defer teardownTestCase(t)
-
-	// Assert category exists
-	uid := *testUser.ID
-	category := assertCategoryExists(t, uid, "My test category")
-
-	// Create article test case
-	builder := model.NewArticleBuilder()
-	article := builder.UserID(
-		uid,
-	).CategoryID(
-		*category.ID,
-	).Random().Build()
-
-	article = assertNewArticle(t, article)
-
-	err := testDB.DeleteArticle(*article)
-	assert.Nil(t, err, "error on delete should be nil")
-
-	article, err = testDB.GetArticleByID(*article.ID)
-	assert.Nil(t, err, "error should be nil")
-	assert.True(t, article == nil, "article should be nil")
+	// Cleanup
+	err = testDB.DeleteArticle(article.ID)
+	assert.Nil(t, err)
+	article, err = testDB.GetArticleByID(article.ID)
+	assert.Nil(t, err)
+	assert.Nil(t, article)
 }
 
 func TestGetPaginatedArticlesByUserID(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
+	uid := *testUser.ID
 	// Page request
 	req := model.ArticlesPageRequest{
 		Limit: 20,
 	}
 
-	res, err := testDB.GetPaginatedArticlesByUserID(*testUser.ID, req)
-	assert.Nil(t, err, "error should be nil")
-	assert.NotNil(t, res, "response shouldn't be nil")
+	res, err := testDB.GetPaginatedArticlesByUser(uid, req)
+	assert.Nil(t, err)
+	assert.NotNil(t, res)
 	assert.True(t, res.TotalCount >= 0, "total count should be a positive integer")
-	assert.True(t, !res.HasNext, "we should only have one page")
+	assert.False(t, res.HasNext, "we should only have one page")
 	assert.True(t, len(res.Entries) >= 0, "entries shouldn't be empty")
 }
 
@@ -92,11 +78,10 @@ func TestMarkAllArticlesAsRead(t *testing.T) {
 	defer teardownTestCase(t)
 
 	// Create article test case
-	builder := model.NewArticleBuilder()
-	article := builder.UserID(
-		*testUser.ID,
-	).Random().Build()
-	assertNewArticle(t, article)
+	uid := *testUser.ID
+	builder := model.NewArticleCreateFormBuilder()
+	form := builder.Random().Build()
+	assertNewArticle(t, uid, *form)
 
 	// Page request
 	status := "unread"
@@ -105,42 +90,43 @@ func TestMarkAllArticlesAsRead(t *testing.T) {
 		Status: &status,
 	}
 
-	res, err := testDB.GetPaginatedArticlesByUserID(*testUser.ID, req)
-	assert.Nil(t, err, "error should be nil")
-	assert.NotNil(t, res, "response shouldn't be nil")
+	res, err := testDB.GetPaginatedArticlesByUser(uid, req)
+	assert.Nil(t, err)
+	assert.NotNil(t, res)
 	assert.True(t, res.TotalCount >= 0, "total count should be a positive integer")
 
-	nb, err := testDB.MarkAllArticlesAsRead(*testUser.ID, nil)
-	assert.Nil(t, err, "error should be nil")
-	assert.NotEqual(t, 0, nb, "some articles should have been updated")
+	nb, err := testDB.MarkAllArticlesAsReadByUser(uid, nil)
+	assert.Nil(t, err)
+	assert.NotEqual(t, 0, nb, "all articles sould be marked as read")
 
-	res, err = testDB.GetPaginatedArticlesByUserID(*testUser.ID, req)
-	assert.Nil(t, err, "error should be nil")
-	assert.NotNil(t, res, "response shouldn't be nil")
-	assert.True(t, res.TotalCount == 0, "total count should be 0")
+	res, err = testDB.GetPaginatedArticlesByUser(uid, req)
+	assert.Nil(t, err)
+	assert.NotNil(t, res)
+	assert.Equal(t, uint(0), res.TotalCount)
 }
 
 func TestDeleteAllReadArticles(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
+	uid := *testUser.ID
 	status := "read"
 	req := model.ArticlesPageRequest{
 		Limit:  20,
 		Status: &status,
 	}
 
-	res, err := testDB.GetPaginatedArticlesByUserID(*testUser.ID, req)
-	assert.Nil(t, err, "error should be nil")
-	assert.NotNil(t, res, "response shouldn't be nil")
+	res, err := testDB.GetPaginatedArticlesByUser(uid, req)
+	assert.Nil(t, err)
+	assert.NotNil(t, res)
 	assert.True(t, res.TotalCount >= 0, "total count should be a positive integer")
 
-	nb, err := testDB.DeleteAllReadArticles(*testUser.ID)
-	assert.Nil(t, err, "error should be nil")
-	assert.Equal(t, res.TotalCount, uint(nb), "articles should have been deleted")
+	nb, err := testDB.DeleteAllReadArticlesByUser(uid)
+	assert.Nil(t, err)
+	assert.Equal(t, res.TotalCount, uint(nb), "unexpected number of deleted articles")
 
-	res, err = testDB.GetPaginatedArticlesByUserID(*testUser.ID, req)
-	assert.Nil(t, err, "error should be nil")
-	assert.NotNil(t, res, "response shouldn't be nil")
-	assert.True(t, res.TotalCount == 0, "total count should be 0")
+	res, err = testDB.GetPaginatedArticlesByUser(uid, req)
+	assert.Nil(t, err)
+	assert.NotNil(t, res)
+	assert.Equal(t, uint(0), res.TotalCount)
 }

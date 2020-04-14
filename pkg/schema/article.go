@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/graphql-go/graphql"
+
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/service"
 	"github.com/ncarlier/readflow/pkg/tooling"
@@ -288,7 +289,7 @@ func addArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 		category = &val
 	}
 	url, _ := p.Args["url"].(string)
-	form := model.ArticleForm{
+	form := model.ArticleCreateForm{
 		URL:        &url,
 		CategoryID: category,
 	}

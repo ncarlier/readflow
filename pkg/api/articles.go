@@ -15,8 +15,8 @@ import (
 func articles() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		articlesForm := []model.ArticleForm{}
-		articleForm := model.ArticleForm{}
+		articlesForm := []model.ArticleCreateForm{}
+		articleForm := model.ArticleCreateForm{}
 
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {

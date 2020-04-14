@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ncarlier/readflow/pkg/constant"
-
 	"github.com/antonmedv/expr"
+
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
@@ -40,7 +40,7 @@ func NewRuleProcessor(category model.Category) (*RuleProcessor, error) {
 }
 
 // Apply a rule on an article
-func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleForm) (bool, error) {
+func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleCreateForm) (bool, error) {
 	tags := []string{}
 	if article.Tags != nil {
 		tags = strings.Split(*article.Tags, ",")
@@ -97,7 +97,7 @@ func NewProcessorsPipeline(categories []model.Category) (*ProcessorPipeline, err
 }
 
 // Apply a processor pipeline on an article
-func (pp *ProcessorPipeline) Apply(ctx context.Context, article *model.ArticleForm) (bool, error) {
+func (pp *ProcessorPipeline) Apply(ctx context.Context, article *model.ArticleCreateForm) (bool, error) {
 	for _, processor := range *pp {
 		applied, err := processor.Apply(ctx, article)
 		if err != nil {

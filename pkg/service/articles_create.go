@@ -14,7 +14,7 @@ type ArticleCreationOptions struct {
 }
 
 // CreateArticle creates new article
-func (reg *Registry) CreateArticle(ctx context.Context, data model.ArticleForm, opts ArticleCreationOptions) (*model.Article, error) {
+func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreateForm, opts ArticleCreationOptions) (*model.Article, error) {
 	uid := getCurrentUserFromContext(ctx)
 
 	plan, err := reg.GetCurrentUserPlan(ctx)
@@ -29,14 +29,14 @@ func (reg *Registry) CreateArticle(ctx context.Context, data model.ArticleForm, 
 		if err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", data.Title).Msg("unable to create article")
+			).Str("title", form.Title).Msg("unable to create article")
 			return nil, err
 		}
 		if totalArticles >= plan.TotalArticles {
 			err = ErrUserQuotaReached
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", data.Title).Uint(
+			).Str("title", form.Title).Uint(
 				"total", totalArticles,
 			).Msg("unable to create article")
 			return nil, err
@@ -47,12 +47,12 @@ func (reg *Registry) CreateArticle(ctx context.Context, data model.ArticleForm, 
 
 	// Get category if specified
 	var category *model.Category
-	if data.CategoryID != nil {
-		cat, err := reg.GetCategory(ctx, *data.CategoryID)
+	if form.CategoryID != nil {
+		cat, err := reg.GetCategory(ctx, *form.CategoryID)
 		if err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", data.Title).Msg("unable to create article")
+			).Str("title", form.Title).Msg("unable to create article")
 			return nil, err
 		}
 		category = cat
@@ -60,25 +60,20 @@ func (reg *Registry) CreateArticle(ctx context.Context, data model.ArticleForm, 
 
 	if category == nil {
 		// Process article by the rule engine
-		if err := reg.ProcessArticleByRuleEngine(ctx, &data); err != nil {
+		if err := reg.ProcessArticleByRuleEngine(ctx, &form); err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", data.Title).Msg("unable to create article")
+			).Str("title", form.Title).Msg("unable to create article")
 			return nil, err
 		}
 	}
 
-	builder := model.NewArticleBuilder()
-	article := builder.UserID(
-		uid,
-	).Form(&data).Build()
-
-	if article.URL != nil && (article.Image == nil || article.Text == nil || article.HTML == nil) {
+	if form.URL != nil && (form.Image == nil || form.Text == nil || form.HTML == nil) {
 		// Fetch original article to extract missing attributes
-		if err := reg.hydrateArticle(ctx, article); err != nil {
+		if err := reg.hydrateArticle(ctx, &form); err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", article.Title).Msg("unable to fetch original article")
+			).Str("title", form.Title).Msg("unable to fetch original article")
 			// TODO excerpt and image should be extracted from HTML content
 			if !opts.IgnoreHydrateError {
 				return nil, err
@@ -88,23 +83,23 @@ func (reg *Registry) CreateArticle(ctx context.Context, data model.ArticleForm, 
 
 	reg.logger.Debug().Uint(
 		"uid", uid,
-	).Str("title", article.Title).Msg("creating article...")
-	newArticle, err := reg.db.CreateOrUpdateArticle(*article)
+	).Str("title", form.Title).Msg("creating article...")
+	article, err := reg.db.CreateArticleForUser(uid, form)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
-		).Str("title", article.Title).Msg("unable to create article")
+		).Str("title", form.Title).Msg("unable to create article")
 		return nil, err
 	}
 	reg.logger.Info().Uint(
 		"uid", uid,
-	).Str("title", newArticle.Title).Uint("id", *newArticle.ID).Msg("article created")
-	event.Emit(event.CreateArticle, *newArticle)
-	return newArticle, nil
+	).Str("title", article.Title).Uint("id", article.ID).Msg("article created")
+	event.Emit(event.CreateArticle, *article)
+	return article, nil
 }
 
 // CreateArticles creates new articles
-func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleForm) *model.Articles {
+func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleCreateForm) *model.Articles {
 	result := model.Articles{}
 	for _, art := range data {
 		article, err := reg.CreateArticle(ctx, art, ArticleCreationOptions{
@@ -121,7 +116,7 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleFor
 }
 
 // hydrateArticle add missing attributes form original article
-func (reg *Registry) hydrateArticle(ctx context.Context, article *model.Article) error {
+func (reg *Registry) hydrateArticle(ctx context.Context, article *model.ArticleCreateForm) error {
 	art, err := readability.FetchArticle(ctx, *article.URL)
 	if art == nil {
 		return err
