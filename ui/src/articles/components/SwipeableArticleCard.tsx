@@ -1,14 +1,14 @@
 import React, { useCallback, useContext } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 
-import { getGQLError } from '../../helpers'
 import Icon from '../../components/Icon'
 import SwipeableListItem from '../../components/SwipeableListItem'
 import { MessageContext } from '../../context/MessageContext'
-import { Article, UpdateArticleStatusRequest } from '../models'
-import { UpdateArticleStatus } from '../queries'
-import styles from './SwipeableArticleCard.module.css'
+import { getGQLError } from '../../helpers'
+import { Article, UpdateArticleRequest } from '../models'
+import { UpdateArticle } from '../queries'
 import ArticleCard from './ArticleCard'
+import styles from './SwipeableArticleCard.module.css'
 
 interface Props {
   article: Article
@@ -24,11 +24,11 @@ export default (props: Props) => {
   const { article } = props
 
   const { showErrorMessage } = useContext(MessageContext)
-  const updateArticleStatusMutation = useMutation<UpdateArticleStatusRequest>(UpdateArticleStatus)
+  const updateArticleMutation = useMutation<UpdateArticleRequest>(UpdateArticle)
 
   const updateArticleStatus = async (status: string) => {
     try {
-      await updateArticleStatusMutation({
+      await updateArticleMutation({
         variables: { id: article.id, status }
       })
     } catch (err) {

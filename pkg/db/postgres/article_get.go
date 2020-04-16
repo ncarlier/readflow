@@ -41,6 +41,10 @@ func (pg *DB) CountArticlesByUser(uid uint, req model.ArticlesPageRequest) (uint
 		counter = counter.Where(sq.Eq{"status": *req.Status})
 	}
 
+	if req.Starred != nil {
+		counter = counter.Where(sq.Eq{"starred": *req.Starred})
+	}
+
 	query, args, _ := counter.ToSql()
 
 	var count uint
@@ -52,6 +56,17 @@ func (pg *DB) CountArticlesByUser(uid uint, req model.ArticlesPageRequest) (uint
 
 // GetPaginatedArticlesByUser returns a paginated list of user's articles from the DB
 func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest) (*model.ArticlesPageResponse, error) {
+	// Set defaults
+	limit := uint(20)
+	if req.Limit != nil {
+		limit = *req.Limit
+	}
+	sortOrder := "asc"
+	if req.SortOrder != nil {
+		sortOrder = *req.SortOrder
+	}
+
+	// Count articles
 	total, err := pg.CountArticlesByUser(uid, req)
 	if err != nil {
 		return nil, err
@@ -74,16 +89,20 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 		selectBuilder = selectBuilder.Where(sq.Eq{"status": *req.Status})
 	}
 
+	if req.Starred != nil {
+		selectBuilder = selectBuilder.Where(sq.Eq{"starred": *req.Starred})
+	}
+
 	if req.AfterCursor != nil {
-		if req.SortOrder == "asc" {
+		if sortOrder == "asc" {
 			selectBuilder = selectBuilder.Where(sq.Gt{"id": *req.AfterCursor})
 		} else {
 			selectBuilder = selectBuilder.Where(sq.Lt{"id": *req.AfterCursor})
 		}
 	}
 
-	selectBuilder = selectBuilder.OrderBy("id " + strings.ToUpper(req.SortOrder))
-	selectBuilder = selectBuilder.Limit(uint64(req.Limit + 1))
+	selectBuilder = selectBuilder.OrderBy("id " + strings.ToUpper(sortOrder))
+	selectBuilder = selectBuilder.Limit(uint64(limit + 1))
 
 	query, args, _ := selectBuilder.ToSql()
 	rows, err := pg.db.Query(query, args...)
@@ -98,7 +117,7 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 		if err := mapRowsToArticle(rows, article); err != nil {
 			return nil, err
 		}
-		if index <= req.Limit {
+		if index <= limit {
 			result.Entries = append(result.Entries, article)
 			result.EndCursor = article.ID
 		} else {

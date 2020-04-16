@@ -1,19 +1,19 @@
+import { Location } from 'history'
 import React, { useCallback, useContext } from 'react'
+import { useMutation } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
+import { Link } from 'react-router-dom'
 
 import ConfirmDialog from '../../components/ConfirmDialog'
 import DropdownMenu from '../../components/DropdownMenu'
 import Kbd from '../../components/Kbd'
 import LinkIcon from '../../components/LinkIcon'
 import { connectRouter, IRouterDispatchProps, IRouterStateProps } from '../../containers/RouterContainer'
-import { Link } from 'react-router-dom'
-import { GetArticlesRequest } from '../models'
-import { useMutation } from 'react-apollo-hooks'
-import { MarkAllArticlesAsRead } from '../queries'
-import { MessageContext } from '../../context/MessageContext'
 import { LocalConfigurationContext } from '../../context/LocalConfigurationContext'
+import { MessageContext } from '../../context/MessageContext'
 import { getGQLError } from '../../helpers'
-import { Location } from 'history'
+import { GetArticlesRequest } from '../models'
+import { MarkAllArticlesAsRead } from '../queries'
 import { DisplayMode } from './ArticlesDisplayMode'
 
 interface Props {
@@ -24,12 +24,12 @@ interface Props {
 
 type AllProps = Props & IRouterStateProps & IRouterDispatchProps
 
-function revertSortOrder(order: string) {
+function revertSortOrder(order: string | null) {
   return order == 'asc' ? 'desc' : 'asc'
 }
 
-function revertStatus(status: string) {
-  return status == 'read' ? 'unread' : 'read'
+function revertStatus(status: string | null) {
+  return status == 'unread' ? 'read' : 'unread'
 }
 
 function getLocationWithSortParam(loc: Location, order: 'asc' | 'desc') {
@@ -144,7 +144,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
             </LinkIcon>
           </li>
         )}
-        {!!req.category && (
+        {!!req.category && !!req.status && (
           <li>
             <LinkIcon as={Link} to={getLocationWithStatusParam(loc, revertStatus(req.status))} icon="history">
               <span>{req.status == 'read' ? 'View unread articles' : 'View read articles'}</span>

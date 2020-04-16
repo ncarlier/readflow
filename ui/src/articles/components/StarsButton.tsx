@@ -10,25 +10,24 @@ import { UpdateArticle } from '../queries'
 
 interface Props {
   article: Article
-  floating?: boolean
   keyboard?: boolean
   onSuccess?: (article: Article) => void
 }
 
 export default (props: Props) => {
-  const { article, floating = false, keyboard = false, onSuccess } = props
+  const { article, keyboard = false, onSuccess } = props
 
   const { showErrorMessage } = useContext(MessageContext)
   const [loading, setLoading] = useState(false)
   const updateArticleMutation = useMutation<UpdateArticleRequest>(UpdateArticle)
 
-  const updateArticleStatus = async (status: string) => {
+  const updateArticle = async (starred: boolean) => {
     try {
       setLoading(true)
       await updateArticleMutation({
-        variables: { id: article.id, status }
+        variables: { id: article.id, starred }
       })
-      if (!floating) setLoading(false)
+      setLoading(false)
       if (onSuccess) onSuccess(article)
     } catch (err) {
       setLoading(false)
@@ -37,35 +36,20 @@ export default (props: Props) => {
   }
 
   const handleOnClick = useCallback(() => {
-    const status = article.status === 'read' ? 'unread' : 'read'
-    updateArticleStatus(status)
+    updateArticle(!article.starred)
   }, [article])
 
   // Keyboard shortcut is only active for Floating Action Button
-  useKeyboard('m', handleOnClick, keyboard)
-  const kbs = keyboard ? ' [m]' : ''
-
-  if (article.status === 'read') {
-    return (
-      <ButtonIcon
-        title={'Mark as unread' + kbs}
-        onClick={handleOnClick}
-        loading={loading}
-        floating={floating}
-        icon="undo"
-        variant="primary"
-      />
-    )
-  }
+  useKeyboard('s', handleOnClick, keyboard)
+  const kbs = keyboard ? ' [s]' : ''
 
   return (
     <ButtonIcon
-      title={'Mark as read' + kbs}
+      title={article.starred ? `Stars this article${kbs}` : `Unstars this article${kbs}`}
+      style={article.starred ? { color: 'gold' } : undefined}
       onClick={handleOnClick}
       loading={loading}
-      floating={floating}
-      icon="done"
-      variant="primary"
+      icon={article.starred ? 'star' : 'star_outline'}
     />
   )
 }

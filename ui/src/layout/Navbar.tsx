@@ -112,6 +112,17 @@ export default withRouter(({ location }: RouteComponentProps) => {
               <li>
                 <LinkIcon
                   as={Link}
+                  to="/starred"
+                  icon="star"
+                  active={pathname.startsWith('/starred')}
+                  onClick={menuAutoClose}
+                >
+                  Starred articles
+                </LinkIcon>
+              </li>
+              <li>
+                <LinkIcon
+                  as={Link}
                   to="/history"
                   icon="history"
                   active={pathname.startsWith('/history')}

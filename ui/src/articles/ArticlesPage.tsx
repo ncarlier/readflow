@@ -1,10 +1,11 @@
-import React, { useCallback, useState, useContext } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 
 import { Category } from '../categories/models'
 import Loader from '../components/Loader'
 import Panel from '../components/Panel'
+import { LocalConfiguration, LocalConfigurationContext } from '../context/LocalConfigurationContext'
 import ErrorPanel from '../error/ErrorPanel'
 import { getURLParam, matchResponse } from '../helpers'
 import Appbar from '../layout/Appbar'
@@ -16,7 +17,6 @@ import ArticlesPageMenu from './components/ArticlesPageMenu'
 import NewArticlesAvailable from './components/NewArticlesAvailable'
 import { GetArticlesRequest, GetArticlesResponse } from './models'
 import { GetArticles } from './queries'
-import { LocalConfigurationContext, LocalConfiguration } from '../context/LocalConfigurationContext'
 
 interface Props {
   category?: Category
@@ -29,12 +29,20 @@ const buildArticlesRequest = (mode: DisplayMode, props: AllProps, localConfig: L
   const req: GetArticlesRequest = {
     limit: getURLParam(params, 'limit', localConfig.limit),
     sortOrder: getURLParam(params, 'sort', localConfig.sortOrders.unread),
-    status: 'unread'
+    status: 'unread',
+    starred: null,
+    category: null,
+    afterCursor: null
   }
   switch (mode) {
     case DisplayMode.history:
       req.status = 'read'
       req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders.history)
+      break
+    case DisplayMode.starred:
+      req.status = null
+      req.starred = true
+      req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders.starred)
       break
     case DisplayMode.category:
       if (category && category.id) {
@@ -50,16 +58,22 @@ const buildArticlesRequest = (mode: DisplayMode, props: AllProps, localConfig: L
   return req
 }
 
-const buildTitle = (mode: DisplayMode, status: string, category?: Category) => {
-  let title = status === 'unread' ? 'to read' : 'read'
+const buildTitle = (mode: DisplayMode, status: string | null, category?: Category) => {
+  let title = ''
+  if (status) {
+    title = status === 'unread' ? 'to read' : 'read'
+  }
   if (category) {
     title = title + ' in "' + category.title + '"'
   }
   return title
 }
 
-const computeTotalArticles = (data: GetArticlesResponse, status: string) => {
-  const delta = data.articles.entries.filter(a => a.status !== status).length
+const computeTotalArticles = (data: GetArticlesResponse, status: string | null) => {
+  let delta = 0
+  if (status) {
+    data.articles.entries.filter(a => a.status !== status).length
+  }
   return data.articles.totalCount - delta
 }
 
@@ -83,8 +97,18 @@ export default (props: AllProps) => {
   const { localConfiguration } = useContext(LocalConfigurationContext)
 
   // Get display mode
-  let mode = match.url.startsWith('/history') ? DisplayMode.history : DisplayMode.unread
-  mode = category ? DisplayMode.category : mode
+  let mode = DisplayMode.unread
+  switch (true) {
+    case !!category:
+      mode = DisplayMode.category
+      break
+    case match.url.startsWith('/history'):
+      mode = DisplayMode.history
+      break
+    case match.url.startsWith('/starred'):
+      mode = DisplayMode.starred
+      break
+  }
 
   // Build GQL request
   const req = buildArticlesRequest(mode, props, localConfiguration)
@@ -99,12 +123,12 @@ export default (props: AllProps) => {
     }
     console.log('fetching more articles...')
     await fetchMore({
-      variables: { ...req, afterCursor: data.articles.endCursor, category: category ? category.id : null },
+      variables: { ...req, afterCursor: data.articles.endCursor },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev
         const nbFetchedArticles = fetchMoreResult.articles.entries.length
         console.log(nbFetchedArticles + ' article(s) fetched')
-        const entries = prev.articles.entries.filter(a => a.status == req.status)
+        const entries = prev.articles.entries.filter(a => req.status == null || a.status === req.status)
         const articles = {
           ...fetchMoreResult.articles,
           entries: [...entries, ...fetchMoreResult.articles.entries]
@@ -139,7 +163,7 @@ export default (props: AllProps) => {
         <ArticleList
           articles={d.articles.entries}
           emptyMessage={EmptyMessage({ mode })}
-          filter={a => a.status === req.status}
+          filter={a => req.status == null || a.status === req.status}
           hasMore={d.articles.hasNext}
           refetch={refetch}
           fetchMoreArticles={fetchMoreArticles}

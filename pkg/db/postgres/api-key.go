@@ -102,7 +102,7 @@ func (pg *DB) GetAPIKeyByToken(token string) (*model.APIKey, error) {
 	return mapRowToAPIKey(row)
 }
 
-// GetAPIKeyByUserIDAndAlias returns API key of an user by its alias
+// GetAPIKeyByUserAndAlias returns API key of an user by its alias
 func (pg *DB) GetAPIKeyByUserAndAlias(uid uint, alias string) (*model.APIKey, error) {
 	query, args, _ := pg.psql.Select(apiKeyColumns...).From(
 		"api_keys",

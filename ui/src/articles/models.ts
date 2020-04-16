@@ -8,6 +8,7 @@ export interface Article {
   image: string
   url: string
   status: string
+  starred: boolean
   category?: Category
   isOffline?: boolean
   published_at: string
@@ -16,11 +17,12 @@ export interface Article {
 }
 
 export interface GetArticlesRequest {
-  status: string
-  category?: number
-  limit: number
-  afterCursor?: number
-  sortOrder: string
+  status: string | null
+  starred: boolean | null
+  category: number | null
+  limit: number | null
+  afterCursor: number | null
+  sortOrder: string | null
 }
 
 export interface GetArticlesResponse {
@@ -36,13 +38,14 @@ export interface GetArticleResponse {
   article: Article
 }
 
-export interface UpdateArticleStatusRequest {
+export interface UpdateArticleRequest {
   id: number
-  status: string
+  status?: string
+  starred?: string
 }
 
-export interface UpdateArticleStatusResponse {
-  updateArticleStatus: Article
+export interface UpdateArticleResponse {
+  updateArticle: Article
 }
 
 export interface MarkAllArticlesAsReadResponse {
