@@ -69,6 +69,9 @@ var articleType = graphql.NewObject(
 			"status": &graphql.Field{
 				Type: articleStatus,
 			},
+			"starred": &graphql.Field{
+				Type: graphql.Boolean,
+			},
 			"category": &graphql.Field{
 				Type: categoryType,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
@@ -115,9 +118,9 @@ var articlesType = graphql.NewObject(
 	},
 )
 
-var articleStatusResponseType = graphql.NewObject(
+var articleUpdateResponseType = graphql.NewObject(
 	graphql.ObjectConfig{
-		Name: "ArticleStatusResponseType",
+		Name: "ArticleUpdateResponseType",
 		Fields: graphql.Fields{
 			"article": &graphql.Field{
 				Type: articleType,
@@ -151,6 +154,10 @@ var articlesQueryField = &graphql.Field{
 			Description: "filter entries by this status",
 			Type:        articleStatus,
 		},
+		"starred": &graphql.ArgumentConfig{
+			Description: "filter entries by this starred value",
+			Type:        graphql.Boolean,
+		},
 		"sortOrder": &graphql.ArgumentConfig{
 			Description:  "sorting order of the entries",
 			Type:         sortOrder,
@@ -161,30 +168,13 @@ var articlesQueryField = &graphql.Field{
 }
 
 func articlesResolver(p graphql.ResolveParams) (interface{}, error) {
-	sortOrder, _ := p.Args["sortOrder"].(string)
-	var limit uint
-	if val, ok := tooling.ConvGQLIntToUint(p.Args["limit"]); ok {
-		limit = val
-	}
-	var category *uint
-	if val, ok := tooling.ConvGQLIntToUint(p.Args["category"]); ok {
-		category = &val
-	}
-	var afterCursor *uint
-	if val, ok := tooling.ConvGQLIntToUint(p.Args["afterCursor"]); ok {
-		afterCursor = &val
-	}
-	var status *string
-	if val, ok := p.Args["status"].(string); ok {
-		status = &val
-	}
-
 	pageRequest := model.ArticlesPageRequest{
-		Limit:       limit,
-		SortOrder:   sortOrder,
-		AfterCursor: afterCursor,
-		Category:    category,
-		Status:      status,
+		Limit:       tooling.GetGQLUintParameter("limit", p.Args),
+		SortOrder:   tooling.GetGQLStringParameter("sortOrder", p.Args),
+		AfterCursor: tooling.GetGQLUintParameter("afterCursor", p.Args),
+		Category:    tooling.GetGQLUintParameter("category", p.Args),
+		Status:      tooling.GetGQLStringParameter("status", p.Args),
+		Starred:     tooling.GetGQLBoolParameter("starred", p.Args),
 	}
 
 	return service.Lookup().GetArticles(p.Context, pageRequest)
@@ -211,28 +201,36 @@ func articleResolver(p graphql.ResolveParams) (interface{}, error) {
 
 // MUTATIONS
 
-var updateArticleStatusMutationField = &graphql.Field{
-	Type:        articleStatusResponseType,
-	Description: "update article status (read or unread)",
+var updateArticleMutationField = &graphql.Field{
+	Type:        articleUpdateResponseType,
+	Description: "update article",
 	Args: graphql.FieldConfigArgument{
 		"id": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.ID),
 		},
 		"status": &graphql.ArgumentConfig{
-			Type: graphql.NewNonNull(articleStatus),
+			Type: articleStatus,
+		},
+		"starred": &graphql.ArgumentConfig{
+			Type: graphql.Boolean,
 		},
 	},
-	Resolve: updateArticleStatusResolver,
+	Resolve: updateArticleResolver,
 }
 
-func updateArticleStatusResolver(p graphql.ResolveParams) (interface{}, error) {
+func updateArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
 	if !ok {
 		return nil, errors.New("invalid article ID")
 	}
-	status, _ := p.Args["status"].(string)
 
-	article, err := service.Lookup().UpdateArticleStatus(p.Context, id, status)
+	form := model.ArticleUpdateForm{
+		ID:      id,
+		Status:  tooling.GetGQLStringParameter("status", p.Args),
+		Starred: tooling.GetGQLBoolParameter("starred", p.Args),
+	}
+
+	article, err := service.Lookup().UpdateArticle(p.Context, form)
 	if err != nil {
 		return nil, err
 	}

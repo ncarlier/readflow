@@ -40,3 +40,12 @@ func GetGQLBoolParameter(name string, args map[string]interface{}) *bool {
 	}
 	return nil
 }
+
+// GetGQLUintParameter return GraphQL string parameter
+func GetGQLUintParameter(name string, args map[string]interface{}) *uint {
+	if val, ok := args[name]; ok {
+		s := uint(val.(int))
+		return &s
+	}
+	return nil
+}

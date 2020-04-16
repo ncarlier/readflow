@@ -13,6 +13,9 @@ func assertNewArticle(t *testing.T, uid uint, form model.ArticleCreateForm) *mod
 	assert.Nil(t, err)
 	assert.NotNil(t, article)
 	assert.NotNil(t, article.ID)
+	assert.Equal(t, form.Title, article.Title)
+	assert.Equal(t, "unread", article.Status, "article status should be unread")
+	assert.False(t, article.Starred)
 	return article
 }
 
@@ -26,13 +29,12 @@ func TestCreateAndUpdateArticle(t *testing.T) {
 
 	// Create article test case
 	builder := model.NewArticleCreateFormBuilder()
-	create := builder.CategoryID(
+	create := builder.Random().CategoryID(
 		*category.ID,
-	).Random().Build()
+	).Build()
 
 	article := assertNewArticle(t, uid, *create)
-	assert.Equal(t, create.Title, article.Title)
-	assert.Equal(t, "unread", article.Status, "article status should be unread")
+	assert.Equal(t, *category.ID, *article.CategoryID)
 	updatedAt := *article.UpdatedAt
 
 	// Update article
@@ -61,9 +63,7 @@ func TestGetPaginatedArticlesByUserID(t *testing.T) {
 
 	uid := *testUser.ID
 	// Page request
-	req := model.ArticlesPageRequest{
-		Limit: 20,
-	}
+	req := model.ArticlesPageRequest{}
 
 	res, err := testDB.GetPaginatedArticlesByUser(uid, req)
 	assert.Nil(t, err)
@@ -86,7 +86,6 @@ func TestMarkAllArticlesAsRead(t *testing.T) {
 	// Page request
 	status := "unread"
 	req := model.ArticlesPageRequest{
-		Limit:  20,
 		Status: &status,
 	}
 
@@ -112,7 +111,6 @@ func TestDeleteAllReadArticles(t *testing.T) {
 	uid := *testUser.ID
 	status := "read"
 	req := model.ArticlesPageRequest{
-		Limit:  20,
 		Status: &status,
 	}
 
@@ -129,4 +127,41 @@ func TestDeleteAllReadArticles(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 	assert.Equal(t, uint(0), res.TotalCount)
+}
+
+func TestStarredArticle(t *testing.T) {
+	teardownTestCase := setupTestCase(t)
+	defer teardownTestCase(t)
+
+	// Create article test case
+	uid := *testUser.ID
+	builder := model.NewArticleCreateFormBuilder()
+	create := builder.Random().Build()
+	article := assertNewArticle(t, uid, *create)
+
+	// Update article
+	status := "read"
+	starred := true
+	update := model.ArticleUpdateForm{
+		ID:      article.ID,
+		Status:  &status,
+		Starred: &starred,
+	}
+	article, err := testDB.UpdateArticleForUser(uid, update)
+	assert.Nil(t, err)
+	assert.NotNil(t, article)
+	assert.Equal(t, "read", article.Status, "article status should be read")
+	assert.Equal(t, true, article.Starred, "article status should be starred")
+
+	// Try to delate all read articles
+	nb, err := testDB.DeleteAllReadArticlesByUser(uid)
+	assert.Nil(t, err)
+	assert.Equal(t, uint(0), uint(nb), "unexpected number of deleted articles")
+
+	// Cleanup
+	err = testDB.DeleteArticle(article.ID)
+	assert.Nil(t, err)
+	article, err = testDB.GetArticleByID(article.ID)
+	assert.Nil(t, err)
+	assert.Nil(t, article)
 }

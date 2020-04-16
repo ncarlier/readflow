@@ -22,8 +22,9 @@ type ArticleCreateForm struct {
 
 // ArticleUpdateForm structure definition
 type ArticleUpdateForm struct {
-	ID     uint
-	Status *string
+	ID      uint
+	Status  *string
+	Starred *bool
 }
 
 // Articles structure definition
@@ -44,6 +45,7 @@ type Article struct {
 	Image       *string    `json:"image,omitempty"`
 	Hash        string     `json:"hash,omitempty"`
 	Status      string     `json:"status,omitempty"`
+	Starred     bool       `json:"starred,omitempty"`
 	PublishedAt *time.Time `json:"published_at,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
@@ -57,10 +59,11 @@ func (a Article) String() string {
 // ArticlesPageRequest request structure for a paginated list of articles
 type ArticlesPageRequest struct {
 	Status      *string
-	Limit       uint
+	Starred     *bool
+	Limit       *uint
 	AfterCursor *uint
 	Category    *uint
-	SortOrder   string
+	SortOrder   *string
 }
 
 // ArticlesPageResponse response structure for a paginated list of articles

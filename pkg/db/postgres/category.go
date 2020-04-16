@@ -183,7 +183,7 @@ func (pg *DB) DeleteCategoryByUser(uid uint, ID uint) error {
 	return nil
 }
 
-// DeleteCategories removes categories from the DB
+// DeleteCategoriesByUser removes categories from the DB
 func (pg *DB) DeleteCategoriesByUser(uid uint, ids []uint) (int64, error) {
 	query, args, _ := pg.psql.Delete("categories").Where(
 		sq.Eq{"user_id": uid},

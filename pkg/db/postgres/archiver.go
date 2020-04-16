@@ -160,7 +160,7 @@ func (pg *DB) GetArchiverByID(id uint) (*model.Archiver, error) {
 	return mapRowToArchiver(row)
 }
 
-// GetArchiverByUserIDAndAlias get an archiver from the DB.
+// GetArchiverByUserAndAlias get an archiver from the DB.
 // Default archiver is returned if alias is nil.
 func (pg *DB) GetArchiverByUserAndAlias(uid uint, alias *string) (*model.Archiver, error) {
 	selectBuilder := pg.psql.Select(archiverColumns...).From(

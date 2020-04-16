@@ -1,15 +1,16 @@
 import React from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 
-import { classNames, getHostname } from '../../helpers'
 import Icon from '../../components/Icon'
 import TimeAgo from '../../components/TimeAgo'
+import { classNames, getHostname } from '../../helpers'
 import useKeyboard from '../../hooks/useKeyboard'
 import { Article } from '../models'
 import styles from './ArticleCard.module.css'
 import ArticleImage from './ArticleImage'
 import ArticleMenu from './ArticleMenu'
 import MarkAsButton from './MarkAsButton'
+import StarsButton from './StarsButton'
 
 interface Props {
   article: Article
@@ -55,6 +56,7 @@ export default withRouter((props: AllProps) => {
         )}
         <TimeAgo dateTime={article.created_at} />
         <ArticleMenu article={article} keyboard={isActive} style={menuStyle} />
+        {!article.isOffline && <StarsButton article={article} keyboard={isActive} />}
         {!article.isOffline && <MarkAsButton article={article} onSuccess={onRemove} keyboard={isActive} />}
       </footer>
     </article>

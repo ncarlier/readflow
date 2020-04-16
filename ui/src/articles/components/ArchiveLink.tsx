@@ -1,11 +1,11 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 
-import { getGQLError } from '../../helpers'
 import Kbd from '../../components/Kbd'
 import LinkIcon from '../../components/LinkIcon'
 import Loader from '../../components/Loader'
 import { MessageContext } from '../../context/MessageContext'
+import { getGQLError } from '../../helpers'
 import { ArchiveService } from '../../settings/archive-services/models'
 import { Article } from '../models'
 import { ArchiveArticle } from '../queries'
@@ -50,7 +50,7 @@ export default (props: Props) => {
   return (
     <LinkIcon title={`Save to ${service.alias}`} icon="backup" onClick={archiveArticle}>
       <span>Save to {service.alias}</span>
-      {keyboard && service.is_default && <Kbd keys="s" onKeypress={archiveArticle} />}
+      {keyboard && service.is_default && <Kbd keys="a" onKeypress={archiveArticle} />}
     </LinkIcon>
   )
 }

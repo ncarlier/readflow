@@ -57,31 +57,26 @@ func (reg *Registry) GetArticle(ctx context.Context, id uint) (*model.Article, e
 	return article, nil
 }
 
-// UpdateArticleStatus update article status
-func (reg *Registry) UpdateArticleStatus(ctx context.Context, id uint, status string) (*model.Article, error) {
+// UpdateArticle update article
+func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdateForm) (*model.Article, error) {
 	uid := getCurrentUserFromContext(ctx)
 
-	article, err := reg.GetArticle(ctx, id)
+	article, err := reg.GetArticle(ctx, form.ID)
 	if err != nil {
 		return nil, err
-	}
-
-	form := model.ArticleUpdateForm{
-		ID:     id,
-		Status: &status,
 	}
 
 	article, err = reg.db.UpdateArticleForUser(uid, form)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
-		).Uint("id", id).Msg("unable to update article")
+		).Uint("id", form.ID).Msg("unable to update article")
 		return nil, err
 	}
 	// TODO maybe too verbose... debug level is maybe an option here
-	reg.logger.Info().Uint(
-		"uid", uid,
-	).Uint("id", id).Str("status", article.Status).Msg("article status updated")
+	reg.logger.Info().Uint("uid", uid).Uint("id", form.ID).Str(
+		"status", article.Status,
+	).Bool("starred", article.Starred).Msg("article updated")
 
 	return article, nil
 }

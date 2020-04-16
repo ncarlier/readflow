@@ -14,6 +14,7 @@ const Routes = () => (
     <Redirect exact from="/login" to="/unread" />
     <Route path="/unread" component={ArticlesRoutes} />
     <Route path="/history" component={ArticlesRoutes} />
+    <Route path="/starred" component={ArticlesRoutes} />
     <Route path="/offline" component={OfflineRoutes} />
     <Route path="/categories/:id" component={CategoryRoutes} />
     <Route path="/settings" component={SettingsPage} />

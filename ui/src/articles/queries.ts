@@ -1,8 +1,22 @@
 import gql from 'graphql-tag'
 
 export const GetArticles = gql`
-  query articles($limit: Int!, $sortOrder: sortOrder!, $status: status!, $category: Int, $afterCursor: Int) {
-    articles(limit: $limit, sortOrder: $sortOrder, status: $status, category: $category, afterCursor: $afterCursor) {
+  query articles(
+    $limit: Int
+    $sortOrder: sortOrder
+    $status: status
+    $starred: Boolean
+    $category: Int
+    $afterCursor: Int
+  ) {
+    articles(
+      limit: $limit
+      sortOrder: $sortOrder
+      status: $status
+      starred: $starred
+      category: $category
+      afterCursor: $afterCursor
+    ) {
       totalCount
       endCursor
       hasNext
@@ -13,6 +27,7 @@ export const GetArticles = gql`
         url
         image
         status
+        starred
         category {
           id
           title
@@ -32,6 +47,7 @@ export const GetArticle = gql`
       html
       url
       status
+      starred
       category {
         id
         title
@@ -51,6 +67,7 @@ export const GetFullArticle = gql`
       url
       image
       status
+      starred
       category {
         id
         title
@@ -60,12 +77,13 @@ export const GetFullArticle = gql`
   }
 `
 
-export const UpdateArticleStatus = gql`
-  mutation updateArticleStatus($id: ID!, $status: status!) {
-    updateArticleStatus(id: $id, status: $status) {
+export const UpdateArticle = gql`
+  mutation updateArticle($id: ID!, $status: status, $starred: Boolean) {
+    updateArticle(id: $id, status: $status, starred: $starred) {
       article {
         id
         status
+        starred
         category {
           id
           unread
@@ -104,6 +122,7 @@ export const AddNewArticle = gql`
       url
       image
       status
+      starred
       category {
         id
         unread
