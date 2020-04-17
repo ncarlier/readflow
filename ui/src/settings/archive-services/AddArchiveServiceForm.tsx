@@ -11,9 +11,8 @@ import FormSelectField from '../../components/FormSelectField'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm, isValidInput } from '../../helpers'
+import { getGQLError, isValidForm } from '../../helpers'
 import { usePageTitle } from '../../hooks'
-import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
 import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
@@ -26,9 +25,7 @@ interface AddArchiveServiceFormFields {
   isDefault: boolean
 }
 
-type AllProps = RouteComponentProps<{}>
-
-export default ({ history }: AllProps) => {
+export default ({ history }: RouteComponentProps) => {
   usePageTitle('Settings - Add new archive provider')
 
   const [config, setConfig] = useState<any>(null)
@@ -39,9 +36,8 @@ export default ({ history }: AllProps) => {
     alias: '',
     isDefault: false
   })
-  const onMountValidator = useOnMountInputValidator(formState.validity)
 
-  const addArchiveServiceMutation = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(
+  const [addArchiveServiceMutation] = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(
     CreateOrUpdateArchiveService
   )
 
@@ -63,7 +59,7 @@ export default ({ history }: AllProps) => {
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
       e.preventDefault()
-      if (!isValidForm(formState, onMountValidator) || !config) {
+      if (!isValidForm(formState) || !config) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
         return
       }
@@ -82,28 +78,15 @@ export default ({ history }: AllProps) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to add new archive service">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField
-            label="Alias"
-            {...text('alias')}
-            error={!isValidInput(formState, onMountValidator, 'alias')}
-            required
-            autoFocus
-            ref={onMountValidator.bind}
-          />
-          <FormSelectField
-            label="Provider"
-            {...select('provider')}
-            error={!isValidInput(formState, onMountValidator, 'provider')}
-            required
-            ref={onMountValidator.bind}
-          >
+          <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
+          <FormSelectField label="Provider" {...select('provider')} error={formState.errors.provider} required>
             <option>Please select an archive provider</option>
             <option value="keeper">Keeper</option>
             <option value="webhook">Webhook</option>
           </FormSelectField>
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} />}
           {formState.values.provider === 'webhook' && <WebhookConfigForm onChange={setConfig} />}
-          <FormCheckboxField label="To use by default" {...checkbox('isDefault')} ref={onMountValidator.bind} />
+          <FormCheckboxField label="To use by default" {...checkbox('isDefault')} />
         </form>
       </section>
       <footer>

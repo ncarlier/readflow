@@ -22,7 +22,7 @@ interface DeleteAccountResponse {
 
 export default () => {
   const { showErrorMessage } = useContext(MessageContext)
-  const deleteAccountMutation = useMutation<DeleteAccountResponse>(DeleteAccount)
+  const [deleteAccountMutation] = useMutation<DeleteAccountResponse>(DeleteAccount)
   const deleteAccount = async () => {
     try {
       const res = await deleteAccountMutation()

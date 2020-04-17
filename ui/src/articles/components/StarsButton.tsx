@@ -19,7 +19,7 @@ export default (props: Props) => {
 
   const { showErrorMessage } = useContext(MessageContext)
   const [loading, setLoading] = useState(false)
-  const updateArticleMutation = useMutation<UpdateArticleRequest>(UpdateArticle)
+  const [updateArticleMutation] = useMutation<UpdateArticleRequest>(UpdateArticle)
 
   const updateArticle = async (starred: boolean) => {
     try {

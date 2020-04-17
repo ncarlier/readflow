@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint import/no-webpack-loader-syntax: off */
 import mousetrap from 'mousetrap'
 import React, { useContext, useEffect, useRef } from 'react'
 
@@ -37,7 +38,7 @@ export default ({ article }: Props) => {
   const contentRef = useRef<HTMLDivElement>(null)
   const { localConfiguration } = useContext(LocalConfigurationContext)
   let { theme } = localConfiguration
-  if (theme == 'auto') {
+  if (theme === 'auto') {
     const mql = getMql()
     theme = mql && mql.matches ? 'dark' : 'light'
   }

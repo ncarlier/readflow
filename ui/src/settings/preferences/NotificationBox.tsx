@@ -56,8 +56,8 @@ const NotificationSwitch = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const client = useApolloClient()
-  const deletePushSubscriptionMutation = useMutation<DeletePushSubscriptionResponse>(DeletePushSubscription)
-  const createPushSubscriptionMutation = useMutation<CreatePushSubscriptionResponse>(CreatePushSubscription)
+  const [deletePushSubscriptionMutation] = useMutation<DeletePushSubscriptionResponse>(DeletePushSubscription)
+  const [createPushSubscriptionMutation] = useMutation<CreatePushSubscriptionResponse>(CreatePushSubscription)
 
   const resetSubscription = async () => {
     localStorage.removeItem(DEVICE_ID)

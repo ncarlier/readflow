@@ -1,6 +1,6 @@
 import React from 'react'
 import { useQuery } from 'react-apollo-hooks'
-import { Route, RouteComponentProps, Switch } from 'react-router-dom'
+import { Route, RouteComponentProps, Switch, useRouteMatch } from 'react-router-dom'
 
 import ArticlePage from '../articles/ArticlePage'
 import ArticlesPage from '../articles/ArticlesPage'
@@ -8,13 +8,12 @@ import Loader from '../components/Loader'
 import ErrorPage from '../error/ErrorPage'
 import { matchResponse } from '../helpers'
 import Page from '../layout/Page'
-import { ConnectedReduxProps } from '../store'
 import { GetCategoryResponse } from './models'
 import { GetCategory } from './queries'
 
-type AllProps = RouteComponentProps<{ id: string }> & ConnectedReduxProps
+export default () => {
+  const match = useRouteMatch<{ id: string }>()
 
-export default ({ match }: AllProps) => {
   const { id } = match.params
   const { data, error, loading } = useQuery<GetCategoryResponse>(GetCategory, {
     variables: { id }

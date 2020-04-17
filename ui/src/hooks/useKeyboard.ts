@@ -16,5 +16,5 @@ export default (key: string | string[], handler: KeyHandler, enable = true) => {
         mousetrap.unbind(key)
       }
     }
-  }, [handler, enable])
+  }, [key, handler, enable])
 }

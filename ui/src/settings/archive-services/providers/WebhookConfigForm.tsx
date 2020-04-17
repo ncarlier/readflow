@@ -5,8 +5,6 @@ import FormInputField from '../../../components/FormInputField'
 import FormSelectField from '../../../components/FormSelectField'
 import FormTextareaField from '../../../components/FormTextareaField'
 import HelpLink from '../../../components/HelpLink'
-import { isValidInput } from '../../../helpers'
-import useOnMountInputValidator from '../../../hooks/useOnMountInputValidator'
 
 interface WebhookConfigFormFields {
   endpoint: string
@@ -43,34 +41,16 @@ const ContentTypes = () => (
 
 export default ({ onChange, config = defaultConfig }: Props) => {
   const [formState, { url, select, textarea }] = useFormState<WebhookConfigFormFields>(config, {
-    onChange: (_e, stateValues, nextStateValues) => onChange(nextStateValues)
+    onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues)
   })
-  const onMountValidator = useOnMountInputValidator(formState.validity)
 
   return (
     <>
-      <FormInputField
-        label="Endpoint"
-        {...url('endpoint')}
-        error={!isValidInput(formState, onMountValidator, 'endpoint')}
-        required
-        ref={onMountValidator.bind}
-      />
-      <FormSelectField
-        label="Content Type"
-        {...select('contentType')}
-        error={!isValidInput(formState, onMountValidator, 'contentType')}
-        required
-        ref={onMountValidator.bind}
-      >
+      <FormInputField label="Endpoint" {...url('endpoint')} error={formState.errors.endpoint} required />
+      <FormSelectField label="Content Type" {...select('contentType')} error={formState.errors.contentType} required>
         <ContentTypes />
       </FormSelectField>
-      <FormTextareaField
-        label="Format"
-        {...textarea('format')}
-        error={!isValidInput(formState, onMountValidator, 'format')}
-        ref={onMountValidator.bind}
-      >
+      <FormTextareaField label="Format" {...textarea('format')} error={formState.errors.format}>
         <HelpLink href="https://about.readflow.app/docs/en/third-party/archive/webhook/#format">
           View format syntax
         </HelpLink>

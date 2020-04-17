@@ -4,7 +4,7 @@ export function getURLParam<T>(params: URLSearchParams, name: string, fallback: 
     const val = params.get(name)
     if (val && typeof fallback === 'number') {
       // eslint-disable-next-line use-isnan
-      if (parseInt(val, 10) != NaN) {
+      if (parseInt(val, 10) !== NaN) {
         return Number.parseInt(val, 10) as any
       }
     }

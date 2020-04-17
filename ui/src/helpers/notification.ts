@@ -8,7 +8,7 @@ function urlBase64ToUint8Array(base64String: string) {
 }
 
 export const isNotificationSupported = () => 'Notification' in window
-export const isNotificationGranted = () => isNotificationSupported() && Notification.permission == 'granted'
+export const isNotificationGranted = () => isNotificationSupported() && Notification.permission === 'granted'
 
 export const unSubscribePush = async (registration: ServiceWorkerRegistration) => {
   let subscription = await registration.pushManager.getSubscription()

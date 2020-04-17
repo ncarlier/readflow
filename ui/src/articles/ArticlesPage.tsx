@@ -49,7 +49,7 @@ const buildArticlesRequest = (mode: DisplayMode, props: AllProps, localConfig: L
         req.category = category.id
         req.status = getURLParam<string>(params, 'status', 'unread')
         const sortKey = `cat_${category.id}`
-        if (localConfig.sortOrders.hasOwnProperty(sortKey)) {
+        if (Object.prototype.hasOwnProperty.call(localConfig.sortOrders, sortKey)) {
           req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders[sortKey])
         }
       }
@@ -72,7 +72,7 @@ const buildTitle = (mode: DisplayMode, status: string | null, category?: Categor
 const computeTotalArticles = (data: GetArticlesResponse, status: string | null) => {
   let delta = 0
   if (status) {
-    data.articles.entries.filter(a => a.status !== status).length
+    delta = data.articles.entries.filter(a => a.status !== status).length
   }
   return data.articles.totalCount - delta
 }

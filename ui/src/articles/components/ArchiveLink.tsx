@@ -27,7 +27,7 @@ export default (props: Props) => {
   const { article, service, keyboard = false } = props
   const { showMessage, showErrorMessage } = useContext(MessageContext)
 
-  const archiveArticleMutation = useMutation<ArchiveArticleFields>(ArchiveArticle)
+  const [archiveArticleMutation] = useMutation<ArchiveArticleFields>(ArchiveArticle)
 
   const archiveArticle = useCallback(async () => {
     setLoading(true)

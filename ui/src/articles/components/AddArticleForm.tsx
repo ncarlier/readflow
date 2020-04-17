@@ -1,20 +1,19 @@
-import React, { FormEvent, useCallback, useContext, useState, MouseEvent } from 'react'
+import React, { FormEvent, MouseEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useFormState } from 'react-use-form-state'
 
 import { Category } from '../../categories/models'
 import Button from '../../components/Button'
+import CategoriesOptions from '../../components/CategoriesOptions'
 import FormInputField from '../../components/FormInputField'
+import FormSelectField from '../../components/FormSelectField'
 import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm, isValidInput } from '../../helpers'
-import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
+import { getGQLError, isValidForm } from '../../helpers'
 import { AddNewArticleRequest, AddNewArticleResponse, Article } from '../models'
 import { AddNewArticle } from '../queries'
-import FormSelectField from '../../components/FormSelectField'
-import CategoriesOptions from '../../components/CategoriesOptions'
 
 interface AddArticleFormFields {
   url: string
@@ -36,8 +35,7 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
     url: value,
     category: category ? category.id : undefined
   })
-  const onMountValidator = useOnMountInputValidator(formState.validity)
-  const addArticleMutation = useMutation<AddNewArticleResponse, AddNewArticleRequest>(AddNewArticle)
+  const [addArticleMutation] = useMutation<AddNewArticleResponse, AddNewArticleRequest>(AddNewArticle)
 
   const addArticle = async (form: AddArticleFormFields) => {
     setLoading(true)
@@ -59,7 +57,7 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
       e.preventDefault()
-      if (!isValidForm(formState, onMountValidator)) {
+      if (!isValidForm(formState)) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
         return
       }
@@ -77,20 +75,8 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to add new article">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField
-            label="URL"
-            {...url('url')}
-            error={!isValidInput(formState, onMountValidator, 'url')}
-            required
-            autoFocus
-            ref={onMountValidator.bind}
-          />
-          <FormSelectField
-            label="Category"
-            {...select('category')}
-            error={!isValidInput(formState, onMountValidator, 'category')}
-            ref={onMountValidator.bind}
-          >
+          <FormInputField label="URL" {...url('url')} error={formState.errors.url} required autoFocus />
+          <FormSelectField label="Category" {...select('category')} error={formState.errors.category}>
             <option>Optional category</option>
             <CategoriesOptions />
           </FormSelectField>

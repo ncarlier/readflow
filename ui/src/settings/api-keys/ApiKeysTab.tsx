@@ -2,23 +2,23 @@ import React, { useContext, useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import Button from '../../components/Button'
 import ConfirmDialog from '../../components/ConfirmDialog'
+import DataTable, { OnSelectedFn } from '../../components/DataTable'
 import Loader from '../../components/Loader'
+import Masked from '../../components/Masked'
 import Panel from '../../components/Panel'
+import TimeAgo from '../../components/TimeAgo'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
-import { updateCacheAfterDelete } from './cache'
-import { DeleteApiKeyRequest, DeleteApiKeyResponse, GetApiKeysResponse, ApiKey } from './models'
-import { DeleteApiKeys, GetApiKeys } from './queries'
-import { Link } from 'react-router-dom'
-import TimeAgo from '../../components/TimeAgo'
-import DataTable, { OnSelectedFn } from '../../components/DataTable'
 import Bookmarklet from './Bookmarklet'
-import Masked from '../../components/Masked'
+import { updateCacheAfterDelete } from './cache'
+import { ApiKey, DeleteApiKeyRequest, DeleteApiKeyResponse, GetApiKeysResponse } from './models'
+import { DeleteApiKeys, GetApiKeys } from './queries'
 
 const definition = [
   {
@@ -59,7 +59,7 @@ export default ({ match }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetApiKeysResponse>(GetApiKeys)
-  const deleteApiKeysMutation = useMutation<DeleteApiKeyResponse, DeleteApiKeyRequest>(DeleteApiKeys)
+  const [deleteApiKeysMutation] = useMutation<DeleteApiKeyResponse, DeleteApiKeyRequest>(DeleteApiKeys)
   const { showMessage } = useContext(MessageContext)
 
   const onSelectedHandler: OnSelectedFn = keys => {

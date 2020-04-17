@@ -12,7 +12,7 @@ export default (ref: RefObject<HTMLDivElement>) => {
   }, [scrollPosition])
 
   useEffect(() => {
-    const key = location.pathname
+    const key = window.location.pathname
     return () => {
       if (ref.current) {
         const pos = ref.current.scrollTop

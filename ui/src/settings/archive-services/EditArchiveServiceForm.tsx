@@ -11,8 +11,7 @@ import FormInputField from '../../components/FormInputField'
 import FormSelectField from '../../components/FormSelectField'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm, isValidInput } from '../../helpers'
-import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
+import { getGQLError, isValidForm } from '../../helpers'
 import { updateCacheAfterUpdate } from './cache'
 import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
@@ -38,8 +37,7 @@ export default ({ data, history }: Props) => {
     provider: data.provider,
     is_default: data.is_default
   })
-  const onMountValidator = useOnMountInputValidator(formState.validity)
-  const editArchiveServiceMutation = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(
+  const [editArchiveServiceMutation] = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(
     CreateOrUpdateArchiveService
   )
   const { showMessage } = useContext(MessageContext)
@@ -60,7 +58,7 @@ export default ({ data, history }: Props) => {
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
       e.preventDefault()
-      if (!isValidForm(formState, onMountValidator) || !config) {
+      if (!isValidForm(formState) || !config) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
         return
       }
@@ -78,21 +76,14 @@ export default ({ data, history }: Props) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to edit archive service">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField
-            label="Alias"
-            {...text('alias')}
-            error={!isValidInput(formState, onMountValidator, 'alias')}
-            required
-            autoFocus
-            ref={onMountValidator.bind}
-          />
-          <FormSelectField label="Provider" {...select('provider')} ref={onMountValidator.bind}>
+          <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
+          <FormSelectField label="Provider" {...select('provider')}>
             <option value="keeper">Keeper</option>
             <option value="webhook">Webhook</option>
           </FormSelectField>
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 'webhook' && <WebhookConfigForm onChange={setConfig} config={config} />}
-          <FormCheckboxField label="To use by default" {...checkbox('is_default')} ref={onMountValidator.bind} />
+          <FormCheckboxField label="To use by default" {...checkbox('is_default')} />
         </form>
       </section>
       <footer>

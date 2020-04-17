@@ -2,13 +2,12 @@ import { Location } from 'history'
 import React, { useCallback, useContext } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
-import { Link } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 
 import ConfirmDialog from '../../components/ConfirmDialog'
 import DropdownMenu from '../../components/DropdownMenu'
 import Kbd from '../../components/Kbd'
 import LinkIcon from '../../components/LinkIcon'
-import { connectRouter, IRouterDispatchProps, IRouterStateProps } from '../../containers/RouterContainer'
 import { LocalConfigurationContext } from '../../context/LocalConfigurationContext'
 import { MessageContext } from '../../context/MessageContext'
 import { getGQLError } from '../../helpers'
@@ -22,14 +21,12 @@ interface Props {
   mode: DisplayMode
 }
 
-type AllProps = Props & IRouterStateProps & IRouterDispatchProps
-
 function revertSortOrder(order: string | null) {
-  return order == 'asc' ? 'desc' : 'asc'
+  return order === 'asc' ? 'desc' : 'asc'
 }
 
 function revertStatus(status: string | null) {
-  return status == 'unread' ? 'read' : 'unread'
+  return status === 'unread' ? 'read' : 'unread'
 }
 
 function getLocationWithSortParam(loc: Location, order: 'asc' | 'desc') {
@@ -44,13 +41,15 @@ function getLocationWithStatusParam(loc: Location, status: 'read' | 'unread') {
   return { ...loc, search: params.toString() }
 }
 
-export const ArticlesPageMenu = (props: AllProps) => {
-  const { refresh, req, mode, router, push } = props
-  let { location: loc } = router
+export default (props: Props) => {
+  const { refresh, req, mode } = props
+
+  const loc = useLocation()
+  const { push } = useHistory()
 
   const { showErrorMessage } = useContext(MessageContext)
   const { localConfiguration, updateLocalConfiguration } = useContext(LocalConfigurationContext)
-  const markAllArticlesAsReadMutation = useMutation<{ category?: number }>(MarkAllArticlesAsRead)
+  const [markAllArticlesAsReadMutation] = useMutation<{ category?: number }>(MarkAllArticlesAsRead)
 
   const markAllAsRead = useCallback(async () => {
     try {
@@ -61,7 +60,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
     } catch (err) {
       showErrorMessage(getGQLError(err))
     }
-  }, [req])
+  }, [req, refresh])
 
   const updateLocalConfigSortOrder = useCallback(() => {
     const orders = localConfiguration.sortOrders
@@ -81,7 +80,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
         key = 'unread'
         break
     }
-    if (!(orders.hasOwnProperty(key) && orders[key] == order)) {
+    if (!(Object.prototype.hasOwnProperty.call(orders, key) && orders[key] === order)) {
       orders[key] = order
       updateLocalConfiguration({ ...localConfiguration, sortOrders: orders })
     }
@@ -94,7 +93,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
       push(getLocationWithSortParam(loc, revertSortOrder(req.sortOrder)))
       return false
     },
-    [loc, req]
+    [loc, req, push]
   )
 
   const toggleStatus = useCallback(
@@ -103,7 +102,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
       push(getLocationWithStatusParam(loc, revertStatus(req.status)))
       return false
     },
-    [loc, req]
+    [loc, req, push]
   )
   const [showMarkAllAsReadDialog, hideMarkAllAsReadDialog] = useModal(() => (
     <ConfirmDialog
@@ -132,11 +131,11 @@ export const ArticlesPageMenu = (props: AllProps) => {
             onClick={updateLocalConfigSortOrder}
             icon="sort"
           >
-            <span>{req.sortOrder == 'asc' ? 'Recent articles first' : 'Older articles first'}</span>
+            <span>{req.sortOrder === 'asc' ? 'Recent articles first' : 'Older articles first'}</span>
             <Kbd keys="shift+o" onKeypress={toggleSortOrder} />
           </LinkIcon>
         </li>
-        {req.status == 'unread' && (
+        {req.status === 'unread' && (
           <li>
             <LinkIcon onClick={showMarkAllAsReadDialog} icon="done_all">
               <span>Mark all as read</span>
@@ -147,7 +146,7 @@ export const ArticlesPageMenu = (props: AllProps) => {
         {!!req.category && !!req.status && (
           <li>
             <LinkIcon as={Link} to={getLocationWithStatusParam(loc, revertStatus(req.status))} icon="history">
-              <span>{req.status == 'read' ? 'View unread articles' : 'View read articles'}</span>
+              <span>{req.status === 'read' ? 'View unread articles' : 'View read articles'}</span>
               <Kbd keys="shift+h" onKeypress={toggleStatus} />
             </LinkIcon>
           </li>
@@ -156,5 +155,3 @@ export const ArticlesPageMenu = (props: AllProps) => {
     </DropdownMenu>
   )
 }
-
-export default connectRouter(ArticlesPageMenu)
