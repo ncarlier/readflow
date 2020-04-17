@@ -60,7 +60,7 @@ export default (props: Props) => {
     } catch (err) {
       showErrorMessage(getGQLError(err))
     }
-  }, [req, refresh])
+  }, [markAllArticlesAsReadMutation, req, refresh, showErrorMessage])
 
   const updateLocalConfigSortOrder = useCallback(() => {
     const orders = localConfiguration.sortOrders
@@ -84,7 +84,7 @@ export default (props: Props) => {
       orders[key] = order
       updateLocalConfiguration({ ...localConfiguration, sortOrders: orders })
     }
-  }, [req, mode, localConfiguration])
+  }, [req, mode, localConfiguration, updateLocalConfiguration])
 
   const toggleSortOrder = useCallback(
     (event: KeyboardEvent) => {
@@ -93,7 +93,7 @@ export default (props: Props) => {
       push(getLocationWithSortParam(loc, revertSortOrder(req.sortOrder)))
       return false
     },
-    [loc, req, push]
+    [loc, req, push, updateLocalConfigSortOrder]
   )
 
   const toggleStatus = useCallback(

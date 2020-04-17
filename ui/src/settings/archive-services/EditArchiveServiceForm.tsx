@@ -42,18 +42,21 @@ export default ({ data, history }: Props) => {
   )
   const { showMessage } = useContext(MessageContext)
 
-  const editArchiveService = async (service: ArchiveService) => {
-    try {
-      await editArchiveServiceMutation({
-        variables: service,
-        update: updateCacheAfterUpdate
-      })
-      showMessage(`Archive service edited: ${service.alias}`)
-      history.goBack()
-    } catch (err) {
-      setErrorMessage(getGQLError(err))
-    }
-  }
+  const editArchiveService = useCallback(
+    async (service: ArchiveService) => {
+      try {
+        await editArchiveServiceMutation({
+          variables: service,
+          update: updateCacheAfterUpdate
+        })
+        showMessage(`Archive service edited: ${service.alias}`)
+        history.goBack()
+      } catch (err) {
+        setErrorMessage(getGQLError(err))
+      }
+    },
+    [editArchiveServiceMutation, showMessage, history]
+  )
 
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
@@ -65,7 +68,7 @@ export default ({ data, history }: Props) => {
       const { alias, provider, is_default } = formState.values
       editArchiveService({ id: data.id, alias, provider, is_default, config: JSON.stringify(config) })
     },
-    [formState, config]
+    [data, formState, config, editArchiveService]
   )
 
   return (

@@ -49,7 +49,7 @@ export default (props: Props) => {
 
   const ref = useRef<HTMLUListElement>(null)
   const [loading, setLoading] = useState(false)
-  const [articles, setArticles] = useState(props.articles.filter(filter))
+  const [articles] = useState(props.articles.filter(filter))
   const [activeIndex, setActiveIndex] = useState(0)
 
   const isFetching = useInfiniteScroll(ref, hasMore, fetchMoreArticles)
@@ -69,10 +69,6 @@ export default (props: Props) => {
       if ($el) $el.focus()
     }
   }, [activeIndex])
-
-  useEffect(() => {
-    setArticles(props.articles.filter(filter))
-  }, [props.articles, filter])
 
   if (articles.length <= 3) {
     if (hasMore) {

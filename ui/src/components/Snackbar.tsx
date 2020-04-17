@@ -20,7 +20,7 @@ export default ({ ttl = 5000 }: Props) => {
         clearTimeout(timeout)
       }
     }
-  }, [ttl, message])
+  }, [ttl, message, showMessage])
 
   return (
     <ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={500} transitionLeaveTimeout={500}>

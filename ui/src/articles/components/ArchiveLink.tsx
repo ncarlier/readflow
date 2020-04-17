@@ -41,7 +41,7 @@ export default (props: Props) => {
     } finally {
       setLoading(false)
     }
-  }, [article])
+  }, [archiveArticleMutation, article, service, showMessage, showErrorMessage])
 
   if (loading) {
     return <Loader />

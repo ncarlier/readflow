@@ -42,32 +42,34 @@ export default ({ current, category, refresh }: Props) => {
     }
   }, [refresh])
 
-  const getNbArticlesToRead = async (lastCount: number) => {
-    // console.log('getNbArticlesToRead...')
-    try {
-      const { errors, data } = await client.query<GetArticlesResponse>({
-        query: GetNbNewArticles,
-        fetchPolicy: 'network-only',
-        variables: { category: category ? category.id : undefined }
-      })
-      if (data) {
-        const delta = data.articles.totalCount - lastCount
-        setNbItems(delta)
+  const getNbArticlesToRead = useCallback(
+    async (lastCount: number) => {
+      try {
+        const { errors, data } = await client.query<GetArticlesResponse>({
+          query: GetNbNewArticles,
+          fetchPolicy: 'network-only',
+          variables: { category: category ? category.id : undefined }
+        })
+        if (data) {
+          const delta = data.articles.totalCount - lastCount
+          setNbItems(delta)
+        }
+        if (errors) {
+          throw new Error(errors[0].message)
+        }
+      } catch (err) {
+        console.error(err)
       }
-      if (errors) {
-        throw new Error(errors[0].message)
-      }
-    } catch (err) {
-      console.error(err)
-    }
-  }
+    },
+    [category, client]
+  )
 
   useEffect(() => {
     const timer = setInterval(() => getNbArticlesToRead(current), 60000)
     return () => {
       clearInterval(timer)
     }
-  }, [current])
+  }, [current, getNbArticlesToRead])
 
   switch (true) {
     case loading:

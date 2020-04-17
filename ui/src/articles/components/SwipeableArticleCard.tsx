@@ -26,20 +26,23 @@ export default (props: Props) => {
   const { showErrorMessage } = useContext(MessageContext)
   const [updateArticleMutation] = useMutation<UpdateArticleRequest>(UpdateArticle)
 
-  const updateArticleStatus = async (status: string) => {
-    try {
-      await updateArticleMutation({
-        variables: { id: article.id, status }
-      })
-    } catch (err) {
-      showErrorMessage(getGQLError(err))
-    }
-  }
+  const updateArticleStatus = useCallback(
+    async (status: string) => {
+      try {
+        await updateArticleMutation({
+          variables: { id: article.id, status }
+        })
+      } catch (err) {
+        showErrorMessage(getGQLError(err))
+      }
+    },
+    [updateArticleMutation, article, showErrorMessage]
+  )
 
   const handleOnDelete = useCallback(() => {
     const status = article.status === 'read' ? 'unread' : 'read'
     updateArticleStatus(status)
-  }, [article])
+  }, [article, updateArticleStatus])
 
   const bgIcon = article.status === 'read' ? 'undo' : 'done'
 

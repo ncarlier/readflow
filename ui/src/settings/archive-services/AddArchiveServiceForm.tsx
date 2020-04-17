@@ -41,20 +41,23 @@ export default ({ history }: RouteComponentProps) => {
     CreateOrUpdateArchiveService
   )
 
-  const addArchiveService = async (service: ArchiveService) => {
-    try {
-      const res = await addArchiveServiceMutation({
-        variables: service,
-        update: updateCacheAfterCreate
-      })
-      if (res.data) {
-        showMessage(`New archive service: ${res.data.createOrUpdateArchiver.alias}`)
+  const addArchiveService = useCallback(
+    async (service: ArchiveService) => {
+      try {
+        const res = await addArchiveServiceMutation({
+          variables: service,
+          update: updateCacheAfterCreate
+        })
+        if (res.data) {
+          showMessage(`New archive service: ${res.data.createOrUpdateArchiver.alias}`)
+        }
+        history.goBack()
+      } catch (err) {
+        setErrorMessage(getGQLError(err))
       }
-      history.goBack()
-    } catch (err) {
-      setErrorMessage(getGQLError(err))
-    }
-  }
+    },
+    [addArchiveServiceMutation, showMessage, history]
+  )
 
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
@@ -67,7 +70,7 @@ export default ({ history }: RouteComponentProps) => {
       // eslint-disable-next-line @typescript-eslint/camelcase
       addArchiveService({ alias, provider, is_default: isDefault, config: JSON.stringify(config) })
     },
-    [formState, config]
+    [formState, config, addArchiveService]
   )
 
   return (
