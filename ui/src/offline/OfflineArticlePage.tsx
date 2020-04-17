@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { RouteComponentProps } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import ArticleContent from '../articles/components/ArticleContent'
 import ArticleHeader from '../articles/components/ArticleHeader'
@@ -12,7 +13,6 @@ import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
 import ErrorPanel from '../error/ErrorPanel'
 import { matchResponse } from '../helpers'
 import Page from '../layout/Page'
-import { Link } from 'react-router-dom'
 
 type AllProps = RouteComponentProps<{ id: string }> & OfflineProps
 
@@ -25,7 +25,7 @@ export const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle
 
   useEffect(() => {
     fetchOfflineArticle(parseInt(id, 10))
-  }, [])
+  }, [fetchOfflineArticle, id])
 
   const render = matchResponse<Article>({
     Loading: () => <Loader />,

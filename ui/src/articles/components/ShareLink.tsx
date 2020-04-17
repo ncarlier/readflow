@@ -9,9 +9,8 @@ interface Props {
 }
 
 export default ({ article }: Props) => {
-  const nvg: any = window.navigator
-
   const share = useCallback(() => {
+    const nvg: any = window.navigator
     nvg.share({
       title: article.title,
       text: article.text,

@@ -9,16 +9,17 @@ export default (ref: RefObject<HTMLDivElement>) => {
       // console.log(`restoring scroll position: ${scrollPosition}`)
       ref.current.scrollTo(0, scrollPosition)
     }
-  }, [scrollPosition])
+  }, [ref, scrollPosition])
 
   useEffect(() => {
     const key = window.location.pathname
+    const { current } = ref
     return () => {
-      if (ref.current) {
-        const pos = ref.current.scrollTop
+      if (current) {
+        const pos = current.scrollTop
         // console.log(`saving scroll position for ${key}: ${pos}`)
         setScrollPosition(key, pos)
       }
     }
-  })
+  }, [ref])
 }

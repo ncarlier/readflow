@@ -35,19 +35,22 @@ export default ({ history }: AllProps) => {
   const [addCategoryMutation] = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)
 
-  const addNewCategory = async (category: Category) => {
-    try {
-      await addCategoryMutation({
-        variables: category,
-        update: updateCacheAfterCreate
-      })
-      showMessage(`New category: ${category.title}`)
-      // console.log('New category', res)
-      history.goBack()
-    } catch (err) {
-      setErrorMessage(getGQLError(err))
-    }
-  }
+  const addNewCategory = useCallback(
+    async (category: Category) => {
+      try {
+        await addCategoryMutation({
+          variables: category,
+          update: updateCacheAfterCreate
+        })
+        showMessage(`New category: ${category.title}`)
+        // console.log('New category', res)
+        history.goBack()
+      } catch (err) {
+        setErrorMessage(getGQLError(err))
+      }
+    },
+    [addCategoryMutation, showMessage, history]
+  )
 
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
@@ -58,7 +61,7 @@ export default ({ history }: AllProps) => {
       }
       addNewCategory(formState.values)
     },
-    [formState]
+    [formState, addNewCategory]
   )
 
   return (

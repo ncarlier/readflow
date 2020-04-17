@@ -34,18 +34,21 @@ export default ({ category, history }: Props) => {
   const [editCategoryMutation] = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)
 
-  const editCategory = async (category: Category) => {
-    try {
-      await editCategoryMutation({
-        variables: category,
-        update: updateCacheAfterUpdate
-      })
-      showMessage(`Category edited: ${category.title}`)
-      history.goBack()
-    } catch (err) {
-      setErrorMessage(getGQLError(err))
-    }
-  }
+  const editCategory = useCallback(
+    async (category: Category) => {
+      try {
+        await editCategoryMutation({
+          variables: category,
+          update: updateCacheAfterUpdate
+        })
+        showMessage(`Category edited: ${category.title}`)
+        history.goBack()
+      } catch (err) {
+        setErrorMessage(getGQLError(err))
+      }
+    },
+    [editCategoryMutation, showMessage, history]
+  )
 
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
@@ -56,7 +59,7 @@ export default ({ category, history }: Props) => {
       }
       editCategory({ id: category.id, ...formState.values })
     },
-    [formState]
+    [category, formState, editCategory]
   )
 
   return (

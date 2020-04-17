@@ -52,7 +52,7 @@ export default () => {
       }
       window.deferredPrompt = null
     })
-  }, [installed])
+  }, [deferredPrompt])
 
   return (
     <Box title="Installation">

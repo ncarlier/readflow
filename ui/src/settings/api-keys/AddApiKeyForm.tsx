@@ -29,21 +29,24 @@ export default ({ history }: AllProps) => {
   const [addApiKeyMutation] = useMutation<CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest>(CreateOrUpdateApiKey)
   const { showMessage } = useContext(MessageContext)
 
-  const addApiKey = async (apiKey: CreateOrUpdateApiKeyRequest) => {
-    try {
-      const res = await addApiKeyMutation({
-        variables: apiKey,
-        update: updateCacheAfterCreate
-      })
-      if (res.data) {
-        showMessage(`New API key: ${res.data.createOrUpdateAPIKey.alias}`)
-        // console.log('New API key', res)
-        history.goBack()
+  const addApiKey = useCallback(
+    async (apiKey: CreateOrUpdateApiKeyRequest) => {
+      try {
+        const res = await addApiKeyMutation({
+          variables: apiKey,
+          update: updateCacheAfterCreate
+        })
+        if (res.data) {
+          showMessage(`New API key: ${res.data.createOrUpdateAPIKey.alias}`)
+          // console.log('New API key', res)
+          history.goBack()
+        }
+      } catch (err) {
+        setErrorMessage(getGQLError(err))
       }
-    } catch (err) {
-      setErrorMessage(getGQLError(err))
-    }
-  }
+    },
+    [addApiKeyMutation, showMessage, history]
+  )
 
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
@@ -55,7 +58,7 @@ export default ({ history }: AllProps) => {
       const { alias } = formState.values
       addApiKey({ alias })
     },
-    [formState]
+    [formState, addApiKey]
   )
 
   return (

@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef } from 'react'
+import React, { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import styles from './SwipeableListItem.module.css'
 
@@ -9,6 +9,8 @@ interface Props {
   onSwipe: () => void
 }
 
+const fpsInterval = 1000 / 60
+
 export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
   // Drag & Drop
   const dragStartX = useRef(0)
@@ -17,14 +19,13 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
 
   // FPS Limit
   const startTime = useRef(0)
-  const fpsInterval = 1000 / 60
 
   // Refs
   const wrapperRef = useRef<HTMLDivElement>(null)
   const bgRef = useRef<HTMLDivElement>(null)
   const elementRef = useRef<HTMLDivElement>(null)
 
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     if (dragged.current) requestAnimationFrame(updatePosition)
     const now = Date.now()
     const elapsed = now - startTime.current
@@ -47,20 +48,23 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
       }
       startTime.current = Date.now()
     }
-  }
+  }, [dragged, startTime, bgRef, elementRef, left, threshold])
 
-  const onDragStart = (clientX: number) => {
-    const $el = elementRef.current
-    if ($el) {
-      dragged.current = true
-      dragStartX.current = clientX
-      $el.className = styles.item
-      startTime.current = Date.now()
-      requestAnimationFrame(updatePosition)
-    }
-  }
+  const onDragStart = useCallback(
+    (clientX: number) => {
+      const $el = elementRef.current
+      if ($el) {
+        dragged.current = true
+        dragStartX.current = clientX
+        $el.className = styles.item
+        startTime.current = Date.now()
+        requestAnimationFrame(updatePosition)
+      }
+    },
+    [elementRef, dragged, startTime, updatePosition]
+  )
 
-  const onDragEnd = () => {
+  const onDragEnd = useCallback(() => {
     const $el = elementRef.current
     const $wrapper = wrapperRef.current
     if (dragged.current && $el && $wrapper) {
@@ -76,55 +80,67 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
       $el.className = styles.bouncing
       $el.style.transform = `translateX(${left.current}px)`
     }
-  }
+  }, [elementRef, wrapperRef, dragged, left, onSwipe, threshold])
 
-  const onMouseMove = (evt: MouseEvent) => {
-    const l = evt.clientX - dragStartX.current
-    if (l < 0) {
-      left.current = l
-    }
-  }
+  const onMouseMove = useCallback(
+    (evt: MouseEvent) => {
+      const l = evt.clientX - dragStartX.current
+      if (l < 0) {
+        left.current = l
+      }
+    },
+    [left]
+  )
 
-  const onTouchMove = (evt: TouchEvent) => {
-    const touch = evt.targetTouches[0]
-    const l = touch.clientX - dragStartX.current
-    if (l < 0) {
-      left.current = l
-    }
-  }
+  const onTouchMove = useCallback(
+    (evt: TouchEvent) => {
+      const touch = evt.targetTouches[0]
+      const l = touch.clientX - dragStartX.current
+      if (l < 0) {
+        left.current = l
+      }
+    },
+    [left]
+  )
 
-  const onDragStartMouse = (evt: React.MouseEvent) => {
-    onDragStart(evt.clientX)
-    const $el = wrapperRef.current
-    if ($el) {
-      $el.addEventListener('mousemove', onMouseMove)
-    }
-  }
+  const onDragStartMouse = useCallback(
+    (evt: React.MouseEvent) => {
+      onDragStart(evt.clientX)
+      const $el = wrapperRef.current
+      if ($el) {
+        $el.addEventListener('mousemove', onMouseMove)
+      }
+    },
+    [onDragStart, wrapperRef, onMouseMove]
+  )
 
-  const onDragStartTouch = (evt: React.TouchEvent) => {
-    const touch = evt.targetTouches[0]
-    onDragStart(touch.clientX)
-    const $el = wrapperRef.current
-    if ($el) {
-      $el.addEventListener('touchmove', onTouchMove)
-    }
-  }
+  const onDragStartTouch = useCallback(
+    (evt: React.TouchEvent) => {
+      const touch = evt.targetTouches[0]
+      onDragStart(touch.clientX)
+      const $el = wrapperRef.current
+      if ($el) {
+        $el.addEventListener('touchmove', onTouchMove)
+      }
+    },
+    [wrapperRef, onDragStart, onTouchMove]
+  )
 
-  const onDragEndMouse = () => {
+  const onDragEndMouse = useCallback(() => {
     const $el = wrapperRef.current
     if ($el) {
       $el.removeEventListener('mousemove', onMouseMove)
     }
     onDragEnd()
-  }
+  }, [wrapperRef, onMouseMove, onDragEnd])
 
-  const onDragEndTouch = () => {
+  const onDragEndTouch = useCallback(() => {
     const $el = wrapperRef.current
     if ($el) {
       $el.removeEventListener('touchmove', onTouchMove)
     }
     onDragEnd()
-  }
+  }, [wrapperRef, onTouchMove, onDragEnd])
 
   useEffect(() => {
     window.addEventListener('mouseup', onDragEndMouse)
@@ -133,7 +149,7 @@ export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
       window.removeEventListener('mouseup', onDragEndMouse)
       window.removeEventListener('touchend', onDragEndTouch)
     }
-  }, [])
+  }, [onDragEndMouse, onDragEndTouch])
 
   return (
     <div className={styles.wrapper} ref={wrapperRef}>

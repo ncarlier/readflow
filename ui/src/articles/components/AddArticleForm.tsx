@@ -37,22 +37,25 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
   })
   const [addArticleMutation] = useMutation<AddNewArticleResponse, AddNewArticleRequest>(AddNewArticle)
 
-  const addArticle = async (form: AddArticleFormFields) => {
-    setLoading(true)
-    try {
-      const variables = { ...form }
-      const res = await addArticleMutation({ variables })
-      setLoading(false)
-      if (res.data) {
-        const article = res.data.addArticle
-        onSuccess(article)
-        showMessage(`New article: ${article.title}`)
+  const addArticle = useCallback(
+    async (form: AddArticleFormFields) => {
+      setLoading(true)
+      try {
+        const variables = { ...form }
+        const res = await addArticleMutation({ variables })
+        setLoading(false)
+        if (res.data) {
+          const article = res.data.addArticle
+          onSuccess(article)
+          showMessage(`New article: ${article.title}`)
+        }
+      } catch (err) {
+        setLoading(false)
+        setErrorMessage(getGQLError(err))
       }
-    } catch (err) {
-      setLoading(false)
-      setErrorMessage(getGQLError(err))
-    }
-  }
+    },
+    [addArticleMutation, onSuccess, showMessage]
+  )
 
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
@@ -63,7 +66,7 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
       }
       addArticle(formState.values)
     },
-    [formState]
+    [formState, addArticle]
   )
 
   return (

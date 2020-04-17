@@ -80,7 +80,7 @@ export default ({ article }: Props) => {
       }
       ifrm.focus()
     }
-  }, [])
+  }, [article, theme])
 
   return <article className={styles.content} ref={contentRef} />
 }

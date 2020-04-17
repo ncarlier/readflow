@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 export interface StatePattern<T> {
   Loading: () => ReactNode
@@ -10,12 +10,14 @@ export function matchState<T>(
   p: StatePattern<T>
 ): (data: T | undefined, error: Error | undefined, loading: boolean) => ReactNode {
   return (data: T | undefined, error: Error | undefined, loading: boolean): ReactNode => {
-    return (
-      <>
-        {loading && p.Loading()}
-        {error && p.Error(error)}
-        {data && p.Data(data)}
-      </>
-    )
+    if (loading) {
+      return p.Loading()
+    }
+    if (error) {
+      return p.Error(error)
+    }
+    if (data) {
+      return p.Data(data)
+    }
   }
 }

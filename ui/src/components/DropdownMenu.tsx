@@ -1,4 +1,4 @@
-import React, { createRef, CSSProperties, MouseEventHandler, ReactNode, useEffect } from 'react'
+import React, { createRef, CSSProperties, MouseEventHandler, ReactNode, useCallback, useEffect } from 'react'
 
 import ButtonIcon from './ButtonIcon'
 import styles from './DropdownMenu.module.css'
@@ -11,17 +11,20 @@ interface Props {
 export default ({ children, style }: Props) => {
   const ref = createRef<HTMLDetailsElement>()
 
-  const handleClickOutside = (e: MouseEvent) => {
-    const $el = e.target
-    if (!($el instanceof Element)) return
-    if (ref.current) {
-      const isButton = $el.parentElement && $el.parentElement.tagName === 'BUTTON'
-      const $details = $el.closest('details')
-      if (!isButton || $details !== ref.current) {
-        ref.current.removeAttribute('open')
+  const handleClickOutside = useCallback(
+    (e: MouseEvent) => {
+      const $el = e.target
+      if (!($el instanceof Element)) return
+      if (ref.current) {
+        const isButton = $el.parentElement && $el.parentElement.tagName === 'BUTTON'
+        const $details = $el.closest('details')
+        if (!isButton || $details !== ref.current) {
+          ref.current.removeAttribute('open')
+        }
       }
-    }
-  }
+    },
+    [ref]
+  )
 
   const handleClickMenu: MouseEventHandler = e => {
     e.preventDefault()
@@ -35,7 +38,7 @@ export default ({ children, style }: Props) => {
     return () => {
       document.removeEventListener('click', handleClickOutside, { capture: true })
     }
-  }, [ref])
+  }, [handleClickOutside])
 
   return (
     <details ref={ref} className={styles.menu}>

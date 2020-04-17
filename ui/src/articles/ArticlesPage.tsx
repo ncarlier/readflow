@@ -136,7 +136,7 @@ export default (props: AllProps) => {
         return { articles }
       }
     })
-  }, [data])
+  }, [data, fetchMore, req])
 
   const refresh = useCallback(async () => {
     console.log('re-fetching articles...')

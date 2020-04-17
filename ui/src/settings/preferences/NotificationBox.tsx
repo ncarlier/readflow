@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import { useApolloClient, useMutation } from 'react-apollo-hooks'
 import Switch from 'react-switch'
 
@@ -71,26 +71,29 @@ const NotificationSwitch = () => {
     }
   }
 
-  const getPushSubscriptionStatus = async (pushId: string) => {
-    setLoading(true)
-    try {
-      const { errors } = await client.query<GetDeviceResponse>({
-        query: GetDevice,
-        variables: { id: pushId }
-      })
-      if (errors) {
-        throw new Error(errors[0].message)
-      } else {
-        setActivated(true)
+  const getPushSubscriptionStatus = useCallback(
+    async (pushId: string) => {
+      setLoading(true)
+      try {
+        const { errors } = await client.query<GetDeviceResponse>({
+          query: GetDevice,
+          variables: { id: pushId }
+        })
+        if (errors) {
+          throw new Error(errors[0].message)
+        } else {
+          setActivated(true)
+        }
+      } catch (err) {
+        setError(err)
+      } finally {
+        setLoading(false)
       }
-    } catch (err) {
-      setError(err)
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+    [client]
+  )
 
-  const subscribe = async () => {
+  const subscribe = useCallback(async () => {
     try {
       setLoading(true)
       const swr = await navigator.serviceWorker.ready
@@ -112,9 +115,9 @@ const NotificationSwitch = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [createPushSubscriptionMutation])
 
-  const unsubscribe = async () => {
+  const unsubscribe = useCallback(async () => {
     try {
       setLoading(true)
       await deletePushSubscriptionMutation({ variables: { id: pushID } })
@@ -124,13 +127,13 @@ const NotificationSwitch = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [deletePushSubscriptionMutation, pushID])
 
   useEffect(() => {
     if (pushID) {
       getPushSubscriptionStatus(pushID)
     }
-  }, [pushID])
+  }, [pushID, getPushSubscriptionStatus])
 
   return (
     <>

@@ -21,23 +21,26 @@ export default (props: Props) => {
   const [loading, setLoading] = useState(false)
   const [updateArticleMutation] = useMutation<UpdateArticleRequest>(UpdateArticle)
 
-  const updateArticle = async (starred: boolean) => {
-    try {
-      setLoading(true)
-      await updateArticleMutation({
-        variables: { id: article.id, starred }
-      })
-      setLoading(false)
-      if (onSuccess) onSuccess(article)
-    } catch (err) {
-      setLoading(false)
-      showErrorMessage(getGQLError(err))
-    }
-  }
+  const updateArticle = useCallback(
+    async (starred: boolean) => {
+      try {
+        setLoading(true)
+        await updateArticleMutation({
+          variables: { id: article.id, starred }
+        })
+        setLoading(false)
+        if (onSuccess) onSuccess(article)
+      } catch (err) {
+        setLoading(false)
+        showErrorMessage(getGQLError(err))
+      }
+    },
+    [updateArticleMutation, article, onSuccess, showErrorMessage]
+  )
 
   const handleOnClick = useCallback(() => {
     updateArticle(!article.starred)
-  }, [article])
+  }, [article, updateArticle])
 
   // Keyboard shortcut is only active for Floating Action Button
   useKeyboard('s', handleOnClick, keyboard)

@@ -30,18 +30,21 @@ export default ({ data, history }: Props) => {
   )
   const { showMessage } = useContext(MessageContext)
 
-  const editApiKey = async (apiKey: CreateOrUpdateApiKeyRequest) => {
-    try {
-      await editApiKeyMutation({
-        variables: apiKey,
-        update: updateCacheAfterUpdate
-      })
-      showMessage(`API key edited: ${apiKey.alias}`)
-      history.goBack()
-    } catch (err) {
-      setErrorMessage(getGQLError(err))
-    }
-  }
+  const editApiKey = useCallback(
+    async (apiKey: CreateOrUpdateApiKeyRequest) => {
+      try {
+        await editApiKeyMutation({
+          variables: apiKey,
+          update: updateCacheAfterUpdate
+        })
+        showMessage(`API key edited: ${apiKey.alias}`)
+        history.goBack()
+      } catch (err) {
+        setErrorMessage(getGQLError(err))
+      }
+    },
+    [editApiKeyMutation, showMessage, history]
+  )
 
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
@@ -53,7 +56,7 @@ export default ({ data, history }: Props) => {
       const { alias } = formState.values
       editApiKey({ id: data.id, alias })
     },
-    [formState]
+    [formState, data, editApiKey]
   )
 
   return (
