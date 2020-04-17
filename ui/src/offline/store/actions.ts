@@ -1,7 +1,6 @@
 import { action } from 'typesafe-actions'
 
-import { Article } from '../../articles/models'
-import { GetArticlesQuery } from '../dao/articles'
+import { Article, GetArticlesRequest } from '../../articles/models'
 import { OfflineArticlesActionTypes } from './types'
 
 export const saveRequest = (data: Article) => action(OfflineArticlesActionTypes.SAVE_REQUEST, data)
@@ -12,7 +11,7 @@ export const removeRequest = (data: Article) => action(OfflineArticlesActionType
 export const removeSuccess = (data: Article) => action(OfflineArticlesActionTypes.REMOVE_SUCCESS, data)
 export const removeError = (err: Error) => action(OfflineArticlesActionTypes.REMOVE_ERROR, err)
 
-export const fetchRequest = (query: GetArticlesQuery) => action(OfflineArticlesActionTypes.FETCH_REQUEST, query)
+export const fetchRequest = (query: GetArticlesRequest) => action(OfflineArticlesActionTypes.FETCH_REQUEST, query)
 export const fetchSuccess = (data: Article[]) => action(OfflineArticlesActionTypes.FETCH_SUCCESS, data)
 export const fetchError = (err: Error) => action(OfflineArticlesActionTypes.FETCH_ERROR, err)
 

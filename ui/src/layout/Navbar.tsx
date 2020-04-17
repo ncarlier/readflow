@@ -71,7 +71,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
       <ul>
         <li>
           <h1>
-            <img src={logo} />
+            <img src={logo} alt="readflow" />
           </h1>
           <NetworkStatus status="online">
             <UserInfos />

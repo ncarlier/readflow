@@ -8,9 +8,9 @@ import { useMedia } from '../../hooks'
 import useInfiniteScroll from '../../hooks/useInfiniteScroll'
 import useKeyboard from '../../hooks/useKeyboard'
 import { Article } from '../models'
+import ArticleCard from './ArticleCard'
 import styles from './ArticleList.module.css'
 import SwipeableArticleCard from './SwipeableArticleCard'
-import ArticleCard from './ArticleCard'
 
 interface Props {
   articles: Article[]
@@ -30,7 +30,7 @@ const useKeyNavigation = (ref: RefObject<HTMLUListElement>, itemClassName: strin
       if (ref.current) {
         const { activeElement } = document
         if (activeElement) {
-          if (activeElement.className == itemClassName) {
+          if (activeElement.className === itemClassName) {
             const $el: any = left.includes(e.key) ? activeElement.previousSibling : activeElement.nextSibling
             if ($el) {
               $el.focus()
@@ -72,7 +72,7 @@ export default (props: Props) => {
 
   useEffect(() => {
     setArticles(props.articles.filter(filter))
-  }, [props.articles])
+  }, [props.articles, filter])
 
   if (articles.length <= 3) {
     if (hasMore) {

@@ -1,6 +1,7 @@
 import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
+import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
 import Button from '../../components/Button'
@@ -8,13 +9,11 @@ import FormInputField from '../../components/FormInputField'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm, isValidInput } from '../../helpers'
+import { getGQLError, isValidForm } from '../../helpers'
 import { usePageTitle } from '../../hooks'
-import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import { updateCacheAfterCreate } from './cache'
 import { CreateOrUpdateApiKeyRequest, CreateOrUpdateApiKeyResponse } from './models'
 import { CreateOrUpdateApiKey } from './queries'
-import { Link } from 'react-router-dom'
 
 interface AddApiKeyFormFields {
   alias: string
@@ -27,8 +26,7 @@ export default ({ history }: AllProps) => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<AddApiKeyFormFields>()
-  const onMountValidator = useOnMountInputValidator(formState.validity)
-  const addApiKeyMutation = useMutation<CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest>(CreateOrUpdateApiKey)
+  const [addApiKeyMutation] = useMutation<CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest>(CreateOrUpdateApiKey)
   const { showMessage } = useContext(MessageContext)
 
   const addApiKey = async (apiKey: CreateOrUpdateApiKeyRequest) => {
@@ -50,7 +48,7 @@ export default ({ history }: AllProps) => {
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
       e.preventDefault()
-      if (!isValidForm(formState, onMountValidator)) {
+      if (!isValidForm(formState)) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
         return
       }
@@ -68,14 +66,7 @@ export default ({ history }: AllProps) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to add new API key">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField
-            label="Alias"
-            {...text('alias')}
-            error={!isValidInput(formState, onMountValidator, 'alias')}
-            required
-            autoFocus
-            ref={onMountValidator.bind}
-          />
+          <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
         </form>
       </section>
       <footer>

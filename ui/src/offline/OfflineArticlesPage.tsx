@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useContext } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { RouteComponentProps } from 'react-router'
 
 import ArticleList from '../articles/components/ArticleList'
 import { DisplayMode } from '../articles/components/ArticlesDisplayMode'
 import ArticlesPageMenu from '../articles/components/ArticlesPageMenu'
+import { GetArticlesRequest, GetArticlesResponse } from '../articles/models'
 import Loader from '../components/Loader'
 import Panel from '../components/Panel'
 import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
+import { LocalConfigurationContext } from '../context/LocalConfigurationContext'
 import ErrorPanel from '../error/ErrorPanel'
 import { getURLParam, matchState } from '../helpers'
 import Page from '../layout/Page'
-import { GetArticlesQuery, GetArticlesResult } from './dao/articles'
-import { LocalConfigurationContext } from '../context/LocalConfigurationContext'
 
 type AllProps = OfflineProps & RouteComponentProps
 
@@ -19,14 +19,19 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, loc
   const { localConfiguration } = useContext(LocalConfigurationContext)
 
   const params = new URLSearchParams(location.search)
-  const query: GetArticlesQuery = {
+  const query: GetArticlesRequest = {
     limit: getURLParam<number>(params, 'limit', localConfiguration.limit),
-    sortOrder: getURLParam<string>(params, 'sort', localConfiguration.sortOrders.offline)
+    sortOrder: getURLParam<string>(params, 'sort', localConfiguration.sortOrders.offline),
+    afterCursor: null,
+    category: null,
+    starred: null,
+    status: null
   }
 
   const { data, error, loading } = offlineArticles
 
   useEffect(() => {
+    console.log(query)
     fetchOfflineArticles(query)
   }, [location])
 
@@ -35,12 +40,12 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, loc
   }, [data])
 
   const fetchMoreArticles = useCallback(async () => {
-    if (!loading && data && data.hasNext) {
-      fetchOfflineArticles({ ...query, afterCursor: data.endCursor })
+    if (!loading && data && data.articles.hasNext) {
+      fetchOfflineArticles({ ...query, afterCursor: data.articles.endCursor })
     }
   }, [data])
 
-  const render = matchState<GetArticlesResult>({
+  const render = matchState<GetArticlesResponse>({
     Loading: () => <Loader />,
     Error: err => (
       <Panel>
@@ -49,9 +54,9 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, loc
     ),
     Data: d => (
       <ArticleList
-        articles={d.entries}
+        articles={d.articles.entries}
         emptyMessage="no offline articles"
-        hasMore={d.hasNext}
+        hasMore={d.articles.hasNext}
         refetch={refetch}
         fetchMoreArticles={fetchMoreArticles}
       />
@@ -60,9 +65,9 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles, loc
 
   let title = ' '
   if (data) {
-    const { totalCount } = data
+    const { totalCount } = data.articles
     const plural = totalCount > 1 ? ' articles' : ' article'
-    title = data.totalCount + ' offline ' + plural
+    title = totalCount + ' offline ' + plural
   }
 
   return (

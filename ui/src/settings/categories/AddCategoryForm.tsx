@@ -1,6 +1,7 @@
 import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
+import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
 import { updateCacheAfterCreate } from '../../categories/cache'
@@ -8,15 +9,13 @@ import { Category, CreateOrUpdateCategoryResponse } from '../../categories/model
 import { CreateOrUpdateCategory } from '../../categories/queries'
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
-import { getGQLError, isValidForm, isValidInput } from '../../helpers'
+import FormTextareaField from '../../components/FormTextareaField'
+import HelpLink from '../../components/HelpLink'
 import Panel from '../../components/Panel'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, isValidForm } from '../../helpers'
 import { usePageTitle } from '../../hooks'
-import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
-import { Link } from 'react-router-dom'
-import HelpLink from '../../components/HelpLink'
-import FormTextareaField from '../../components/FormTextareaField'
 
 interface AddCategoryFormFields {
   title: string
@@ -33,8 +32,7 @@ export default ({ history }: AllProps) => {
     title: '',
     rule: ''
   })
-  const onMountValidator = useOnMountInputValidator(formState.validity)
-  const addCategoryMutation = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
+  const [addCategoryMutation] = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)
 
   const addNewCategory = async (category: Category) => {
@@ -54,7 +52,7 @@ export default ({ history }: AllProps) => {
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
       e.preventDefault()
-      if (!isValidForm(formState, onMountValidator)) {
+      if (!isValidForm(formState)) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
         return
       }
@@ -71,20 +69,8 @@ export default ({ history }: AllProps) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to add new category">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField
-            label="Title"
-            {...text('title')}
-            error={!isValidInput(formState, onMountValidator, 'title')}
-            required
-            autoFocus
-            ref={onMountValidator.bind}
-          />
-          <FormTextareaField
-            label="Rule"
-            {...textarea('rule')}
-            error={!isValidInput(formState, onMountValidator, 'rule')}
-            ref={onMountValidator.bind}
-          >
+          <FormInputField label="Title" {...text('title')} error={formState.errors.title} required autoFocus />
+          <FormTextareaField label="Rule" {...textarea('rule')} error={formState.errors.rule}>
             <HelpLink href="https://about.readflow.app/docs/en/read-flow/organize/rules/#syntax">
               View rule syntax
             </HelpLink>

@@ -2,8 +2,8 @@ import React, { CSSProperties } from 'react'
 import { useQuery } from 'react-apollo-hooks'
 
 import DropdownMenu from '../../components/DropdownMenu'
-import { matchResponse } from '../../helpers'
 import Loader from '../../components/Loader'
+import { matchResponse } from '../../helpers'
 import { GetArchiveServicesResponse } from '../../settings/archive-services/models'
 import { GetArchiveServices } from '../../settings/archive-services/queries'
 import { Article } from '../models'
@@ -17,9 +17,7 @@ interface Props {
   style?: CSSProperties
 }
 
-type AllProps = Props
-
-export default (props: AllProps) => {
+export default (props: Props) => {
   const { style, ...attrs } = props
   const nvg: any = window.navigator
 

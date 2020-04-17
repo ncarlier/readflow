@@ -7,7 +7,7 @@ interface Props {
   label: string
   required?: boolean
   readOnly?: boolean
-  error?: boolean
+  error?: string
 }
 
 type AllProps = Props & CheckboxProps<any>

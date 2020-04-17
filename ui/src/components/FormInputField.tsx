@@ -8,7 +8,7 @@ interface Props {
   required?: boolean
   readOnly?: boolean
   autoFocus?: boolean
-  error?: boolean
+  error?: string
   children?: ReactNode
 }
 
@@ -51,6 +51,7 @@ export default forwardRef((props: AllProps, ref: Ref<any>) => {
         {label}
       </label>
       <i className="bar" />
+      {!!error && <span className="helper">{error}</span>}
     </div>
   )
 })

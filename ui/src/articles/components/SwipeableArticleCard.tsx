@@ -24,7 +24,7 @@ export default (props: Props) => {
   const { article } = props
 
   const { showErrorMessage } = useContext(MessageContext)
-  const updateArticleMutation = useMutation<UpdateArticleRequest>(UpdateArticle)
+  const [updateArticleMutation] = useMutation<UpdateArticleRequest>(UpdateArticle)
 
   const updateArticleStatus = async (status: string) => {
     try {

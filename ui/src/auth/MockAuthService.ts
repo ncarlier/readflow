@@ -16,7 +16,7 @@ export class MockAuthService implements AuthService {
   }
 
   public login() {
-    return Promise.resolve({})
+    return Promise.resolve()
   }
 
   public renewToken() {

@@ -6,7 +6,7 @@ import { OfflineArticlesActionTypes, OfflineArticlesState } from './types'
 // Type-safe initialState!
 const initialState: OfflineArticlesState = {
   data: undefined,
-  query: { limit: 10, sortOrder: 'asc' },
+  query: { limit: 10, sortOrder: 'asc', afterCursor: null, category: null, starred: null, status: null },
   selected: undefined,
   error: undefined,
   loading: true
@@ -35,8 +35,8 @@ const reducer: Reducer<OfflineArticlesState> = (state = initialState, action) =>
         selected = undefined
       }
       if (data) {
-        data.entries = data.entries.filter((art: Article) => art.id != article.id)
-        data.totalCount--
+        data.articles.entries = data.articles.entries.filter((art: Article) => art.id !== article.id)
+        data.articles.totalCount--
       }
       return { ...state, loading: false, data, error: undefined }
     }
@@ -49,13 +49,13 @@ const reducer: Reducer<OfflineArticlesState> = (state = initialState, action) =>
     }
     case OfflineArticlesActionTypes.FETCH_SUCCESS: {
       const { query, data } = state
-      const { payload } = action
-      const nbFetchedArticles = payload.entries.length
+      const { articles } = action.payload
+      const nbFetchedArticles = articles.entries.length
       console.log(nbFetchedArticles + ' article(s) fetched')
       if (data && query.afterCursor) {
-        payload.entries = data.entries.concat(payload.entries)
+        articles.entries = articles.entries.concat(articles.entries)
       }
-      return { ...state, loading: false, data: payload, error: undefined }
+      return { ...state, loading: false, data: { articles }, error: undefined }
     }
     case OfflineArticlesActionTypes.FETCH_ERROR: {
       return { ...state, loading: false, error: action.payload }

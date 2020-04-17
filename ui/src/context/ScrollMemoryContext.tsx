@@ -10,15 +10,15 @@ interface Props {
   children: ReactNode
 }
 
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual'
+if ('scrollRestoration' in window.history) {
+  window.history.scrollRestoration = 'manual'
 }
 
 const ScrollMemoryProvider = ({ children }: Props) => {
   const [state, setState] = useState(0)
 
   const onPopState = () => {
-    const key = location.pathname
+    const key = window.location.pathname
     if (cache.has(key)) {
       const pos = cache.get(key)
       // console.log(`restoring scroll position for ${key}: ${pos}`)
@@ -35,7 +35,7 @@ const ScrollMemoryProvider = ({ children }: Props) => {
     return () => {
       // console.log('scrollMemoryContext:destroy')
       window.removeEventListener('popstate', onPopState)
-      cache.delete(location.pathname)
+      cache.delete(window.location.pathname)
       setState(0)
     }
   })

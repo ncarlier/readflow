@@ -1,18 +1,17 @@
 import { History } from 'history'
 import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from 'react-apollo-hooks'
+import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm, isValidInput } from '../../helpers'
-import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
+import { getGQLError, isValidForm } from '../../helpers'
 import { updateCacheAfterUpdate } from './cache'
 import { ApiKey, CreateOrUpdateApiKeyRequest, CreateOrUpdateApiKeyResponse } from './models'
 import { CreateOrUpdateApiKey } from './queries'
-import { Link } from 'react-router-dom'
 
 interface EditApiKeyFormFields {
   alias: string
@@ -26,8 +25,7 @@ interface Props {
 export default ({ data, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<EditApiKeyFormFields>({ alias: data.alias })
-  const onMountValidator = useOnMountInputValidator(formState.validity)
-  const editApiKeyMutation = useMutation<CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest>(
+  const [editApiKeyMutation] = useMutation<CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest>(
     CreateOrUpdateApiKey
   )
   const { showMessage } = useContext(MessageContext)
@@ -48,7 +46,7 @@ export default ({ data, history }: Props) => {
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
       e.preventDefault()
-      if (!isValidForm(formState, onMountValidator)) {
+      if (!isValidForm(formState)) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
         return
       }
@@ -66,14 +64,7 @@ export default ({ data, history }: Props) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to edit API key">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField
-            label="Alias"
-            {...text('alias')}
-            error={!isValidInput(formState, onMountValidator, 'alias')}
-            required
-            autoFocus
-            ref={onMountValidator.bind}
-          />
+          <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
         </form>
       </section>
       <footer>

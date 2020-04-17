@@ -4,12 +4,11 @@ import ReactModal from 'react-modal'
 import { useModal } from 'react-modal-hook'
 
 import ButtonIcon from '../../components/ButtonIcon'
-import Panel from '../../components/Panel'
-
 import dialogStyles from '../../components/Dialog.module.css'
+import Panel from '../../components/Panel'
+import { VERSION } from '../../constants'
 import styles from './AboutButton.module.css'
 import logo from './logo.svg'
-import { VERSION } from '../../constants'
 
 interface Props {
   closeHandler: () => void
@@ -19,7 +18,7 @@ const AboutPanel = ({ closeHandler }: Props) => (
   <Panel className={styles.about}>
     <ButtonIcon title="close" onClick={closeHandler} icon="close" />
     <h1>
-      <img src={logo} />
+      <img src={logo} alt="logo" />
     </h1>
     <span>({VERSION})</span>
     <p>Read your Internet article flow in one place with complete peace of mind and freedom.</p>

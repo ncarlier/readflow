@@ -2,26 +2,23 @@ import React, { useContext, useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import { updateCacheAfterDelete } from '../../categories/cache'
 import {
-  DeleteCategoriesRequest,
-  DeleteCategoriesResponse,
-  GetCategoriesResponse,
-  Category
+    Category, DeleteCategoriesRequest, DeleteCategoriesResponse, GetCategoriesResponse
 } from '../../categories/models'
 import { DeleteCategories, GetCategories } from '../../categories/queries'
 import Button from '../../components/Button'
 import ConfirmDialog from '../../components/ConfirmDialog'
+import DataTable, { OnSelectedFn } from '../../components/DataTable'
 import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
+import TimeAgo from '../../components/TimeAgo'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
-import DataTable, { OnSelectedFn } from '../../components/DataTable'
-import { Link } from 'react-router-dom'
-import TimeAgo from '../../components/TimeAgo'
 
 const definition = [
   {
@@ -42,15 +39,13 @@ const definition = [
   }
 ]
 
-type AllProps = RouteComponentProps<{}>
-
-export default ({ match }: AllProps) => {
+export default ({ match }: RouteComponentProps) => {
   usePageTitle('Settings - Categories')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
-  const deleteCategoriesMutation = useMutation<DeleteCategoriesResponse, DeleteCategoriesRequest>(DeleteCategories)
+  const [deleteCategoriesMutation] = useMutation<DeleteCategoriesResponse, DeleteCategoriesRequest>(DeleteCategories)
   const { showMessage } = useContext(MessageContext)
 
   const onSelectedHandler: OnSelectedFn = keys => {

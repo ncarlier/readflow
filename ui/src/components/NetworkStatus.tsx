@@ -9,7 +9,7 @@ interface Props {
 
 function NetworkStatus({ status, children }: Props) {
   const isOnline = useOnlineStatus()
-  const display = (isOnline && status == 'online') || (!isOnline && status == 'offline')
+  const display = (isOnline && status === 'online') || (!isOnline && status === 'offline')
 
   if (display) {
     return <>{children}</>

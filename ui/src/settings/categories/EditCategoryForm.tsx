@@ -9,12 +9,11 @@ import { Category, CreateOrUpdateCategoryResponse } from '../../categories/model
 import { CreateOrUpdateCategory } from '../../categories/queries'
 import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
-import { MessageContext } from '../../context/MessageContext'
-import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm, isValidInput } from '../../helpers'
-import useOnMountInputValidator from '../../hooks/useOnMountInputValidator'
 import FormTextareaField from '../../components/FormTextareaField'
 import HelpLink from '../../components/HelpLink'
+import { MessageContext } from '../../context/MessageContext'
+import ErrorPanel from '../../error/ErrorPanel'
+import { getGQLError, isValidForm } from '../../helpers'
 
 interface EditCategoryFormFields {
   title: string
@@ -30,10 +29,9 @@ export default ({ category, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text, textarea }] = useFormState<EditCategoryFormFields>({
     title: category.title,
-    rule: category.rule
+    rule: category.rule ? category.rule : ''
   })
-  const onMountValidator = useOnMountInputValidator(formState.validity)
-  const editCategoryMutation = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
+  const [editCategoryMutation] = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)
 
   const editCategory = async (category: Category) => {
@@ -52,7 +50,7 @@ export default ({ category, history }: Props) => {
   const handleOnSubmit = useCallback(
     (e: FormEvent | MouseEvent) => {
       e.preventDefault()
-      if (!isValidForm(formState, onMountValidator)) {
+      if (!isValidForm(formState)) {
         setErrorMessage('Please fill out correctly the mandatory fields.')
         return
       }
@@ -69,20 +67,8 @@ export default ({ category, history }: Props) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to edit category">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField
-            label="Title"
-            {...text('title')}
-            error={!isValidInput(formState, onMountValidator, 'title')}
-            required
-            autoFocus
-            ref={onMountValidator.bind}
-          />
-          <FormTextareaField
-            label="Rule"
-            {...textarea('rule')}
-            error={!isValidInput(formState, onMountValidator, 'rule')}
-            ref={onMountValidator.bind}
-          >
+          <FormInputField label="Title" {...text('title')} error={formState.errors.title} required autoFocus />
+          <FormTextareaField label="Rule" {...textarea('rule')}>
             <HelpLink href="https://about.readflow.app/docs/en/read-flow/organize/rules/#syntax">
               View rule syntax
             </HelpLink>

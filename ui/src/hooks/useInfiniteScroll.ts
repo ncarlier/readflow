@@ -6,7 +6,7 @@ export default (ref: RefObject<HTMLElement>, hasMore: boolean, fetchMoreItems: (
   useEffect(() => {
     if (!isFetching) return
     fetchMoreItems().finally(() => setIsFetching(false))
-  }, [isFetching])
+  }, [isFetching, fetchMoreItems])
 
   const handleScroll = useCallback(() => {
     if (isFetching || !ref.current || !ref.current.parentElement) {
@@ -32,7 +32,7 @@ export default (ref: RefObject<HTMLElement>, hasMore: boolean, fetchMoreItems: (
         $container.removeEventListener('resize', handleScroll)
       }
     }
-  }, [ref, hasMore])
+  }, [ref, hasMore, handleScroll])
 
   return isFetching
 }

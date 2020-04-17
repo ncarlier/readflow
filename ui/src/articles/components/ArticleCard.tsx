@@ -48,7 +48,7 @@ export default withRouter((props: AllProps) => {
         {article.text && <p>{article.text}</p>}
       </Link>
       <footer>
-        {article.url != '' && (
+        {article.url !== '' && (
           <a href={article.url} target="_blank" rel="noopener noreferrer" title="Open original article">
             {getHostname(article.url)}
             <Icon name="open_in_new" />

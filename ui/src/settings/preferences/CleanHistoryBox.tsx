@@ -25,7 +25,7 @@ interface CleanHistoryResponse {
 
 export default () => {
   const { showMessage, showErrorMessage } = useContext(MessageContext)
-  const cleanHistoryMutation = useMutation<CleanHistoryResponse>(CleanHistory)
+  const [cleanHistoryMutation] = useMutation<CleanHistoryResponse>(CleanHistory)
   const cleanHistory = async () => {
     try {
       const res = await cleanHistoryMutation()

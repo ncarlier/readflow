@@ -3,6 +3,7 @@ import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
 
 import Appbar from '../layout/Appbar'
 import Page from '../layout/Page'
+import AboutButton from './about/AboutButton'
 import AddApiKeyForm from './api-keys/AddApiKeyForm'
 import ApiKeysTab from './api-keys/ApiKeysTab'
 import EditApiKeyTab from './api-keys/EditApiKeyTab'
@@ -15,7 +16,6 @@ import EditCategoryTab from './categories/EditCategoryTab'
 import Header from './components/Header'
 import Tabs from './components/Tabs'
 import PreferencesTab from './preferences/PreferencesTab'
-import AboutButton from './about/AboutButton'
 
 const items = [
   { key: 'categories', label: 'Categories', icon: 'bookmarks' },
@@ -23,8 +23,6 @@ const items = [
   { key: 'archive-services', label: 'Archive service', icon: 'backup' },
   { key: 'preferences', label: 'Preferences', icon: 'build' }
 ]
-
-type AllProps = RouteComponentProps<{}>
 
 const Actions = () => (
   <a href="https://about.readflow.app/docs/en/" rel="noreferrer noopener" target="_blank">
@@ -43,7 +41,7 @@ const PageHeader = () => (
   </>
 )
 
-export default ({ match }: AllProps) => (
+export default ({ match }: RouteComponentProps) => (
   <Page header={<PageHeader />}>
     <Switch>
       <Route exact path={match.path + '/categories'} component={CategoriesTab} />

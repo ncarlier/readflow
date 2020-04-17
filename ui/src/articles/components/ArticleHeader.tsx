@@ -2,9 +2,9 @@ import { History } from 'history'
 import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
-import { getHostname } from '../../helpers'
 import Icon from '../../components/Icon'
 import TimeAgo from '../../components/TimeAgo'
+import { getHostname } from '../../helpers'
 import { Article } from '../models'
 import styles from './ArticleHeader.module.css'
 
@@ -30,7 +30,7 @@ export default ({ article, to, children }: AllProps) => (
         )}
       </span>
       <small>
-        {article.url != '' && (
+        {article.url !== '' && (
           <a href={article.url} target="_blank" rel="noopener noreferrer" title="Open original article">
             {getHostname(article.url)}
             <Icon name="open_in_new" />

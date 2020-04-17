@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useState, useCallback, useEffect } from 'react'
+import React, { createContext, ReactNode, useCallback, useEffect, useState } from 'react'
 
 const key = 'LocalConfiguration'
 
@@ -69,7 +69,7 @@ const LocalConfigurationProvider = ({ children }: Props) => {
       window.localStorage.setItem(key, JSON.stringify(value))
       setLocalConfiguration(value)
     },
-    [key, setLocalConfiguration]
+    [setLocalConfiguration]
   )
 
   useEffect(() => {
