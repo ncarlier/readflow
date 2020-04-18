@@ -18,7 +18,6 @@ interface Props {
   hasMore: boolean
   fetchMoreArticles: () => Promise<void>
   refetch: () => Promise<any>
-  filter?: (a: Article) => boolean
 }
 
 const useKeyNavigation = (ref: RefObject<HTMLUListElement>, itemClassName: string, enable = true) => {
@@ -45,11 +44,10 @@ const useKeyNavigation = (ref: RefObject<HTMLUListElement>, itemClassName: strin
 }
 
 export default (props: Props) => {
-  const { fetchMoreArticles, refetch, hasMore, filter = () => true, emptyMessage = 'No more article to read' } = props
+  const { articles, fetchMoreArticles, refetch, hasMore, emptyMessage = 'No more article to read' } = props
 
   const ref = useRef<HTMLUListElement>(null)
   const [loading, setLoading] = useState(false)
-  const [articles] = useState(props.articles.filter(filter))
   const [activeIndex, setActiveIndex] = useState(0)
 
   const isFetching = useInfiniteScroll(ref, hasMore, fetchMoreArticles)

@@ -13,12 +13,13 @@ import { MessageContext } from '../../context/MessageContext'
 import { getGQLError } from '../../helpers'
 import { GetArticlesRequest } from '../models'
 import { MarkAllArticlesAsRead } from '../queries'
-import { DisplayMode } from './ArticlesDisplayMode'
+
+type Variant = 'unread' | 'history' | 'starred' | 'offline'
 
 interface Props {
   refresh: () => void
   req: GetArticlesRequest
-  mode: DisplayMode
+  variant: Variant
 }
 
 function revertSortOrder(order: string | null) {
@@ -42,7 +43,7 @@ function getLocationWithStatusParam(loc: Location, status: 'read' | 'unread') {
 }
 
 export default (props: Props) => {
-  const { refresh, req, mode } = props
+  const { refresh, req, variant } = props
 
   const loc = useLocation()
   const { push } = useHistory()
@@ -65,26 +66,12 @@ export default (props: Props) => {
   const updateLocalConfigSortOrder = useCallback(() => {
     const orders = localConfiguration.sortOrders
     const order = revertSortOrder(req.sortOrder)
-    let key = ''
-    switch (mode) {
-      case DisplayMode.category:
-        key = `cat_${req.category}`
-        break
-      case DisplayMode.history:
-        key = 'history'
-        break
-      case DisplayMode.offline:
-        key = 'offline'
-        break
-      default:
-        key = 'unread'
-        break
-    }
+    const key = req.category ? `cat_${req.category}` : variant
     if (!(Object.prototype.hasOwnProperty.call(orders, key) && orders[key] === order)) {
       orders[key] = order
       updateLocalConfiguration({ ...localConfiguration, sortOrders: orders })
     }
-  }, [req, mode, localConfiguration, updateLocalConfiguration])
+  }, [req, variant, localConfiguration, updateLocalConfiguration])
 
   const toggleSortOrder = useCallback(
     (event: KeyboardEvent) => {
