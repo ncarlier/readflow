@@ -48,7 +48,7 @@ export default (props: Props) => {
 
   return (
     <ButtonIcon
-      title={article.starred ? `Stars this article${kbs}` : `Unstars this article${kbs}`}
+      title={article.starred ? `Unstars this article${kbs}` : `Stars this article${kbs}`}
       style={article.starred ? { color: 'gold' } : undefined}
       onClick={handleOnClick}
       loading={loading}

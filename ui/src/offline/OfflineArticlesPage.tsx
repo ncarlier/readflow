@@ -33,24 +33,26 @@ const buildQueryFromLocation = (qs: string, localConfiguration: LocalConfigurati
 export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: OfflineProps) => {
   const { localConfiguration } = useContext(LocalConfigurationContext)
   const location = useLocation()
-  const [query] = useState<GetArticlesRequest>(buildQueryFromLocation(location.search, localConfiguration))
+  const [req, setReq] = useState<GetArticlesRequest>(buildQueryFromLocation(location.search, localConfiguration))
   const { data, error, loading } = offlineArticles
 
   const refetch = useCallback(async () => {
-    fetchOfflineArticles(query)
-  }, [query, fetchOfflineArticles])
-
-  useEffect(() => {
-    if (data === undefined) {
-      refetch()
-    }
-  }, [data, refetch])
+    fetchOfflineArticles(req)
+  }, [fetchOfflineArticles, req])
 
   const fetchMoreArticles = useCallback(async () => {
     if (!loading && data && data.articles.hasNext) {
-      fetchOfflineArticles({ ...query, afterCursor: data.articles.endCursor })
+      fetchOfflineArticles({ ...req, afterCursor: data.articles.endCursor })
     }
-  }, [loading, data, query, fetchOfflineArticles])
+  }, [loading, data, req, fetchOfflineArticles])
+
+  useEffect(() => {
+    setReq(buildQueryFromLocation(location.search, localConfiguration))
+  }, [location.search, localConfiguration])
+
+  useEffect(() => {
+    fetchOfflineArticles(req)
+  }, [fetchOfflineArticles, req])
 
   const render = matchState<GetArticlesResponse>({
     Loading: () => <Loader />,
@@ -79,7 +81,7 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: O
     title = totalCount + ' offline ' + plural
   }
   return (
-    <Page title={title} actions={<ArticlesPageMenu refresh={refetch} variant="offline" req={query} />}>
+    <Page title={title} actions={<ArticlesPageMenu refresh={refetch} variant="offline" req={req} />}>
       {render(data, error, loading)}
     </Page>
   )
