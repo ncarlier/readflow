@@ -2,13 +2,12 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 
 import ArticleList from '../articles/components/ArticleList'
-import { DisplayMode } from '../articles/components/ArticlesDisplayMode'
 import ArticlesPageMenu from '../articles/components/ArticlesPageMenu'
 import { GetArticlesRequest, GetArticlesResponse } from '../articles/models'
 import Loader from '../components/Loader'
 import Panel from '../components/Panel'
 import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
-import { LocalConfiguration, LocalConfigurationContext } from '../context/LocalConfigurationContext'
+import { LocalConfiguration, LocalConfigurationContext, SortOrder } from '../context/LocalConfigurationContext'
 import ErrorPanel from '../error/ErrorPanel'
 import { getURLParam, matchState } from '../helpers'
 import Page from '../layout/Page'
@@ -27,7 +26,7 @@ const buildQueryFromLocation = (qs: string, localConfiguration: LocalConfigurati
   return {
     ...emptyQuery,
     limit: getURLParam<number>(params, 'limit', localConfiguration.limit),
-    sortOrder: getURLParam<string>(params, 'sort', localConfiguration.sortOrders.offline)
+    sortOrder: getURLParam<SortOrder>(params, 'sort', localConfiguration.sortOrders.offline)
   }
 }
 
@@ -80,7 +79,7 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: O
     title = totalCount + ' offline ' + plural
   }
   return (
-    <Page title={title} actions={<ArticlesPageMenu refresh={refetch} mode={DisplayMode.offline} req={query} />}>
+    <Page title={title} actions={<ArticlesPageMenu refresh={refetch} variant="offline" req={query} />}>
       {render(data, error, loading)}
     </Page>
   )

@@ -33,11 +33,15 @@ export default () => {
             <Route
               exact
               path={match.path + '/'}
-              component={(props: RouteComponentProps) => <ArticlesPage category={category} {...props} />}
+              component={(props: RouteComponentProps) => (
+                <ArticlesPage variant="unread" category={category} {...props} />
+              )}
             />
             <Route
               path={match.path + '/:id'}
-              component={(props: RouteComponentProps<{ id: string }>) => <ArticlePage category={category} {...props} />}
+              component={(props: RouteComponentProps<{ id: string }>) => (
+                <ArticlePage title={category.title} {...props} />
+              )}
             />
           </Switch>
         )

@@ -12,17 +12,19 @@ import Appbar from '../layout/Appbar'
 import Page from '../layout/Page'
 import AddButton from './components/AddButton'
 import ArticleList from './components/ArticleList'
-import { DisplayMode } from './components/ArticlesDisplayMode'
 import ArticlesPageMenu from './components/ArticlesPageMenu'
 import NewArticlesAvailable from './components/NewArticlesAvailable'
-import { GetArticlesRequest, GetArticlesResponse } from './models'
+import { ArticleStatus, GetArticlesRequest, GetArticlesResponse } from './models'
 import { GetArticles } from './queries'
 
+type Variant = 'unread' | 'history' | 'starred'
+
 interface Props {
+  variant: Variant
   category?: Category
 }
 
-const buildArticlesRequest = (mode: DisplayMode, props: AllProps, localConfig: LocalConfiguration) => {
+const buildArticlesRequest = (variant: Variant, props: AllProps, localConfig: LocalConfiguration) => {
   const { category, location } = props
   const params = new URLSearchParams(location.search)
 
@@ -34,20 +36,20 @@ const buildArticlesRequest = (mode: DisplayMode, props: AllProps, localConfig: L
     category: null,
     afterCursor: null
   }
-  switch (mode) {
-    case DisplayMode.history:
+  switch (variant) {
+    case 'history':
       req.status = 'read'
       req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders.history)
       break
-    case DisplayMode.starred:
+    case 'starred':
       req.status = null
       req.starred = true
       req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders.starred)
       break
-    case DisplayMode.category:
+    case 'unread':
       if (category && category.id) {
         req.category = category.id
-        req.status = getURLParam<string>(params, 'status', 'unread')
+        req.status = getURLParam<ArticleStatus>(params, 'status', 'unread')
         const sortKey = `cat_${category.id}`
         if (Object.prototype.hasOwnProperty.call(localConfig.sortOrders, sortKey)) {
           req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders[sortKey])
@@ -58,7 +60,7 @@ const buildArticlesRequest = (mode: DisplayMode, props: AllProps, localConfig: L
   return req
 }
 
-const buildTitle = (mode: DisplayMode, status: string | null, category?: Category) => {
+const buildTitle = (status: string | null, category?: Category) => {
   let title = ''
   if (status) {
     title = status === 'unread' ? 'to read' : 'read'
@@ -77,11 +79,11 @@ const computeTotalArticles = (data: GetArticlesResponse, status: string | null) 
   return data.articles.totalCount - delta
 }
 
-const EmptyMessage = ({ mode }: { mode: DisplayMode }) => {
-  switch (mode) {
-    case DisplayMode.category:
-      return 'no article to read in this category'
-    case DisplayMode.history:
+const EmptyMessage = ({ variant }: { variant: Variant }) => {
+  switch (variant) {
+    case 'starred':
+      return 'no starred article'
+    case 'history':
       return 'history is empty'
     default:
       return 'no article to read'
@@ -91,30 +93,13 @@ const EmptyMessage = ({ mode }: { mode: DisplayMode }) => {
 type AllProps = Props & RouteComponentProps
 
 export default (props: AllProps) => {
-  const { category, match } = props
+  const { variant, category } = props
 
   const [reloading, setReloading] = useState(false)
   const { localConfiguration } = useContext(LocalConfigurationContext)
-
-  // Get display mode
-  let mode = DisplayMode.unread
-  switch (true) {
-    case !!category:
-      mode = DisplayMode.category
-      break
-    case match.url.startsWith('/history'):
-      mode = DisplayMode.history
-      break
-    case match.url.startsWith('/starred'):
-      mode = DisplayMode.starred
-      break
-  }
-
-  // Build GQL request
-  const req = buildArticlesRequest(mode, props, localConfiguration)
-
+  const [req] = useState<GetArticlesRequest>(buildArticlesRequest(variant, props, localConfiguration))
   const { data, error, loading, fetchMore, refetch } = useQuery<GetArticlesResponse>(GetArticles, {
-    variables: req
+    variables: req,
   })
 
   const fetchMoreArticles = useCallback(async () => {
@@ -128,7 +113,10 @@ export default (props: AllProps) => {
         if (!fetchMoreResult) return prev
         const nbFetchedArticles = fetchMoreResult.articles.entries.length
         console.log(nbFetchedArticles + ' article(s) fetched')
-        const entries = prev.articles.entries.filter(a => req.status == null || a.status === req.status)
+        let { entries } = prev.articles
+        if (req.status) {
+          entries = entries.filter(a => a.status === req.status)
+        }
         const articles = {
           ...fetchMoreResult.articles,
           entries: [...entries, ...fetchMoreResult.articles.entries]
@@ -155,22 +143,27 @@ export default (props: AllProps) => {
         <ErrorPanel>{err.message}</ErrorPanel>
       </Panel>
     ),
-    Data: d => (
-      <>
-        {mode === DisplayMode.unread && (
-          <NewArticlesAvailable current={computeTotalArticles(d, req.status)} category={category} refresh={refresh} />
-        )}
-        <ArticleList
-          articles={d.articles.entries}
-          emptyMessage={EmptyMessage({ mode })}
-          filter={a => req.status == null || a.status === req.status}
-          hasMore={d.articles.hasNext}
-          refetch={refetch}
-          fetchMoreArticles={fetchMoreArticles}
-        />
-        {mode !== DisplayMode.history && <AddButton category={category} onSuccess={refresh} />}
-      </>
-    ),
+    Data: d => {
+      let { entries } = d.articles
+      if (req.status) {
+        entries = entries.filter(a => a.status === req.status)
+      }
+      return (
+        <>
+          {variant === 'unread' && (
+            <NewArticlesAvailable current={computeTotalArticles(d, req.status)} category={category} refresh={refresh} />
+          )}
+          <ArticleList
+            articles={entries}
+            emptyMessage={EmptyMessage({ variant })}
+            hasMore={d.articles.hasNext}
+            refetch={refetch}
+            fetchMoreArticles={fetchMoreArticles}
+          />
+          {variant === 'unread' && <AddButton category={category} onSuccess={refresh} />}
+        </>
+      )
+    },
     Other: () => (
       <Panel>
         <ErrorPanel>Unable to fetch articles!</ErrorPanel>
@@ -179,14 +172,14 @@ export default (props: AllProps) => {
   })
 
   // Build title
-  let title = buildTitle(mode, req.status, category)
+  let title = buildTitle(req.status, category)
   if (data && data.articles) {
     const totalCount = computeTotalArticles(data, req.status)
     const plural = totalCount > 1 ? ' articles ' : ' article '
     title = totalCount + plural + title
   } else title = ' '
 
-  const $actions = <ArticlesPageMenu refresh={refresh} req={req} mode={mode} />
+  const $actions = <ArticlesPageMenu refresh={refresh} req={req} variant={variant} />
 
   return (
     <Page title={title} header={<Appbar title={title} actions={$actions} />}>

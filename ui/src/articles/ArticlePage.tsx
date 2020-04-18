@@ -19,20 +19,14 @@ import { GetArticleResponse } from './models'
 import { GetArticle } from './queries'
 
 interface Props {
+  title: string
   category?: Category
 }
 
 type AllProps = Props & RouteComponentProps<{ id: string }>
 
-export default ({ category, match, history }: AllProps) => {
+export default ({ title, match, history }: AllProps) => {
   const { id } = match.params
-
-  let title = 'Articles to read'
-  if (category) {
-    title = category.title
-  } else if (match.path === '/history/:id') {
-    title = 'History'
-  }
 
   const goBack = () => history.goBack()
 

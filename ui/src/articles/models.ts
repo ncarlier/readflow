@@ -7,7 +7,7 @@ export interface Article {
   text: string
   image: string
   url: string
-  status: string
+  status: ArticleStatus
   starred: boolean
   category?: Category
   isOffline?: boolean
@@ -16,13 +16,16 @@ export interface Article {
   updated_at: string
 }
 
+export type ArticleStatus = 'read' | 'unread'
+export type SortOrder = 'asc' | 'desc'
+
 export interface GetArticlesRequest {
-  status: string | null
+  status: ArticleStatus | null
   starred: boolean | null
   category: number | null
   limit: number | null
   afterCursor: number | null
-  sortOrder: string | null
+  sortOrder: SortOrder | null
 }
 
 export interface GetArticlesResponse {
@@ -40,8 +43,8 @@ export interface GetArticleResponse {
 
 export interface UpdateArticleRequest {
   id: number
-  status?: string
-  starred?: string
+  status?: ArticleStatus
+  starred?: boolean
 }
 
 export interface UpdateArticleResponse {
