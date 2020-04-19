@@ -5,7 +5,8 @@ import ButtonIcon from '../../components/ButtonIcon'
 import { MessageContext } from '../../context/MessageContext'
 import { getGQLError } from '../../helpers'
 import useKeyboard from '../../hooks/useKeyboard'
-import { Article, UpdateArticleRequest } from '../models'
+import { updateCacheAfterUpdate } from '../cache'
+import { Article, UpdateArticleRequest, UpdateArticleResponse } from '../models'
 import { UpdateArticle } from '../queries'
 
 interface Props {
@@ -19,14 +20,15 @@ export default (props: Props) => {
 
   const { showErrorMessage } = useContext(MessageContext)
   const [loading, setLoading] = useState(false)
-  const [updateArticleMutation] = useMutation<UpdateArticleRequest>(UpdateArticle)
+  const [updateArticleMutation] = useMutation<UpdateArticleResponse, UpdateArticleRequest>(UpdateArticle)
 
   const updateArticle = useCallback(
     async (starred: boolean) => {
       try {
         setLoading(true)
         await updateArticleMutation({
-          variables: { id: article.id, starred }
+          variables: { id: article.id, starred },
+          update: updateCacheAfterUpdate
         })
         setLoading(false)
         if (onSuccess) onSuccess(article)

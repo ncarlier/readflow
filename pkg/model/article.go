@@ -74,12 +74,6 @@ type ArticlesPageResponse struct {
 	Entries    []*Article
 }
 
-// ArticleStatusResponse is the response structure of an article status modification
-type ArticleStatusResponse struct {
-	Article *Article  `json:"article,omitempty"`
-	All     *Category `json:"_all,omitempty"`
-}
-
 // ArticleCreateFormBuilder is a builder to create an Article create form
 type ArticleCreateFormBuilder struct {
 	form *ArticleCreateForm

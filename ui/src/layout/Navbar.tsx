@@ -37,34 +37,24 @@ export default withRouter(({ location }: RouteComponentProps) => {
     Data: data => (
       <ul>
         {data.categories &&
-          data.categories
-            .filter(c => c.id !== null)
-            .map(category => (
-              <li key={`cat-${category.id}`}>
-                <LinkIcon
-                  as={Link}
-                  to={`/categories/${category.id}`}
-                  active={isCategoryActive(category.id)}
-                  icon="bookmark"
-                  onClick={menuAutoClose}
-                  badge={category.unread ? category.unread : undefined}
-                >
-                  {category.title}
-                </LinkIcon>
-              </li>
-            ))}
+          data.categories.entries.map((category) => (
+            <li key={`cat-${category.id}`}>
+              <LinkIcon
+                as={Link}
+                to={`/categories/${category.id}`}
+                active={isCategoryActive(category.id)}
+                icon="bookmark"
+                onClick={menuAutoClose}
+                badge={category.unread}
+              >
+                {category.title}
+              </LinkIcon>
+            </li>
+          ))}
       </ul>
     ),
     Other: () => <span>Unable to fetch categories!</span>
   })
-
-  let total: number | undefined
-  if (data && data.categories) {
-    const all = data.categories.find(c => c.title === '_all')
-    if (all) {
-      total = all.unread
-    }
-  }
 
   return (
     <nav id="navbar" className={styles.nav}>
@@ -89,7 +79,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
                   as={Link}
                   to="/unread"
                   icon="view_list"
-                  badge={total}
+                  badge={data?.categories._all}
                   active={pathname.startsWith('/unread')}
                   onClick={menuAutoClose}
                 >
@@ -114,6 +104,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
                   as={Link}
                   to="/starred"
                   icon="star"
+                  badge={data?.categories._starred}
                   active={pathname.startsWith('/starred')}
                   onClick={menuAutoClose}
                 >

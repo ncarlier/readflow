@@ -90,10 +90,8 @@ export const UpdateArticle = gql`
         }
         updated_at
       }
-      _all {
-        id
-        unread
-      }
+      _all
+      _starred
     }
   }
 `

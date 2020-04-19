@@ -3,11 +3,15 @@ import gql from 'graphql-tag'
 export const GetCategories = gql`
   query {
     categories {
-      id
-      title
-      unread
-      created_at
-      updated_at
+      _all
+      _starred
+      entries {
+        id
+        title
+        unread
+        created_at
+        updated_at
+      }
     }
   }
 `

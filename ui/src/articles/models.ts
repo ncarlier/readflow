@@ -48,7 +48,11 @@ export interface UpdateArticleRequest {
 }
 
 export interface UpdateArticleResponse {
-  updateArticle: Article
+  updateArticle: {
+    article: Article
+    _all: number
+    _starred: number
+  }
 }
 
 export interface MarkAllArticlesAsReadResponse {

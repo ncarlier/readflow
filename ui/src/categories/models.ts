@@ -8,7 +8,11 @@ export interface Category {
 }
 
 export interface GetCategoriesResponse {
-  categories: Category[]
+  categories: {
+    _all: number
+    _starred: number
+    entries: Category[]
+  }
 }
 
 export interface GetCategoryResponse {
