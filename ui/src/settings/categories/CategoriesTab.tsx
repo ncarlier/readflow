@@ -6,7 +6,10 @@ import { Link } from 'react-router-dom'
 
 import { updateCacheAfterDelete } from '../../categories/cache'
 import {
-    Category, DeleteCategoriesRequest, DeleteCategoriesResponse, GetCategoriesResponse
+  Category,
+  DeleteCategoriesRequest,
+  DeleteCategoriesResponse,
+  GetCategoriesResponse,
 } from '../../categories/models'
 import { DeleteCategories, GetCategories } from '../../categories/queries'
 import Button from '../../components/Button'
@@ -27,16 +30,16 @@ const definition = [
       <Link title="Edit category" to={`/settings/categories/${val.id}`}>
         {val.title}
       </Link>
-    )
+    ),
   },
   {
     title: 'Created',
-    render: (val: Category) => <TimeAgo dateTime={val.created_at} />
+    render: (val: Category) => <TimeAgo dateTime={val.created_at} />,
   },
   {
     title: 'Updated',
-    render: (val: Category) => <TimeAgo dateTime={val.updated_at} />
-  }
+    render: (val: Category) => <TimeAgo dateTime={val.updated_at} />,
+  },
 ]
 
 export default ({ match }: RouteComponentProps) => {
@@ -48,7 +51,7 @@ export default ({ match }: RouteComponentProps) => {
   const [deleteCategoriesMutation] = useMutation<DeleteCategoriesResponse, DeleteCategoriesRequest>(DeleteCategories)
   const { showMessage } = useContext(MessageContext)
 
-  const onSelectedHandler: OnSelectedFn = keys => {
+  const onSelectedHandler: OnSelectedFn = (keys) => {
     setSelection(keys)
   }
 
@@ -56,7 +59,7 @@ export default ({ match }: RouteComponentProps) => {
     try {
       const res = await deleteCategoriesMutation({
         variables: { ids },
-        update: updateCacheAfterDelete(ids)
+        update: updateCacheAfterDelete(ids),
       })
       setSelection([])
       // console.log('Categories removed', res)
@@ -87,9 +90,9 @@ export default ({ match }: RouteComponentProps) => {
 
   const render = matchResponse<GetCategoriesResponse>({
     Loading: () => <Loader />,
-    Error: err => <ErrorPanel title="Unable to fetch categories">{err.message}</ErrorPanel>,
+    Error: (err) => <ErrorPanel title="Unable to fetch categories">{err.message}</ErrorPanel>,
     Data: (data) => <DataTable definition={definition} data={data.categories.entries} onSelected={onSelectedHandler} />,
-    Other: () => <ErrorPanel>Unable to fetch categories with no obvious reason :(</ErrorPanel>
+    Other: () => <ErrorPanel>Unable to fetch categories with no obvious reason :(</ErrorPanel>,
   })
 
   return (
@@ -107,7 +110,7 @@ export default ({ match }: RouteComponentProps) => {
           as={Link}
           to={{
             pathname: match.path + '/add',
-            state: { modal: true }
+            state: { modal: true },
           }}
         >
           Add category

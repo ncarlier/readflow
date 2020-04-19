@@ -5,11 +5,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import App from './App'
+import { updateAvailable } from './appStore'
 import authService from './auth'
 import configureStore from './configureStore'
 import { getOnlineStatus } from './helpers'
 import * as serviceWorker from './serviceWorker'
-import { updateAvailable } from './appStore'
 
 const run = () => {
   const history = createBrowserHistory()
@@ -37,7 +37,10 @@ const login = async () => {
 }
 
 if (getOnlineStatus()) {
-  login().then(user => user && run(), () => authService.login())
+  login().then(
+    (user) => user && run(),
+    () => authService.login()
+  )
 } else {
   run()
 }

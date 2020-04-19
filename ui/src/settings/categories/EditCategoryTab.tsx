@@ -4,10 +4,10 @@ import { RouteComponentProps } from 'react-router'
 
 import { GetCategoryResponse } from '../../categories/models'
 import { GetCategory } from '../../categories/queries'
-import { matchResponse } from '../../helpers'
 import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import ErrorPanel from '../../error/ErrorPanel'
+import { matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import EditCategoryForm from './EditCategoryForm'
 
@@ -18,12 +18,12 @@ export default ({ history, match }: AllProps) => {
   usePageTitle(`Settings - Edit category #${id}`)
 
   const { data, error, loading } = useQuery<GetCategoryResponse>(GetCategory, {
-    variables: { id }
+    variables: { id },
   })
 
   const render = matchResponse<GetCategoryResponse>({
     Loading: () => <Loader />,
-    Error: err => <ErrorPanel>{err.message}</ErrorPanel>,
+    Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
     Data: ({ category }) => {
       if (category) {
         return <EditCategoryForm category={category} history={history} />
@@ -31,7 +31,7 @@ export default ({ history, match }: AllProps) => {
         return <ErrorPanel title="Not found">Category #${id} not found.</ErrorPanel>
       }
     },
-    Other: () => <ErrorPanel>Unable to fetch category #${id} details!</ErrorPanel>
+    Other: () => <ErrorPanel>Unable to fetch category #${id} details!</ErrorPanel>,
   })
 
   return <Panel>{render(data, error, loading)}</Panel>

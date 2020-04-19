@@ -29,7 +29,7 @@ export default ({ category, onSuccess }: Props) => {
     >
       <AddArticleForm
         category={category}
-        onSuccess={a => {
+        onSuccess={(a) => {
           onSuccess(a)
           hideAddModal()
         }}

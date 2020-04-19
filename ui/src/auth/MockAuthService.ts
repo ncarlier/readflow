@@ -3,7 +3,7 @@ import { AuthService } from './'
 
 const fakeUser = {
   expired: false,
-  access_token: null
+  access_token: null,
 }
 
 export class MockAuthService implements AuthService {

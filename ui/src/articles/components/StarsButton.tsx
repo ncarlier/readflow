@@ -28,7 +28,7 @@ export default (props: Props) => {
         setLoading(true)
         await updateArticleMutation({
           variables: { id: article.id, starred },
-          update: updateCacheAfterUpdate
+          update: updateCacheAfterUpdate,
         })
         setLoading(false)
         if (onSuccess) onSuccess(article)

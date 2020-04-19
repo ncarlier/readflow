@@ -10,14 +10,14 @@ export default () => {
 
   const render = matchResponse<GetCategoriesResponse>({
     Loading: () => <option>LOADING...</option>,
-    Error: err => <option>{err.message}</option>,
-    Data: data =>
+    Error: (err) => <option>{err.message}</option>,
+    Data: (data) =>
       data.categories.entries.map((category) => (
         <option key={`cat-${category.id}`} value={category.id}>
           {category.title}
         </option>
       )),
-    Other: () => <option>Unable to fetch categories!</option>
+    Other: () => <option>Unable to fetch categories!</option>,
   })
 
   return <>{render(data, error, loading)}</>

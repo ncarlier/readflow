@@ -14,7 +14,7 @@ export default ({ article }: Props) => {
     nvg.share({
       title: article.title,
       text: article.text,
-      url: article.url
+      url: article.url,
     })
   }, [article])
 

@@ -20,7 +20,7 @@ function createBookmarkletMarkup(token: string) {
     __html: `<a title="Bookmark me!" href="${script}" onClick="alert('Don\\'t click on me! But drag and drop me to your toolbar.'); return false;">
 <i class="material-icons">bookmark</i>
 </a>
-`
+`,
   }
 }
 

@@ -36,9 +36,9 @@ const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
 
   const render = matchResponse<GetCurrentUserResponse>({
     Loading: () => <Loader />,
-    Error: err => <ErrorPanel>{err.message}</ErrorPanel>,
-    Data: data => {
-      let plan = plans.find(p => p.name === data.me.plan)
+    Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
+    Data: (data) => {
+      let plan = plans.find((p) => p.name === data.me.plan)
       if (!plan) {
         plan = plans[0]
       }
@@ -56,7 +56,7 @@ const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
         </Box>
       )
     },
-    Other: () => <ErrorPanel>Unable to fetch current user plan!</ErrorPanel>
+    Other: () => <ErrorPanel>Unable to fetch current user plan!</ErrorPanel>,
   })
   return <>{render(data, error, loading)}</>
 }
@@ -66,8 +66,8 @@ export default () => {
 
   const render = matchResponse<GetPlansResponse>({
     Loading: () => <Loader />,
-    Error: err => <ErrorPanel>{err.message}</ErrorPanel>,
-    Data: data => {
+    Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
+    Data: (data) => {
       if (data.plans.length === 0) {
         return
       }
@@ -80,7 +80,7 @@ export default () => {
         </>
       )
     },
-    Other: () => <ErrorPanel>Unable to fetch user plans!</ErrorPanel>
+    Other: () => <ErrorPanel>Unable to fetch user plans!</ErrorPanel>,
   })
 
   return <>{render(data, error, loading)}</>

@@ -14,7 +14,7 @@ export default function configureStore(history: History, initialState: Applicati
 
   const rootReducer = combineReducers<ApplicationState>({
     ...reducers,
-    router: connectRouter(history)
+    router: connectRouter(history),
   })
 
   // We'll create our store with the combined reducers/sagas, and the initial Redux state that

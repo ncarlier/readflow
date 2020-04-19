@@ -12,7 +12,7 @@ export enum OfflineArticlesActionTypes {
   FETCH_ERROR = '@@offlineArticles/FETCH_ERROR',
   SELECT_REQUEST = '@@offlineArticles/SELECT_REQUEST',
   SELECT_SUCCESS = '@@offlinAarticles/SELECT_SUCCESS',
-  SELECT_ERROR = '@@offlineArticles/SELECT_ERROR'
+  SELECT_ERROR = '@@offlineArticles/SELECT_ERROR',
 }
 
 // Declare state types with `readonly` modifier to get compile time immutability.

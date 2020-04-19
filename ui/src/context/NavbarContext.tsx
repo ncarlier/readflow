@@ -9,7 +9,7 @@ interface NavbarContextType {
 const NavbarContext = createContext<NavbarContextType>({
   opened: true,
   open: () => null,
-  close: () => null
+  close: () => null,
 })
 
 interface Props {

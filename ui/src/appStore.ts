@@ -1,8 +1,8 @@
-import { action } from 'typesafe-actions'
 import { Reducer } from 'redux'
+import { action } from 'typesafe-actions'
 
 export enum AppActionTypes {
-  UPDATE_AVAILABLE = '@@app/UPDATE_AVAILABLE'
+  UPDATE_AVAILABLE = '@@app/UPDATE_AVAILABLE',
 }
 
 export interface AppState {
@@ -12,7 +12,7 @@ export interface AppState {
 export const updateAvailable = () => action(AppActionTypes.UPDATE_AVAILABLE)
 
 const initialState: AppState = {
-  updateAvailable: false
+  updateAvailable: false,
 }
 
 const reducer: Reducer<AppState> = (state = initialState, action) => {

@@ -29,8 +29,8 @@ export const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle
 
   const render = matchResponse<Article>({
     Loading: () => <Loader />,
-    Error: err => <ErrorPanel>{err.message}</ErrorPanel>,
-    Data: article => {
+    Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
+    Data: (article) => {
       if (article) {
         article.isOffline = true
         return (
@@ -44,7 +44,7 @@ export const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle
       }
       return <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
     },
-    Other: () => <Loader />
+    Other: () => <Loader />,
   })
 
   return (

@@ -23,10 +23,10 @@ const defaultLocalConfiguration: LocalConfiguration = {
   sortOrders: {
     unread: 'asc',
     offline: 'asc',
-    history: 'desc'
+    history: 'desc',
   },
   limit: 10,
-  theme: 'auto'
+  theme: 'auto',
 }
 
 interface LocalConfigurationContextType {
@@ -36,7 +36,7 @@ interface LocalConfigurationContextType {
 
 const LocalConfigurationContext = createContext<LocalConfigurationContextType>({
   localConfiguration: defaultLocalConfiguration,
-  updateLocalConfiguration: () => true
+  updateLocalConfiguration: () => true,
 })
 
 interface Props {

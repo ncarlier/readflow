@@ -29,14 +29,14 @@ export default (props: Props) => {
         <Loader />
       </li>
     ),
-    Error: err => <li>{err.message}</li>,
+    Error: (err) => <li>{err.message}</li>,
     Data: ({ archivers }) =>
-      archivers.map(service => (
+      archivers.map((service) => (
         <li key={`as-${service.id}`}>
           <ArchiveLink service={service} {...attrs} />
         </li>
       )),
-    Other: () => <li>Unknown error</li>
+    Other: () => <li>Unknown error</li>,
   })
 
   return (

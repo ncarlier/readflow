@@ -27,28 +27,28 @@ const definition = [
       <Link title="Edit API key" to={`/settings/api-keys/${val.id}`}>
         {val.alias}
       </Link>
-    )
+    ),
   },
   {
     title: 'Token',
-    render: (val: ApiKey) => <Masked value={val.token} />
+    render: (val: ApiKey) => <Masked value={val.token} />,
   },
   {
     title: 'Bookmarklet',
-    render: (val: ApiKey) => <Bookmarklet token={val.token} />
+    render: (val: ApiKey) => <Bookmarklet token={val.token} />,
   },
   {
     title: 'Last usage',
-    render: (val: ApiKey) => <TimeAgo dateTime={val.last_usage_at} />
+    render: (val: ApiKey) => <TimeAgo dateTime={val.last_usage_at} />,
   },
   {
     title: 'Created',
-    render: (val: ApiKey) => <TimeAgo dateTime={val.created_at} />
+    render: (val: ApiKey) => <TimeAgo dateTime={val.created_at} />,
   },
   {
     title: 'Updated',
-    render: (val: ApiKey) => <TimeAgo dateTime={val.updated_at} />
-  }
+    render: (val: ApiKey) => <TimeAgo dateTime={val.updated_at} />,
+  },
 ]
 
 type AllProps = RouteComponentProps<{}>
@@ -62,7 +62,7 @@ export default ({ match }: AllProps) => {
   const [deleteApiKeysMutation] = useMutation<DeleteApiKeyResponse, DeleteApiKeyRequest>(DeleteApiKeys)
   const { showMessage } = useContext(MessageContext)
 
-  const onSelectedHandler: OnSelectedFn = keys => {
+  const onSelectedHandler: OnSelectedFn = (keys) => {
     setSelection(keys)
   }
 
@@ -70,7 +70,7 @@ export default ({ match }: AllProps) => {
     try {
       const res = await deleteApiKeysMutation({
         variables: { ids },
-        update: updateCacheAfterDelete(ids)
+        update: updateCacheAfterDelete(ids),
       })
       setSelection([])
       // console.log('API keys removed', res)
@@ -101,9 +101,9 @@ export default ({ match }: AllProps) => {
 
   const render = matchResponse<GetApiKeysResponse>({
     Loading: () => <Loader />,
-    Error: err => <ErrorPanel title="Unable to fetch API keys">{err.message}</ErrorPanel>,
-    Data: data => <DataTable definition={definition} data={data.apiKeys} onSelected={onSelectedHandler} />,
-    Other: () => <ErrorPanel>Unable to fetch API keys with no obvious reason :(</ErrorPanel>
+    Error: (err) => <ErrorPanel title="Unable to fetch API keys">{err.message}</ErrorPanel>,
+    Data: (data) => <DataTable definition={definition} data={data.apiKeys} onSelected={onSelectedHandler} />,
+    Other: () => <ErrorPanel>Unable to fetch API keys with no obvious reason :(</ErrorPanel>,
   })
 
   return (
@@ -121,7 +121,7 @@ export default ({ match }: AllProps) => {
           as={Link}
           to={{
             pathname: match.path + '/add',
-            state: { modal: true }
+            state: { modal: true },
           }}
         >
           Add API key

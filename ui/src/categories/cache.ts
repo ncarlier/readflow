@@ -8,7 +8,7 @@ export const updateCacheAfterCreate = (
   mutationResult: { data?: CreateOrUpdateCategoryResponse | null }
 ) => {
   const previousData = proxy.readQuery<GetCategoriesResponse>({
-    query: GetCategories
+    query: GetCategories,
   })
   if (previousData && mutationResult && mutationResult.data) {
     previousData.categories.entries.unshift(mutationResult.data.createOrUpdateCategory)
@@ -44,10 +44,10 @@ export const updateCacheAfterUpdate = (
 
 export const updateCacheAfterDelete = (ids: number[]) => (proxy: DataProxy) => {
   const previousData = proxy.readQuery<GetCategoriesResponse>({
-    query: GetCategories
+    query: GetCategories,
   })
   if (previousData) {
-    const categories = previousData.categories.entries.filter(category => category.id && !ids.includes(category.id))
+    const categories = previousData.categories.entries.filter((category) => category.id && !ids.includes(category.id))
     proxy.writeQuery({ data: { categories }, query: GetCategories })
   }
 }

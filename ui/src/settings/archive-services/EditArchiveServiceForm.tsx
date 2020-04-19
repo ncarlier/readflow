@@ -35,7 +35,7 @@ export default ({ data, history }: Props) => {
   const [formState, { text, select, checkbox }] = useFormState<EditArchiveServiceFormFields>({
     alias: data.alias,
     provider: data.provider,
-    is_default: data.is_default
+    is_default: data.is_default,
   })
   const [editArchiveServiceMutation] = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(
     CreateOrUpdateArchiveService
@@ -47,7 +47,7 @@ export default ({ data, history }: Props) => {
       try {
         await editArchiveServiceMutation({
           variables: service,
-          update: updateCacheAfterUpdate
+          update: updateCacheAfterUpdate,
         })
         showMessage(`Archive service edited: ${service.alias}`)
         history.goBack()

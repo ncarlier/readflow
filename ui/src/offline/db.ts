@@ -8,7 +8,7 @@ class OfflineDatabase extends Dexie {
   constructor() {
     super('ReaderOfflineDatabase')
     this.version(1).stores({
-      articles: '++id, title, created_at'
+      articles: '++id, title, created_at',
     })
     this.articles = this.table('articles')
   }

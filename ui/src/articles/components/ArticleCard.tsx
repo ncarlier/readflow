@@ -23,7 +23,7 @@ type AllProps = Props & RouteComponentProps
 const menuStyle = {
   top: 'initial',
   right: 0,
-  bottom: '100%'
+  bottom: '100%',
 }
 
 export default withRouter((props: AllProps) => {

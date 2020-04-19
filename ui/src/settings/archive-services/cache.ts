@@ -13,11 +13,11 @@ export const updateCacheAfterCreate = (
   }
   const created = mutationResult.data.createOrUpdateArchiver
   const previousData = proxy.readQuery<GetArchiveServicesResponse>({
-    query: GetArchiveServices
+    query: GetArchiveServices,
   })
 
   if (created.is_default && previousData) {
-    previousData.archivers = previousData.archivers.map(service => {
+    previousData.archivers = previousData.archivers.map((service) => {
       return { ...service, is_default: false }
     })
   }
@@ -36,10 +36,10 @@ export const updateCacheAfterUpdate = (
   }
   const updated = mutationResult.data.createOrUpdateArchiver
   const previousData = proxy.readQuery<GetArchiveServicesResponse>({
-    query: GetArchiveServices
+    query: GetArchiveServices,
   })
   if (previousData) {
-    const archivers = previousData.archivers.map(service => {
+    const archivers = previousData.archivers.map((service) => {
       if (updated.is_default) {
         service = { ...service, is_default: false }
       }
@@ -49,19 +49,19 @@ export const updateCacheAfterUpdate = (
   }
   proxy.writeQuery({
     data: {
-      archiver: updated
+      archiver: updated,
     },
     query: GetArchiveService,
-    variables: { id: updated.id }
+    variables: { id: updated.id },
   })
 }
 
 export const updateCacheAfterDelete = (ids: number[]) => (proxy: DataProxy) => {
   const previousData = proxy.readQuery<GetArchiveServicesResponse>({
-    query: GetArchiveServices
+    query: GetArchiveServices,
   })
   if (previousData) {
-    const archivers = previousData.archivers.filter(archiver => archiver.id && !ids.includes(archiver.id))
+    const archivers = previousData.archivers.filter((archiver) => archiver.id && !ids.includes(archiver.id))
     proxy.writeQuery({ data: { archivers }, query: GetArchiveServices })
   }
 }

@@ -33,7 +33,7 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
   const { showMessage } = useContext(MessageContext)
   const [formState, { url, select }] = useFormState<AddArticleFormFields>({
     url: value,
-    category: category ? category.id : undefined
+    category: category ? category.id : undefined,
   })
   const [addArticleMutation] = useMutation<AddNewArticleResponse, AddNewArticleRequest>(AddNewArticle)
 

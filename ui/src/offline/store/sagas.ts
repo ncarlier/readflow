@@ -13,7 +13,7 @@ import {
   saveSuccess,
   selectError,
   selectRequest,
-  selectSuccess
+  selectSuccess,
 } from './actions'
 import { OfflineArticlesActionTypes } from './types'
 

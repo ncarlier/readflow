@@ -13,7 +13,7 @@ const ThemeSwitch = () => {
   const { localConfiguration, updateLocalConfiguration } = useContext(LocalConfigurationContext)
 
   const [formState, { select }] = useFormState<SwitchThemeFormFields>({
-    theme: localConfiguration.theme
+    theme: localConfiguration.theme,
   })
 
   useEffect(() => {

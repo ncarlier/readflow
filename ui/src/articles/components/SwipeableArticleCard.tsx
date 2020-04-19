@@ -32,7 +32,7 @@ export default (props: Props) => {
       try {
         await updateArticleMutation({
           variables: { id: article.id, status },
-          update: updateCacheAfterUpdate
+          update: updateCacheAfterUpdate,
         })
       } catch (err) {
         showErrorMessage(getGQLError(err))

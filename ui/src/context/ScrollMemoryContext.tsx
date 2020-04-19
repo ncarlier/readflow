@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 
 const ScrollMemoryContext = React.createContext(0)
 
-var cache = new Map<string, number>()
+const cache = new Map<string, number>()
 
 export const setScrollPosition = (key: string, pos: number) => cache.set(key, pos)
 

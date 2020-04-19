@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 
-import { ApplicationState } from '../store'
 import { AppState } from '../appStore'
+import { ApplicationState } from '../store'
 
 const mapStateToProps = ({ app }: ApplicationState): AppState => ({
-  updateAvailable: app.updateAvailable
+  updateAvailable: app.updateAvailable,
 })
 
 export const connectApp = connect(mapStateToProps)

@@ -26,7 +26,9 @@ export default ({ history }: AllProps) => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text }] = useFormState<AddApiKeyFormFields>()
-  const [addApiKeyMutation] = useMutation<CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest>(CreateOrUpdateApiKey)
+  const [addApiKeyMutation] = useMutation<CreateOrUpdateApiKeyResponse, CreateOrUpdateApiKeyRequest>(
+    CreateOrUpdateApiKey
+  )
   const { showMessage } = useContext(MessageContext)
 
   const addApiKey = useCallback(
@@ -34,7 +36,7 @@ export default ({ history }: AllProps) => {
       try {
         const res = await addApiKeyMutation({
           variables: apiKey,
-          update: updateCacheAfterCreate
+          update: updateCacheAfterCreate,
         })
         if (res.data) {
           showMessage(`New API key: ${res.data.createOrUpdateAPIKey.alias}`)

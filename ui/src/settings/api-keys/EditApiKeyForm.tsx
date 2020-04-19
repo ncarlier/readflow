@@ -35,7 +35,7 @@ export default ({ data, history }: Props) => {
       try {
         await editApiKeyMutation({
           variables: apiKey,
-          update: updateCacheAfterUpdate
+          update: updateCacheAfterUpdate,
         })
         showMessage(`API key edited: ${apiKey.alias}`)
         history.goBack()

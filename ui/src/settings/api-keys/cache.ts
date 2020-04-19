@@ -8,7 +8,7 @@ export const updateCacheAfterCreate = (
   mutationResult: { data?: CreateOrUpdateApiKeyResponse | null }
 ) => {
   const previousData = proxy.readQuery<GetApiKeysResponse>({
-    query: GetApiKeys
+    query: GetApiKey,
   })
   if (previousData && mutationResult.data) {
     previousData.apiKeys.unshift(mutationResult.data.createOrUpdateAPIKey)
@@ -25,29 +25,29 @@ export const updateCacheAfterUpdate = (
   }
   const updated = mutationResult.data.createOrUpdateAPIKey
   const previousData = proxy.readQuery<GetApiKeysResponse>({
-    query: GetApiKeys
+    query: GetApiKeys,
   })
   if (previousData) {
-    const apiKeys = previousData.apiKeys.map(apiKey => {
+    const apiKeys = previousData.apiKeys.map((apiKey) => {
       return apiKey.id === updated.id ? updated : apiKey
     })
     proxy.writeQuery({ data: { apiKeys }, query: GetApiKeys })
   }
   proxy.writeQuery({
     data: {
-      apiKey: updated
+      apiKey: updated,
     },
     query: GetApiKey,
-    variables: { id: updated.id }
+    variables: { id: updated.id },
   })
 }
 
 export const updateCacheAfterDelete = (ids: number[]) => (proxy: DataProxy) => {
   const previousData = proxy.readQuery<GetApiKeysResponse>({
-    query: GetApiKeys
+    query: GetApiKeys,
   })
   if (previousData) {
-    const apiKeys = previousData.apiKeys.filter(apiKey => !ids.includes(apiKey.id))
+    const apiKeys = previousData.apiKeys.filter((apiKey) => !ids.includes(apiKey.id))
     proxy.writeQuery({ data: { apiKeys }, query: GetApiKeys })
   }
 }

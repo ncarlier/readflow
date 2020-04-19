@@ -17,7 +17,7 @@ interface Props {
 
 export default (props: Props) => {
   const { title, subtitle, className, children, actions } = props
-  let { header = <Appbar title={title} actions={actions} /> } = props
+  const { header = <Appbar title={title} actions={actions} /> } = props
 
   usePageTitle(title, subtitle)
 

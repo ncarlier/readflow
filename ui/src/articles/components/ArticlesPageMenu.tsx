@@ -55,7 +55,7 @@ export default (props: Props) => {
   const markAllAsRead = useCallback(async () => {
     try {
       await markAllArticlesAsReadMutation({
-        variables: { category: req.category }
+        variables: { category: req.category },
       })
       await refresh()
     } catch (err) {

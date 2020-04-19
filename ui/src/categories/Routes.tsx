@@ -16,7 +16,7 @@ export default () => {
 
   const { id } = match.params
   const { data, error, loading } = useQuery<GetCategoryResponse>(GetCategory, {
-    variables: { id }
+    variables: { id },
   })
 
   const render = matchResponse<GetCategoryResponse>({
@@ -25,7 +25,7 @@ export default () => {
         <Loader />
       </Page>
     ),
-    Error: err => <ErrorPage>{err.message}</ErrorPage>,
+    Error: (err) => <ErrorPage>{err.message}</ErrorPage>,
     Data: ({ category }) => {
       if (category) {
         return (
@@ -49,7 +49,7 @@ export default () => {
         return <ErrorPage title="Not found">Category #${id} not found.</ErrorPage>
       }
     },
-    Other: () => <ErrorPage>Unable to fetch category #${id} details!</ErrorPage>
+    Other: () => <ErrorPage>Unable to fetch category #${id} details!</ErrorPage>,
   })
 
   return <>{render(data, error, loading)}</>

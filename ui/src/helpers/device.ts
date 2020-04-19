@@ -21,7 +21,7 @@ const isMobile = {
 
   any() {
     return this.Android() || this.BlackBerry() || this.iOS() || this.Opera() || this.Windows()
-  }
+  },
 }
 
 export const isMobileDevice = () => isMobile.any()

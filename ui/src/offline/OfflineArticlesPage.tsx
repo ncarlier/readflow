@@ -18,7 +18,7 @@ const emptyQuery = {
   afterCursor: null,
   category: null,
   starred: null,
-  status: null
+  status: null,
 }
 
 const buildQueryFromLocation = (qs: string, localConfiguration: LocalConfiguration): GetArticlesRequest => {
@@ -26,7 +26,7 @@ const buildQueryFromLocation = (qs: string, localConfiguration: LocalConfigurati
   return {
     ...emptyQuery,
     limit: getURLParam<number>(params, 'limit', localConfiguration.limit),
-    sortOrder: getURLParam<SortOrder>(params, 'sort', localConfiguration.sortOrders.offline)
+    sortOrder: getURLParam<SortOrder>(params, 'sort', localConfiguration.sortOrders.offline),
   }
 }
 
@@ -56,12 +56,12 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: O
 
   const render = matchState<GetArticlesResponse>({
     Loading: () => <Loader />,
-    Error: err => (
+    Error: (err) => (
       <Panel>
         <ErrorPanel>{err.message}</ErrorPanel>
       </Panel>
     ),
-    Data: d => {
+    Data: (d) => {
       return (
         <ArticleList
           articles={d.articles.entries}
@@ -71,7 +71,7 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: O
           fetchMoreArticles={fetchMoreArticles}
         />
       )
-    }
+    },
   })
 
   let title = ' '

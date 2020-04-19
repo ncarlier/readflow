@@ -25,7 +25,7 @@ const useKeyNavigation = (ref: RefObject<HTMLUListElement>, itemClassName: strin
   const right = ['right', 'ArrowRight', 'n', 'k']
   useKeyboard(
     [...left, ...right],
-    e => {
+    (e) => {
       if (ref.current) {
         const { activeElement } = document
         if (activeElement) {
