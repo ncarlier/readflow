@@ -4,7 +4,6 @@ import { useMutation } from 'react-apollo-hooks'
 import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
-import { updateCacheAfterUpdate } from '../../categories/cache'
 import { Category, CreateOrUpdateCategoryResponse } from '../../categories/models'
 import { CreateOrUpdateCategory } from '../../categories/queries'
 import Button from '../../components/Button'
@@ -39,7 +38,7 @@ export default ({ category, history }: Props) => {
       try {
         await editCategoryMutation({
           variables: category,
-          update: updateCacheAfterUpdate
+          // update: updateCacheAfterUpdate
         })
         showMessage(`Category edited: ${category.title}`)
         history.goBack()

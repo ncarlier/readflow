@@ -126,7 +126,24 @@ var articleUpdateResponseType = graphql.NewObject(
 				Type: articleType,
 			},
 			"_all": &graphql.Field{
-				Type: categoryType,
+				Type: graphql.Int,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					status := "unread"
+					req := model.ArticlesPageRequest{
+						Status: &status,
+					}
+					return service.Lookup().CountCurrentUserArticles(p.Context, req)
+				},
+			},
+			"_starred": &graphql.Field{
+				Type: graphql.Int,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					starred := true
+					req := model.ArticlesPageRequest{
+						Starred: &starred,
+					}
+					return service.Lookup().CountCurrentUserArticles(p.Context, req)
+				},
 			},
 		},
 	},
@@ -234,13 +251,11 @@ func updateArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	response := &model.ArticleStatusResponse{
+	return struct {
+		Article *model.Article
+	}{
 		Article: article,
-		All: &model.Category{
-			Title: "_all",
-		},
-	}
-	return response, nil
+	}, nil
 }
 
 var markAllArticlesAsReadMutationField = &graphql.Field{

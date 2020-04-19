@@ -5,7 +5,8 @@ import Icon from '../../components/Icon'
 import SwipeableListItem from '../../components/SwipeableListItem'
 import { MessageContext } from '../../context/MessageContext'
 import { getGQLError } from '../../helpers'
-import { Article, UpdateArticleRequest } from '../models'
+import { updateCacheAfterUpdate } from '../cache'
+import { Article, ArticleStatus, UpdateArticleRequest, UpdateArticleResponse } from '../models'
 import { UpdateArticle } from '../queries'
 import ArticleCard from './ArticleCard'
 import styles from './SwipeableArticleCard.module.css'
@@ -24,13 +25,14 @@ export default (props: Props) => {
   const { article } = props
 
   const { showErrorMessage } = useContext(MessageContext)
-  const [updateArticleMutation] = useMutation<UpdateArticleRequest>(UpdateArticle)
+  const [updateArticleMutation] = useMutation<UpdateArticleResponse, UpdateArticleRequest>(UpdateArticle)
 
   const updateArticleStatus = useCallback(
-    async (status: string) => {
+    async (status: ArticleStatus) => {
       try {
         await updateArticleMutation({
-          variables: { id: article.id, status }
+          variables: { id: article.id, status },
+          update: updateCacheAfterUpdate
         })
       } catch (err) {
         showErrorMessage(getGQLError(err))

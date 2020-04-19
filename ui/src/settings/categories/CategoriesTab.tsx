@@ -88,13 +88,7 @@ export default ({ match }: RouteComponentProps) => {
   const render = matchResponse<GetCategoriesResponse>({
     Loading: () => <Loader />,
     Error: err => <ErrorPanel title="Unable to fetch categories">{err.message}</ErrorPanel>,
-    Data: data => (
-      <DataTable
-        definition={definition}
-        data={data.categories.filter(c => c.id !== null)}
-        onSelected={onSelectedHandler}
-      />
-    ),
+    Data: (data) => <DataTable definition={definition} data={data.categories.entries} onSelected={onSelectedHandler} />,
     Other: () => <ErrorPanel>Unable to fetch categories with no obvious reason :(</ErrorPanel>
   })
 

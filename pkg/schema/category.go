@@ -56,10 +56,41 @@ var categoryType = graphql.NewObject(
 	},
 )
 
+var catergoriesResponseType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "Categories",
+		Fields: graphql.Fields{
+			"_all": &graphql.Field{
+				Type: graphql.Int,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					status := "unread"
+					req := model.ArticlesPageRequest{
+						Status: &status,
+					}
+					return service.Lookup().CountCurrentUserArticles(p.Context, req)
+				},
+			},
+			"_starred": &graphql.Field{
+				Type: graphql.Int,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					starred := true
+					req := model.ArticlesPageRequest{
+						Starred: &starred,
+					}
+					return service.Lookup().CountCurrentUserArticles(p.Context, req)
+				},
+			},
+			"entries": &graphql.Field{
+				Type: graphql.NewList(categoryType),
+			},
+		},
+	},
+)
+
 // QUERIES
 
 var categoriesQueryField = &graphql.Field{
-	Type:    graphql.NewList(categoryType),
+	Type:    catergoriesResponseType,
 	Resolve: categoriesResolver,
 }
 
@@ -68,10 +99,11 @@ func categoriesResolver(p graphql.ResolveParams) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	categories = append(categories, model.Category{
-		Title: "_all",
-	})
-	return categories, nil
+	return struct {
+		Entries []model.Category
+	}{
+		categories,
+	}, nil
 }
 
 var categoryQueryField = &graphql.Field{
