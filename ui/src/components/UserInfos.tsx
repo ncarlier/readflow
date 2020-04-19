@@ -39,8 +39,8 @@ export default () => {
 
   const render = matchResponse<GetCurrentUserResponse>({
     Loading: () => <Loader />,
-    Error: err => <ErrorPanel>{err.message}</ErrorPanel>,
-    Data: data => (
+    Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
+    Data: (data) => (
       <>
         <span>
           <strong title={data.me.username}>{data.me.username}</strong>
@@ -53,7 +53,7 @@ export default () => {
         </a>
       </>
     ),
-    Other: () => <ErrorPanel>Unable to fetch current user infos!</ErrorPanel>
+    Other: () => <ErrorPanel>Unable to fetch current user infos!</ErrorPanel>,
   })
 
   return <div className={styles.userInfos}>{render(data, error, loading)}</div>

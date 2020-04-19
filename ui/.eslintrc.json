@@ -24,6 +24,7 @@
     "no-console": "off",
     "react/display-name": "off",
     "react/prop-types": "off",
+    "import/no-webpack-loader-syntax": "off",
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/interface-name-prefix": 0,
     "@typescript-eslint/explicit-member-accessibility": 0,

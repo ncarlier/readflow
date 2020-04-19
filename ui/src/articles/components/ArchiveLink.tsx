@@ -33,7 +33,7 @@ export default (props: Props) => {
     setLoading(true)
     try {
       await archiveArticleMutation({
-        variables: { id: article.id, archiver: service.alias }
+        variables: { id: article.id, archiver: service.alias },
       })
       showMessage(`Article sent to ${service.alias}: ${article.title}`)
     } catch (err) {

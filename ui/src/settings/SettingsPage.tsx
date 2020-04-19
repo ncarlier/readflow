@@ -21,7 +21,7 @@ const items = [
   { key: 'categories', label: 'Categories', icon: 'bookmarks' },
   { key: 'api-keys', label: 'API keys', icon: 'verified_users' },
   { key: 'archive-services', label: 'Archive service', icon: 'backup' },
-  { key: 'preferences', label: 'Preferences', icon: 'build' }
+  { key: 'preferences', label: 'Preferences', icon: 'build' },
 ]
 
 const Actions = () => (

@@ -1,9 +1,9 @@
 import React from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import LinkIcon from '../../components/LinkIcon'
 import styles from './Tabs.module.css'
-import { Link } from 'react-router-dom'
 
 interface TabItem {
   key: string
@@ -18,7 +18,7 @@ interface Props {
 export default withRouter(({ location: { pathname }, items }: Props & RouteComponentProps) => (
   <nav className={styles.tabs}>
     <ul>
-      {items.map(item => (
+      {items.map((item) => (
         <li key={item.key}>
           <LinkIcon
             as={Link}

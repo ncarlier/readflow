@@ -4,7 +4,7 @@ export default (ref: RefObject<HTMLElement>, options?: IntersectionObserverInit)
   const [visible, setVisibilty] = useState<IntersectionObserverEntry | null>(null)
   const isIntersecting = useRef(false)
 
-  const handleObserverUpdate: IntersectionObserverCallback = entries => {
+  const handleObserverUpdate: IntersectionObserverCallback = (entries) => {
     const ent = entries[0]
     if (isIntersecting.current !== ent.isIntersecting) {
       setVisibilty(ent)

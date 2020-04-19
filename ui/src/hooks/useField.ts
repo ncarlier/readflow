@@ -9,7 +9,7 @@ export default (initial: string) => {
     reset: () => setValue(initial),
     bind: {
       value,
-      onChange: (e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)
-    }
+      onChange: (e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value),
+    },
   }
 }

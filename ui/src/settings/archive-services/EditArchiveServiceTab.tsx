@@ -2,10 +2,10 @@ import React from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { RouteComponentProps } from 'react-router'
 
-import { matchResponse } from '../../helpers'
 import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import ErrorPanel from '../../error/ErrorPanel'
+import { matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import EditArchiveServiceForm from './EditArchiveServiceForm'
 import { GetArchiveServiceResponse } from './models'
@@ -18,12 +18,12 @@ export default ({ history, match }: AllProps) => {
   usePageTitle(`Settings - Edit archive service #${id}`)
 
   const { data, error, loading } = useQuery<GetArchiveServiceResponse>(GetArchiveService, {
-    variables: { id }
+    variables: { id },
   })
 
   const render = matchResponse<GetArchiveServiceResponse>({
     Loading: () => <Loader />,
-    Error: err => <ErrorPanel>{err.message}</ErrorPanel>,
+    Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
     Data: ({ archiver }) => {
       if (archiver) {
         return <EditArchiveServiceForm data={archiver} history={history} />
@@ -31,7 +31,7 @@ export default ({ history, match }: AllProps) => {
         return <ErrorPanel title="Not found">Archive service #${id} not found.</ErrorPanel>
       }
     },
-    Other: () => <ErrorPanel>Unable to fetch archive service #${id} details!</ErrorPanel>
+    Other: () => <ErrorPanel>Unable to fetch archive service #${id} details!</ErrorPanel>,
   })
 
   return <Panel>{render(data, error, loading)}</Panel>

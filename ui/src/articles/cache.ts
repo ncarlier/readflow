@@ -13,7 +13,7 @@ export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data?
   const article = mutationResult.data.addArticle
   // Update categories `_all` value
   const previousData = proxy.readQuery<GetCategoriesResponse>({
-    query: GetCategories
+    query: GetCategories,
   })
   if (previousData && previousData.categories) {
     const { categories } = previousData
@@ -25,7 +25,7 @@ export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data?
   proxy.writeQuery({
     data: { article },
     query: GetArticle,
-    variables: { id: article.id }
+    variables: { id: article.id },
   })
 }
 
@@ -36,7 +36,7 @@ export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data?
   const updated = mutationResult.data.updateArticle
   // Update categories `_all` and `_starred` values
   const previousData = proxy.readQuery<GetCategoriesResponse>({
-    query: GetCategories
+    query: GetCategories,
   })
   if (previousData && previousData.categories) {
     const { categories } = previousData

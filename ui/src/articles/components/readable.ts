@@ -1,3 +1,4 @@
+const css = `
 :root {
   --text-color: #222;
   --bold-text-color: #111;
@@ -37,5 +38,8 @@ a {
 h1, h2, strong {
   color: var(--bold-text-color);
 }
+`
 
-
+export default {
+  css,
+}

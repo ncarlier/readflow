@@ -9,10 +9,10 @@ import { Store } from 'redux'
 
 import authService from './auth'
 import { API_BASE_URL } from './constants'
+import { LocalConfigurationProvider } from './context/LocalConfigurationContext'
 import { MessageProvider } from './context/MessageContext'
 import { NavbarProvider } from './context/NavbarContext'
 import { ScrollMemoryProvider } from './context/ScrollMemoryContext'
-import { LocalConfigurationProvider } from './context/LocalConfigurationContext'
 import AppLayout from './layout/AppLayout'
 import Routes from './routes'
 import { ApplicationState } from './store'
@@ -33,9 +33,9 @@ type Props = PropsFromDispatch & OwnProps
 const client = new ApolloClient({
   uri: API_BASE_URL + '/graphql',
   fetchOptions: {
-    credentials: 'include'
+    credentials: 'include',
   },
-  request: async operation => {
+  request: async (operation) => {
     let user = await authService.getUser()
     if (user === null) {
       return authService.login()
@@ -46,12 +46,12 @@ const client = new ApolloClient({
     if (user.access_token) {
       operation.setContext({
         headers: {
-          authorization: 'Bearer ' + user.access_token
-        }
+          authorization: 'Bearer ' + user.access_token,
+        },
       })
     }
   },
-  onError: err => {
+  onError: (err) => {
     console.error(err)
     if (err.networkError) {
       console.log('networkError:', err.networkError.name, err.networkError.message)
@@ -59,7 +59,7 @@ const client = new ApolloClient({
         authService.login()
       }
     }
-  }
+  },
 })
 
 export default function App({ store, history /*, theme*/ }: Props) {

@@ -48,7 +48,7 @@ export default ({ current, category, refresh }: Props) => {
         const { errors, data } = await client.query<GetArticlesResponse>({
           query: GetNbNewArticles,
           fetchPolicy: 'network-only',
-          variables: { category: category ? category.id : undefined }
+          variables: { category: category ? category.id : undefined },
         })
         if (data) {
           const delta = data.articles.totalCount - lastCount

@@ -20,7 +20,7 @@ const NotificationSupport = ({ children }: NotificationSupportProps) => {
   const supported = isNotificationSupported()
   const [allowed, setAllowed] = useState(isNotificationGranted())
 
-  const requestPermission = () => Notification.requestPermission(permission => setAllowed(permission === 'granted'))
+  const requestPermission = () => Notification.requestPermission((permission) => setAllowed(permission === 'granted'))
 
   if (!supported) {
     return <p>Sorry, but this browser does not support desktop notification.</p>
@@ -77,7 +77,7 @@ const NotificationSwitch = () => {
       try {
         const { errors } = await client.query<GetDeviceResponse>({
           query: GetDevice,
-          variables: { id: pushId }
+          variables: { id: pushId },
         })
         if (errors) {
           throw new Error(errors[0].message)
@@ -101,8 +101,8 @@ const NotificationSwitch = () => {
       if (subscription) {
         const res = await createPushSubscriptionMutation({
           variables: {
-            sub: JSON.stringify(subscription)
-          }
+            sub: JSON.stringify(subscription),
+          },
         })
         if (res.data) {
           const _id = res.data.createPushSubscription.id

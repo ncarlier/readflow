@@ -1,7 +1,6 @@
-import React, { FormEvent, useRef, useState, ReactNode } from 'react'
+import React, { FormEvent, ReactNode, useRef, useState } from 'react'
 
 import classes from './DataTable.module.css'
-
 import Empty from './Empty'
 
 export interface OnSelectedFn {
@@ -28,18 +27,18 @@ export default ({ definition, data, onSelected }: Props) => {
   const selectAllRef = useRef<HTMLInputElement>(null)
   const [selection, setSelection] = useState<Map<number, boolean>>(() => {
     const state = new Map<number, boolean>()
-    data.forEach(val => val.id && state.set(val.id, false))
+    data.forEach((val) => val.id && state.set(val.id, false))
     return state
   })
 
   const triggerOnSelectedEvent = (state: Map<number, boolean>) => {
     if (onSelected) {
       const payload = Array.from(state)
-        .map(tuple => {
+        .map((tuple) => {
           const [key, val] = tuple
           return val ? key : -1
         })
-        .filter(v => v !== -1)
+        .filter((v) => v !== -1)
       onSelected(payload)
     }
   }
@@ -53,7 +52,7 @@ export default ({ definition, data, onSelected }: Props) => {
     const node = selectAllRef.current
     if (node) {
       let allChecked = true
-      newState.forEach(val => (val ? null : (allChecked = false)))
+      newState.forEach((val) => (val ? null : (allChecked = false)))
       node.checked = allChecked
     }
     triggerOnSelectedEvent(newState)
@@ -79,18 +78,18 @@ export default ({ definition, data, onSelected }: Props) => {
           <th>
             <input ref={selectAllRef} type="checkbox" onChange={onCheckboxAllChange} />
           </th>
-          {definition.map(def => (
+          {definition.map((def) => (
             <th key={`dt-title-${def.title.toLowerCase()}`}>{def.title}</th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {data.map(val => (
+        {data.map((val) => (
           <tr key={`dt-row-${val.id}`}>
             <th>
               <input type="checkbox" onChange={onCheckboxChange(val.id)} checked={!!val.id && selection.get(val.id)} />
             </th>
-            {definition.map(def => (
+            {definition.map((def) => (
               <td key={`dt-row-${val.id}-${def.title.toLowerCase()}`}>{def.render(val)}</td>
             ))}
           </tr>

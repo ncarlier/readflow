@@ -20,18 +20,18 @@ interface Props {
 const contentTypes: Map<string, string> = new Map([
   ['JSON', 'application/json; charset=utf-8'],
   ['Text', 'text/plain; charset=utf-8'],
-  ['HTML', 'text/html; charset=utf-8']
+  ['HTML', 'text/html; charset=utf-8'],
 ])
 
 const defaultConfig = {
   endpoint: '',
   contentType: contentTypes.get('json') || '',
-  format: ''
+  format: '',
 }
 
 const ContentTypes = () => (
   <>
-    {Array.from(contentTypes.keys()).map(key => (
+    {Array.from(contentTypes.keys()).map((key) => (
       <option key={`content-type-${key}`} value={contentTypes.get(key)}>
         {key}
       </option>
@@ -41,7 +41,7 @@ const ContentTypes = () => (
 
 export default ({ onChange, config = defaultConfig }: Props) => {
   const [formState, { url, select, textarea }] = useFormState<WebhookConfigFormFields>(config, {
-    onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues)
+    onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
   })
 
   return (

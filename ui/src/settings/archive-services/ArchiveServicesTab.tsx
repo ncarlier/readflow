@@ -16,7 +16,10 @@ import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import { updateCacheAfterDelete } from './cache'
 import {
-    ArchiveService, DeleteArchiveServiceRequest, DeleteArchiveServiceResponse, GetArchiveServicesResponse
+  ArchiveService,
+  DeleteArchiveServiceRequest,
+  DeleteArchiveServiceResponse,
+  GetArchiveServicesResponse,
 } from './models'
 import { DeleteArchiveServices, GetArchiveServices } from './queries'
 
@@ -27,20 +30,20 @@ const definition = [
       <Link title="Edit archive service" to={`/settings/archive-services/${val.id}`}>
         {val.alias} {val.is_default && '(default)'}
       </Link>
-    )
+    ),
   },
   {
     title: 'Provider',
-    render: (val: ArchiveService) => val.provider
+    render: (val: ArchiveService) => val.provider,
   },
   {
     title: 'Created',
-    render: (val: ArchiveService) => <TimeAgo dateTime={val.created_at} />
+    render: (val: ArchiveService) => <TimeAgo dateTime={val.created_at} />,
   },
   {
     title: 'Updated',
-    render: (val: ArchiveService) => <TimeAgo dateTime={val.updated_at} />
-  }
+    render: (val: ArchiveService) => <TimeAgo dateTime={val.updated_at} />,
+  },
 ]
 
 type AllProps = RouteComponentProps<{}>
@@ -56,7 +59,7 @@ export default ({ match }: AllProps) => {
   )
   const { showMessage } = useContext(MessageContext)
 
-  const onSelectedHandler: OnSelectedFn = keys => {
+  const onSelectedHandler: OnSelectedFn = (keys) => {
     setSelection(keys)
   }
 
@@ -64,7 +67,7 @@ export default ({ match }: AllProps) => {
     try {
       const res = await deleteArchiveServicesMutation({
         variables: { ids },
-        update: updateCacheAfterDelete(ids)
+        update: updateCacheAfterDelete(ids),
       })
       setSelection([])
       if (res.data) {
@@ -94,9 +97,9 @@ export default ({ match }: AllProps) => {
 
   const render = matchResponse<GetArchiveServicesResponse>({
     Loading: () => <Loader />,
-    Error: err => <ErrorPanel title="Unable to fetch archive services">{err.message}</ErrorPanel>,
-    Data: data => <DataTable definition={definition} data={data.archivers} onSelected={onSelectedHandler} />,
-    Other: () => <ErrorPanel>Unable to fetch archive services with no obvious reason :(</ErrorPanel>
+    Error: (err) => <ErrorPanel title="Unable to fetch archive services">{err.message}</ErrorPanel>,
+    Data: (data) => <DataTable definition={definition} data={data.archivers} onSelected={onSelectedHandler} />,
+    Other: () => <ErrorPanel>Unable to fetch archive services with no obvious reason :(</ErrorPanel>,
   })
 
   return (
@@ -113,7 +116,7 @@ export default ({ match }: AllProps) => {
           as={Link}
           to={{
             pathname: match.path + '/add',
-            state: { modal: true }
+            state: { modal: true },
           }}
         >
           Add archive service

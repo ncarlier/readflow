@@ -34,7 +34,7 @@ const buildArticlesRequest = (variant: Variant, props: AllProps, localConfig: Lo
     status: 'unread',
     starred: null,
     category: null,
-    afterCursor: null
+    afterCursor: null,
   }
   switch (variant) {
     case 'history':
@@ -74,7 +74,7 @@ const buildTitle = (status: string | null, category?: Category) => {
 const computeTotalArticles = (data: GetArticlesResponse, status: string | null) => {
   let delta = 0
   if (status) {
-    delta = data.articles.entries.filter(a => a.status !== status).length
+    delta = data.articles.entries.filter((a) => a.status !== status).length
   }
   return data.articles.totalCount - delta
 }
@@ -115,14 +115,14 @@ export default (props: AllProps) => {
         console.log(nbFetchedArticles + ' article(s) fetched')
         let { entries } = prev.articles
         if (req.status) {
-          entries = entries.filter(a => a.status === req.status)
+          entries = entries.filter((a) => a.status === req.status)
         }
         const articles = {
           ...fetchMoreResult.articles,
-          entries: [...entries, ...fetchMoreResult.articles.entries]
+          entries: [...entries, ...fetchMoreResult.articles.entries],
         }
         return { articles }
-      }
+      },
     })
   }, [data, fetchMore, req])
 
@@ -138,15 +138,15 @@ export default (props: AllProps) => {
 
   const render = matchResponse<GetArticlesResponse>({
     Loading: () => <Loader />,
-    Error: err => (
+    Error: (err) => (
       <Panel>
         <ErrorPanel>{err.message}</ErrorPanel>
       </Panel>
     ),
-    Data: d => {
+    Data: (d) => {
       let { entries } = d.articles
       if (req.status) {
-        entries = entries.filter(a => a.status === req.status)
+        entries = entries.filter((a) => a.status === req.status)
       }
       return (
         <>
@@ -168,7 +168,7 @@ export default (props: AllProps) => {
       <Panel>
         <ErrorPanel>Unable to fetch articles!</ErrorPanel>
       </Panel>
-    )
+    ),
   })
 
   // Build title

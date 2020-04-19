@@ -29,7 +29,7 @@ export default (props: Props) => {
         setLoading(true)
         await updateArticleMutation({
           variables: { id: article.id, status },
-          update: updateCacheAfterUpdate
+          update: updateCacheAfterUpdate,
         })
         if (!floating) setLoading(false)
         if (onSuccess) onSuccess(article)

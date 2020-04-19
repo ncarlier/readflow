@@ -20,7 +20,7 @@ export default ({ src, alt = '' }: Props) => {
               ${proxifyImageURL(src, 767)} 767w`}
       sizes={mobileDisplay ? '100vw' : '320px'}
       alt={alt}
-      onError={e => (e.currentTarget.style.display = 'none')}
+      onError={(e) => (e.currentTarget.style.display = 'none')}
     />
   )
 }

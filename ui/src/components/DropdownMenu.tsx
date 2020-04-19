@@ -26,7 +26,7 @@ export default ({ children, style }: Props) => {
     [ref]
   )
 
-  const handleClickMenu: MouseEventHandler = e => {
+  const handleClickMenu: MouseEventHandler = (e) => {
     e.preventDefault()
     const $el = e.currentTarget
     const $summary: any = $el.parentNode

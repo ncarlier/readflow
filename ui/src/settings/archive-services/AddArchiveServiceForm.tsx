@@ -34,7 +34,7 @@ export default ({ history }: RouteComponentProps) => {
   const [formState, { text, checkbox, select }] = useFormState<AddArchiveServiceFormFields>({
     provider: '',
     alias: '',
-    isDefault: false
+    isDefault: false,
   })
 
   const [addArchiveServiceMutation] = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(
@@ -46,7 +46,7 @@ export default ({ history }: RouteComponentProps) => {
       try {
         const res = await addArchiveServiceMutation({
           variables: service,
-          update: updateCacheAfterCreate
+          update: updateCacheAfterCreate,
         })
         if (res.data) {
           showMessage(`New archive service: ${res.data.createOrUpdateArchiver.alias}`)

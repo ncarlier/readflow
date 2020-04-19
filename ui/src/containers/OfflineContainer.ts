@@ -20,14 +20,14 @@ export interface IOfflineDispatchProps {
 export type OfflineProps = IOfflineStateProps & IOfflineDispatchProps
 
 const mapStateToProps = ({ offlineArticles }: ApplicationState): IOfflineStateProps => ({
-  offlineArticles
+  offlineArticles,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch): IOfflineDispatchProps => ({
   saveOfflineArticle: (data: Article) => dispatch(offlineArticlesActions.saveRequest(data)),
   removeOfflineArticle: (data: Article) => dispatch(offlineArticlesActions.removeRequest(data)),
   fetchOfflineArticles: (query: GetArticlesRequest) => dispatch(offlineArticlesActions.fetchRequest(query)),
-  fetchOfflineArticle: (id: number) => dispatch(offlineArticlesActions.selectRequest(id))
+  fetchOfflineArticle: (id: number) => dispatch(offlineArticlesActions.selectRequest(id)),
 })
 
 export const connectOffline = connect(mapStateToProps, mapDispatchToProps)

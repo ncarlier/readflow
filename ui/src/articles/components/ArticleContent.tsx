@@ -1,15 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint import/no-webpack-loader-syntax: off */
 import mousetrap from 'mousetrap'
 import React, { useContext, useEffect, useRef } from 'react'
 
 import { LocalConfigurationContext } from '../../context/LocalConfigurationContext'
 import { Article } from '../models'
 import styles from './ArticleContent.module.css'
+import readable from './readable'
 
 const getMql = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
-
-const css = require('!!raw-loader!./readable.css')
 
 interface Props {
   article: Article
@@ -20,7 +18,7 @@ const getHTMLContent = (body: string, theme: string) => `
   <head>
     <meta charset="utf-8" />
     <style>
-      ${css.default}
+      ${readable.css}
     </style>
   </head>
   <body data-theme="${theme}">
@@ -45,14 +43,14 @@ export default ({ article }: Props) => {
 
   useEffect(() => {
     if (contentRef.current) {
-      var ifrm = document.createElement('iframe')
+      const ifrm = document.createElement('iframe')
       contentRef.current.appendChild(ifrm)
-      let doc = ifrm.contentWindow ? ifrm.contentWindow.document : ifrm.contentDocument
+      const doc = ifrm.contentWindow ? ifrm.contentWindow.document : ifrm.contentDocument
       if (doc) {
         doc.open()
         doc.write(getHTMLContent(article.html || article.text, theme))
         // Keyboard events have to propagate outside the iframe
-        doc.onkeydown = function(e: KeyboardEvent) {
+        doc.onkeydown = function (e: KeyboardEvent) {
           switch (e.keyCode) {
             case 8:
               mousetrap.trigger('backspace')

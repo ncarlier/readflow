@@ -1,5 +1,4 @@
 export function getURLParam<T>(params: URLSearchParams, name: string, fallback: T): T {
-  let result = fallback
   if (params.has(name)) {
     const val = params.get(name)
     if (val && typeof fallback === 'number') {
@@ -12,5 +11,5 @@ export function getURLParam<T>(params: URLSearchParams, name: string, fallback: 
       return val as any
     }
   }
-  return result
+  return fallback
 }

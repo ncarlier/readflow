@@ -2,10 +2,10 @@ import { RouterState } from 'connected-react-router'
 import { Action, AnyAction, Dispatch } from 'redux'
 import { all, fork } from 'redux-saga/effects'
 
+import { appReducer, AppState } from './appStore'
 import { offlineArticlesReducer } from './offline/store/reducer'
 import { articlesSaga } from './offline/store/sagas'
 import { OfflineArticlesState } from './offline/store/types'
-import { AppState, appReducer } from './appStore'
 
 // The top-level state object.
 //
@@ -24,7 +24,7 @@ export interface ConnectedReduxProps<A extends Action = AnyAction> {
 
 export const reducers = {
   app: appReducer,
-  offlineArticles: offlineArticlesReducer
+  offlineArticles: offlineArticlesReducer,
 }
 
 // Here we use `redux-saga` to trigger actions asynchronously. `redux-saga` uses something called a

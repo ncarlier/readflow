@@ -36,8 +36,8 @@ export const getArticles = async (req: GetArticlesRequest) => {
       endCursor: -1,
       entries: [],
       hasNext: false,
-      totalCount: 0
-    }
+      totalCount: 0,
+    },
   }
   result.articles.totalCount = await table.count()
 
@@ -50,12 +50,12 @@ export const getArticles = async (req: GetArticlesRequest) => {
     const pageKeys: number[] = []
     await collection
       .until(() => pageKeys.length === limit + 1)
-      .eachPrimaryKey(id => {
+      .eachPrimaryKey((id) => {
         if ((asc && id > afterCursor) || (!asc && id < afterCursor)) {
           pageKeys.push(id)
         }
       })
-    result.articles.entries = await Promise.all<Article>(pageKeys.map(id => table.get(id)))
+    result.articles.entries = await Promise.all<Article>(pageKeys.map((id) => table.get(id)))
   } else {
     let collection = table.orderBy('id')
     if (!asc) {

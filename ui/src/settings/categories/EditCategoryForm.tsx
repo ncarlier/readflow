@@ -28,7 +28,7 @@ export default ({ category, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text, textarea }] = useFormState<EditCategoryFormFields>({
     title: category.title,
-    rule: category.rule ? category.rule : ''
+    rule: category.rule ? category.rule : '',
   })
   const [editCategoryMutation] = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)

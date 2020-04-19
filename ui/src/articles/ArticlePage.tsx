@@ -33,7 +33,7 @@ export default ({ title, match, history }: AllProps) => {
   useKeyboard('backspace', goBack)
 
   const { data, error, loading } = useQuery<GetArticleResponse>(GetArticle, {
-    variables: { id }
+    variables: { id },
   })
 
   const render = matchResponse<GetArticleResponse>({
@@ -42,7 +42,7 @@ export default ({ title, match, history }: AllProps) => {
         <Loader />
       </Center>
     ),
-    Error: err => <ErrorPanel>{err.message}</ErrorPanel>,
+    Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
     Data: ({ article }) => {
       if (article) {
         article.isOffline = false
@@ -58,7 +58,7 @@ export default ({ title, match, history }: AllProps) => {
       }
       return <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
     },
-    Other: () => <p>OTHER</p>
+    Other: () => <p>OTHER</p>,
   })
 
   return (

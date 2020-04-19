@@ -16,7 +16,7 @@ interface MessageContextType {
 const MessageContext = createContext<MessageContextType>({
   message: { text: '', variant: 'info' },
   showMessage: () => true,
-  showErrorMessage: () => true
+  showErrorMessage: () => true,
 })
 
 interface Props {

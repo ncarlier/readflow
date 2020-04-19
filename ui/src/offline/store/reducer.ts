@@ -9,7 +9,7 @@ const initialState: OfflineArticlesState = {
   query: { limit: 10, sortOrder: 'asc', afterCursor: null, category: null, starred: null, status: null },
   selected: undefined,
   error: undefined,
-  loading: true
+  loading: true,
 }
 
 // Thanks to Redux 4's much simpler typings, we can take away a lot of typings on the reducer side,
@@ -30,7 +30,8 @@ const reducer: Reducer<OfflineArticlesState> = (state = initialState, action) =>
     }
     case OfflineArticlesActionTypes.REMOVE_SUCCESS: {
       const article = action.payload
-      let { data, selected } = state
+      let { selected } = state
+      const { data } = state
       if (selected && article.id === selected.id) {
         selected = undefined
       }

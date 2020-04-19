@@ -25,8 +25,8 @@ const graphQLFetcher = (base: string) => async (graphQLParams: any) => {
     method: 'post',
     headers: headers,
     credentials: 'same-origin',
-    body: JSON.stringify(graphQLParams)
-  }).then(response => response.json())
+    body: JSON.stringify(graphQLParams),
+  }).then((response) => response.json())
 }
 
 type AllProps = RouteComponentProps

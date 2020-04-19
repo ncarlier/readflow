@@ -30,7 +30,7 @@ export default ({ history }: AllProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text, textarea }] = useFormState<AddCategoryFormFields>({
     title: '',
-    rule: ''
+    rule: '',
   })
   const [addCategoryMutation] = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useContext(MessageContext)
@@ -40,7 +40,7 @@ export default ({ history }: AllProps) => {
       try {
         await addCategoryMutation({
           variables: category,
-          update: updateCacheAfterCreate
+          update: updateCacheAfterCreate,
         })
         showMessage(`New category: ${category.title}`)
         // console.log('New category', res)

@@ -27,7 +27,7 @@ export const OfflineLink = (props: AllProps) => {
     try {
       const { errors, data } = await client.query<GetArticleResponse>({
         query: GetFullArticle,
-        variables: { id: article.id }
+        variables: { id: article.id },
       })
       if (data) {
         const fullArticle = { ...article, ...data.article }

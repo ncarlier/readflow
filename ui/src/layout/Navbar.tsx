@@ -33,8 +33,8 @@ export default withRouter(({ location }: RouteComponentProps) => {
 
   const renderCategories = matchResponse<GetCategoriesResponse>({
     Loading: () => <Loader />,
-    Error: err => <span>{err.message}</span>,
-    Data: data => (
+    Error: (err) => <span>{err.message}</span>,
+    Data: (data) => (
       <ul>
         {data.categories &&
           data.categories.entries.map((category) => (
@@ -53,7 +53,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
           ))}
       </ul>
     ),
-    Other: () => <span>Unable to fetch categories!</span>
+    Other: () => <span>Unable to fetch categories!</span>,
   })
 
   return (
