@@ -7,18 +7,22 @@ export enum AppActionTypes {
 
 export interface AppState {
   readonly updateAvailable: boolean
+  readonly registration: ServiceWorkerRegistration | null
 }
 
-export const updateAvailable = () => action(AppActionTypes.UPDATE_AVAILABLE)
+export const updateAvailable = (registration: ServiceWorkerRegistration) =>
+  action(AppActionTypes.UPDATE_AVAILABLE, registration)
 
 const initialState: AppState = {
   updateAvailable: false,
+  registration: null,
 }
 
 const reducer: Reducer<AppState> = (state = initialState, action) => {
   switch (action.type) {
     case AppActionTypes.UPDATE_AVAILABLE: {
-      return { ...state, updateAvailable: true }
+      const registration = action.payload
+      return { ...state, updateAvailable: true, registration }
     }
     default: {
       return state

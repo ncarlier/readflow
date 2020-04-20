@@ -5,6 +5,7 @@ import { ApplicationState } from '../store'
 
 const mapStateToProps = ({ app }: ApplicationState): AppState => ({
   updateAvailable: app.updateAvailable,
+  registration: app.registration,
 })
 
 export const connectApp = connect(mapStateToProps)

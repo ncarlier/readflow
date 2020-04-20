@@ -5,11 +5,19 @@ import { AppState } from '../appStore'
 import { connectApp } from '../containers/AppContainer'
 import Notification from './Notification'
 
-const UpdateAvailableNotification = ({ updateAvailable }: AppState) => (
+const reload = async (registration: ServiceWorkerRegistration | null) => {
+  if (registration) {
+    console.log('reloading service worker...')
+    await registration.update()
+    document.location.reload(true)
+  }
+}
+
+const UpdateAvailableNotification = ({ updateAvailable, registration }: AppState) => (
   <ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
     {updateAvailable && (
       <Notification message="A new version is available" variant="warning">
-        <button onClick={() => document.location.reload(true)}>reload</button>
+        <button onClick={() => reload(registration)}>reload</button>
       </Notification>
     )}
   </ReactCSSTransitionGroup>

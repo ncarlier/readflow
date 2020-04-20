@@ -16,7 +16,7 @@ const run = () => {
   const initialState = window.initialReduxState
   const store = configureStore(history, initialState)
   ReactDOM.render(<App store={store} history={history} />, document.getElementById('root'))
-  serviceWorker.register({ onUpdate: () => store.dispatch(updateAvailable()) })
+  serviceWorker.register({ onUpdate: (registration) => store.dispatch(updateAvailable(registration)) })
   localStorage.setItem('last_run', new Date().toISOString())
 }
 
