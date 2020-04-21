@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useCallback, useEffect } from 'react'
 import { useFormState } from 'react-use-form-state'
 
 import Box from '../../components/Box'
@@ -17,15 +17,23 @@ const ThemeSwitch = () => {
   })
 
   useEffect(() => {
-    if (formState.values.theme !== localConfiguration.theme) {
-      const { theme } = formState.values
-      updateLocalConfiguration({ ...localConfiguration, theme })
+    const { theme } = formState.values
+    if (localConfiguration.theme !== theme) {
+      formState.setField('theme', localConfiguration.theme)
     }
   }, [localConfiguration, formState, updateLocalConfiguration])
 
+  const handleThemeChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const theme = event.target.value as Theme
+      updateLocalConfiguration({ ...localConfiguration, theme })
+    },
+    [updateLocalConfiguration, localConfiguration]
+  )
+
   return (
     <form>
-      <FormSelectField label="Theme" {...select('theme')}>
+      <FormSelectField label="Theme" {...select({ name: 'theme', onChange: handleThemeChange })}>
         <option value="light">light</option>
         <option value="dark">dark</option>
         <option value="auto">auto (your system will decide)</option>
