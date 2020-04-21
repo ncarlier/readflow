@@ -16,6 +16,7 @@ import ArticlesPageMenu from './components/ArticlesPageMenu'
 import NewArticlesAvailable from './components/NewArticlesAvailable'
 import { ArticleStatus, GetArticlesRequest, GetArticlesResponse } from './models'
 import { GetArticles } from './queries'
+import { useMedia } from '../hooks'
 
 type Variant = 'unread' | 'history' | 'starred'
 
@@ -101,6 +102,7 @@ export default (props: AllProps) => {
   const { data, error, loading, fetchMore, refetch } = useQuery<GetArticlesResponse>(GetArticles, {
     variables: req,
   })
+  const isMobileDisplay = useMedia('(max-width: 767px)')
 
   const fetchMoreArticles = useCallback(async () => {
     if (!data || !data.articles.hasNext) {
@@ -158,6 +160,7 @@ export default (props: AllProps) => {
             emptyMessage={EmptyMessage({ variant })}
             hasMore={d.articles.hasNext}
             refetch={refetch}
+            swipeable={isMobileDisplay && variant !== 'starred'}
             fetchMoreArticles={fetchMoreArticles}
           />
           {variant === 'unread' && <AddButton category={category} onSuccess={refresh} />}

@@ -16,6 +16,7 @@ interface Props {
   articles: Article[]
   emptyMessage: string
   hasMore: boolean
+  swipeable?: boolean
   fetchMoreArticles: () => Promise<void>
   refetch: () => Promise<any>
 }
@@ -44,7 +45,14 @@ const useKeyNavigation = (ref: RefObject<HTMLUListElement>, itemClassName: strin
 }
 
 export default (props: Props) => {
-  const { articles, fetchMoreArticles, refetch, hasMore, emptyMessage = 'No more article to read' } = props
+  const {
+    articles,
+    fetchMoreArticles,
+    refetch,
+    hasMore,
+    emptyMessage = 'No more article to read',
+    swipeable = false,
+  } = props
 
   const ref = useRef<HTMLUListElement>(null)
   const [loading, setLoading] = useState(false)
@@ -86,7 +94,7 @@ export default (props: Props) => {
     <ul className={styles.list} ref={ref}>
       {articles.map((article, idx) => (
         <li key={`article-${article.id}`} className={styles.item} tabIndex={-1} onFocus={() => setActiveIndex(idx)}>
-          {isMobileDisplay && !article.isOffline ? (
+          {swipeable ? (
             <SwipeableArticleCard article={article} />
           ) : (
             <ArticleCard article={article} isActive={idx === activeIndex} />
