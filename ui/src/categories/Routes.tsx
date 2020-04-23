@@ -10,6 +10,7 @@ import { matchResponse } from '../helpers'
 import Page from '../layout/Page'
 import { GetCategoryResponse } from './models'
 import { GetCategory } from './queries'
+import AddArticlePage from '../articles/AddArticlePage'
 
 export default () => {
   const match = useRouteMatch<{ id: string }>()
@@ -36,6 +37,11 @@ export default () => {
               component={(props: RouteComponentProps) => (
                 <ArticlesPage variant="unread" category={category} {...props} />
               )}
+            />
+            <Route
+              exact
+              path={match.path + '/add'}
+              component={(props: RouteComponentProps) => <AddArticlePage category={category} {...props} />}
             />
             <Route
               path={match.path + '/:id'}
