@@ -35,11 +35,8 @@ export default ({ current, category, refresh }: Props) => {
 
   const reload = useCallback(async () => {
     setLoading(true)
-    try {
-      await refresh()
-    } finally {
-      setLoading(false)
-    }
+    await refresh()
+    // No need to reset loading state because this componemt will be unmounted
   }, [refresh])
 
   const getNbArticlesToRead = useCallback(

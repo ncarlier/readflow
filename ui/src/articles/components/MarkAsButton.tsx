@@ -31,6 +31,7 @@ export default (props: Props) => {
           variables: { id: article.id, status },
           update: updateCacheAfterUpdate,
         })
+        // TODO we should not update state if mutation trigger an unmount on this element
         if (!floating) setLoading(false)
         if (onSuccess) onSuccess(article)
       } catch (err) {
