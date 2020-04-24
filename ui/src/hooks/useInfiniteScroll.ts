@@ -3,10 +3,14 @@ import { RefObject, useCallback, useEffect, useState } from 'react'
 export default (ref: RefObject<HTMLElement>, hasMore: boolean, fetchMoreItems: () => Promise<void>): boolean => {
   const [isFetching, setIsFetching] = useState(false)
 
-  useEffect(() => {
-    if (!isFetching) return
-    fetchMoreItems().finally(() => setIsFetching(false))
-  }, [isFetching, fetchMoreItems])
+  const fetchMore = useCallback(async () => {
+    setIsFetching(true)
+    try {
+      await fetchMoreItems()
+    } finally {
+      setIsFetching(false)
+    }
+  }, [fetchMoreItems])
 
   const handleScroll = useCallback(() => {
     if (isFetching || !ref.current || !ref.current.parentElement) {
@@ -14,10 +18,10 @@ export default (ref: RefObject<HTMLElement>, hasMore: boolean, fetchMoreItems: (
     }
     const $container = ref.current.parentElement
     const delta = $container.scrollHeight - $container.scrollTop - $container.offsetHeight
-    if (delta < 42) {
-      setIsFetching(true)
+    if (!isFetching && delta < 42) {
+      fetchMore()
     }
-  }, [isFetching, ref])
+  }, [isFetching, fetchMore, ref])
 
   useEffect(() => {
     if (!ref.current || !hasMore) {
