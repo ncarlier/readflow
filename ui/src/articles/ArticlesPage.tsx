@@ -119,9 +119,10 @@ export default (props: AllProps) => {
         if (req.status) {
           entries = entries.filter((a) => a.status === req.status)
         }
+        const ids = new Set(entries.map((a) => a.id))
         const articles = {
           ...fetchMoreResult.articles,
-          entries: [...entries, ...fetchMoreResult.articles.entries],
+          entries: [...entries, ...fetchMoreResult.articles.entries.filter((a) => !ids.has(a.id))],
         }
         return { articles }
       },
