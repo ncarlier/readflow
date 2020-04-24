@@ -58,12 +58,12 @@ export default (props: Props) => {
   const [loading, setLoading] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
 
-  const isFetching = useInfiniteScroll(ref, hasMore, fetchMoreArticles)
+  const isFetchingMore = useInfiniteScroll(ref, hasMore, fetchMoreArticles)
   const isMobileDisplay = useMedia('(max-width: 767px)')
 
   useKeyNavigation(ref, styles.item, !isMobileDisplay)
 
-  const refresh = useCallback(async () => {
+  const reload = useCallback(async () => {
     setLoading(true)
     await refetch()
     setLoading(false)
@@ -76,18 +76,21 @@ export default (props: Props) => {
     }
   }, [activeIndex])
 
-  if (articles.length <= 3) {
-    if (hasMore) {
-      refetch()
-    } else if (articles.length === 0) {
-      return (
-        <Empty>
-          <ButtonIcon title="Refresh" icon="refresh" onClick={() => refresh()} loading={loading} />
-          <br />
-          <span>{emptyMessage}</span>
-        </Empty>
-      )
+  useEffect(() => {
+    if (!isFetchingMore && !loading && hasMore && articles.length <= 3) {
+      setLoading(true)
+      fetchMoreArticles().finally(() => setLoading(false))
     }
+  }, [isFetchingMore, loading, hasMore, articles, fetchMoreArticles])
+
+  if (articles.length === 0) {
+    return (
+      <Empty>
+        <ButtonIcon title="Refresh" icon="refresh" onClick={reload} loading={loading} />
+        <br />
+        <span>{emptyMessage}</span>
+      </Empty>
+    )
   }
 
   return (
@@ -101,7 +104,7 @@ export default (props: Props) => {
           )}
         </li>
       ))}
-      {isFetching && (
+      {(isFetchingMore || loading) && (
         <li>
           <Panel>
             <Center>Fetching more articles...</Center>
