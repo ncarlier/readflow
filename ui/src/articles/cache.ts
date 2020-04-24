@@ -9,17 +9,19 @@ export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data?
   if (!mutationResult || !mutationResult.data) {
     return
   }
-  console.log('updating article cache', mutationResult)
   const article = mutationResult.data.addArticle
   // Update categories `_all` value
-  const previousData = proxy.readQuery<GetCategoriesResponse>({
-    query: GetCategories,
-  })
-  if (previousData && previousData.categories) {
-    const { categories } = previousData
-    console.log('updating categories cache', categories)
-    categories._all++
-    proxy.writeQuery({ data: { categories }, query: GetCategories })
+  try {
+    const previousData = proxy.readQuery<GetCategoriesResponse>({
+      query: GetCategories,
+    })
+    if (previousData && previousData.categories) {
+      const { categories } = previousData
+      categories._all++
+      proxy.writeQuery({ data: { categories }, query: GetCategories })
+    }
+  } catch (err) {
+    console.warn('unable to update categories cache when creating article')
   }
   // Update article
   proxy.writeQuery({
@@ -35,13 +37,17 @@ export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data?
   }
   const updated = mutationResult.data.updateArticle
   // Update categories `_all` and `_starred` values
-  const previousData = proxy.readQuery<GetCategoriesResponse>({
-    query: GetCategories,
-  })
-  if (previousData && previousData.categories) {
-    const { categories } = previousData
-    categories._all = updated._all
-    categories._starred = updated._starred
-    proxy.writeQuery({ data: { categories }, query: GetCategories })
+  try {
+    const previousData = proxy.readQuery<GetCategoriesResponse>({
+      query: GetCategories,
+    })
+    if (previousData && previousData.categories) {
+      const { categories } = previousData
+      categories._all = updated._all
+      categories._starred = updated._starred
+      proxy.writeQuery({ data: { categories }, query: GetCategories })
+    }
+  } catch (err) {
+    console.warn('unable to update categories cache when updating article')
   }
 }
