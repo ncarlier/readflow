@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/antonmedv/expr"
+	"github.com/antonmedv/expr/vm"
 
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -13,8 +14,8 @@ import (
 
 // RuleProcessor define a rule processor
 type RuleProcessor struct {
-	category   model.Category
-	expression expr.Node
+	category model.Category
+	program  *vm.Program
 }
 
 // NewRuleProcessor creates a new rule processor
@@ -22,20 +23,20 @@ func NewRuleProcessor(category model.Category) (*RuleProcessor, error) {
 	if category.Rule == nil || *category.Rule == "" {
 		return nil, nil
 	}
-	p, err := expr.Parse(
-		*category.Rule,
-		expr.Define("title", ""),
-		expr.Define("text", ""),
-		expr.Define("url", ""),
-		expr.Define("key", ""),
-		expr.Define("tags", []string{}),
-	)
+	env := map[string]interface{}{
+		"title": "",
+		"text":  "",
+		"url":   "",
+		"key":   "",
+		"tags":  []string{},
+	}
+	p, err := expr.Compile(*category.Rule, expr.Env(env))
 	if err != nil {
 		return nil, fmt.Errorf("invalid rule expression: %s", err)
 	}
 	return &RuleProcessor{
-		category:   category,
-		expression: p,
+		category: category,
+		program:  p,
 	}, nil
 }
 
@@ -66,7 +67,7 @@ func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleCreate
 		"tags":  tags,
 	}
 
-	result, err := rp.expression.Eval(env)
+	result, err := expr.Run(rp.program, env)
 	if err != nil {
 		return false, fmt.Errorf("Unable to eval expression on article %s: %s", *article.URL, err)
 	}

@@ -4,7 +4,7 @@ require (
 	github.com/Masterminds/squirrel v1.1.0
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/SherClockHolmes/webpush-go v1.1.0
-	github.com/antonmedv/expr v1.1.4
+	github.com/antonmedv/expr v1.8.4
 	github.com/asaskevich/EventBus v0.0.0-20180315140547-d46933a94f05
 	github.com/brianvoe/gofakeit v3.17.0+incompatible
 	github.com/certifi/gocertifi v0.0.0-20190105021004-abcd57078448 // indirect
@@ -23,7 +23,7 @@ require (
 	github.com/rs/zerolog v1.12.0
 	github.com/sergi/go-diff v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.4.1 // indirect
-	github.com/stretchr/testify v1.3.0
+	github.com/stretchr/testify v1.5.1
 	golang.org/x/net v0.0.0-20181201002055-351d144fa1fc
 	google.golang.org/appengine v1.5.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8
