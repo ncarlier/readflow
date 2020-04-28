@@ -1,31 +1,24 @@
 module github.com/ncarlier/readflow
 
 require (
-	github.com/Masterminds/squirrel v1.1.0
+	github.com/Masterminds/squirrel v1.2.0
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/SherClockHolmes/webpush-go v1.1.0
 	github.com/antonmedv/expr v1.8.4
-	github.com/asaskevich/EventBus v0.0.0-20180315140547-d46933a94f05
-	github.com/brianvoe/gofakeit v3.17.0+incompatible
-	github.com/certifi/gocertifi v0.0.0-20190105021004-abcd57078448 // indirect
+	github.com/asaskevich/EventBus v0.0.0-20200428142821-4fc0642a29f3
+	github.com/brianvoe/gofakeit v3.18.0+incompatible
+	github.com/certifi/gocertifi v0.0.0-20200211180108-c7c1fbc02894 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/getsentry/raven-go v0.2.0
-	github.com/go-shiori/go-readability v0.0.0-20190324095406-2beec02f3f1e
-	github.com/go-sql-driver/mysql v1.4.1 // indirect
+	github.com/go-shiori/go-readability v0.0.0-20200413080041-05caea5f6592
 	github.com/google/uuid v1.1.1
-	github.com/graphql-go/graphql v0.7.7
+	github.com/graphql-go/graphql v0.7.9
 	github.com/graphql-go/handler v0.2.3
-	github.com/kr/pretty v0.1.0 // indirect
-	github.com/lib/pq v1.0.0
-	github.com/mattn/go-sqlite3 v1.10.0 // indirect
-	github.com/pkg/errors v0.8.1 // indirect
-	github.com/prometheus/client_golang v0.9.2
-	github.com/rs/zerolog v1.12.0
-	github.com/sergi/go-diff v1.0.0 // indirect
-	github.com/sirupsen/logrus v1.4.1 // indirect
+	github.com/lib/pq v1.4.0
+	github.com/prometheus/client_golang v1.6.0
+	github.com/rs/zerolog v1.18.0
 	github.com/stretchr/testify v1.5.1
-	golang.org/x/net v0.0.0-20181201002055-351d144fa1fc
-	google.golang.org/appengine v1.5.0 // indirect
+	golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0
 	gopkg.in/yaml.v2 v2.2.8
 )
 
