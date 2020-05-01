@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/db"
 	"github.com/ncarlier/readflow/pkg/logger"
@@ -54,8 +55,9 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 	testContext = context.Background()
 	testContext = context.WithValue(testContext, constant.UserID, *testUser.ID)
 	userPlans, _ := userplan.NewUserPlans("user-plans.yml")
+	conf := config.Config{}
 
-	service.Configure(testDB, userPlans)
+	service.Configure(conf, testDB, userPlans)
 	if err != nil {
 		t.Fatalf("unable to setup service registry: %v", err)
 	}

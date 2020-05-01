@@ -5,7 +5,6 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/model"
-	"github.com/ncarlier/readflow/pkg/readability"
 )
 
 // ArticleCreationOptions article creation options
@@ -117,21 +116,21 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleCre
 
 // hydrateArticle add missing attributes form original article
 func (reg *Registry) hydrateArticle(ctx context.Context, article *model.ArticleCreateForm) error {
-	art, err := readability.FetchArticle(ctx, *article.URL)
-	if art == nil {
+	page, err := reg.webScraper.Scrap(ctx, *article.URL)
+	if page == nil {
 		return err
 	}
 	if article.Title == "" {
-		article.Title = art.Title
+		article.Title = page.Title
 	}
 	if article.HTML == nil {
-		article.HTML = art.HTML
+		article.HTML = &page.HTML
 	}
 	if article.Text == nil {
-		article.Text = art.Text
+		article.Text = &page.Text
 	}
 	if article.Image == nil {
-		article.Image = art.Image
+		article.Image = &page.Image
 	}
 
 	return err

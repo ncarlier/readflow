@@ -77,7 +77,7 @@ func main() {
 	}
 
 	// Configure the service registry
-	err = service.Configure(database, userPlans)
+	err = service.Configure(conf, database, userPlans)
 	if err != nil {
 		database.Close()
 		log.Fatal().Err(err).Msg("could not init service registry")

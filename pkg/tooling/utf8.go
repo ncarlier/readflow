@@ -1,6 +1,13 @@
 package tooling
 
-import "unicode/utf8"
+import (
+	"bytes"
+	"io"
+	"io/ioutil"
+	"unicode/utf8"
+
+	"golang.org/x/net/html/charset"
+)
 
 // ToUTF8 converts ISO string to UTF8
 func ToUTF8(iso string) string {
@@ -13,4 +20,14 @@ func ToUTF8(iso string) string {
 		buf[i] = rune(b)
 	}
 	return string(buf)
+}
+
+// NewUTF8Reader converts a reader from a charset to UTF-8
+func NewUTF8Reader(reader io.Reader, sourceCharset string) (io.Reader, error) {
+	b, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+	br := bytes.NewReader(b)
+	return charset.NewReaderLabel(sourceCharset, br)
 }

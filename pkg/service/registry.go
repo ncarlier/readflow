@@ -1,9 +1,11 @@
 package service
 
 import (
+	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/db"
 	"github.com/ncarlier/readflow/pkg/model"
 	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
+	"github.com/ncarlier/readflow/pkg/scraper"
 	userplan "github.com/ncarlier/readflow/pkg/user-plan"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -18,6 +20,7 @@ type Registry struct {
 	logger          zerolog.Logger
 	ruleEngineCache *ruleengine.Cache
 	properties      *model.Properties
+	webScraper      scraper.WebScraper
 }
 
 // GetProperties retrieve service properties
@@ -26,12 +29,17 @@ func (reg *Registry) GetProperties() model.Properties {
 }
 
 // Configure the global service registry
-func Configure(database db.DB, plans userplan.UserPlans) error {
+func Configure(conf config.Config, database db.DB, plans userplan.UserPlans) error {
+	webScraper, err := scraper.NewWebScraper(conf.WebScraping)
+	if err != nil {
+		return err
+	}
 	instance = &Registry{
 		db:              database,
 		UserPlans:       plans,
 		logger:          log.With().Str("component", "service").Logger(),
 		ruleEngineCache: ruleengine.NewRuleEngineCache(1024),
+		webScraper:      webScraper,
 	}
 	return instance.initProperties()
 }

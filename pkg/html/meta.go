@@ -1,4 +1,4 @@
-package readability
+package html
 
 import (
 	"bytes"
@@ -15,31 +15,31 @@ type Meta struct {
 	Content  string
 }
 
-// Metas is the set of meta tags
-type Metas map[string]*Meta
+// MetaSet is the set of meta tags
+type MetaSet map[string]*Meta
 
 // GetContent get first content form keys
-func (m Metas) GetContent(keys ...string) *string {
+func (m MetaSet) GetContent(keys ...string) string {
 	for _, key := range keys {
 		if m[key] != nil {
-			return &m[key].Content
+			return m[key].Content
 		}
 	}
-	return nil
+	return ""
 }
 
-// ExtractMetas extracts meta tags from a HTML document.
-func ExtractMetas(doc io.Reader) (Metas, error) {
+// ExtractMeta extracts meta tags from a HTML document.
+func ExtractMeta(doc io.Reader) (MetaSet, error) {
 	var buf bytes.Buffer
 	tee := io.TeeReader(doc, &buf)
 
-	metas := make(map[string]*Meta)
+	metaSet := make(map[string]*Meta)
 	z := html.NewTokenizer(tee)
 	for {
 		tt := z.Next()
 		if tt == html.ErrorToken {
 			if z.Err() == io.EOF {
-				return metas, nil
+				return metaSet, nil
 			}
 			return nil, z.Err()
 		}
@@ -47,7 +47,7 @@ func ExtractMetas(doc io.Reader) (Metas, error) {
 		t := z.Token()
 
 		if t.DataAtom == atom.Head && t.Type == html.EndTagToken {
-			return metas, nil
+			return metaSet, nil
 		}
 
 		if t.DataAtom == atom.Meta {
@@ -69,7 +69,7 @@ func ExtractMetas(doc io.Reader) (Metas, error) {
 			if meta.Property != "" {
 				key = meta.Property
 			}
-			metas[key] = &meta
+			metaSet[key] = &meta
 		}
 	}
 }
