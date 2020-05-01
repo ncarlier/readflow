@@ -79,7 +79,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
                   as={Link}
                   to="/unread"
                   icon="view_list"
-                  badge={data?.categories._all}
+                  badge={data && data.categories && data.categories._all}
                   active={pathname.startsWith('/unread')}
                   onClick={menuAutoClose}
                 >
