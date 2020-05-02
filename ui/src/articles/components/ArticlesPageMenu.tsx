@@ -11,8 +11,9 @@ import LinkIcon from '../../components/LinkIcon'
 import { LocalConfigurationContext } from '../../context/LocalConfigurationContext'
 import { MessageContext } from '../../context/MessageContext'
 import { getGQLError } from '../../helpers'
-import { GetArticlesRequest } from '../models'
+import { GetArticlesRequest, MarkAllArticlesAsReadRequest, MarkAllArticlesAsReadResponse } from '../models'
 import { MarkAllArticlesAsRead } from '../queries'
+import { updateCacheAfterMarkAllAsRead } from '../cache'
 
 type Variant = 'unread' | 'history' | 'starred' | 'offline'
 
@@ -50,12 +51,15 @@ export default (props: Props) => {
 
   const { showErrorMessage } = useContext(MessageContext)
   const { localConfiguration, updateLocalConfiguration } = useContext(LocalConfigurationContext)
-  const [markAllArticlesAsReadMutation] = useMutation<{ category?: number }>(MarkAllArticlesAsRead)
+  const [markAllArticlesAsReadMutation] = useMutation<MarkAllArticlesAsReadResponse, MarkAllArticlesAsReadRequest>(
+    MarkAllArticlesAsRead
+  )
 
   const markAllAsRead = useCallback(async () => {
     try {
       await markAllArticlesAsReadMutation({
         variables: { category: req.category },
+        update: updateCacheAfterMarkAllAsRead,
       })
       await refresh()
     } catch (err) {

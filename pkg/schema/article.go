@@ -259,7 +259,7 @@ func updateArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 }
 
 var markAllArticlesAsReadMutationField = &graphql.Field{
-	Type:        graphql.NewList(categoryType),
+	Type:        catergoriesResponseType,
 	Description: "set all articles (of a category if provided) to read status",
 	Args: graphql.FieldConfigArgument{
 		"category": &graphql.ArgumentConfig{

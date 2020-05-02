@@ -14,6 +14,7 @@ import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, isValidForm } from '../../helpers'
 import { AddNewArticleRequest, AddNewArticleResponse, Article } from '../models'
 import { AddNewArticle } from '../queries'
+import { updateCacheAfterCreate } from '../cache'
 
 interface AddArticleFormFields {
   url: string
@@ -42,12 +43,15 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
       setLoading(true)
       try {
         const variables = { ...form }
-        const res = await addArticleMutation({ variables })
+        const res = await addArticleMutation({
+          variables,
+          update: updateCacheAfterCreate,
+        })
         setLoading(false)
         if (res.data) {
           const article = res.data.addArticle
-          onSuccess(article)
           showMessage(`New article: ${article.title}`)
+          onSuccess(article)
         }
       } catch (err) {
         setLoading(false)

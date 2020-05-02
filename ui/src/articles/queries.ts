@@ -105,8 +105,11 @@ export const ArchiveArticle = gql`
 export const MarkAllArticlesAsRead = gql`
   mutation markAllArticlesAsRead($category: ID) {
     markAllArticlesAsRead(category: $category) {
-      id
-      unread
+      _all
+      entries {
+        id
+        unread
+      }
     }
   }
 `

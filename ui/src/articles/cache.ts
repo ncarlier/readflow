@@ -2,7 +2,7 @@ import { DataProxy } from 'apollo-cache'
 
 import { GetCategoriesResponse } from '../categories/models'
 import { GetCategories } from '../categories/queries'
-import { AddNewArticleResponse, UpdateArticleResponse } from './models'
+import { AddNewArticleResponse, UpdateArticleResponse, MarkAllArticlesAsReadResponse } from './models'
 import { GetArticle } from './queries'
 
 export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data?: AddNewArticleResponse | null }) => {
@@ -49,5 +49,36 @@ export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data?
     }
   } catch (err) {
     console.warn('unable to update categories cache when updating article')
+  }
+}
+
+export const updateCacheAfterMarkAllAsRead = (
+  proxy: DataProxy,
+  mutationResult: { data?: MarkAllArticlesAsReadResponse | null }
+) => {
+  if (!mutationResult || !mutationResult.data) {
+    return
+  }
+  const updated = mutationResult.data.markAllArticlesAsRead
+  // Update categories and `_all` value
+  try {
+    const previousData = proxy.readQuery<GetCategoriesResponse>({
+      query: GetCategories,
+    })
+    if (previousData && previousData.categories) {
+      const { categories } = previousData
+      categories._all = updated._all
+      const { entries } = updated
+      // Merge categories unread values
+      categories.entries.forEach((cat) => {
+        const found = entries.find((c) => cat.id === c.id)
+        if (found) {
+          Object.assign(cat, found)
+        }
+      })
+      proxy.writeQuery({ data: { categories }, query: GetCategories })
+    }
+  } catch (err) {
+    console.warn('unable to update categories cache when mark all as read')
   }
 }

@@ -55,8 +55,15 @@ export interface UpdateArticleResponse {
   }
 }
 
+export interface MarkAllArticlesAsReadRequest {
+  category: number | null
+}
+
 export interface MarkAllArticlesAsReadResponse {
-  markAllArticlesAsRead: number
+  markAllArticlesAsRead: {
+    _all: number
+    entries: Category[]
+  }
 }
 
 export interface AddNewArticleRequest {
