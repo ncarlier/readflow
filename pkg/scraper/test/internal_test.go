@@ -9,7 +9,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/scraper"
 )
 
-func TestInternalScrape(t *testing.T) {
+func TestInternalScraper(t *testing.T) {
 	ctx := context.TODO()
 	page, err := scraper.NewInternalWebScraper().Scrap(ctx, "https://about.readflow.app/")
 	assert.NotNil(t, err)

@@ -61,7 +61,7 @@ func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, e
 
 	// Create article with Open Graph attributes
 	result := &WebPage{
-		Title: meta.GetContent("og:title"),
+		Title: meta.GetContent("og:title", "twitter:title"),
 		Text:  meta.GetContent("og:description", "twitter:description", "description"),
 		Image: meta.GetContent("og:image", "twitter:image"),
 	}
