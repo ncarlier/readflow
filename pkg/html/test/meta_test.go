@@ -10,7 +10,7 @@ import (
 )
 
 var testCase = `<head>
-<title>Test case</title>
+<title>Test Case</title>
 <meta charset="iso-8859-1" />
 <meta property="og:title" content="test case" />
 <meta name="description" content="general description">
@@ -22,7 +22,9 @@ var testCase = `<head>
 func TestExtract(t *testing.T) {
 	meta, err := html.ExtractMeta(strings.NewReader(testCase))
 	assert.Nil(t, err)
-	assert.Equal(t, 6, len(meta))
+	assert.Equal(t, 7, len(meta))
+	assert.Equal(t, "title", meta["title"].Name)
+	assert.Equal(t, "Test Case", meta["title"].Content)
 	assert.Equal(t, "", meta["og:title"].Name)
 	assert.Equal(t, "og:title", meta["og:title"].Property)
 	assert.Equal(t, "test case", meta["og:title"].Content)

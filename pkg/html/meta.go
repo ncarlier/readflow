@@ -34,25 +34,40 @@ func ExtractMeta(doc io.Reader) (MetaSet, error) {
 	tee := io.TeeReader(doc, &buf)
 
 	metaSet := make(map[string]*Meta)
-	z := html.NewTokenizer(tee)
+	tokenizer := html.NewTokenizer(tee)
 	for {
-		tt := z.Next()
-		if tt == html.ErrorToken {
-			if z.Err() == io.EOF {
+		tokenType := tokenizer.Next()
+		if tokenType == html.ErrorToken {
+			if tokenizer.Err() == io.EOF {
 				return metaSet, nil
 			}
-			return nil, z.Err()
+			return nil, tokenizer.Err()
 		}
 
-		t := z.Token()
+		token := tokenizer.Token()
 
-		if t.DataAtom == atom.Head && t.Type == html.EndTagToken {
+		// Header end
+		if token.DataAtom == atom.Head && token.Type == html.EndTagToken {
 			return metaSet, nil
 		}
 
-		if t.DataAtom == atom.Meta {
+		// Title tag
+		if token.DataAtom == atom.Title && token.Type == html.StartTagToken {
+			tokenType = tokenizer.Next()
+			if tokenType == html.TextToken {
+				meta := Meta{
+					Name:    "title",
+					Content: tokenizer.Token().Data,
+				}
+				metaSet["title"] = &meta
+			}
+			continue
+		}
+
+		// Meta tag
+		if token.DataAtom == atom.Meta {
 			meta := Meta{}
-			for _, a := range t.Attr {
+			for _, a := range token.Attr {
 				switch a.Key {
 				case "property":
 					meta.Property = a.Val
