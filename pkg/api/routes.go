@@ -26,24 +26,28 @@ func route(path string, handler http.Handler, middlewares ...middleware.Middlewa
 type Routes []Route
 
 func routes(conf *config.Config) Routes {
+	origin := buildOriginFromPublicURL(conf.PublicURL)
 	authnMiddleware := middleware.Auth(conf.AuthN)
 	return Routes{
 		route(
 			"/",
 			index(conf),
 			middleware.Methods("GET"),
+			middleware.Cors(origin),
 		),
 		route(
 			"/articles",
 			articles(),
 			middleware.APIKeyAuth,
 			middleware.Methods("POST"),
+			middleware.Cors("*"),
 		),
 		route(
 			"/graphql",
 			graphqlHandler(),
 			authnMiddleware,
 			middleware.Methods("GET", "POST"),
+			middleware.Cors(origin),
 		),
 		route(
 			"/admin",
@@ -51,16 +55,19 @@ func routes(conf *config.Config) Routes {
 			middleware.IsAdmin,
 			authnMiddleware,
 			middleware.Methods("GET", "POST"),
+			middleware.Cors(origin),
 		),
 		route(
 			"/img",
 			imgProxyHandler(conf),
 			middleware.Methods("GET"),
+			middleware.Cors(origin),
 		),
 		route(
 			"/healthz",
 			healthz(),
 			middleware.Methods("GET"),
+			middleware.Cors("*"),
 		),
 		route(
 			"/varz",
@@ -68,6 +75,7 @@ func routes(conf *config.Config) Routes {
 			middleware.IsAdmin,
 			authnMiddleware,
 			middleware.Methods("GET"),
+			middleware.Cors(origin),
 		),
 	}
 }

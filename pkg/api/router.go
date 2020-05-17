@@ -29,7 +29,6 @@ func buildOriginFromPublicURL(publicURL string) string {
 // NewRouter creates router with declared routes
 func NewRouter(conf *config.Config) *http.ServeMux {
 	commonMiddlewares := []middleware.Middleware{
-		middleware.Cors(buildOriginFromPublicURL(conf.PublicURL)),
 		middleware.Gzip,
 		middleware.Logger,
 		middleware.Tracing(nextRequestID),
