@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -63,7 +64,7 @@ func (ws extrenalWebScraper) scrap(ctx context.Context, url string) (*WebPage, e
 	}
 
 	if ct := res.Header.Get("Content-Type"); ct != "" {
-		if ct != "application/json" {
+		if !strings.HasPrefix(ct, "application/json") {
 			return nil, fmt.Errorf("invalid web scraping Content-Type response: %s", ct)
 		}
 	}
