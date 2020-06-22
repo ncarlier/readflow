@@ -51,7 +51,7 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-  box-shadow: 0px 2px 5px #666;
+  box-shadow: 0px 2px 5px var(--panel-shadow-color);
   z-index: 99;
 }
 
