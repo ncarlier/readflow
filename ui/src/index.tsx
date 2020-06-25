@@ -8,7 +8,7 @@ import App from './App'
 import { updateAvailable } from './appStore'
 import authService from './auth'
 import configureStore from './configureStore'
-import { getOnlineStatus } from './helpers'
+import { getOnlineStatus, isTrustedWebActivity } from './helpers'
 import * as serviceWorker from './serviceWorker'
 
 const run = () => {
@@ -20,10 +20,14 @@ const run = () => {
   localStorage.setItem('last_run', new Date().toISOString())
 }
 
+const shouldRedirect = () => {
+  return !isTrustedWebActivity() && localStorage.getItem('last_run') === null && document.location.pathname !== '/login'
+}
+
 const login = async () => {
   const user = await authService.getUser()
   if (user === null) {
-    if (localStorage.getItem('last_run') === null && document.location.pathname !== '/login') {
+    if (shouldRedirect()) {
       // No previous usage, then redirect to about page.
       document.location.replace('https://about.readflow.app')
     } else {
