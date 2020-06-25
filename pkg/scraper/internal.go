@@ -82,20 +82,22 @@ func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, e
 
 	// Complete result with extracted properties
 	result.HTML = article.Content
+	result.Favicon = article.Favicon
+	result.Length = article.Length
+	result.SiteName = article.SiteName
+	// FIXME: readability excerpt don't well support UTF8
+	result.Excerpt = tooling.ToUTF8(article.Excerpt)
+
+	// Fill in empty Open Graph attributes
 	if result.Title == "" {
 		result.Title = article.Title
 	}
 	if result.Text == "" {
-		// FIXME: readability excerpt don't well support UTF8
-		result.Text = tooling.ToUTF8(article.Excerpt)
+		result.Text = result.Excerpt
 	}
 	if result.Image == "" {
 		result.Image = article.Image
 	}
-
-	result.Favicon = article.Favicon
-	result.Length = article.Length
-	result.SiteName = article.SiteName
 
 	return result, nil
 }
