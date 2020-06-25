@@ -21,6 +21,8 @@ func NewArchiveProvider(config model.Archiver) (Provider, error) {
 		provider, err = newKeeperProvider(config)
 	case "webhook":
 		provider, err = newWebhookProvider(config)
+	case "wallabag":
+		provider, err = newWallabagProvider(config)
 	default:
 		err = errors.New("archive provider not supported: " + config.Provider)
 	}

@@ -17,6 +17,7 @@ import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
 import WebhookConfigForm from './providers/WebhookConfigForm'
 import { CreateOrUpdateArchiveService } from './queries'
+import WallabagConfigForm from './providers/WallabagConfigForm'
 
 interface EditArchiveServiceFormFields {
   alias: string
@@ -83,9 +84,11 @@ export default ({ data, history }: Props) => {
           <FormSelectField label="Provider" {...select('provider')}>
             <option value="keeper">Keeper</option>
             <option value="webhook">Webhook</option>
+            <option value="wallabag">Wallabag</option>
           </FormSelectField>
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 'webhook' && <WebhookConfigForm onChange={setConfig} config={config} />}
+          {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} config={config} />}
           <FormCheckboxField label="To use by default" {...checkbox('is_default')} />
         </form>
       </section>

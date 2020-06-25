@@ -24,6 +24,10 @@ var providerEnum = graphql.NewEnum(
 				Value:       "webhook",
 				Description: "Use a webhook as archiver provider",
 			},
+			"wallabag": &graphql.EnumValueConfig{
+				Value:       "wallabag",
+				Description: "Use Wallabag as archiver provider",
+			},
 		},
 	},
 )
