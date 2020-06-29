@@ -67,8 +67,8 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		}
 	}
 
-	if form.URL != nil && (form.Image == nil || form.Text == nil || form.HTML == nil) {
-		// Fetch original article to extract missing attributes
+	if form.URL != nil && !form.IsComplete() {
+		// Fetch original article in order to extract missing attributes
 		if err := reg.hydrateArticle(ctx, &form); err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,

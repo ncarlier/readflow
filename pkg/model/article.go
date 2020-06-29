@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit"
+	"github.com/ncarlier/readflow/pkg/helper"
 )
 
 // ArticleCreateForm structure definition
@@ -18,6 +19,11 @@ type ArticleCreateForm struct {
 	PublishedAt *time.Time `json:"published_at,omitempty"`
 	CategoryID  *uint      `json:"category,omitempty"`
 	Tags        *string    `json:"tags,omitempty"`
+}
+
+// IsComplete test if the form is complete
+func (form ArticleCreateForm) IsComplete() bool {
+	return !helper.OneIsEmpty(form.Image, form.Text, form.HTML)
 }
 
 // ArticleUpdateForm structure definition
