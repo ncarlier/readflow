@@ -2,58 +2,28 @@
 import { DataProxy } from 'apollo-cache'
 
 import { CreateOrUpdateArchiveServiceResponse, GetArchiveServicesResponse } from './models'
-import { GetArchiveService, GetArchiveServices } from './queries'
+import { GetArchiveServices } from './queries'
 
 export const updateCacheAfterCreate = (
   proxy: DataProxy,
   mutationResult: { data?: CreateOrUpdateArchiveServiceResponse | null }
 ) => {
-  if (!mutationResult || !mutationResult.data) {
+  if (!mutationResult.data) {
     return
   }
   const created = mutationResult.data.createOrUpdateArchiver
   const previousData = proxy.readQuery<GetArchiveServicesResponse>({
     query: GetArchiveServices,
   })
-
-  if (created.is_default && previousData) {
-    previousData.archivers = previousData.archivers.map((service) => {
-      return { ...service, is_default: false }
-    })
-  }
   if (previousData) {
-    previousData.archivers.unshift(created)
+    if (created.is_default) {
+      previousData.archivers = previousData.archivers.map((service) => {
+        return { ...service, is_default: false }
+      })
+    }
+    const archivers = [created, ...previousData.archivers]
+    proxy.writeQuery<GetArchiveServicesResponse>({ data: { archivers }, query: GetArchiveServices })
   }
-  proxy.writeQuery({ data: previousData, query: GetArchiveServices })
-}
-
-export const updateCacheAfterUpdate = (
-  proxy: DataProxy,
-  mutationResult: { data?: CreateOrUpdateArchiveServiceResponse | null }
-) => {
-  if (!mutationResult || !mutationResult.data) {
-    return
-  }
-  const updated = mutationResult.data.createOrUpdateArchiver
-  const previousData = proxy.readQuery<GetArchiveServicesResponse>({
-    query: GetArchiveServices,
-  })
-  if (previousData) {
-    const archivers = previousData.archivers.map((service) => {
-      if (updated.is_default) {
-        service = { ...service, is_default: false }
-      }
-      return service.id === updated.id ? updated : service
-    })
-    proxy.writeQuery({ data: { archivers }, query: GetArchiveServices })
-  }
-  proxy.writeQuery({
-    data: {
-      archiver: updated,
-    },
-    query: GetArchiveService,
-    variables: { id: updated.id },
-  })
 }
 
 export const updateCacheAfterDelete = (ids: number[]) => (proxy: DataProxy) => {

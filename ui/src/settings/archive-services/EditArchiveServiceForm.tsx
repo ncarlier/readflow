@@ -12,7 +12,6 @@ import FormSelectField from '../../components/FormSelectField'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, isValidForm } from '../../helpers'
-import { updateCacheAfterUpdate } from './cache'
 import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
 import WebhookConfigForm from './providers/WebhookConfigForm'
@@ -48,7 +47,6 @@ export default ({ data, history }: Props) => {
       try {
         await editArchiveServiceMutation({
           variables: service,
-          update: updateCacheAfterUpdate,
         })
         showMessage(`Archive service edited: ${service.alias}`)
         history.goBack()

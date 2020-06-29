@@ -9,7 +9,6 @@ import FormInputField from '../../components/FormInputField'
 import { MessageContext } from '../../context/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, isValidForm } from '../../helpers'
-import { updateCacheAfterUpdate } from './cache'
 import { ApiKey, CreateOrUpdateApiKeyRequest, CreateOrUpdateApiKeyResponse } from './models'
 import { CreateOrUpdateApiKey } from './queries'
 
@@ -35,7 +34,6 @@ export default ({ data, history }: Props) => {
       try {
         await editApiKeyMutation({
           variables: apiKey,
-          update: updateCacheAfterUpdate,
         })
         showMessage(`API key edited: ${apiKey.alias}`)
         history.goBack()
