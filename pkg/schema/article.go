@@ -5,9 +5,9 @@ import (
 
 	"github.com/graphql-go/graphql"
 
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/service"
-	"github.com/ncarlier/readflow/pkg/tooling"
 )
 
 var sortOrder = graphql.NewEnum(
@@ -186,12 +186,12 @@ var articlesQueryField = &graphql.Field{
 
 func articlesResolver(p graphql.ResolveParams) (interface{}, error) {
 	pageRequest := model.ArticlesPageRequest{
-		Limit:       tooling.GetGQLUintParameter("limit", p.Args),
-		SortOrder:   tooling.GetGQLStringParameter("sortOrder", p.Args),
-		AfterCursor: tooling.GetGQLUintParameter("afterCursor", p.Args),
-		Category:    tooling.GetGQLUintParameter("category", p.Args),
-		Status:      tooling.GetGQLStringParameter("status", p.Args),
-		Starred:     tooling.GetGQLBoolParameter("starred", p.Args),
+		Limit:       helper.GetGQLUintParameter("limit", p.Args),
+		SortOrder:   helper.GetGQLStringParameter("sortOrder", p.Args),
+		AfterCursor: helper.GetGQLUintParameter("afterCursor", p.Args),
+		Category:    helper.GetGQLUintParameter("category", p.Args),
+		Status:      helper.GetGQLStringParameter("status", p.Args),
+		Starred:     helper.GetGQLBoolParameter("starred", p.Args),
 	}
 
 	return service.Lookup().GetArticles(p.Context, pageRequest)
@@ -208,7 +208,7 @@ var articleQueryField = &graphql.Field{
 }
 
 func articleResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
 	if !ok {
 		return nil, errors.New("invalid article ID")
 	}
@@ -236,15 +236,15 @@ var updateArticleMutationField = &graphql.Field{
 }
 
 func updateArticleResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
 	if !ok {
 		return nil, errors.New("invalid article ID")
 	}
 
 	form := model.ArticleUpdateForm{
 		ID:      id,
-		Status:  tooling.GetGQLStringParameter("status", p.Args),
-		Starred: tooling.GetGQLBoolParameter("starred", p.Args),
+		Status:  helper.GetGQLStringParameter("status", p.Args),
+		Starred: helper.GetGQLBoolParameter("starred", p.Args),
 	}
 
 	article, err := service.Lookup().UpdateArticle(p.Context, form)
@@ -271,7 +271,7 @@ var markAllArticlesAsReadMutationField = &graphql.Field{
 
 func markAllArticlesAsReadResolver(p graphql.ResolveParams) (interface{}, error) {
 	var category *uint
-	if val, ok := tooling.ConvGQLStringToUint(p.Args["category"]); ok {
+	if val, ok := helper.ConvGQLStringToUint(p.Args["category"]); ok {
 		category = &val
 	}
 
@@ -298,7 +298,7 @@ var addArticleMutationField = &graphql.Field{
 
 func addArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 	var category *uint
-	if val, ok := tooling.ConvGQLStringToUint(p.Args["category"]); ok {
+	if val, ok := helper.ConvGQLStringToUint(p.Args["category"]); ok {
 		category = &val
 	}
 	url, _ := p.Args["url"].(string)

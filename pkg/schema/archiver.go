@@ -3,9 +3,8 @@ package schema
 import (
 	"errors"
 
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
-
-	"github.com/ncarlier/readflow/pkg/tooling"
 
 	"github.com/graphql-go/graphql"
 	"github.com/ncarlier/readflow/pkg/service"
@@ -83,7 +82,7 @@ var archiverQueryField = &graphql.Field{
 }
 
 func archiverResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
 	if !ok {
 		return nil, errors.New("invalid archiver ID")
 	}
@@ -117,11 +116,11 @@ var createOrUpdateArchiverMutationField = &graphql.Field{
 }
 
 func createOrUpdateArchiverResolver(p graphql.ResolveParams) (interface{}, error) {
-	alias := tooling.GetGQLStringParameter("alias", p.Args)
-	provider := tooling.GetGQLStringParameter("provider", p.Args)
-	config := tooling.GetGQLStringParameter("config", p.Args)
-	isDefault := tooling.GetGQLBoolParameter("is_default", p.Args)
-	if id, ok := tooling.ConvGQLStringToUint(p.Args["id"]); ok {
+	alias := helper.GetGQLStringParameter("alias", p.Args)
+	provider := helper.GetGQLStringParameter("provider", p.Args)
+	config := helper.GetGQLStringParameter("config", p.Args)
+	isDefault := helper.GetGQLBoolParameter("is_default", p.Args)
+	if id, ok := helper.ConvGQLStringToUint(p.Args["id"]); ok {
 		form := model.ArchiverUpdateForm{
 			ID:        id,
 			Alias:     alias,
@@ -159,7 +158,7 @@ func deleteArchiversResolver(p graphql.ResolveParams) (interface{}, error) {
 	}
 	var ids []uint
 	for _, v := range idsArg {
-		if id, ok := tooling.ConvGQLStringToUint(v); ok {
+		if id, ok := helper.ConvGQLStringToUint(v); ok {
 			ids = append(ids, id)
 		}
 	}
@@ -184,7 +183,7 @@ var archiveArticleMutationField = &graphql.Field{
 }
 
 func archiveArticleResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
 	if !ok {
 		return nil, errors.New("invalid article ID")
 	}

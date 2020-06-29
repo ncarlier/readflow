@@ -3,8 +3,8 @@ package schema
 import (
 	"errors"
 
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
-	"github.com/ncarlier/readflow/pkg/tooling"
 
 	"github.com/graphql-go/graphql"
 	"github.com/ncarlier/readflow/pkg/service"
@@ -58,7 +58,7 @@ var apiKeyQueryField = &graphql.Field{
 }
 
 func apiKeyResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
 	if !ok {
 		return nil, errors.New("invalid API key ID")
 	}
@@ -82,8 +82,8 @@ var createOrUpdateAPIKeyMutationField = &graphql.Field{
 }
 
 func createOrUpdateAPIKeyResolver(p graphql.ResolveParams) (interface{}, error) {
-	alias := tooling.GetGQLStringParameter("alias", p.Args)
-	if id, ok := tooling.ConvGQLStringToUint(p.Args["id"]); ok {
+	alias := helper.GetGQLStringParameter("alias", p.Args)
+	if id, ok := helper.ConvGQLStringToUint(p.Args["id"]); ok {
 		form := model.APIKeyUpdateForm{
 			ID:    id,
 			Alias: *alias,
@@ -113,7 +113,7 @@ func deleteAPIKeysResolver(p graphql.ResolveParams) (interface{}, error) {
 	}
 	var ids []uint
 	for _, v := range idsArg {
-		if id, ok := tooling.ConvGQLStringToUint(v); ok {
+		if id, ok := helper.ConvGQLStringToUint(v); ok {
 			ids = append(ids, id)
 		}
 	}

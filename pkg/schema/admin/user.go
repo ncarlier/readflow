@@ -4,9 +4,9 @@ import (
 	"errors"
 
 	"github.com/graphql-go/graphql"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/service"
-	"github.com/ncarlier/readflow/pkg/tooling"
 )
 
 var userType = graphql.NewObject(
@@ -79,7 +79,7 @@ var userQueryField = &graphql.Field{
 }
 
 func userResolver(p graphql.ResolveParams) (interface{}, error) {
-	uid, ok := tooling.ConvGQLStringToUint(p.Args["uid"])
+	uid, ok := helper.ConvGQLStringToUint(p.Args["uid"])
 	if !ok {
 		return nil, errors.New("invalid user ID")
 	}
@@ -110,7 +110,7 @@ var updateUserMutationField = &graphql.Field{
 }
 
 func updateUserResolver(p graphql.ResolveParams) (interface{}, error) {
-	uid, ok := tooling.ConvGQLStringToUint(p.Args["uid"])
+	uid, ok := helper.ConvGQLStringToUint(p.Args["uid"])
 	if !ok {
 		return nil, errors.New("invalid user ID")
 	}

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
-	"github.com/ncarlier/readflow/pkg/tooling"
+	"github.com/ncarlier/readflow/pkg/helper"
 )
 
 // DeviceNotification structure definition
@@ -43,7 +43,7 @@ func (d *Device) SetSubscription(sub string) error {
 		return err
 	}
 	d.Subscription = s
-	d.Key = tooling.Hash(sub)
+	d.Key = helper.Hash(sub)
 	return nil
 }
 

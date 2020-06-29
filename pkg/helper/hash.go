@@ -1,4 +1,4 @@
-package tooling
+package helper
 
 import (
 	"crypto/md5"

@@ -11,8 +11,8 @@ import (
 	"time"
 
 	read "github.com/go-shiori/go-readability"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/html"
-	"github.com/ncarlier/readflow/pkg/tooling"
 	"golang.org/x/net/html/charset"
 )
 
@@ -86,7 +86,7 @@ func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, e
 	result.Length = article.Length
 	result.SiteName = article.SiteName
 	// FIXME: readability excerpt don't well support UTF8
-	result.Excerpt = tooling.ToUTF8(article.Excerpt)
+	result.Excerpt = helper.ToUTF8(article.Excerpt)
 
 	// Fill in empty Open Graph attributes
 	if result.Title == "" {

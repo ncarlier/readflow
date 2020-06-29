@@ -7,8 +7,8 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
-	"github.com/ncarlier/readflow/pkg/tooling"
 )
 
 var articleColumns = []string{
@@ -83,7 +83,7 @@ func (pg *DB) CreateArticleForUser(uid uint, form model.ArticleCreateForm) (*mod
 	if form.HTML != nil {
 		payload += *form.HTML
 	}
-	hash := tooling.Hash(payload)
+	hash := helper.Hash(payload)
 	query, args, _ := pg.psql.Insert(
 		"articles",
 	).Columns(

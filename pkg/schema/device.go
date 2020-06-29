@@ -3,9 +3,8 @@ package schema
 import (
 	"errors"
 
-	"github.com/ncarlier/readflow/pkg/tooling"
-
 	"github.com/graphql-go/graphql"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
@@ -67,7 +66,7 @@ var deviceQueryField = &graphql.Field{
 }
 
 func deviceResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
 	if !ok {
 		return nil, errors.New("invalid device ID")
 	}
@@ -104,7 +103,7 @@ var deletePushSubscriptionMutationField = &graphql.Field{
 }
 
 func deletePushSubscriptionResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := tooling.ConvGQLStringToUint(p.Args["id"])
+	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
 	if !ok {
 		return nil, errors.New("invalid device ID")
 	}

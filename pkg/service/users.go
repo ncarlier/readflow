@@ -8,8 +8,8 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/event"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
-	"github.com/ncarlier/readflow/pkg/tooling"
 	userplan "github.com/ncarlier/readflow/pkg/user-plan"
 )
 
@@ -120,7 +120,7 @@ func (reg *Registry) GetUserByID(ctx context.Context, uid uint) (*model.User, er
 		return nil, err
 	}
 	// Compute user hash
-	user.Hash = tooling.Hash(strings.ToLower(user.Username))
+	user.Hash = helper.Hash(strings.ToLower(user.Username))
 
 	return user, nil
 }
