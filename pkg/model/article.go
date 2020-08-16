@@ -7,6 +7,7 @@ import (
 
 	"github.com/brianvoe/gofakeit"
 	"github.com/ncarlier/readflow/pkg/helper"
+	"github.com/ncarlier/readflow/pkg/html"
 )
 
 // ArticleCreateForm structure definition
@@ -24,6 +25,35 @@ type ArticleCreateForm struct {
 // IsComplete test if the form is complete
 func (form ArticleCreateForm) IsComplete() bool {
 	return !helper.OneIsEmpty(form.Image, form.Text, form.HTML)
+}
+
+// Hash return form hash
+func (form ArticleCreateForm) Hash() string {
+	key := form.Title
+	if form.URL != nil {
+		key += *form.URL
+	}
+	if form.HTML != nil {
+		key += *form.HTML
+	}
+	return helper.Hash(key)
+}
+
+// Payload return form payload (content without HTML tags)
+func (form ArticleCreateForm) Payload() string {
+	payload := ""
+	if form.HTML != nil {
+		payload = *form.HTML
+		if form.Text != nil && len(*form.Text) > len(payload) {
+			payload = *form.Text
+		}
+	} else if form.Text != nil {
+		payload = *form.Text
+	}
+	if text, err := html.HTML2Text(payload); err != nil {
+		payload = text
+	}
+	return payload
 }
 
 // ArticleUpdateForm structure definition
@@ -66,10 +96,11 @@ func (a Article) String() string {
 type ArticlesPageRequest struct {
 	Status      *string
 	Starred     *bool
-	Limit       *uint
-	AfterCursor *uint
 	Category    *uint
+	Query       *string
+	AfterCursor *uint
 	SortOrder   *string
+	Limit       *uint
 }
 
 // ArticlesPageResponse response structure for a paginated list of articles

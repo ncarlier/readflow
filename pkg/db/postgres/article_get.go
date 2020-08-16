@@ -44,6 +44,9 @@ func (pg *DB) CountArticlesByUser(uid uint, req model.ArticlesPageRequest) (uint
 	if req.Starred != nil {
 		counter = counter.Where(sq.Eq{"starred": *req.Starred})
 	}
+	if req.Query != nil {
+		counter = counter.Where(sq.Expr("search_vectors @@ plainto_tsquery(?)", *req.Query))
+	}
 
 	query, args, _ := counter.ToSql()
 
@@ -63,6 +66,7 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 	}
 	sortOrder := "asc"
 	if req.SortOrder != nil {
+		// Note that sort order is ignored when full-text query is used
 		sortOrder = *req.SortOrder
 	}
 
@@ -93,15 +97,30 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 		selectBuilder = selectBuilder.Where(sq.Eq{"starred": *req.Starred})
 	}
 
-	if req.AfterCursor != nil {
-		if sortOrder == "asc" {
-			selectBuilder = selectBuilder.Where(sq.Gt{"id": *req.AfterCursor})
-		} else {
-			selectBuilder = selectBuilder.Where(sq.Lt{"id": *req.AfterCursor})
+	var offset uint
+	if req.Query != nil {
+		// Full-text search query:
+		// Classic Limit-Offset pagination (beware of performance issue)
+		selectBuilder = selectBuilder.Where(sq.Expr("search_vectors @@ plainto_tsquery(?)", *req.Query))
+		selectBuilder = selectBuilder.OrderByClause("ts_rank(search_vectors, plainto_tsquery(?)) DESC", *req.Query)
+		if req.AfterCursor != nil {
+			offset = *req.AfterCursor
+			selectBuilder = selectBuilder.Offset(uint64(offset))
 		}
+	} else {
+		// Standard search:
+		// Keyset Pagination using id as ordered column
+		if req.AfterCursor != nil {
+			if sortOrder == "asc" {
+				selectBuilder = selectBuilder.Where(sq.Gt{"id": *req.AfterCursor})
+			} else {
+				selectBuilder = selectBuilder.Where(sq.Lt{"id": *req.AfterCursor})
+			}
+		}
+		selectBuilder = selectBuilder.OrderBy("id " + strings.ToUpper(sortOrder))
 	}
 
-	selectBuilder = selectBuilder.OrderBy("id " + strings.ToUpper(sortOrder))
+	// Limit the query by "plus-one" in order to known if the query has more results
 	selectBuilder = selectBuilder.Limit(uint64(limit + 1))
 
 	query, args, _ := selectBuilder.ToSql()
@@ -110,6 +129,8 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 		return nil, err
 	}
 	defer rows.Close()
+
+	// Read resultset...
 	var index uint
 	for rows.Next() {
 		index++
@@ -119,7 +140,11 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 		}
 		if index <= limit {
 			result.Entries = append(result.Entries, article)
-			result.EndCursor = article.ID
+			if req.Query != nil {
+				result.EndCursor = offset + index
+			} else {
+				result.EndCursor = article.ID
+			}
 		} else {
 			result.HasNext = true
 		}
