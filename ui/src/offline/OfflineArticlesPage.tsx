@@ -27,6 +27,7 @@ const buildQueryFromLocation = (qs: string, localConfiguration: LocalConfigurati
     ...emptyQuery,
     limit: getURLParam<number>(params, 'limit', localConfiguration.limit),
     sortOrder: getURLParam<SortOrder>(params, 'sort', localConfiguration.sortOrders.offline),
+    query: null,
   }
 }
 
