@@ -7,9 +7,13 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 )
+
+var tsvectorExpression = `
+setweight(to_tsvector(substring(coalesce(?, '') for 1000000)), 'A') ||
+setweight(to_tsvector(substring(coalesce(?, '') for 1000000)), 'B')
+`
 
 var articleColumns = []string{
 	"id",
@@ -76,14 +80,6 @@ func mapRowsToArticle(rows *sql.Rows, article *model.Article) error {
 
 // CreateArticleForUser creates an article into the DB
 func (pg *DB) CreateArticleForUser(uid uint, form model.ArticleCreateForm) (*model.Article, error) {
-	payload := form.Title
-	if form.URL != nil {
-		payload += *form.URL
-	}
-	if form.HTML != nil {
-		payload += *form.HTML
-	}
-	hash := helper.Hash(payload)
 	query, args, _ := pg.psql.Insert(
 		"articles",
 	).Columns(
@@ -98,6 +94,7 @@ func (pg *DB) CreateArticleForUser(uid uint, form model.ArticleCreateForm) (*mod
 		"status",
 		"published_at",
 		"updated_at",
+		"search_vectors",
 	).Values(
 		uid,
 		form.CategoryID,
@@ -106,10 +103,11 @@ func (pg *DB) CreateArticleForUser(uid uint, form model.ArticleCreateForm) (*mod
 		form.HTML,
 		form.URL,
 		form.Image,
-		hash,
+		form.Hash(),
 		"unread",
 		form.PublishedAt,
 		"NOW()",
+		sq.Expr(tsvectorExpression, form.Title, form.Payload()),
 	).Suffix(
 		"RETURNING " + strings.Join(articleColumns, ","),
 	).ToSql()

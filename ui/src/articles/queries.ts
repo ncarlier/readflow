@@ -8,6 +8,7 @@ export const GetArticles = gql`
     $starred: Boolean
     $category: Int
     $afterCursor: Int
+    $query: String
   ) {
     articles(
       limit: $limit
@@ -16,6 +17,7 @@ export const GetArticles = gql`
       starred: $starred
       category: $category
       afterCursor: $afterCursor
+      query: $query
     ) {
       totalCount
       endCursor

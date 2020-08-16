@@ -175,6 +175,10 @@ var articlesQueryField = &graphql.Field{
 			Description: "filter entries by this starred value",
 			Type:        graphql.Boolean,
 		},
+		"query": &graphql.ArgumentConfig{
+			Description: "filter entries by full-text search",
+			Type:        graphql.String,
+		},
 		"sortOrder": &graphql.ArgumentConfig{
 			Description:  "sorting order of the entries",
 			Type:         sortOrder,
@@ -192,6 +196,7 @@ func articlesResolver(p graphql.ResolveParams) (interface{}, error) {
 		Category:    helper.GetGQLUintParameter("category", p.Args),
 		Status:      helper.GetGQLStringParameter("status", p.Args),
 		Starred:     helper.GetGQLBoolParameter("starred", p.Args),
+		Query:       helper.GetGQLStringParameter("query", p.Args),
 	}
 
 	return service.Lookup().GetArticles(p.Context, pageRequest)

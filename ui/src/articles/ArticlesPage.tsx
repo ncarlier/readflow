@@ -17,6 +17,7 @@ import NewArticlesAvailable from './components/NewArticlesAvailable'
 import { ArticleStatus, GetArticlesRequest, GetArticlesResponse } from './models'
 import { GetArticles } from './queries'
 import { useMedia } from '../hooks'
+import Search from './components/Search'
 
 type Variant = 'unread' | 'history' | 'starred'
 
@@ -36,6 +37,7 @@ const buildArticlesRequest = (variant: Variant, props: AllProps, localConfig: Lo
     starred: null,
     category: null,
     afterCursor: null,
+    query: getURLParam(params, 'query', ''),
   }
   switch (variant) {
     case 'history':
@@ -183,7 +185,12 @@ export default (props: AllProps) => {
     title = totalCount + plural + title
   } else title = ' '
 
-  const $actions = <ArticlesPageMenu refresh={refresh} req={req} variant={variant} />
+  const $actions = (
+    <>
+      <Search req={req} />
+      <ArticlesPageMenu refresh={refresh} req={req} variant={variant} />
+    </>
+  )
 
   return (
     <Page title={title} header={<Appbar title={title} actions={$actions} />}>

@@ -26,6 +26,7 @@ export interface GetArticlesRequest {
   limit: number | null
   afterCursor: number | null
   sortOrder: SortOrder | null
+  query: string | null
 }
 
 export interface GetArticlesResponse {

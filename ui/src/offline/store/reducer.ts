@@ -6,7 +6,7 @@ import { OfflineArticlesActionTypes, OfflineArticlesState } from './types'
 // Type-safe initialState!
 const initialState: OfflineArticlesState = {
   data: undefined,
-  query: { limit: 10, sortOrder: 'asc', afterCursor: null, category: null, starred: null, status: null },
+  query: { limit: 10, sortOrder: 'asc', afterCursor: null, category: null, starred: null, status: null, query: null },
   selected: undefined,
   error: undefined,
   loading: true,
