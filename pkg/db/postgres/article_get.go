@@ -101,8 +101,8 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 	if req.Query != nil {
 		// Full-text search query:
 		// Classic Limit-Offset pagination (beware of performance issue)
-		selectBuilder = selectBuilder.Where(sq.Expr("search_vectors @@ plainto_tsquery(?)", *req.Query))
-		selectBuilder = selectBuilder.OrderByClause("ts_rank(search_vectors, plainto_tsquery(?)) DESC", *req.Query)
+		selectBuilder = selectBuilder.Where(sq.Expr("search_vectors @@ websearch_to_tsquery(?)", *req.Query))
+		selectBuilder = selectBuilder.OrderByClause("ts_rank(search_vectors, websearch_to_tsquery(?)) DESC", *req.Query)
 		if req.AfterCursor != nil {
 			offset = *req.AfterCursor
 			selectBuilder = selectBuilder.Offset(uint64(offset))
