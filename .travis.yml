@@ -1,6 +1,6 @@
 language: go
 go:
-  - "1.13"
+  - "1.14"
 addons:
   postgresql: "11"
   apt:
@@ -10,10 +10,9 @@ addons:
 env:
   global:
   - PGPORT=5433
+  - READFLOW_DB=postgres://postgres@localhost/travis_ci_test?sslmode=disable
 services:
   - postgresql
-env:
-  - READFLOW_DB=postgres://postgres@localhost/travis_ci_test?sslmode=disable
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 script:
