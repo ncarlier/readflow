@@ -44,8 +44,8 @@ func (pg *DB) CountArticlesByUser(uid uint, req model.ArticlesPageRequest) (uint
 	if req.Starred != nil {
 		counter = counter.Where(sq.Eq{"starred": *req.Starred})
 	}
-	if req.Query != nil {
-		counter = counter.Where(sq.Expr("search_vectors @@ plainto_tsquery(?)", *req.Query))
+	if req.Query != nil && strings.TrimSpace(*req.Query) != "" {
+		counter = counter.Where(sq.Expr("search_vectors @@ websearch_to_tsquery(?)", *req.Query))
 	}
 
 	query, args, _ := counter.ToSql()
@@ -98,7 +98,8 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 	}
 
 	var offset uint
-	if req.Query != nil && strings.TrimSpace(*req.Query) != "" {
+	isFullText := req.Query != nil && strings.TrimSpace(*req.Query) != ""
+	if isFullText {
 		// Full-text search query:
 		// Classic Limit-Offset pagination (beware of performance issue)
 		selectBuilder = selectBuilder.Where(sq.Expr("search_vectors @@ websearch_to_tsquery(?)", *req.Query))
@@ -140,7 +141,7 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 		}
 		if index <= limit {
 			result.Entries = append(result.Entries, article)
-			if req.Query != nil {
+			if isFullText {
 				result.EndCursor = offset + index
 			} else {
 				result.EndCursor = article.ID
