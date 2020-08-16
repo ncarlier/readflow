@@ -1,0 +1,21 @@
+.wrapper {
+  display: grid;
+  overflow: hidden;
+}
+.lqip {
+  filter: blur(5px);
+  width: -moz-available;
+  width: -webkit-fill-available;
+  width: stretch;
+}
+.wrapper > img {
+  grid-area: 1 / 1 / 2 / 2;
+}
+.source {
+  opacity: 0;
+  transition: opacity 1s;
+  z-index: 99;
+}
+.loaded {
+  opacity: 1;
+}
