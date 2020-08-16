@@ -1,6 +1,15 @@
 language: go
 go:
-- "1.13"
+  - "1.13"
+addons:
+  postgresql: "11"
+  apt:
+    packages:
+    - postgresql-11
+    - postgresql-client-11
+env:
+  global:
+  - PGPORT=5433
 services:
   - postgresql
 env:
@@ -8,7 +17,7 @@ env:
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 script:
-- make test distribution
+  - make test distribution
 deploy:
   provider: releases
   api_key:
