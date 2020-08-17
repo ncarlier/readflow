@@ -5,7 +5,6 @@
   margin: 0.2em;
   border-radius: 4px;
   background-color: rgba(255, 255, 255, 0.15);
-  transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .box:hover {
@@ -22,9 +21,15 @@
   justify-content: center;
 }
 
+.box form {
+  display: flex;
+  height: 100%;
+}
+
 .box input {
   border-color: transparent;
   box-shadow: none;
+  outline: none;
   opacity: 1;
   background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%;
   color: currentColor;
@@ -32,6 +37,10 @@
   padding: 8px 8px 8px 3em;
   width: 8em;
   transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.box input::placeholder {
+  color: currentColor;
 }
 
 .box input:focus {
