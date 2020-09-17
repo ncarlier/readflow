@@ -104,7 +104,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
                   as={Link}
                   to="/starred"
                   icon="star"
-                  badge={data?.categories._starred}
+                  badge={data && data.categories && data.categories._starred}
                   active={pathname.startsWith('/starred')}
                   onClick={menuAutoClose}
                 >
