@@ -15,6 +15,7 @@ import ArticleContent from './components/ArticleContent'
 import ArticleHeader from './components/ArticleHeader'
 import ArticleMenu from './components/ArticleMenu'
 import MarkAsButton from './components/MarkAsButton'
+import StarsButton from './components/StarsButton'
 import { GetArticleResponse } from './models'
 import { GetArticle } from './queries'
 
@@ -49,6 +50,7 @@ export default ({ title, match, history }: AllProps) => {
         return (
           <>
             <ArticleHeader article={article}>
+              <StarsButton article={article} keyboard />
               <ArticleMenu article={article} keyboard />
             </ArticleHeader>
             <ArticleContent article={article} />
