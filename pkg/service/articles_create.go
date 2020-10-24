@@ -33,7 +33,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		}
 		if totalArticles >= plan.TotalArticles {
 			err = ErrUserQuotaReached
-			reg.logger.Info().Err(err).Uint(
+			reg.logger.Debug().Err(err).Uint(
 				"uid", uid,
 			).Str("title", form.Title).Uint(
 				"total", totalArticles,
