@@ -1,7 +1,7 @@
 import mousetrap from 'mousetrap'
 import { useEffect } from 'react'
 
-export type KeyHandler = (e: ExtendedKeyboardEvent, combo: string) => void
+export type KeyHandler = (e: mousetrap.ExtendedKeyboardEvent, combo: string) => void
 
 export default (key: string | string[], handler: KeyHandler, enable = true) => {
   useEffect(() => {

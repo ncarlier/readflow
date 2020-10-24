@@ -10,10 +10,18 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cypress": "^3.2.0"
+    "cypress": "^3.8.3"
   },
   "standard": {
-    "env": ["browser", "mocha"],
-    "globals": ["cy", "Cypress", "expect", "assert"]
+    "env": [
+      "browser",
+      "mocha"
+    ],
+    "globals": [
+      "cy",
+      "Cypress",
+      "expect",
+      "assert"
+    ]
   }
 }
