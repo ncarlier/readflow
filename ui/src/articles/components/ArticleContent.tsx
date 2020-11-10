@@ -44,6 +44,7 @@ export default ({ article }: Props) => {
   useEffect(() => {
     if (contentRef.current) {
       const ifrm = document.createElement('iframe')
+      contentRef.current.innerHTML = ''
       contentRef.current.appendChild(ifrm)
       const doc = ifrm.contentWindow ? ifrm.contentWindow.document : ifrm.contentDocument
       if (doc) {
