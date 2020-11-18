@@ -98,8 +98,8 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 }
 
 // CreateArticles creates new articles
-func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleCreateForm) *model.Articles {
-	result := model.Articles{}
+func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleCreateForm) *model.CreatedArticlesResponse {
+	result := model.CreatedArticlesResponse{}
 	for _, art := range data {
 		article, err := reg.CreateArticle(ctx, art, ArticleCreationOptions{
 			IgnoreHydrateError: true,

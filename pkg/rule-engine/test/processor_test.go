@@ -121,8 +121,8 @@ func TestProcessorPipeline(t *testing.T) {
 }
 
 func TestRuleProcessorWithContext(t *testing.T) {
-	ctx := context.WithValue(context.TODO(), constant.APIKeyAlias, "test")
-	category := newTestCategory(9, "key == \"test\"")
+	ctx := context.WithValue(context.TODO(), constant.InboundServiceAlias, "test")
+	category := newTestCategory(9, "from == \"test\"")
 	processor, err := ruleengine.NewRuleProcessor(category)
 	assert.Nil(t, err)
 	assert.NotNil(t, processor)

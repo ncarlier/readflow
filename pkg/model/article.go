@@ -63,8 +63,8 @@ type ArticleUpdateForm struct {
 	Starred *bool
 }
 
-// Articles structure definition
-type Articles struct {
+// CreatedArticlesResponse structure definition
+type CreatedArticlesResponse struct {
 	Articles []*Article
 	Errors   []error
 }

@@ -7,8 +7,8 @@ const (
 	UserID
 	// RequestID is the key used to store request ID into the request context
 	RequestID
-	// APIKeyAlias is the key used to store API key alias into the request context
-	APIKeyAlias
+	// InboundServiceAlias is the key used to store inbound service alias into the request context
+	InboundServiceAlias
 	// IsAdmin is true when the user is an admin
 	IsAdmin
 )

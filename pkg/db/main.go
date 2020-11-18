@@ -14,8 +14,8 @@ type DB interface {
 	UserRepository
 	CategoryRepository
 	ArticleRepository
-	APIKeyRepository
-	ArchiverRepository
+	InboundServiceRepository
+	OutboundServiceRepository
 	DeviceRepository
 	PropertiesRepository
 }
