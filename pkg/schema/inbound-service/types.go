@@ -6,7 +6,7 @@ import (
 
 var providerEnum = graphql.NewEnum(
 	graphql.EnumConfig{
-		Name:        "provider",
+		Name:        "inboundProvider",
 		Description: "Inbound service provider",
 		Values: graphql.EnumValueConfigMap{
 			"webhook": &graphql.EnumValueConfig{

@@ -38,6 +38,6 @@ func outboundServiceResolver(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func init() {
-	schema.AddQueryField("outbound-services", outboundServicesQueryField)
-	schema.AddQueryField("outbound-service", outboundServiceQueryField)
+	schema.AddQueryField("outboundServices", outboundServicesQueryField)
+	schema.AddQueryField("outboundService", outboundServiceQueryField)
 }
