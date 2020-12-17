@@ -9,7 +9,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-var outboundServiceColumns = []string{
+var OutgoingWebhookColumns = []string{
 	"id",
 	"user_id",
 	"alias",
@@ -20,8 +20,8 @@ var outboundServiceColumns = []string{
 	"updated_at",
 }
 
-func mapRowToOutboundService(row *sql.Row) (*model.OutboundService, error) {
-	result := &model.OutboundService{}
+func mapRowToOutgoingWebhook(row *sql.Row) (*model.OutgoingWebhook, error) {
+	result := &model.OutgoingWebhook{}
 
 	err := row.Scan(
 		&result.ID,
@@ -41,14 +41,14 @@ func mapRowToOutboundService(row *sql.Row) (*model.OutboundService, error) {
 	return result, nil
 }
 
-// CreateOutboundServiceForUser creates an outbound service into the DB
-func (pg *DB) CreateOutboundServiceForUser(uid uint, form model.OutboundServiceCreateForm) (*model.OutboundService, error) {
+// CreateOutgoingWebhookForUser creates an outgoing webhook into the DB
+func (pg *DB) CreateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookCreateForm) (*model.OutgoingWebhook, error) {
 	tx, err := pg.db.Begin()
 	if err != nil {
 		return nil, err
 	}
 	query, args, _ := pg.psql.Insert(
-		"outbound_services",
+		"outgoing_webhooks",
 	).Columns(
 		"user_id", "alias", "is_default", "provider", "config",
 	).Values(
@@ -58,19 +58,19 @@ func (pg *DB) CreateOutboundServiceForUser(uid uint, form model.OutboundServiceC
 		form.Provider,
 		form.Config,
 	).Suffix(
-		"RETURNING " + strings.Join(outboundServiceColumns, ","),
+		"RETURNING " + strings.Join(OutgoingWebhookColumns, ","),
 	).ToSql()
 
 	row := pg.db.QueryRow(query, args...)
-	result, err := mapRowToOutboundService(row)
+	result, err := mapRowToOutgoingWebhook(row)
 	if err != nil {
 		tx.Rollback()
 		return nil, err
 	}
 
 	if result != nil && result.IsDefault {
-		// Unset previous outboundService default
-		err = pg.setDefaultOutboundService(result)
+		// Unset previous OutgoingWebhook default
+		err = pg.setDefaultOutgoingWebhook(result)
 		if err != nil {
 			tx.Rollback()
 			return nil, err
@@ -79,8 +79,8 @@ func (pg *DB) CreateOutboundServiceForUser(uid uint, form model.OutboundServiceC
 	return result, tx.Commit()
 }
 
-// UpdateOutboundServiceForUser update an outbound service of the DB
-func (pg *DB) UpdateOutboundServiceForUser(uid uint, form model.OutboundServiceUpdateForm) (*model.OutboundService, error) {
+// UpdateOutgoingWebhookForUser update an outgoing webhook of the DB
+func (pg *DB) UpdateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookUpdateForm) (*model.OutgoingWebhook, error) {
 	tx, err := pg.db.Begin()
 	if err != nil {
 		return nil, err
@@ -101,13 +101,13 @@ func (pg *DB) UpdateOutboundServiceForUser(uid uint, form model.OutboundServiceU
 		update["is_default"] = *form.IsDefault
 	}
 	query, args, err := pg.psql.Update(
-		"outbound_services",
+		"outgoing_webhooks",
 	).SetMap(update).Where(
 		sq.Eq{"id": form.ID},
 	).Where(
 		sq.Eq{"user_id": uid},
 	).Suffix(
-		"RETURNING " + strings.Join(outboundServiceColumns, ","),
+		"RETURNING " + strings.Join(OutgoingWebhookColumns, ","),
 	).ToSql()
 
 	if err != nil {
@@ -116,15 +116,15 @@ func (pg *DB) UpdateOutboundServiceForUser(uid uint, form model.OutboundServiceU
 	}
 
 	row := pg.db.QueryRow(query, args...)
-	result, err := mapRowToOutboundService(row)
+	result, err := mapRowToOutgoingWebhook(row)
 	if err != nil {
 		tx.Rollback()
 		return nil, err
 	}
 
 	if result != nil && result.IsDefault {
-		// Unset previous outbound service default
-		err = pg.setDefaultOutboundService(result)
+		// Unset previous outgoing webhook default
+		err = pg.setDefaultOutgoingWebhook(result)
 		if err != nil {
 			tx.Rollback()
 			return nil, err
@@ -133,38 +133,38 @@ func (pg *DB) UpdateOutboundServiceForUser(uid uint, form model.OutboundServiceU
 	return result, tx.Commit()
 }
 
-func (pg *DB) setDefaultOutboundService(outboundService *model.OutboundService) error {
+func (pg *DB) setDefaultOutgoingWebhook(OutgoingWebhook *model.OutgoingWebhook) error {
 	update := map[string]interface{}{
 		"is_default": false,
 	}
 	query, args, _ := pg.psql.Update(
-		"outbound_services",
+		"outgoing_webhooks",
 	).SetMap(update).Where(
-		sq.NotEq{"id": outboundService.ID},
+		sq.NotEq{"id": OutgoingWebhook.ID},
 	).Where(
-		sq.Eq{"user_id": outboundService.UserID},
+		sq.Eq{"user_id": OutgoingWebhook.UserID},
 	).ToSql()
 
 	_, err := pg.db.Exec(query, args...)
 	return err
 }
 
-// GetOutboundServiceByID get an outbound service from the DB
-func (pg *DB) GetOutboundServiceByID(id uint) (*model.OutboundService, error) {
-	query, args, _ := pg.psql.Select(outboundServiceColumns...).From(
-		"outbound_services",
+// GetOutgoingWebhookByID get an outgoing webhook from the DB
+func (pg *DB) GetOutgoingWebhookByID(id uint) (*model.OutgoingWebhook, error) {
+	query, args, _ := pg.psql.Select(OutgoingWebhookColumns...).From(
+		"outgoing_webhooks",
 	).Where(
 		sq.Eq{"id": id},
 	).ToSql()
 	row := pg.db.QueryRow(query, args...)
-	return mapRowToOutboundService(row)
+	return mapRowToOutgoingWebhook(row)
 }
 
-// GetOutboundServiceByUserAndAlias get an outbound service from the DB.
-// Default outbound service is returned if alias is nil.
-func (pg *DB) GetOutboundServiceByUserAndAlias(uid uint, alias *string) (*model.OutboundService, error) {
-	selectBuilder := pg.psql.Select(outboundServiceColumns...).From(
-		"outbound_services",
+// GetOutgoingWebhookByUserAndAlias get an outgoing webhook from the DB.
+// Default outgoing webhook is returned if alias is nil.
+func (pg *DB) GetOutgoingWebhookByUserAndAlias(uid uint, alias *string) (*model.OutgoingWebhook, error) {
+	selectBuilder := pg.psql.Select(OutgoingWebhookColumns...).From(
+		"outgoing_webhooks",
 	).Where(
 		sq.Eq{"user_id": uid},
 	)
@@ -177,13 +177,13 @@ func (pg *DB) GetOutboundServiceByUserAndAlias(uid uint, alias *string) (*model.
 
 	query, args, _ := selectBuilder.ToSql()
 	row := pg.db.QueryRow(query, args...)
-	return mapRowToOutboundService(row)
+	return mapRowToOutgoingWebhook(row)
 }
 
-// GetOutboundServicesByUser returns outbound services of an user from DB
-func (pg *DB) GetOutboundServicesByUser(uid uint) ([]model.OutboundService, error) {
-	query, args, _ := pg.psql.Select(outboundServiceColumns...).From(
-		"outbound_services",
+// GetOutgoingWebhooksByUser returns outgoing webhooks of an user from DB
+func (pg *DB) GetOutgoingWebhooksByUser(uid uint) ([]model.OutgoingWebhook, error) {
+	query, args, _ := pg.psql.Select(OutgoingWebhookColumns...).From(
+		"outgoing_webhooks",
 	).Where(
 		sq.Eq{"user_id": uid},
 	).ToSql()
@@ -193,24 +193,24 @@ func (pg *DB) GetOutboundServicesByUser(uid uint) ([]model.OutboundService, erro
 	}
 	defer rows.Close()
 
-	var result []model.OutboundService
+	var result []model.OutgoingWebhook
 
 	for rows.Next() {
-		outboundService := model.OutboundService{}
+		OutgoingWebhook := model.OutgoingWebhook{}
 		err = rows.Scan(
-			&outboundService.ID,
-			&outboundService.UserID,
-			&outboundService.Alias,
-			&outboundService.IsDefault,
-			&outboundService.Provider,
-			&outboundService.Config,
-			&outboundService.CreatedAt,
-			&outboundService.UpdatedAt,
+			&OutgoingWebhook.ID,
+			&OutgoingWebhook.UserID,
+			&OutgoingWebhook.Alias,
+			&OutgoingWebhook.IsDefault,
+			&OutgoingWebhook.Provider,
+			&OutgoingWebhook.Config,
+			&OutgoingWebhook.CreatedAt,
+			&OutgoingWebhook.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, outboundService)
+		result = append(result, OutgoingWebhook)
 	}
 	err = rows.Err()
 	if err != nil {
@@ -219,9 +219,9 @@ func (pg *DB) GetOutboundServicesByUser(uid uint) ([]model.OutboundService, erro
 	return result, nil
 }
 
-// DeleteOutboundServiceByUser removes an outbound service from the DB
-func (pg *DB) DeleteOutboundServiceByUser(uid uint, id uint) error {
-	query, args, _ := pg.psql.Delete("outbound_services").Where(
+// DeleteOutgoingWebhookByUser removes an outgoing webhook from the DB
+func (pg *DB) DeleteOutgoingWebhookByUser(uid uint, id uint) error {
+	query, args, _ := pg.psql.Delete("outgoing_webhooks").Where(
 		sq.Eq{"id": id},
 	).Where(
 		sq.Eq{"user_id": uid},
@@ -237,15 +237,15 @@ func (pg *DB) DeleteOutboundServiceByUser(uid uint, id uint) error {
 	}
 
 	if count == 0 {
-		return errors.New("no outbound service has been removed")
+		return errors.New("no outgoing webhook has been removed")
 	}
 
 	return nil
 }
 
-// DeleteOutboundServicesByUser removes outbound services from the DB
-func (pg *DB) DeleteOutboundServicesByUser(uid uint, ids []uint) (int64, error) {
-	query, args, _ := pg.psql.Delete("outbound_services").Where(
+// DeleteOutgoingWebhooksByUser removes outgoing webhooks from the DB
+func (pg *DB) DeleteOutgoingWebhooksByUser(uid uint, ids []uint) (int64, error) {
+	query, args, _ := pg.psql.Delete("outgoing_webhooks").Where(
 		sq.Eq{"user_id": uid},
 	).Where(
 		sq.Eq{"id": ids},

@@ -141,10 +141,9 @@ update articles set search_vectors =
   setweight(to_tsvector(substring(coalesce(html,  '') for 1000000)), 'C');
 create index articles_search_vectors_idx on articles using gin(search_vectors);
 `,
-	"db_migration_7": `alter table archivers rename to outbound_services;
-alter table api_keys rename to inbound_services;
-alter table inbound_services add column provider text not null default 'webhook';
-alter table inbound_services add column config json not null default '{}'::JSON;
+	"db_migration_7": `alter table archivers rename to outgoing_webhooks;
+alter table api_keys rename to incoming_webhooks;
+update outgoing_webhooks set provider='generic' where provider = 'webhook';
 `,
 }
 
@@ -156,5 +155,5 @@ var DatabaseSQLMigrationChecksums = map[string]string{
 	"db_migration_4": "d5fb83c15b523f15291310ff27d36c099c4ba68de2fd901c5ef5b70a18fedf65",
 	"db_migration_5": "16657738407dc4a05c8e2814536078ff598647eb289dfb3aead73f0ac454793b",
 	"db_migration_6": "82606f963d687906ec932d2a6021a29b0d1480260c8a1f7fe7da8edfad8bfbf5",
-	"db_migration_7": "ddb5772fa94d8767e12aa7e539fe833ba82f9aae12dbc08b257c3c1d1e7def4d",
+	"db_migration_7": "05329d34279e8787592c48e97164dd0be0a1f42835da3f4aa129819296828a8d",
 }

@@ -1,4 +1,4 @@
-package outbound
+package webhook
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-// ServiceProvider outbound service provider interface
-type ServiceProvider interface {
+// Provider outgoing webhook provider interface
+type Provider interface {
 	Send(ctx context.Context, article model.Article) error
 }

@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/ncarlier/readflow/pkg/integration/outbound"
+	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
@@ -37,13 +37,13 @@ type wallabagProviderConfig struct {
 	Password     string `json:"password"`
 }
 
-// wallabagProvider is the structure definition of a Nunux Wallabag archive provider
+// wallabagProvider is the structure definition of a Wallabag webhook provider
 type wallabagProvider struct {
 	config   wallabagProviderConfig
 	endpoint *url.URL
 }
 
-func newWallabagProvider(srv model.OutboundService) (outbound.ServiceProvider, error) {
+func newWallabagProvider(srv model.OutgoingWebhook) (webhook.Provider, error) {
 	config := wallabagProviderConfig{}
 	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func newWallabagProvider(srv model.OutboundService) (outbound.ServiceProvider, e
 	return provider, nil
 }
 
-// Send article to Nunux Wallabag service.
+// Send article to Wallabag endpoint.
 func (wp *wallabagProvider) Send(ctx context.Context, article model.Article) error {
 	token, err := wp.getAccessToken()
 	if err != nil {
@@ -134,9 +134,9 @@ func (wp *wallabagProvider) getAccessToken() (*wallabagTokenResponse, error) {
 }
 
 func init() {
-	outbound.Add("wallabag", &outbound.Service{
+	webhook.Register("wallabag", &webhook.Def{
 		Name:   "Wallabag",
-		Desc:   "Export article(s) to Wallabag instance.",
+		Desc:   "Send article(s) to Wallabag instance.",
 		Create: newWallabagProvider,
 	})
 }

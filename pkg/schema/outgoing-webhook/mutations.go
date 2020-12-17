@@ -11,9 +11,9 @@ import (
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
-var createOrUpdateOutboundServiceMutationField = &graphql.Field{
-	Type:        outboundServiceType,
-	Description: "create or update a outbound service (use the ID parameter to update)",
+var createOrUpdateOutgoingWebhookMutationField = &graphql.Field{
+	Type:        outgoingWebhookType,
+	Description: "create or update a outgoing webhook (use the ID parameter to update)",
 	Args: graphql.FieldConfigArgument{
 		"id": &graphql.ArgumentConfig{
 			Type: graphql.ID,
@@ -32,49 +32,49 @@ var createOrUpdateOutboundServiceMutationField = &graphql.Field{
 			DefaultValue: false,
 		},
 	},
-	Resolve: createOrUpdateOutboundServiceResolver,
+	Resolve: createOrUpdateOutgoingWebhookResolver,
 }
 
-func createOrUpdateOutboundServiceResolver(p graphql.ResolveParams) (interface{}, error) {
+func createOrUpdateOutgoingWebhookResolver(p graphql.ResolveParams) (interface{}, error) {
 	alias := helper.GetGQLStringParameter("alias", p.Args)
 	provider := helper.GetGQLStringParameter("provider", p.Args)
 	config := helper.GetGQLStringParameter("config", p.Args)
 	isDefault := helper.GetGQLBoolParameter("is_default", p.Args)
 	if id, ok := helper.ConvGQLStringToUint(p.Args["id"]); ok {
-		form := model.OutboundServiceUpdateForm{
+		form := model.OutgoingWebhookUpdateForm{
 			ID:        id,
 			Alias:     alias,
 			Provider:  provider,
 			Config:    config,
 			IsDefault: isDefault,
 		}
-		return service.Lookup().UpdateOutboundService(p.Context, form)
+		return service.Lookup().UpdateOutgoingWebhook(p.Context, form)
 	}
-	builder := model.NewOutboundServiceCreateFormBuilder()
+	builder := model.NewOutgoingWebhookCreateFormBuilder()
 	builder.Alias(*alias).Provider(*provider).Config(*config)
 	if isDefault != nil && *isDefault {
 		builder.IsDefault(true)
 	}
 	form := builder.Build()
 
-	return service.Lookup().CreateOutboundService(p.Context, *form)
+	return service.Lookup().CreateOutgoingWebhook(p.Context, *form)
 }
 
-var deleteOutboundServicesMutationField = &graphql.Field{
+var deleteOutgoingWebhooksMutationField = &graphql.Field{
 	Type:        graphql.Int,
-	Description: "delete outbound services",
+	Description: "delete outgoing webhooks",
 	Args: graphql.FieldConfigArgument{
 		"ids": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.NewList(graphql.ID)),
 		},
 	},
-	Resolve: deleteOutboundServicesResolver,
+	Resolve: deleteOutgoingWebhooksResolver,
 }
 
-func deleteOutboundServicesResolver(p graphql.ResolveParams) (interface{}, error) {
+func deleteOutgoingWebhooksResolver(p graphql.ResolveParams) (interface{}, error) {
 	idsArg, ok := p.Args["ids"].([]interface{})
 	if !ok {
-		return nil, errors.New("invalid outbound service ID")
+		return nil, errors.New("invalid outgoing webhook ID")
 	}
 	var ids []uint
 	for _, v := range idsArg {
@@ -83,26 +83,26 @@ func deleteOutboundServicesResolver(p graphql.ResolveParams) (interface{}, error
 		}
 	}
 
-	return service.Lookup().DeleteOutboundServices(p.Context, ids)
+	return service.Lookup().DeleteOutgoingWebhooks(p.Context, ids)
 }
 
-var sendArticleToOutboundServiceMutationField = &graphql.Field{
+var sendArticleToOutgoingWebhookMutationField = &graphql.Field{
 	Type:        graphql.ID,
-	Description: "send an article to the outbound service",
+	Description: "send an article to the outgoing webhook",
 	Args: graphql.FieldConfigArgument{
 		"id": &graphql.ArgumentConfig{
 			Description: "article ID",
 			Type:        graphql.NewNonNull(graphql.ID),
 		},
 		"alias": &graphql.ArgumentConfig{
-			Description: "outbound service alias (using default if missing)",
+			Description: "outgoing webhook alias (using default if missing)",
 			Type:        graphql.String,
 		},
 	},
-	Resolve: sendArticleToOutboundServiceResolver,
+	Resolve: sendArticleToOutgoingWebhookResolver,
 }
 
-func sendArticleToOutboundServiceResolver(p graphql.ResolveParams) (interface{}, error) {
+func sendArticleToOutgoingWebhookResolver(p graphql.ResolveParams) (interface{}, error) {
 	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
 	if !ok {
 		return nil, errors.New("invalid article ID")
@@ -118,7 +118,7 @@ func sendArticleToOutboundServiceResolver(p graphql.ResolveParams) (interface{},
 }
 
 func init() {
-	schema.AddMutationField("createOrUpdateOutboundService", createOrUpdateOutboundServiceMutationField)
-	schema.AddMutationField("deleteOutboundServices", deleteOutboundServicesMutationField)
-	schema.AddMutationField("sendArticleToOutboundService", sendArticleToOutboundServiceMutationField)
+	schema.AddMutationField("createOrUpdateOutgoingWebhook", createOrUpdateOutgoingWebhookMutationField)
+	schema.AddMutationField("deleteOutgoingWebhooks", deleteOutgoingWebhooksMutationField)
+	schema.AddMutationField("sendArticleToOutgoingWebhook", sendArticleToOutgoingWebhookMutationField)
 }

@@ -9,25 +9,25 @@ var providerEnum = graphql.NewEnum(
 		Name:        "outboundProvider",
 		Description: "Outbound service provider",
 		Values: graphql.EnumValueConfigMap{
+			"generic": &graphql.EnumValueConfig{
+				Value:       "generic",
+				Description: "Use a generic webhook as outgoing webhook provider",
+			},
 			"keeper": &graphql.EnumValueConfig{
 				Value:       "keeper",
-				Description: "Use Nunux Keeper as outbound service provider",
-			},
-			"webhook": &graphql.EnumValueConfig{
-				Value:       "webhook",
-				Description: "Use a webhook as outbound service provider",
+				Description: "Use Nunux Keeper as outgoing webhook provider",
 			},
 			"wallabag": &graphql.EnumValueConfig{
 				Value:       "wallabag",
-				Description: "Use Wallabag as outbound service provider",
+				Description: "Use Wallabag as outgoing webhook provider",
 			},
 		},
 	},
 )
 
-var outboundServiceType = graphql.NewObject(
+var outgoingWebhookType = graphql.NewObject(
 	graphql.ObjectConfig{
-		Name: "OutboundService",
+		Name: "OutgoingWebhook",
 		Fields: graphql.Fields{
 			"id": &graphql.Field{
 				Type: graphql.Int,

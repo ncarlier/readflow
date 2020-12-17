@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/ncarlier/readflow/pkg/integration/outbound"
+	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
@@ -26,12 +26,12 @@ type ProviderConfig struct {
 	APIKey   string `json:"api_key"`
 }
 
-// Provider is the structure definition of a Nunux Keeper archive provider
+// Provider is the structure definition of a Nunux Keeper webhook provider
 type Provider struct {
 	config ProviderConfig
 }
 
-func newKeeperProvider(srv model.OutboundService) (outbound.ServiceProvider, error) {
+func newKeeperProvider(srv model.OutgoingWebhook) (webhook.Provider, error) {
 	config := ProviderConfig{}
 	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func newKeeperProvider(srv model.OutboundService) (outbound.ServiceProvider, err
 	return provider, nil
 }
 
-// Send article to Nunux Keeper service.
+// Send article to Nunux Keeper endpoint.
 func (kp *Provider) Send(ctx context.Context, article model.Article) error {
 	art := Article{
 		Title:       article.Title,
@@ -81,9 +81,9 @@ func (kp *Provider) Send(ctx context.Context, article model.Article) error {
 }
 
 func init() {
-	outbound.Add("keeper", &outbound.Service{
+	webhook.Register("keeper", &webhook.Def{
 		Name:   "Nunux Keeper",
-		Desc:   "Export article(s) to Nunux Keeper instance.",
+		Desc:   "Send article(s) to Nunux Keeper instance.",
 		Create: newKeeperProvider,
 	})
 }

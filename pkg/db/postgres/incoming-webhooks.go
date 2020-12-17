@@ -14,23 +14,19 @@ var inboundServiceColumns = []string{
 	"user_id",
 	"alias",
 	"token",
-	"provider",
-	"config",
 	"last_usage_at",
 	"created_at",
 	"updated_at",
 }
 
-func mapRowToInboundService(row *sql.Row) (*model.InboundService, error) {
-	result := model.InboundService{}
+func mapRowToIncomingWebhook(row *sql.Row) (*model.IncomingWebhook, error) {
+	result := model.IncomingWebhook{}
 
 	err := row.Scan(
 		&result.ID,
 		&result.UserID,
 		&result.Alias,
 		&result.Token,
-		&result.Provider,
-		&result.Config,
 		&result.LastUsageAt,
 		&result.CreatedAt,
 		&result.UpdatedAt,
@@ -44,41 +40,33 @@ func mapRowToInboundService(row *sql.Row) (*model.InboundService, error) {
 	return &result, nil
 }
 
-// CreateInboundServiceForUser creates an inbound service for a user
-func (pg *DB) CreateInboundServiceForUser(uid uint, form model.InboundServiceCreateForm) (*model.InboundService, error) {
+// CreateIncomingWebhookForUser creates an incoming webhook for a user
+func (pg *DB) CreateIncomingWebhookForUser(uid uint, form model.IncomingWebhookCreateForm) (*model.IncomingWebhook, error) {
 	query, args, _ := pg.psql.Insert(
-		"inbound_services",
+		"incoming_webhooks",
 	).Columns(
-		"user_id", "alias", "token", "provider", "config",
+		"user_id", "alias", "token",
 	).Values(
 		uid,
 		form.Alias,
 		form.Token,
-		form.Provider,
-		form.Config,
 	).Suffix(
 		"RETURNING " + strings.Join(inboundServiceColumns, ","),
 	).ToSql()
 	row := pg.db.QueryRow(query, args...)
-	return mapRowToInboundService(row)
+	return mapRowToIncomingWebhook(row)
 }
 
-// UpdateInboundServiceForUser updates an inbound service for a user
-func (pg *DB) UpdateInboundServiceForUser(uid uint, form model.InboundServiceUpdateForm) (*model.InboundService, error) {
+// UpdateIncomingWebhookForUser updates an incoming webhook for a user
+func (pg *DB) UpdateIncomingWebhookForUser(uid uint, form model.IncomingWebhookUpdateForm) (*model.IncomingWebhook, error) {
 	update := map[string]interface{}{
 		"updated_at": "NOW()",
 	}
 	if form.Alias != nil {
 		update["alias"] = *form.Alias
 	}
-	if form.Provider != nil {
-		update["provider"] = *form.Provider
-	}
-	if form.Config != nil {
-		update["config"] = *form.Config
-	}
 	query, args, _ := pg.psql.Update(
-		"inbound_services",
+		"incoming_webhooks",
 	).SetMap(update).Where(
 		sq.Eq{"id": form.ID},
 	).Where(
@@ -88,24 +76,24 @@ func (pg *DB) UpdateInboundServiceForUser(uid uint, form model.InboundServiceUpd
 	).ToSql()
 
 	row := pg.db.QueryRow(query, args...)
-	return mapRowToInboundService(row)
+	return mapRowToIncomingWebhook(row)
 }
 
-// GetInboundServiceByID get an inbound service from the DB
-func (pg *DB) GetInboundServiceByID(id uint) (*model.InboundService, error) {
+// GetIncomingWebhookByID get an incoming webhook from the DB
+func (pg *DB) GetIncomingWebhookByID(id uint) (*model.IncomingWebhook, error) {
 	query, args, _ := pg.psql.Select(inboundServiceColumns...).From(
-		"inbound_services",
+		"incoming_webhooks",
 	).Where(
 		sq.Eq{"id": id},
 	).ToSql()
 	row := pg.db.QueryRow(query, args...)
-	return mapRowToInboundService(row)
+	return mapRowToIncomingWebhook(row)
 }
 
-// GetInboundServiceByToken find an inbound service by token form the DB (last usage is updated!)
-func (pg *DB) GetInboundServiceByToken(token string) (*model.InboundService, error) {
+// GetIncomingWebhookByToken find an incoming webhook by token form the DB (last usage is updated!)
+func (pg *DB) GetIncomingWebhookByToken(token string) (*model.IncomingWebhook, error) {
 	query, args, _ := pg.psql.Update(
-		"inbound_services",
+		"incoming_webhooks",
 	).Set("last_usage_at", "NOW()").Where(
 		sq.Eq{"token": token},
 	).Suffix(
@@ -113,13 +101,13 @@ func (pg *DB) GetInboundServiceByToken(token string) (*model.InboundService, err
 	).ToSql()
 
 	row := pg.db.QueryRow(query, args...)
-	return mapRowToInboundService(row)
+	return mapRowToIncomingWebhook(row)
 }
 
-// GetInboundServiceByUserAndAlias returns inbound service of an user by its alias
-func (pg *DB) GetInboundServiceByUserAndAlias(uid uint, alias string) (*model.InboundService, error) {
+// GetIncomingWebhookByUserAndAlias returns incoming webhook of an user by its alias
+func (pg *DB) GetIncomingWebhookByUserAndAlias(uid uint, alias string) (*model.IncomingWebhook, error) {
 	query, args, _ := pg.psql.Select(inboundServiceColumns...).From(
-		"inbound_services",
+		"incoming_webhooks",
 	).Where(
 		sq.Eq{"user_id": uid},
 	).Where(
@@ -127,13 +115,13 @@ func (pg *DB) GetInboundServiceByUserAndAlias(uid uint, alias string) (*model.In
 	).ToSql()
 
 	row := pg.db.QueryRow(query, args...)
-	return mapRowToInboundService(row)
+	return mapRowToIncomingWebhook(row)
 }
 
-// GetInboundServicesByUser returns inbound services of an user from DB
-func (pg *DB) GetInboundServicesByUser(uid uint) ([]model.InboundService, error) {
+// GetIncomingWebhooksByUser returns incoming webhooks of an user from DB
+func (pg *DB) GetIncomingWebhooksByUser(uid uint) ([]model.IncomingWebhook, error) {
 	query, args, _ := pg.psql.Select(inboundServiceColumns...).From(
-		"inbound_services",
+		"incoming_webhooks",
 	).Where(
 		sq.Eq{"user_id": uid},
 	).OrderBy("alias ASC").ToSql()
@@ -143,17 +131,15 @@ func (pg *DB) GetInboundServicesByUser(uid uint) ([]model.InboundService, error)
 	}
 	defer rows.Close()
 
-	var result []model.InboundService
+	var result []model.IncomingWebhook
 
 	for rows.Next() {
-		item := model.InboundService{}
+		item := model.IncomingWebhook{}
 		err = rows.Scan(
 			&item.ID,
 			&item.UserID,
 			&item.Alias,
 			&item.Token,
-			&item.Provider,
-			&item.Config,
 			&item.LastUsageAt,
 			&item.CreatedAt,
 			&item.UpdatedAt,
@@ -170,9 +156,9 @@ func (pg *DB) GetInboundServicesByUser(uid uint) ([]model.InboundService, error)
 	return result, nil
 }
 
-// DeleteInboundServiceByUser removes an inboundService from the DB
-func (pg *DB) DeleteInboundServiceByUser(uid uint, id uint) error {
-	query, args, _ := pg.psql.Delete("inbound_services").Where(
+// DeleteIncomingWebhookByUser removes an inboundService from the DB
+func (pg *DB) DeleteIncomingWebhookByUser(uid uint, id uint) error {
+	query, args, _ := pg.psql.Delete("incoming_webhooks").Where(
 		sq.Eq{"id": id},
 	).Where(
 		sq.Eq{"user_id": uid},
@@ -188,15 +174,15 @@ func (pg *DB) DeleteInboundServiceByUser(uid uint, id uint) error {
 	}
 
 	if count == 0 {
-		return errors.New("no inbound service been removed")
+		return errors.New("no incoming webhook been removed")
 	}
 
 	return nil
 }
 
-// DeleteInboundServicesByUser removes inbound services from the DB
-func (pg *DB) DeleteInboundServicesByUser(uid uint, ids []uint) (int64, error) {
-	query, args, _ := pg.psql.Delete("inbound_services").Where(
+// DeleteIncomingWebhooksByUser removes incoming webhooks from the DB
+func (pg *DB) DeleteIncomingWebhooksByUser(uid uint, ids []uint) (int64, error) {
+	query, args, _ := pg.psql.Delete("incoming_webhooks").Where(
 		sq.Eq{"user_id": uid},
 	).Where(
 		sq.Eq{"id": ids},

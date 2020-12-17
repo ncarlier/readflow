@@ -1,4 +1,4 @@
-package webhook
+package generic
 
 import (
 	"bytes"
@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/ncarlier/readflow/pkg/constant"
-	"github.com/ncarlier/readflow/pkg/integration/outbound"
+	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
@@ -27,7 +27,7 @@ func isValidContentType(contentType string) bool {
 	return false
 }
 
-// webhookArticle is the structure definition of a Webhook article
+// webhookArticle is the structure definition of a generic Webhook article
 type webhookArticle struct {
 	Title       string     `json:"title,omitempty"`
 	Text        *string    `json:"text,omitempty"`
@@ -37,22 +37,22 @@ type webhookArticle struct {
 	PublishedAt *time.Time `json:"published_at,omitempty"`
 }
 
-// webhookProviderConfig is the structure definition of a Webhook configuration
-type webhookProviderConfig struct {
+// ProviderConfig is the structure definition of a Webhook configuration
+type ProviderConfig struct {
 	Endpoint    string            `json:"endpoint"`
 	ContentType string            `json:"contentType"`
 	Headers     map[string]string `json:"headers"`
 	Format      string            `json:"format"`
 }
 
-// webhookProvider is the structure definition of a Webhook outbound service
-type webhookProvider struct {
-	config webhookProviderConfig
+// Provider is the structure definition of a Webhook outbound service
+type Provider struct {
+	config ProviderConfig
 	tpl    *template.Template
 }
 
-func newWebhookProvider(srv model.OutboundService) (outbound.ServiceProvider, error) {
-	config := webhookProviderConfig{}
+func newWebhookProvider(srv model.OutgoingWebhook) (webhook.Provider, error) {
+	config := ProviderConfig{}
 	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func newWebhookProvider(srv model.OutboundService) (outbound.ServiceProvider, er
 		}
 	}
 
-	provider := &webhookProvider{
+	provider := &Provider{
 		config: config,
 		tpl:    tpl,
 	}
@@ -87,7 +87,7 @@ func newWebhookProvider(srv model.OutboundService) (outbound.ServiceProvider, er
 }
 
 // Archive article to Webhook endpoint.
-func (whp *webhookProvider) Send(ctx context.Context, article model.Article) error {
+func (whp *Provider) Send(ctx context.Context, article model.Article) error {
 	art := webhookArticle{
 		Title:       article.Title,
 		Text:        article.Text,
@@ -138,9 +138,9 @@ func (whp *webhookProvider) Send(ctx context.Context, article model.Article) err
 }
 
 func init() {
-	outbound.Add("webhook", &outbound.Service{
-		Name:   "Webhook",
-		Desc:   "Export article(s) to a webhook.",
+	webhook.Register("generic", &webhook.Def{
+		Name:   "Generic webhook",
+		Desc:   "Export article(s) to a generic webhook.",
 		Create: newWebhookProvider,
 	})
 }

@@ -14,8 +14,8 @@ type DB interface {
 	UserRepository
 	CategoryRepository
 	ArticleRepository
-	InboundServiceRepository
-	OutboundServiceRepository
+	IncomingWebhookRepository
+	OutgoingWebhookRepository
 	DeviceRepository
 	PropertiesRepository
 }
