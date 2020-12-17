@@ -31,8 +31,7 @@ export default ({ history, match }: AllProps) => {
         return <ErrorPanel title="Not found">Category #${id} not found.</ErrorPanel>
       }
     },
-    Other: () => <ErrorPanel>Unable to fetch category #${id} details!</ErrorPanel>,
   })
 
-  return <Panel>{render(data, error, loading)}</Panel>
+  return <Panel>{render(loading, data, error)}</Panel>
 }

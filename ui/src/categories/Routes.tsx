@@ -55,8 +55,7 @@ export default () => {
         return <ErrorPage title="Not found">Category #${id} not found.</ErrorPage>
       }
     },
-    Other: () => <ErrorPage>Unable to fetch category #${id} details!</ErrorPage>,
   })
 
-  return <>{render(data, error, loading)}</>
+  return <>{render(loading, data, error)}</>
 }

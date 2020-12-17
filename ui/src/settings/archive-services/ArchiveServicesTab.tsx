@@ -99,7 +99,6 @@ export default ({ match }: AllProps) => {
     Loading: () => <Loader />,
     Error: (err) => <ErrorPanel title="Unable to fetch archive services">{err.message}</ErrorPanel>,
     Data: (data) => <DataTable definition={definition} data={data.archivers} onSelected={onSelectedHandler} />,
-    Other: () => <ErrorPanel>Unable to fetch archive services with no obvious reason :(</ErrorPanel>,
   })
 
   return (
@@ -124,7 +123,7 @@ export default ({ match }: AllProps) => {
       </header>
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to delete archive service(s)">{errorMessage}</ErrorPanel>}
-        {render(data, error, loading)}
+        {render(loading, data, error)}
       </section>
     </Panel>
   )

@@ -59,8 +59,7 @@ export default ({ title, match, history }: AllProps) => {
         )
       }
       return <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
-    },
-    Other: () => <p>OTHER</p>,
+    }
   })
 
   return (
@@ -69,7 +68,7 @@ export default ({ title, match, history }: AllProps) => {
       subtitle={data && data.article ? data.article.title : ''}
       actions={<ButtonIcon onClick={goBack} icon="arrow_back" title="back to the list" />}
     >
-      <Panel style={{ flex: '1 1 auto' }}>{render(data, error, loading)}</Panel>
+      <Panel style={{ flex: '1 1 auto' }}>{render(loading, data, error)}</Panel>
     </Page>
   )
 }

@@ -31,8 +31,7 @@ export default ({ history, match }: AllProps) => {
         return <ErrorPanel title="Not found">Archive service #${id} not found.</ErrorPanel>
       }
     },
-    Other: () => <ErrorPanel>Unable to fetch archive service #${id} details!</ErrorPanel>,
   })
 
-  return <Panel>{render(data, error, loading)}</Panel>
+  return <Panel>{render(loading, data, error)}</Panel>
 }

@@ -53,8 +53,7 @@ export default () => {
         </a>
       </>
     ),
-    Other: () => <ErrorPanel>Unable to fetch current user infos!</ErrorPanel>,
   })
 
-  return <div className={styles.userInfos}>{render(data, error, loading)}</div>
+  return <div className={styles.userInfos}>{render(loading, data, error)}</div>
 }

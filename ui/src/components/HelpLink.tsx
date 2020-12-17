@@ -13,7 +13,7 @@ interface IProps {
 type Props = IProps
 
 export default ({ href, title, children }: Props) => (
-  <a className={styles.help} href={href} title={title} target="_blank">
+  <a className={styles.help} href={href} title={title} target="_blank" rel="noreferrer noopener">
     <Icon name="help" /> {children}
   </a>
 )

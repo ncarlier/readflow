@@ -170,11 +170,6 @@ export default (props: AllProps) => {
         </>
       )
     },
-    Other: () => (
-      <Panel>
-        <ErrorPanel>Unable to fetch articles!</ErrorPanel>
-      </Panel>
-    ),
   })
 
   // Build title
@@ -194,7 +189,7 @@ export default (props: AllProps) => {
 
   return (
     <Page title={title} header={<Appbar title={title} actions={$actions} />}>
-      {render(data, error, loading || reloading)}
+      {render(loading || reloading, data, error)}
     </Page>
   )
 }

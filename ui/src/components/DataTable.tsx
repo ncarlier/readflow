@@ -20,10 +20,11 @@ interface RowValue {
 interface Props {
   definition: DataTableDefinition[]
   data: RowValue[]
+  emptyMessage?: string
   onSelected?: OnSelectedFn
 }
 
-export default ({ definition, data, onSelected }: Props) => {
+export default ({ definition, data, emptyMessage = 'No record', onSelected }: Props) => {
   const selectAllRef = useRef<HTMLInputElement>(null)
   const [selection, setSelection] = useState<Map<number, boolean>>(() => {
     const state = new Map<number, boolean>()
@@ -68,7 +69,7 @@ export default ({ definition, data, onSelected }: Props) => {
   }
 
   if (data.length === 0) {
-    return <Empty>No record</Empty>
+    return <Empty>{emptyMessage}</Empty>
   }
 
   return (

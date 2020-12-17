@@ -17,8 +17,7 @@ export default () => {
           {category.title}
         </option>
       )),
-    Other: () => <option>Unable to fetch categories!</option>,
   })
 
-  return <>{render(data, error, loading)}</>
+  return <>{render(loading, data, error)}</>
 }

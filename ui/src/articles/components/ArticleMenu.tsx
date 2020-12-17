@@ -36,7 +36,6 @@ export default (props: Props) => {
           <ArchiveLink service={service} {...attrs} />
         </li>
       )),
-    Other: () => <li>Unknown error</li>,
   })
 
   return (
@@ -50,7 +49,7 @@ export default (props: Props) => {
         <li>
           <OfflineLink {...attrs} />
         </li>
-        {renderArchiveServices(data, error, loading)}
+        {renderArchiveServices(loading, data, error)}
       </ul>
     </DropdownMenu>
   )

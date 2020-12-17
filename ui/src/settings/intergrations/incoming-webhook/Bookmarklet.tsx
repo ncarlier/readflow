@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { API_BASE_URL } from '../../constants'
+import { API_BASE_URL } from '../../../constants'
 
 function createBookmarkletScript(token: string) {
   const { origin } = document.location

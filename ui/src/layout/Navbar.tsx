@@ -53,7 +53,6 @@ export default withRouter(({ location }: RouteComponentProps) => {
           ))}
       </ul>
     ),
-    Other: () => <span>Unable to fetch categories!</span>,
   })
 
   return (
@@ -128,7 +127,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
         <NetworkStatus status="online">
           <li className={styles.links}>
             <span>Categories</span>
-            {renderCategories(data, error, loading)}
+            {renderCategories(loading, data, error)}
           </li>
           <li className={styles.links}>
             <ul>

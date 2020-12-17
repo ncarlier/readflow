@@ -56,9 +56,8 @@ const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
         </Box>
       )
     },
-    Other: () => <ErrorPanel>Unable to fetch current user plan!</ErrorPanel>,
   })
-  return <>{render(data, error, loading)}</>
+  return <>{render(loading, data, error)}</>
 }
 
 export default () => {
@@ -80,8 +79,7 @@ export default () => {
         </>
       )
     },
-    Other: () => <ErrorPanel>Unable to fetch user plans!</ErrorPanel>,
   })
 
-  return <>{render(data, error, loading)}</>
+  return <>{render(loading, data, error)}</>
 }

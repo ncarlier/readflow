@@ -44,12 +44,11 @@ export const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle
       }
       return <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
     },
-    Other: () => <Loader />,
   })
 
   return (
     <Page title="Offline articles" subtitle={data && data.title} actions={<Actions />}>
-      <Panel style={{ flex: '1 1 auto' }}>{render(data, error, loading)}</Panel>
+      <Panel style={{ flex: '1 1 auto' }}>{render(loading, data, error)}</Panel>
     </Page>
   )
 }
