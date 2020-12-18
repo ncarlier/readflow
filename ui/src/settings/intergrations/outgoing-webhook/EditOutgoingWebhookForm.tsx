@@ -5,56 +5,56 @@ import { useMutation } from 'react-apollo-hooks'
 import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
-import Button from '../../components/Button'
-import FormCheckboxField from '../../components/FormCheckboxField'
-import FormInputField from '../../components/FormInputField'
-import FormSelectField from '../../components/FormSelectField'
-import { MessageContext } from '../../context/MessageContext'
-import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm } from '../../helpers'
-import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
+import Button from '../../../components/Button'
+import FormCheckboxField from '../../../components/FormCheckboxField'
+import FormInputField from '../../../components/FormInputField'
+import FormSelectField from '../../../components/FormSelectField'
+import { MessageContext } from '../../../context/MessageContext'
+import ErrorPanel from '../../../error/ErrorPanel'
+import { getGQLError, isValidForm } from '../../../helpers'
+import { OutgoingWebhook, CreateOrUpdateOutgoingWebhookResponse } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
-import WebhookConfigForm from './providers/WebhookConfigForm'
-import { CreateOrUpdateArchiveService } from './queries'
+import { CreateOrUpdateOutgoingWebhook } from './queries'
 import WallabagConfigForm from './providers/WallabagConfigForm'
+import GenericConfigForm from './providers/GenericConfigForm'
 
-interface EditArchiveServiceFormFields {
+interface EditOutgoingWebhookFormFields {
   alias: string
   provider: string
   is_default: boolean
 }
 
 interface Props {
-  data: ArchiveService
+  data: OutgoingWebhook
   history: History
 }
 
 export default ({ data, history }: Props) => {
   const [config, setConfig] = useState<any>(JSON.parse(data.config))
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [formState, { text, select, checkbox }] = useFormState<EditArchiveServiceFormFields>({
+  const [formState, { text, select, checkbox }] = useFormState<EditOutgoingWebhookFormFields>({
     alias: data.alias,
     provider: data.provider,
     is_default: data.is_default,
   })
-  const [editArchiveServiceMutation] = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(
-    CreateOrUpdateArchiveService
+  const [editOutgoingWebhookMutation] = useMutation<CreateOrUpdateOutgoingWebhookResponse, OutgoingWebhook>(
+    CreateOrUpdateOutgoingWebhook
   )
   const { showMessage } = useContext(MessageContext)
 
-  const editArchiveService = useCallback(
-    async (service: ArchiveService) => {
+  const editOutgoingWebhook = useCallback(
+    async (webhook: OutgoingWebhook) => {
       try {
-        await editArchiveServiceMutation({
-          variables: service,
+        await editOutgoingWebhookMutation({
+          variables: webhook,
         })
-        showMessage(`Archive service edited: ${service.alias}`)
+        showMessage(`Outgoing webhook edited: ${webhook.alias}`)
         history.goBack()
       } catch (err) {
         setErrorMessage(getGQLError(err))
       }
     },
-    [editArchiveServiceMutation, showMessage, history]
+    [editOutgoingWebhookMutation, showMessage, history]
   )
 
   const handleOnSubmit = useCallback(
@@ -65,36 +65,36 @@ export default ({ data, history }: Props) => {
         return
       }
       const { alias, provider, is_default } = formState.values
-      editArchiveService({ id: data.id, alias, provider, is_default, config: JSON.stringify(config) })
+      editOutgoingWebhook({ id: data.id, alias, provider, is_default, config: JSON.stringify(config) })
     },
-    [data, formState, config, editArchiveService]
+    [data, formState, config, editOutgoingWebhook]
   )
 
   return (
     <>
       <header>
-        <h1>Edit archive service #{data.id}</h1>
+        <h1>Edit outgoing webhook #{data.id}</h1>
       </header>
       <section>
-        {errorMessage != null && <ErrorPanel title="Unable to edit archive service">{errorMessage}</ErrorPanel>}
+        {errorMessage != null && <ErrorPanel title="Unable to edit outgoing webhook">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
           <FormSelectField label="Provider" {...select('provider')}>
+            <option value="generic">Generic webhook</option>
             <option value="keeper">Keeper</option>
-            <option value="webhook">Webhook</option>
             <option value="wallabag">Wallabag</option>
           </FormSelectField>
+          {formState.values.provider === 'generic' && <GenericConfigForm onChange={setConfig} />}
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 'webhook' && <WebhookConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} config={config} />}
           <FormCheckboxField label="To use by default" {...checkbox('is_default')} />
         </form>
       </section>
       <footer>
-        <Button title="Back to archive services" as={Link} to="/settings/archive-services">
+        <Button title="Back to integrations" as={Link} to="/settings/integrations">
           Cancel
         </Button>
-        <Button title="Edit archive service" onClick={handleOnSubmit} variant="primary">
+        <Button title="Edit outgoing webhook" onClick={handleOnSubmit} variant="primary">
           Update
         </Button>
       </footer>

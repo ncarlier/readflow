@@ -1,4 +1,4 @@
-export interface OutboundService {
+export interface OutgoingWebhook {
   id?: number
   alias: string
   provider: string
@@ -8,22 +8,22 @@ export interface OutboundService {
   updated_at?: string
 }
 
-export interface GetOutboundServicesResponse {
-  outboundServices: OutboundService[]
+export interface GetOutgoingWebhooksResponse {
+  outgoingWebhooks: OutgoingWebhook[]
 }
 
-export interface GetOutboundServiceResponse {
-  outboundService: OutboundService
+export interface GetOutgoingWebhookResponse {
+  outgoingWebhook: OutgoingWebhook
 }
 
-export interface CreateOrUpdateOutboundServiceResponse {
-  createOrUpdateOutboundService: OutboundService
+export interface CreateOrUpdateOutgoingWebhookResponse {
+  createOrUpdateOutgoingWebhook: OutgoingWebhook
 }
 
-export interface DeleteOutboundServiceRequest {
+export interface DeleteOutgoingWebhookRequest {
   ids: number[]
 }
 
-export interface DeleteOutboundServiceResponse {
-  deleteOutboundServices: number
+export interface DeleteOutgoingWebhookResponse {
+  deleteOutgoingWebhooks: number
 }

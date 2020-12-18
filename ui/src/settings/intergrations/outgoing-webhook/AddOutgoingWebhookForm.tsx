@@ -4,60 +4,60 @@ import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
-import Button from '../../components/Button'
-import FormCheckboxField from '../../components/FormCheckboxField'
-import FormInputField from '../../components/FormInputField'
-import FormSelectField from '../../components/FormSelectField'
-import Panel from '../../components/Panel'
-import { MessageContext } from '../../context/MessageContext'
-import ErrorPanel from '../../error/ErrorPanel'
-import { getGQLError, isValidForm } from '../../helpers'
-import { usePageTitle } from '../../hooks'
+import Button from '../../../components/Button'
+import FormCheckboxField from '../../../components/FormCheckboxField'
+import FormInputField from '../../../components/FormInputField'
+import FormSelectField from '../../../components/FormSelectField'
+import Panel from '../../../components/Panel'
+import { MessageContext } from '../../../context/MessageContext'
+import ErrorPanel from '../../../error/ErrorPanel'
+import { getGQLError, isValidForm } from '../../../helpers'
+import { usePageTitle } from '../../../hooks'
 import { updateCacheAfterCreate } from './cache'
-import { ArchiveService, CreateOrUpdateArchiveServiceResponse } from './models'
+import { OutgoingWebhook, CreateOrUpdateOutgoingWebhookResponse } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
-import WebhookConfigForm from './providers/WebhookConfigForm'
-import { CreateOrUpdateArchiveService } from './queries'
+import { CreateOrUpdateOutgoingWebhook } from './queries'
 import WallabagConfigForm from './providers/WallabagConfigForm'
+import GenericConfigForm from './providers/GenericConfigForm'
 
-interface AddArchiveServiceFormFields {
+interface AddOutgoingWebhookFormFields {
   alias: string
   provider: string
   isDefault: boolean
 }
 
 export default ({ history }: RouteComponentProps) => {
-  usePageTitle('Settings - Add new archive provider')
+  usePageTitle('Settings - Add new outgoing webhook')
 
   const [config, setConfig] = useState<any>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { showMessage } = useContext(MessageContext)
-  const [formState, { text, checkbox, select }] = useFormState<AddArchiveServiceFormFields>({
+  const [formState, { text, checkbox, select }] = useFormState<AddOutgoingWebhookFormFields>({
     provider: '',
     alias: '',
     isDefault: false,
   })
 
-  const [addArchiveServiceMutation] = useMutation<CreateOrUpdateArchiveServiceResponse, ArchiveService>(
-    CreateOrUpdateArchiveService
+  const [addOutgoingWebhookMutation] = useMutation<CreateOrUpdateOutgoingWebhookResponse, OutgoingWebhook>(
+    CreateOrUpdateOutgoingWebhook
   )
 
-  const addArchiveService = useCallback(
-    async (service: ArchiveService) => {
+  const addOutgoingWebhook = useCallback(
+    async (service: OutgoingWebhook) => {
       try {
-        const res = await addArchiveServiceMutation({
+        const res = await addOutgoingWebhookMutation({
           variables: service,
           update: updateCacheAfterCreate,
         })
         if (res.data) {
-          showMessage(`New archive service: ${res.data.createOrUpdateArchiver.alias}`)
+          showMessage(`New outgoing webhook: ${res.data.createOrUpdateOutgoingWebhook.alias}`)
         }
         history.goBack()
       } catch (err) {
         setErrorMessage(getGQLError(err))
       }
     },
-    [addArchiveServiceMutation, showMessage, history]
+    [addOutgoingWebhookMutation, showMessage, history]
   )
 
   const handleOnSubmit = useCallback(
@@ -69,37 +69,37 @@ export default ({ history }: RouteComponentProps) => {
       }
       const { alias, provider, isDefault } = formState.values
       // eslint-disable-next-line @typescript-eslint/camelcase
-      addArchiveService({ alias, provider, is_default: isDefault, config: JSON.stringify(config) })
+      addOutgoingWebhook({ alias, provider, is_default: isDefault, config: JSON.stringify(config) })
     },
-    [formState, config, addArchiveService]
+    [formState, config, addOutgoingWebhook]
   )
 
   return (
     <Panel>
       <header>
-        <h1>Add new archive service</h1>
+        <h1>Add new outgoing webhook</h1>
       </header>
       <section>
-        {errorMessage != null && <ErrorPanel title="Unable to add new archive service">{errorMessage}</ErrorPanel>}
+        {errorMessage != null && <ErrorPanel title="Unable to add new outgoing webhook">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
           <FormSelectField label="Provider" {...select('provider')} error={formState.errors.provider} required>
             <option>Please select an archive provider</option>
+            <option value="generic">Generic webhook</option>
             <option value="keeper">Keeper</option>
-            <option value="webhook">Webhook</option>
             <option value="wallabag">Wallabag</option>
           </FormSelectField>
+          {formState.values.provider === 'generic' && <GenericConfigForm onChange={setConfig} />}
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} />}
-          {formState.values.provider === 'webhook' && <WebhookConfigForm onChange={setConfig} />}
           {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} />}
           <FormCheckboxField label="To use by default" {...checkbox('isDefault')} />
         </form>
       </section>
       <footer>
-        <Button title="Back to archive services" as={Link} to="/settings/archive-services">
+        <Button title="Back to integrations" as={Link} to="/settings/integrations">
           Cancel
         </Button>
-        <Button title="Add archive service" onClick={handleOnSubmit} variant="primary">
+        <Button title="Add outgoing webhook" onClick={handleOnSubmit} variant="primary">
           Add
         </Button>
       </footer>

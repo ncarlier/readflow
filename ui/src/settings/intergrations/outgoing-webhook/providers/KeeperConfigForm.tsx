@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import FormInputField from '../../../components/FormInputField'
+import FormInputField from '../../../../components/FormInputField'
 
 interface KeeperConfigFormFields {
   endpoint: string

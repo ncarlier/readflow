@@ -1,35 +1,43 @@
 import React from 'react'
 import { useQuery } from 'react-apollo-hooks'
 import { Link } from 'react-router-dom'
+import ButtonIcon from '../../../components/ButtonIcon'
 
 import DataTable, { OnSelectedFn } from '../../../components/DataTable'
 import Loader from '../../../components/Loader'
 import TimeAgo from '../../../components/TimeAgo'
 import ErrorPanel from '../../../error/ErrorPanel'
-import { matchResponse } from '../../../helpers'
-import { GetOutboundServicesResponse, OutboundService } from './models'
-import { GetOutboundServices } from './queries'
+import { GetOutgoingWebhooksResponse, OutgoingWebhook } from './models'
+import { GetOutgoingWebhooks } from './queries'
 
 const definition = [
   {
     title: 'Alias',
-    render: (val: OutboundService) => (
-      <Link title="Edit outbound service" to={`/settings/archive-services/${val.id}`}>
+    render: (val: OutgoingWebhook) => (
+      <Link title="Edit outgoing webhook" to={`integrations/outgoing-webhooks/${val.id}`}>
         {val.alias} {val.is_default && '(default)'}
       </Link>
     ),
   },
   {
     title: 'Provider',
-    render: (val: OutboundService) => val.provider,
+    render: (val: OutgoingWebhook) => val.provider,
   },
   {
     title: 'Created',
-    render: (val: OutboundService) => <TimeAgo dateTime={val.created_at} />,
+    render: (val: OutgoingWebhook) => <TimeAgo dateTime={val.created_at} />,
   },
   {
     title: 'Updated',
-    render: (val: OutboundService) => <TimeAgo dateTime={val.updated_at} />,
+    render: (val: OutgoingWebhook) => <TimeAgo dateTime={val.updated_at} />,
+  },
+  {
+    title: '',
+    render: (val: OutgoingWebhook) => (
+      <ButtonIcon title="Edit outgoing webhook" as={Link} to={`integrations/outgoing-webhooks/${val.id}`} icon="edit">
+        {val.alias}
+      </ButtonIcon>
+    ),
   },
 ]
 
@@ -38,20 +46,20 @@ interface Props {
 }
 
 export default ({ onSelected }: Props) => {
-  const { data, error, loading } = useQuery<GetOutboundServicesResponse>(GetOutboundServices)
+  const { data, error, loading } = useQuery<GetOutgoingWebhooksResponse>(GetOutgoingWebhooks)
 
-  const render = matchResponse<GetOutboundServicesResponse>({
-    Loading: () => <Loader />,
-    Error: (err) => <ErrorPanel title="Unable to fetch outbound services">{err.message}</ErrorPanel>,
-    Data: (data) => (
-      <DataTable
-        definition={definition}
-        data={data.outboundServices}
-        onSelected={onSelected}
-        emptyMessage="No outbound service yet"
-      />
-    ),
-  })
-
-  return <>{render(loading, data, error)}</>
+  return (
+    <section>
+      {loading && <Loader />}
+      {error && <ErrorPanel title="Unable to fetch outgoing webhooks">{error.message}</ErrorPanel>}
+      {data && (
+        <DataTable
+          definition={definition}
+          data={data.outgoingWebhooks}
+          onSelected={onSelected}
+          emptyMessage="No outgoing webhook yet"
+        />
+      )}
+    </section>
+  )
 }

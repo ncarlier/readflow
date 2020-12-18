@@ -32,7 +32,7 @@ export default () => {
           onSuccess={onDeleteSuccessHandler}
         />
         <Button
-          title="Add new outgoing webhook"
+          title="Add new incoming webhook"
           as={Link}
           to={{
             pathname: path + 'incoming-webhooks/add',

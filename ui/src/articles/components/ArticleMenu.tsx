@@ -4,10 +4,10 @@ import { useQuery } from 'react-apollo-hooks'
 import DropdownMenu from '../../components/DropdownMenu'
 import Loader from '../../components/Loader'
 import { matchResponse } from '../../helpers'
-import { GetArchiveServicesResponse } from '../../settings/archive-services/models'
-import { GetArchiveServices } from '../../settings/archive-services/queries'
+import { GetOutgoingWebhooksResponse } from '../../settings/intergrations/outgoing-webhook/models'
+import { GetOutgoingWebhooks } from '../../settings/intergrations/outgoing-webhook/queries'
 import { Article } from '../models'
-import ArchiveLink from './ArchiveLink'
+import SendLink from './SendLink'
 import OfflineLink from './OfflineLink'
 import ShareLink from './ShareLink'
 
@@ -17,26 +17,29 @@ interface Props {
   style?: CSSProperties
 }
 
-export default (props: Props) => {
-  const { style, ...attrs } = props
-  const nvg: any = window.navigator
-
-  const { data, error, loading } = useQuery<GetArchiveServicesResponse>(GetArchiveServices)
-
-  const renderArchiveServices = matchResponse<GetArchiveServicesResponse>({
+const OutgoingWebhooksMenuItems = (attrs: Props) => {
+  const { data, error, loading } = useQuery<GetOutgoingWebhooksResponse>(GetOutgoingWebhooks)
+  const render = matchResponse<GetOutgoingWebhooksResponse>({
     Loading: () => (
       <li>
         <Loader />
       </li>
     ),
     Error: (err) => <li>{err.message}</li>,
-    Data: ({ archivers }) =>
-      archivers.map((service) => (
-        <li key={`as-${service.id}`}>
-          <ArchiveLink service={service} {...attrs} />
+    Data: ({ outgoingWebhooks }) =>
+      outgoingWebhooks.map((webhook) => (
+        <li key={`wh-${webhook.id}`}>
+          <SendLink webhook={webhook} {...attrs} />
         </li>
       )),
   })
+
+  return <>{render(loading, data, error)}</>
+}
+
+export default (props: Props) => {
+  const { style, ...attrs } = props
+  const nvg: any = window.navigator
 
   return (
     <DropdownMenu style={style}>
@@ -49,7 +52,7 @@ export default (props: Props) => {
         <li>
           <OfflineLink {...attrs} />
         </li>
-        {renderArchiveServices(loading, data, error)}
+        <OutgoingWebhooksMenuItems {...attrs} />
       </ul>
     </DropdownMenu>
   )

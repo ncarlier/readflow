@@ -6,8 +6,8 @@ import (
 
 var providerEnum = graphql.NewEnum(
 	graphql.EnumConfig{
-		Name:        "outboundProvider",
-		Description: "Outbound service provider",
+		Name:        "outgoingWebhookProvider",
+		Description: "Outgoing webhook provider",
 		Values: graphql.EnumValueConfigMap{
 			"generic": &graphql.EnumValueConfig{
 				Value:       "generic",

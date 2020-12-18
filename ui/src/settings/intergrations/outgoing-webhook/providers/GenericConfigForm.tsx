@@ -1,12 +1,12 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import FormInputField from '../../../components/FormInputField'
-import FormSelectField from '../../../components/FormSelectField'
-import FormTextareaField from '../../../components/FormTextareaField'
-import HelpLink from '../../../components/HelpLink'
+import FormInputField from '../../../../components/FormInputField'
+import FormSelectField from '../../../../components/FormSelectField'
+import FormTextareaField from '../../../../components/FormTextareaField'
+import HelpLink from '../../../../components/HelpLink'
 
-interface WebhookConfigFormFields {
+interface GenericConfigFormFields {
   endpoint: string
   contentType: string
   format?: string
@@ -14,7 +14,7 @@ interface WebhookConfigFormFields {
 
 interface Props {
   onChange(config: any): void
-  config?: WebhookConfigFormFields
+  config?: GenericConfigFormFields
 }
 
 const contentTypes: Map<string, string> = new Map([
@@ -40,7 +40,7 @@ const ContentTypes = () => (
 )
 
 export default ({ onChange, config = defaultConfig }: Props) => {
-  const [formState, { url, select, textarea }] = useFormState<WebhookConfigFormFields>(config, {
+  const [formState, { url, select, textarea }] = useFormState<GenericConfigFormFields>(config, {
     onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
   })
 

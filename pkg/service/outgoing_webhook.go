@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	webhookProvider "github.com/ncarlier/readflow/pkg/integration/webhook"
+	// import all outgoing webhook providers
+	_ "github.com/ncarlier/readflow/pkg/integration/webhook/all"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 

@@ -32,7 +32,7 @@ const definition = [
     render: (val: IncomingWebhook) => <TimeAgo dateTime={val.updated_at} />,
   },
   {
-    title: '-',
+    title: '',
     render: (val: IncomingWebhook) => (
       <ButtonIcon title="Edit incoming webhook" as={Link} to={`integrations/incoming-webhooks/${val.id}`} icon="edit">
         {val.alias}

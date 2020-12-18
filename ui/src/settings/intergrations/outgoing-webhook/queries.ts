@@ -1,8 +1,8 @@
 import gql from 'graphql-tag'
 
-export const GetOutboundServices = gql`
+export const GetOutgoingWebhooks = gql`
   query {
-    outboundServices {
+    outgoingWebhooks {
       id
       alias
       provider
@@ -13,9 +13,9 @@ export const GetOutboundServices = gql`
   }
 `
 
-export const GetOutboundService = gql`
-  query outboundService($id: ID!) {
-    outboundService(id: $id) {
+export const GetOutgoingWebhook = gql`
+  query outgoingWebhook($id: ID!) {
+    outgoingWebhook(id: $id) {
       id
       alias
       provider
@@ -27,21 +27,21 @@ export const GetOutboundService = gql`
   }
 `
 
-export const DeleteOutboundServices = gql`
-  mutation deleteOutboundServices($ids: [ID!]!) {
-    deleteOutboundServices(ids: $ids)
+export const DeleteOutgoingWebhooks = gql`
+  mutation deleteOutgoingWebhooks($ids: [ID!]!) {
+    deleteOutgoingWebhooks(ids: $ids)
   }
 `
 
-export const CreateOrUpdateOutboundService = gql`
-  mutation createOrUpdateOutboundService(
+export const CreateOrUpdateOutgoingWebhook = gql`
+  mutation createOrUpdateOutgoingWebhook(
     $id: ID
     $alias: String!
-    $provider: provider!
+    $provider: outgoingWebhookProvider!
     $config: String!
     $is_default: Boolean!
   ) {
-    createOrUpdateOutboundService(
+    createOrUpdateOutgoingWebhook(
       id: $id
       alias: $alias
       provider: $provider
