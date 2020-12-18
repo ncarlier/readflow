@@ -1,6 +1,6 @@
 language: go
 go:
-  - "1.14"
+  - "1.15"
 addons:
   postgresql: "11"
   apt:
