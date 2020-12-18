@@ -56,7 +56,7 @@ export default ({ selection, onSuccess, onError }: Props) => {
 
   if (selection.length > 0) {
     return (
-      <Button title="Remove selection" variant="danger" onClick={showDeleteConfirmModal}>
+      <Button id="remove-selection-1" title="Remove selection" variant="danger" onClick={showDeleteConfirmModal}>
         Remove
       </Button>
     )

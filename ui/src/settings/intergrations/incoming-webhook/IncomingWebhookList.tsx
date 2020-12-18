@@ -14,7 +14,7 @@ const definition = [
   {
     title: 'Alias',
     render: (val: IncomingWebhook) => (
-      <Link title="Edit incoming webhook" to={`integrations/incoming-webhooks/${val.id}`}>
+      <Link title="Edit incoming webhook" to={`integrations/incoming-webhooks/${val.id}`} data-test-id={val.alias}>
         {val.alias}
       </Link>
     ),

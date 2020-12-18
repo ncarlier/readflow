@@ -27,7 +27,7 @@ const definition = [
   {
     title: 'Title',
     render: (val: Category) => (
-      <Link title="Edit category" to={`/settings/categories/${val.id}`}>
+      <Link title="Edit category" to={`/settings/categories/${val.id}`} data-test-id={val.title}>
         {val.title}
       </Link>
     ),

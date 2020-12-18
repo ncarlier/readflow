@@ -32,6 +32,7 @@ export default () => {
           onSuccess={onDeleteSuccessHandler}
         />
         <Button
+          id="add-new-incoming-webhook"
           title="Add new incoming webhook"
           as={Link}
           to={{
