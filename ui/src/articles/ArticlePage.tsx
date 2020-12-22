@@ -46,7 +46,6 @@ export default ({ title, match, history }: AllProps) => {
     Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
     Data: ({ article }) => {
       if (article) {
-        article.isOffline = false
         return (
           <>
             <ArticleHeader article={article}>
@@ -59,7 +58,7 @@ export default ({ title, match, history }: AllProps) => {
         )
       }
       return <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
-    }
+    },
   })
 
   return (
