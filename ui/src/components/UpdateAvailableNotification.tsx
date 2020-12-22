@@ -9,7 +9,7 @@ const reload = async (registration: ServiceWorkerRegistration | null) => {
   if (registration) {
     console.log('reloading service worker...')
     await registration.update()
-    document.location.reload(true)
+    document.location.reload()
   }
 }
 

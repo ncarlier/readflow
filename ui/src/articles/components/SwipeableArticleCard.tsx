@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from 'react'
-import { useMutation } from 'react-apollo-hooks'
+import { useMutation } from '@apollo/client'
 
 import Icon from '../../components/Icon'
 import SwipeableListItem from '../../components/SwipeableListItem'

@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/client'
 
 import DropdownMenu from '../../components/DropdownMenu'
 import Loader from '../../components/Loader'

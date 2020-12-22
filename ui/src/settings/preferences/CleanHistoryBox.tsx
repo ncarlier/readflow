@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import React, { useContext } from 'react'
-import { useMutation } from 'react-apollo-hooks'
+import { useMutation } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
 
 import { Category } from '../../categories/models'

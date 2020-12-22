@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { History } from 'history'
 import React, { FormEvent, useCallback, useContext, useState } from 'react'
-import { useMutation } from 'react-apollo-hooks'
+import { useMutation } from '@apollo/client'
 import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 

@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
 import React from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/client'
 
 import Box from '../../components/Box'
 import Loader from '../../components/Loader'

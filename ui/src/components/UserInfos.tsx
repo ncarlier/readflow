@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-target-blank */
 import gql from 'graphql-tag'
 import React from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/client'
 
 import authService from '../auth'
 import ErrorPanel from '../error/ErrorPanel'

@@ -1,4 +1,4 @@
-import { DataProxy } from 'apollo-cache'
+import { DataProxy } from '@apollo/client'
 
 import { CreateOrUpdateCategoryResponse, GetCategoriesResponse } from './models'
 import { GetCategories } from './queries'
@@ -16,7 +16,7 @@ export const updateCacheAfterCreate = (
     query: GetCategories,
   })
   if (previousData) {
-    const { categories } = previousData
+    const categories = { ...previousData.categories }
     categories.entries = [created, ...categories.entries]
     proxy.writeQuery<GetCategoriesResponse>({ data: { categories }, query: GetCategories })
   }
@@ -27,7 +27,7 @@ export const updateCacheAfterDelete = (ids: number[]) => (proxy: DataProxy) => {
     query: GetCategories,
   })
   if (previousData) {
-    const { categories } = previousData
+    const categories = { ...previousData.categories }
     categories.entries = categories.entries.filter((category) => category.id && !ids.includes(category.id))
     proxy.writeQuery<GetCategoriesResponse>({ data: { categories }, query: GetCategories })
   }

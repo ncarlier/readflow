@@ -1,5 +1,5 @@
+import { ApolloError } from '@apollo/client'
 import React, { ReactNode } from 'react'
-import { ApolloError } from 'apollo-boost'
 
 export interface GQLResponsePattern<T> {
   Loading: () => ReactNode

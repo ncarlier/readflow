@@ -1,4 +1,4 @@
-import { DataProxy } from 'apollo-cache'
+import { DataProxy } from '@apollo/client'
 
 import { CreateOrUpdateIncomingWebhookResponse, GetIncomingWebhooksResponse } from './models'
 import { GetIncomingWebhooks } from './queries'

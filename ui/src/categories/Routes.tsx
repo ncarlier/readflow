@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/client'
 import { Route, RouteComponentProps, Switch, useRouteMatch } from 'react-router-dom'
 
 import ArticlePage from '../articles/ArticlePage'

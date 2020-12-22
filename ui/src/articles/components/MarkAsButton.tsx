@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react'
-import { useMutation } from 'react-apollo-hooks'
+import { useMutation } from '@apollo/client'
 
 import ButtonIcon from '../../components/ButtonIcon'
 import { MessageContext } from '../../context/MessageContext'

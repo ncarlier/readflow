@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/client'
 import { Link } from 'react-router-dom'
 import ButtonIcon from '../../../components/ButtonIcon'
 

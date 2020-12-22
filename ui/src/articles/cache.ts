@@ -1,5 +1,4 @@
-import { DataProxy } from 'apollo-cache'
-
+import { DataProxy } from '@apollo/client'
 import { GetCategoriesResponse } from '../categories/models'
 import { GetCategories } from '../categories/queries'
 import { AddNewArticleResponse, UpdateArticleResponse, MarkAllArticlesAsReadResponse } from './models'
@@ -16,7 +15,7 @@ export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data?
       query: GetCategories,
     })
     if (previousData && previousData.categories) {
-      const { categories } = previousData
+      const categories = { ...previousData.categories }
       categories._all++
       proxy.writeQuery({ data: { categories }, query: GetCategories })
     }
@@ -42,7 +41,7 @@ export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data?
       query: GetCategories,
     })
     if (previousData && previousData.categories) {
-      const { categories } = previousData
+      const categories = { ...previousData.categories }
       categories._all = updated._all
       categories._starred = updated._starred
       proxy.writeQuery({ data: { categories }, query: GetCategories })
@@ -66,7 +65,7 @@ export const updateCacheAfterMarkAllAsRead = (
       query: GetCategories,
     })
     if (previousData && previousData.categories) {
-      const { categories } = previousData
+      const categories = { ...previousData.categories }
       categories._all = updated._all
       const { entries } = updated
       // Merge categories unread values
