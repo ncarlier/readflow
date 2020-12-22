@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
 
 import ButtonIcon from '../../components/ButtonIcon'
@@ -17,29 +17,39 @@ interface Props {
 }
 
 export default (props: Props) => {
+  const isMounted = React.useRef(true)
   const { article, floating = false, keyboard = false, onSuccess } = props
 
   const { showErrorMessage } = useContext(MessageContext)
   const [loading, setLoading] = useState(false)
   const [updateArticleMutation] = useMutation<UpdateArticleResponse, UpdateArticleRequest>(UpdateArticle)
 
+  // Small tips to prevent update warnings on unmounted components
+  useEffect(
+    () => () => {
+      isMounted.current = false
+    },
+    []
+  )
+
   const updateArticleStatus = useCallback(
     async (status: ArticleStatus) => {
+      setLoading(true)
       try {
-        setLoading(true)
         await updateArticleMutation({
           variables: { id: article.id, status },
           update: updateCacheAfterUpdate,
         })
-        // TODO we should not update state if mutation trigger an unmount on this element
-        if (!floating) setLoading(false)
         if (onSuccess) onSuccess(article)
       } catch (err) {
-        setLoading(false)
         showErrorMessage(getGQLError(err))
+      } finally {
+        if (isMounted.current) {
+          setLoading(false)
+        }
       }
     },
-    [updateArticleMutation, article, floating, onSuccess, showErrorMessage]
+    [updateArticleMutation, article, onSuccess, showErrorMessage]
   )
 
   const handleOnClick = useCallback(() => {
