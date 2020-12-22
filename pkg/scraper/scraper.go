@@ -6,6 +6,7 @@ import (
 
 // WebPage is the result of a web scraping
 type WebPage struct {
+	URL      string `json:"url,omitempty"`
 	Title    string `json:"title,omitempty"`
 	HTML     string `json:"html,omitempty"`
 	Text     string `json:"text,omitempty"`

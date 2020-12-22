@@ -66,6 +66,9 @@ func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, e
 		Image: meta.GetContent("og:image", "twitter:image"),
 	}
 
+	// Set canonical URL
+	result.URL = res.Request.URL.String()
+
 	var buffer bytes.Buffer
 	tee := io.TeeReader(body, &buffer)
 
@@ -75,7 +78,7 @@ func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, e
 	}
 
 	// Extract content from the HTML page
-	article, err := read.FromReader(&buffer, url)
+	article, err := read.FromReader(&buffer, result.URL)
 	if err != nil {
 		return result, err
 	}

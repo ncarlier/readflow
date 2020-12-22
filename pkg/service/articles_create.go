@@ -120,6 +120,7 @@ func (reg *Registry) hydrateArticle(ctx context.Context, article *model.ArticleC
 	if page == nil {
 		return err
 	}
+	article.URL = &page.URL
 	if article.Title == "" {
 		article.Title = page.Title
 	}
