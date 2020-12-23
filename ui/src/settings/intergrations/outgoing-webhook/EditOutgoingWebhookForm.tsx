@@ -84,7 +84,7 @@ export default ({ data, history }: Props) => {
             <option value="keeper">Keeper</option>
             <option value="wallabag">Wallabag</option>
           </FormSelectField>
-          {formState.values.provider === 'generic' && <GenericConfigForm onChange={setConfig} />}
+          {formState.values.provider === 'generic' && <GenericConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} config={config} />}
           <FormCheckboxField label="To use by default" {...checkbox('is_default')} />
