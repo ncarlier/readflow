@@ -7,8 +7,8 @@ const (
 	UserID
 	// RequestID is the key used to store request ID into the request context
 	RequestID
-	// InboundServiceAlias is the key used to store inbound service alias into the request context
-	InboundServiceAlias
+	// IncomingWebhookAlias is the key used to store incomimg webhook alias into the request context
+	IncomingWebhookAlias
 	// IsAdmin is true when the user is an admin
 	IsAdmin
 )

@@ -24,11 +24,11 @@ func NewRuleProcessor(category model.Category) (*RuleProcessor, error) {
 		return nil, nil
 	}
 	env := map[string]interface{}{
-		"title": "",
-		"text":  "",
-		"url":   "",
-		"from":  "",
-		"tags":  []string{},
+		"title":   "",
+		"text":    "",
+		"url":     "",
+		"webhook": "",
+		"tags":    []string{},
 	}
 	p, err := expr.Compile(*category.Rule, expr.Env(env))
 	if err != nil {
@@ -54,17 +54,17 @@ func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleCreate
 	if article.URL != nil {
 		url = *article.URL
 	}
-	inboundService := ""
-	if alias := ctx.Value(constant.InboundServiceAlias); alias != nil {
-		inboundService = alias.(string)
+	incomingWebhookAlias := ""
+	if alias := ctx.Value(constant.IncomingWebhookAlias); alias != nil {
+		incomingWebhookAlias = alias.(string)
 	}
 
 	env := map[string]interface{}{
-		"title": article.Title,
-		"text":  text,
-		"url":   url,
-		"from":  inboundService,
-		"tags":  tags,
+		"title":   article.Title,
+		"text":    text,
+		"url":     url,
+		"webhook": incomingWebhookAlias,
+		"tags":    tags,
 	}
 
 	result, err := expr.Run(rp.program, env)

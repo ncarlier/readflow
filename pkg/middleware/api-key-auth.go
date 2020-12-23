@@ -42,13 +42,13 @@ func APIKeyAuth(inner http.Handler) http.Handler {
 
 		token := pair[1]
 
-		inboundService, err := service.Lookup().GetIncomingWebhookByToken(token)
-		if err != nil || inboundService == nil {
+		incomingWebhook, err := service.Lookup().GetIncomingWebhookByToken(token)
+		if err != nil || incomingWebhook == nil {
 			http.Error(w, "Not authorized", 401)
 			return
 		}
-		ctx = context.WithValue(ctx, constant.UserID, inboundService.UserID)
-		ctx = context.WithValue(ctx, constant.InboundServiceAlias, inboundService.Alias)
+		ctx = context.WithValue(ctx, constant.UserID, incomingWebhook.UserID)
+		ctx = context.WithValue(ctx, constant.IncomingWebhookAlias, incomingWebhook.Alias)
 
 		inner.ServeHTTP(w, r.WithContext(ctx))
 	})
