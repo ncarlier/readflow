@@ -31,7 +31,7 @@ func Configure(uri string) (Broker, error) {
 		if err != nil {
 			return nil, err
 		}
-		log.Info().Str("component", "broker").Str("uri", u.String()).Msg("using HTTP event broker")
+		log.Info().Str("component", "broker").Str("uri", u.Redacted()).Msg("using HTTP event broker")
 	default:
 		return nil, fmt.Errorf("unsupported event broker: %s", u.Scheme)
 	}
