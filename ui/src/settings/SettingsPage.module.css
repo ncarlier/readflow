@@ -17,4 +17,5 @@
 .settings section > header > a,
 .settings section > header > button {
   margin-left: 1em;
+  align-self: baseline;
 }
