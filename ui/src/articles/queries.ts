@@ -98,9 +98,9 @@ export const UpdateArticle = gql`
   }
 `
 
-export const ArchiveArticle = gql`
-  mutation archiveArticle($id: ID!, $archiver: String!) {
-    archiveArticle(id: $id, archiver: $archiver)
+export const SendArticleToOutgoingWebhook = gql`
+  mutation sendArticleToOutgoingWebhook($id: ID!, $alias: String!) {
+    sendArticleToOutgoingWebhook(id: $id, alias: $alias)
   }
 `
 

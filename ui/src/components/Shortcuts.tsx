@@ -49,7 +49,7 @@ export default () => (
           Remove article offline<kbd>r</kbd>
         </li>
         <li>
-          Save to default archive service<kbd>a</kbd>
+          Save to default archive service<kbd>shift+s</kbd>
         </li>
         <li>
           Star an article<kbd>s</kbd>

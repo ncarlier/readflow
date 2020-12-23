@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/client'
 
 import { GetCategoriesResponse } from '../categories/models'
 import { GetCategories } from '../categories/queries'
@@ -17,8 +17,7 @@ export default () => {
           {category.title}
         </option>
       )),
-    Other: () => <option>Unable to fetch categories!</option>,
   })
 
-  return <>{render(data, error, loading)}</>
+  return <>{render(loading, data, error)}</>
 }

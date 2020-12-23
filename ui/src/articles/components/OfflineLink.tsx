@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { useApolloClient } from 'react-apollo-hooks'
+import { useApolloClient } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
 
 import ConfirmDialog from '../../components/ConfirmDialog'

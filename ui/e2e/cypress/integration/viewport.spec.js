@@ -11,13 +11,9 @@ context('Viewport', () => {
     cy.viewport(480, 640)
 
     // the navbar should have collapse since our screen is smaller
-    cy.get('#navbar-fog')
-      .should('be.visible')
-      .click({ force: true })
+    cy.get('#navbar-fog').should('be.visible').click({ force: true })
     cy.get('#navbar').should('not.be.visible')
-    cy.get('#appbar-menu')
-      .should('be.visible')
-      .click()
+    cy.get('#appbar-menu').should('be.visible').click()
     cy.get('#navbar').should('be.visible')
     cy.get('#navbar-fog').should('be.visible')
     cy.get('#navbar-link-settings').click()

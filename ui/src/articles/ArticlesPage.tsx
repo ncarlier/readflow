@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/client'
 import { RouteComponentProps } from 'react-router'
 
 import { Category } from '../categories/models'
@@ -170,11 +170,6 @@ export default (props: AllProps) => {
         </>
       )
     },
-    Other: () => (
-      <Panel>
-        <ErrorPanel>Unable to fetch articles!</ErrorPanel>
-      </Panel>
-    ),
   })
 
   // Build title
@@ -194,7 +189,7 @@ export default (props: AllProps) => {
 
   return (
     <Page title={title} header={<Appbar title={title} actions={$actions} />}>
-      {render(data, error, loading || reloading)}
+      {render(loading || reloading, data, error)}
     </Page>
   )
 }

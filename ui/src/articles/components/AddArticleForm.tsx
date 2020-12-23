@@ -1,5 +1,5 @@
 import React, { FormEvent, MouseEvent, useCallback, useContext, useState } from 'react'
-import { useMutation } from 'react-apollo-hooks'
+import { useMutation } from '@apollo/client'
 import { useFormState } from 'react-use-form-state'
 
 import { Category } from '../../categories/models'

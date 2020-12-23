@@ -56,6 +56,11 @@ func (form ArticleCreateForm) Payload() string {
 	return payload
 }
 
+// TruncatedTitle return truncated title
+func (form ArticleCreateForm) TruncatedTitle() string {
+	return helper.Truncate(form.Title, 29)
+}
+
 // ArticleUpdateForm structure definition
 type ArticleUpdateForm struct {
 	ID      uint
@@ -63,8 +68,8 @@ type ArticleUpdateForm struct {
 	Starred *bool
 }
 
-// Articles structure definition
-type Articles struct {
+// CreatedArticlesResponse structure definition
+type CreatedArticlesResponse struct {
 	Articles []*Article
 	Errors   []error
 }

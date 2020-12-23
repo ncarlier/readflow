@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
-import { useApolloClient, useMutation } from 'react-apollo-hooks'
+import { useApolloClient, useMutation } from '@apollo/client'
 import Switch from 'react-switch'
 
 import Box from '../../components/Box'

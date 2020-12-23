@@ -7,24 +7,27 @@ import DeleteAccountBox from './DeleteAccountBox'
 import InstallationBox from './InstallationBox'
 import NotificationBox from './NotificationBox'
 import ThemeBox from './ThemeBox'
-import classes from './PreferencesTab.module.css'
 import UserPlanSection from './UserPlanSection'
 
 export default () => {
   usePageTitle('Settings - Preferences')
 
   return (
-    <Panel className={classes.preferences}>
+    <Panel>
       <section>
-        <h2>Device</h2>
-        <hr />
+        <header>
+          <h2>Device</h2>
+        </header>
         <p>Manage preferences on this device.</p>
         <InstallationBox />
         <NotificationBox />
         <ThemeBox />
         <UserPlanSection />
-        <h2>Personal data</h2>
-        <hr />
+      </section>
+      <section>
+        <header>
+          <h2>Personal data</h2>
+        </header>
         <p>Data are yours and you have full control over it.</p>
         <CleanHistoryBox />
         <DeleteAccountBox />

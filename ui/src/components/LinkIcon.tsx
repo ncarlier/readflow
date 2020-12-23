@@ -10,7 +10,7 @@ interface LinkIconProps {
   icon: string
   active?: boolean
   badge?: string | number
-  children: ReactNode
+  children?: ReactNode
 }
 
 function LinkIcon<Tag extends ReactType = 'a'>(props: { as?: Tag } & LinkIconProps & PropsOf<Tag>) {

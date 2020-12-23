@@ -27,7 +27,7 @@ func NewRuleProcessor(category model.Category) (*RuleProcessor, error) {
 		"title": "",
 		"text":  "",
 		"url":   "",
-		"key":   "",
+		"from":  "",
 		"tags":  []string{},
 	}
 	p, err := expr.Compile(*category.Rule, expr.Env(env))
@@ -54,16 +54,16 @@ func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleCreate
 	if article.URL != nil {
 		url = *article.URL
 	}
-	key := ""
-	if alias := ctx.Value(constant.APIKeyAlias); alias != nil {
-		key = alias.(string)
+	inboundService := ""
+	if alias := ctx.Value(constant.InboundServiceAlias); alias != nil {
+		inboundService = alias.(string)
 	}
 
 	env := map[string]interface{}{
 		"title": article.Title,
 		"text":  text,
 		"url":   url,
-		"key":   key,
+		"from":  inboundService,
 		"tags":  tags,
 	}
 

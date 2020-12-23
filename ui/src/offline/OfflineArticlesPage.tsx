@@ -83,7 +83,7 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: O
   }
   return (
     <Page title={title} actions={<ArticlesPageMenu refresh={refetch} variant="offline" req={req} />}>
-      {render(data, error, loading)}
+      {render(loading, data, error)}
     </Page>
   )
 }

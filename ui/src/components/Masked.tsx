@@ -18,7 +18,7 @@ export default ({ value }: Props) => {
   return (
     <div>
       <input type="text" readOnly ref={ref} className="masked" value={value} />
-      <ButtonIcon icon="file_copy" onClick={copyToClipboard} title="Copy API key to the clipboard" />
+      <ButtonIcon icon="file_copy" onClick={copyToClipboard} title="Copy to the clipboard" />
     </div>
   )
 }

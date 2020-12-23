@@ -14,8 +14,8 @@ type DB interface {
 	UserRepository
 	CategoryRepository
 	ArticleRepository
-	APIKeyRepository
-	ArchiverRepository
+	IncomingWebhookRepository
+	OutgoingWebhookRepository
 	DeviceRepository
 	PropertiesRepository
 }
@@ -35,7 +35,7 @@ func NewDB(conn string) (DB, error) {
 		if err != nil {
 			return nil, err
 		}
-		log.Info().Str("component", "database").Str("uri", u.String()).Msg("using PostgreSQL database")
+		log.Info().Str("component", "database").Str("uri", u.Redacted()).Msg("using PostgreSQL database")
 	default:
 		return nil, fmt.Errorf("unsupported database: %s", provider)
 	}

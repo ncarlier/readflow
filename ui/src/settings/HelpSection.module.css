@@ -1,0 +1,36 @@
+.help {
+  display: flex;
+  font-style: italic;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.help > span {
+  flex: 1 1 auto;
+  margin-left: 1em;
+}
+
+.help table {
+  width: 100%;
+  max-width: 100%;
+  background-color: transparent;
+  margin-top: 1em;
+}
+.help table tr:first-child {
+  border: none;
+}
+.help table tr {
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+.help table th {
+  text-align: inherit;
+}
+.help table th,
+.help table td {
+  border: inherit;
+  padding: .75rem;
+}
+.help table td a {
+  text-decoration: none;
+  color: inherit;
+}

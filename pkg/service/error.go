@@ -5,14 +5,17 @@ import "errors"
 // ErrCategoryNotFound if a category is not found
 var ErrCategoryNotFound = errors.New("category not found")
 
-// ErrAPIKeyNotFound if an API key is not found
-var ErrAPIKeyNotFound = errors.New("API key not found")
+// ErrIncomingWebhookNotFound if an incoming webhook service is not found
+var ErrIncomingWebhookNotFound = errors.New("incoming webhook not found")
 
-// ErrArchiverNotFound if an archiver is not found
-var ErrArchiverNotFound = errors.New("archiver not found")
+// ErrOutgoingWebhookNotFound if an outgoing webhook service is not found
+var ErrOutgoingWebhookNotFound = errors.New("outgoing webhook not found")
 
 // ErrDeviceNotFound if a device is not found
 var ErrDeviceNotFound = errors.New("device not found")
 
 // ErrUserQuotaReached if an user reach its quota
 var ErrUserQuotaReached = errors.New("user quota reached")
+
+// ErrOutgoingWebhookSend if an article can not be send to the outgoing webhook
+var ErrOutgoingWebhookSend = errors.New("unable to send article to outgoing webhook")

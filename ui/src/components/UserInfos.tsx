@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-target-blank */
 import gql from 'graphql-tag'
 import React from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/client'
 
 import authService from '../auth'
 import ErrorPanel from '../error/ErrorPanel'
@@ -53,8 +53,7 @@ export default () => {
         </a>
       </>
     ),
-    Other: () => <ErrorPanel>Unable to fetch current user infos!</ErrorPanel>,
   })
 
-  return <div className={styles.userInfos}>{render(data, error, loading)}</div>
+  return <div className={styles.userInfos}>{render(loading, data, error)}</div>
 }

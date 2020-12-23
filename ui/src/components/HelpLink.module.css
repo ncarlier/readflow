@@ -1,7 +1,7 @@
 
 .help {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-  font-size: 12px;
+  font-size: smaller;
   font-weight: 500;
   color: gray;
   display: inline-flex;

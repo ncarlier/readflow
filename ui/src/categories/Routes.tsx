@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/client'
 import { Route, RouteComponentProps, Switch, useRouteMatch } from 'react-router-dom'
 
 import ArticlePage from '../articles/ArticlePage'
@@ -55,8 +55,7 @@ export default () => {
         return <ErrorPage title="Not found">Category #${id} not found.</ErrorPage>
       }
     },
-    Other: () => <ErrorPage>Unable to fetch category #${id} details!</ErrorPage>,
   })
 
-  return <>{render(data, error, loading)}</>
+  return <>{render(loading, data, error)}</>
 }

@@ -23,6 +23,9 @@ export default () => {
   }
 
   useEffect(() => {
+    if (localConfiguration == null) {
+      return
+    }
     const { theme } = localConfiguration
     console.log(`applying ${theme} theme`)
     if (theme === 'auto') {

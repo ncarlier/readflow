@@ -1,0 +1,21 @@
+.settings section > header {
+  display: flex;
+  padding-bottom: 1em;
+  border-bottom: 1px solid rgba(0,0,0,.12);
+}
+
+.settings section > header > h2 {
+  flex-grow: 1;
+  font-weight: 400;
+  margin: 0;
+  align-self: center;
+}
+.settings section > header > h2 > img {
+  margin-right: .5em;
+}
+
+.settings section > header > a,
+.settings section > header > button {
+  margin-left: 1em;
+  align-self: baseline;
+}

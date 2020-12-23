@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/client'
 import { RouteComponentProps } from 'react-router'
 
 import { GetCategoryResponse } from '../../categories/models'
@@ -31,8 +31,7 @@ export default ({ history, match }: AllProps) => {
         return <ErrorPanel title="Not found">Category #${id} not found.</ErrorPanel>
       }
     },
-    Other: () => <ErrorPanel>Unable to fetch category #${id} details!</ErrorPanel>,
   })
 
-  return <Panel>{render(data, error, loading)}</Panel>
+  return <Panel>{render(loading, data, error)}</Panel>
 }
