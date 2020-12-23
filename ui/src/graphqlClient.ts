@@ -23,7 +23,7 @@ const authenticationLink = setContext(async (_, { headers }) => {
     return {
       headers: {
         ...headers,
-        Aauthorization: 'Bearer ' + user.access_token,
+        Authorization: 'Bearer ' + user.access_token,
       },
     }
   }
