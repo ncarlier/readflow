@@ -28,14 +28,14 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		if err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", form.Title).Msg("unable to create article")
+			).Str("title", form.TruncatedTitle()).Msg("unable to create article")
 			return nil, err
 		}
 		if totalArticles >= plan.TotalArticles {
 			err = ErrUserQuotaReached
 			reg.logger.Debug().Err(err).Uint(
 				"uid", uid,
-			).Str("title", form.Title).Uint(
+			).Str("title", form.TruncatedTitle()).Uint(
 				"total", totalArticles,
 			).Msg("unable to create article")
 			return nil, err
@@ -51,7 +51,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		if err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", form.Title).Msg("unable to create article")
+			).Str("title", form.TruncatedTitle()).Msg("unable to create article")
 			return nil, err
 		}
 		category = cat
@@ -62,7 +62,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		if err := reg.ProcessArticleByRuleEngine(ctx, &form); err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", form.Title).Msg("unable to create article")
+			).Str("title", form.TruncatedTitle()).Msg("unable to create article")
 			return nil, err
 		}
 	}
@@ -72,7 +72,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		if err := reg.hydrateArticle(ctx, &form); err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Str("title", form.Title).Msg("unable to fetch original article")
+			).Str("title", form.TruncatedTitle()).Msg("unable to fetch original article")
 			// TODO excerpt and image should be extracted from HTML content
 			if !opts.IgnoreHydrateError {
 				return nil, err
@@ -82,17 +82,17 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 
 	reg.logger.Debug().Uint(
 		"uid", uid,
-	).Str("title", form.Title).Msg("creating article...")
+	).Str("title", form.TruncatedTitle()).Msg("creating article...")
 	article, err := reg.db.CreateArticleForUser(uid, form)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
-		).Str("title", form.Title).Msg("unable to create article")
+		).Str("title", form.TruncatedTitle()).Msg("unable to create article")
 		return nil, err
 	}
 	reg.logger.Info().Uint(
 		"uid", uid,
-	).Str("title", article.Title).Uint("id", article.ID).Msg("article created")
+	).Str("title", form.TruncatedTitle()).Uint("id", article.ID).Msg("article created")
 	event.Emit(event.CreateArticle, *article)
 	return article, nil
 }
