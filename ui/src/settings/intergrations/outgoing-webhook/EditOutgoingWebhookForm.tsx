@@ -12,7 +12,7 @@ import FormSelectField from '../../../components/FormSelectField'
 import { MessageContext } from '../../../context/MessageContext'
 import ErrorPanel from '../../../error/ErrorPanel'
 import { getGQLError, isValidForm } from '../../../helpers'
-import { OutgoingWebhook, CreateOrUpdateOutgoingWebhookResponse } from './models'
+import { OutgoingWebhook, CreateOrUpdateOutgoingWebhookResponse, CreateOrUpdateOutgoingWebhookRequest } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
 import { CreateOrUpdateOutgoingWebhook } from './queries'
 import WallabagConfigForm from './providers/WallabagConfigForm'
@@ -37,13 +37,14 @@ export default ({ data, history }: Props) => {
     provider: data.provider,
     is_default: data.is_default,
   })
-  const [editOutgoingWebhookMutation] = useMutation<CreateOrUpdateOutgoingWebhookResponse, OutgoingWebhook>(
-    CreateOrUpdateOutgoingWebhook
-  )
+  const [editOutgoingWebhookMutation] = useMutation<
+    CreateOrUpdateOutgoingWebhookResponse,
+    CreateOrUpdateOutgoingWebhookRequest
+  >(CreateOrUpdateOutgoingWebhook)
   const { showMessage } = useContext(MessageContext)
 
   const editOutgoingWebhook = useCallback(
-    async (webhook: OutgoingWebhook) => {
+    async (webhook: CreateOrUpdateOutgoingWebhookRequest) => {
       try {
         await editOutgoingWebhookMutation({
           variables: webhook,

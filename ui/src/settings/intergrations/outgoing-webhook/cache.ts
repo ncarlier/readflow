@@ -25,3 +25,13 @@ export const updateCacheAfterCreate = (
     proxy.writeQuery<GetOutgoingWebhooksResponse>({ data: { outgoingWebhooks }, query: GetOutgoingWebhooks })
   }
 }
+
+export const updateCacheAfterDelete = (ids: number[]) => (proxy: DataProxy) => {
+  const previousData = proxy.readQuery<GetOutgoingWebhooksResponse>({
+    query: GetOutgoingWebhooks,
+  })
+  if (previousData) {
+    const outgoingWebhooks = previousData.outgoingWebhooks.filter((webhook) => !ids.includes(webhook.id))
+    proxy.writeQuery<GetOutgoingWebhooksResponse>({ data: { outgoingWebhooks }, query: GetOutgoingWebhooks })
+  }
+}

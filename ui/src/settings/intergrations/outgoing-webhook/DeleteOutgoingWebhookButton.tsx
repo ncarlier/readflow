@@ -7,6 +7,7 @@ import ConfirmDialog from '../../../components/ConfirmDialog'
 import { getGQLError } from '../../../helpers'
 import { DeleteOutgoingWebhookRequest, DeleteOutgoingWebhookResponse } from './models'
 import { DeleteOutgoingWebhooks } from './queries'
+import { updateCacheAfterDelete } from './cache'
 
 interface Props {
   selection: number[]
@@ -24,6 +25,7 @@ export default ({ selection, onSuccess, onError }: Props) => {
       try {
         const res = await deleteOutgoingWebhooksMutation({
           variables: { ids },
+          update: updateCacheAfterDelete(ids),
         })
         if (res.data) {
           const nb = res.data.deleteOutgoingWebhooks

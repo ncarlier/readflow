@@ -14,7 +14,7 @@ import ErrorPanel from '../../../error/ErrorPanel'
 import { getGQLError, isValidForm } from '../../../helpers'
 import { usePageTitle } from '../../../hooks'
 import { updateCacheAfterCreate } from './cache'
-import { OutgoingWebhook, CreateOrUpdateOutgoingWebhookResponse } from './models'
+import { OutgoingWebhook, CreateOrUpdateOutgoingWebhookResponse, CreateOrUpdateOutgoingWebhookRequest } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
 import { CreateOrUpdateOutgoingWebhook } from './queries'
 import WallabagConfigForm from './providers/WallabagConfigForm'
@@ -38,15 +38,16 @@ export default ({ history }: RouteComponentProps) => {
     isDefault: false,
   })
 
-  const [addOutgoingWebhookMutation] = useMutation<CreateOrUpdateOutgoingWebhookResponse, OutgoingWebhook>(
-    CreateOrUpdateOutgoingWebhook
-  )
+  const [addOutgoingWebhookMutation] = useMutation<
+    CreateOrUpdateOutgoingWebhookResponse,
+    CreateOrUpdateOutgoingWebhookRequest
+  >(CreateOrUpdateOutgoingWebhook)
 
   const addOutgoingWebhook = useCallback(
-    async (service: OutgoingWebhook) => {
+    async (outgoingWebhook: CreateOrUpdateOutgoingWebhookRequest) => {
       try {
         const res = await addOutgoingWebhookMutation({
-          variables: service,
+          variables: outgoingWebhook,
           update: updateCacheAfterCreate,
         })
         if (res.data) {

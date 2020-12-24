@@ -1,5 +1,5 @@
 export interface OutgoingWebhook {
-  id?: number
+  id: number
   alias: string
   provider: string
   config: string
@@ -14,6 +14,14 @@ export interface GetOutgoingWebhooksResponse {
 
 export interface GetOutgoingWebhookResponse {
   outgoingWebhook: OutgoingWebhook
+}
+
+export interface CreateOrUpdateOutgoingWebhookRequest {
+  id?: number
+  alias: string
+  provider: string
+  config: string
+  is_default: boolean
 }
 
 export interface CreateOrUpdateOutgoingWebhookResponse {
