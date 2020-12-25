@@ -7,7 +7,7 @@ weight = 7
 You can install readflow on your system.
 To do this go to [the preferences screen](https://readflow.app/settings/preferences):
 
-![](images/settings.png)
+![](settings.png)
 
 And click on the `Install` button.
 
