@@ -41,6 +41,6 @@ export default ({ data }: Props) => (
         </table>
       )}
     </span>
-    <HelpLink href="https://about.readflow.app/docs/en/third-party/create/integration-api/">Help</HelpLink>
+    <HelpLink href="https://about.readflow.app/docs/en/integrations/incoming-webhook/">Help</HelpLink>
   </HelpSection>
 )
