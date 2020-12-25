@@ -8,11 +8,11 @@ Un webhook entrant permet à un service tiers de créer du contenu dans readflow
 
 Pour ajouter un webhook entrant, allez sur [l'écran de configuration des intégrations](https://readflow.app/settings/integrations).
 
-![](images/integrations.png)
+![](integrations.png)
 
 Cliquez sur le bouton `Add` pour ajouter un webhook entrant:
 
-![](images/add-incoming-webhook.png)
+![](add-incoming-webhook.png)
 
 Saisissez un alias pour votre webhook.
 

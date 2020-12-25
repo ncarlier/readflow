@@ -8,11 +8,11 @@ An incoming webhook allows a third party service to create content in readflow.
 
 To add an incoming webhook, go to [the integration configuration screen](https://readflow.app/settings/integrations).
 
-![](images/integrations.png)
+![](integrations.png)
 
 Click the `Add` button to add an incoming webhook:
 
-![](images/add-incoming-webhook.png)
+![](add-incoming-webhook.png)
 
 Enter an alias for your webhook.
 
