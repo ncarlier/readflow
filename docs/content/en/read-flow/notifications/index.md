@@ -6,13 +6,16 @@ weight = 6
 
 It is possible to receive notifications when the reading flow contains articles.
 
-The first time you use readflow, your browser must ask you for permission to use notifications.
+To subscribe to notifications, you must go to [the preferences screen](https://readflow.app/settings/preferences) and activate the notification button.
+
+![](images/activate.png)
+
+Your browser must ask for permission to use notifications.
 You must accept to be able to subscribe to notifications.
 
 ![](images/allow.png)
 
-To subscribe to notifications, simply click on the small bell {{< icon name="bell" size="large" >}} on [the configuration screen](https://readflow.app/settings).
-You can then click on it again to stop receiving notifications.
+You can disable notifications at any time.
 
 {{% notice note %}}
 Notifications are attached to the browser and device used.

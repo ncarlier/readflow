@@ -6,13 +6,16 @@ weight = 6
 
 Il est possible de recevoir des notifications lorsque le flux de lecture contient des articles.
 
-A la première utilisation de readflow, votre navigateur doit vous demander l'autorisation d'utiliser les notifications.
+Pour souscrire aux notifications, vous devez vous rendre sur [l'écran des préférences](https://readflow.app/settings/preferences) et activer le bouton des notifications.
+
+![](images/activate.png)
+
+Votre navigateur doit vous demander l'autorisation d'utiliser les notifications.
 Vous devez accepter pour pouvoir souscrire aux notifications.
 
 ![](images/allow.png)
 
-Pour souscrire aux notifications, il suffit de cliquer sur la petite cloche {{< icon name="bell" size="large" >}} sur [l'écran de configuration](https://readflow.app/settings).
-Vous pouvez par la suite cliquer à nouveau dessus pour arrêter de recevoir des notifications.
+Vous pouvez désactiver les notifications à tout moment.
 
 {{% notice note %}}
 Les notifications sont attachées au navigateur et appareil utilisés.

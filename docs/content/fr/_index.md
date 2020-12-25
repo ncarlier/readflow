@@ -10,10 +10,10 @@ weight = 1
 
 ## Les principales fonctionnalités
 
-* [Ajouter](read-flow) à votre flux de lecture des pages Web nettoyées de leur contenu indésirable
-* [Organiser](read-flow/organize) vos flux de lecture
-* Être [notifié](read-flow/notifications) quand votre flux de lecture contient des nouveaux articles
-* [Intégrer des services tiers](third-party) pour étendre les possibilités
+* [Ajouter](read-flow) à votre flux de lecture des pages Web nettoyées de leur contenu indésirable.
+* [Organiser](read-flow/categories) vos flux de lecture.
+* Être [notifié](read-flow/notifications) quand votre flux de lecture contient des nouveaux articles.
+* [Intégrer des services tiers](integrations) pour étendre les possibilités.
 
 ## Contribuer à cette documentation
 

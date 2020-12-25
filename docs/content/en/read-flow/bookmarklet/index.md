@@ -4,9 +4,9 @@ description = "Add an article during web browsing using a bookmarklet"
 weight = 4
 +++
 
-To create a bookmarklet, you must first have [declared an API key](../../third-party/create/integration-api/api-key).
+To create a bookmarklet, you must first have [created an incoming webhook](../../integrations/incoming-webhook).
 
-Once the API key has been created, you can drag the bookmarklet icon {{< icon name="bookmark" size="large" >}} into your browser's favorites.
+Once the webhook has been created, you can drag the bookmarklet icon {{< icon name="bookmark" size="large" >}} into your browser's favorites.
 
 You can rename the bookmarklet as you wish.
 

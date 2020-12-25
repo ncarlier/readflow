@@ -4,9 +4,9 @@ description = "Ajouter un article pendant la navigation web en utilisant une boo
 weight = 4
 +++
 
-Pour créer une bookmarklet, vous devez au préalable avoir [déclaré une clé d'API](../../third-party/create/integration-api/api-key).
+Pour créer une bookmarklet, vous devez au préalable avoir [créé un webhook entrant](../../integrations/incoming-webhook).
 
-Une fois la clé d'API créée, vous pouvez glisser déposer l'icône de la bookmarklet {{< icon name="bookmark" size="large" >}} dans les favoris de votre navigateur.
+Une fois le webhook créé, vous pouvez glisser déposer l'icône de la bookmarklet {{< icon name="bookmark" size="large" >}} dans les favoris de votre navigateur.
 
 Vous pouvez renommer la bookmarklet comme bon vous semble.
 

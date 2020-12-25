@@ -13,6 +13,7 @@ Clicking on this button opens a window for adding a link:
 ![](images/add-form.png)
 
 Enter a valid link.
+You can also specify a category.
 If the page is readable it will be added to the reading flow.
 
 A page can only be added once.

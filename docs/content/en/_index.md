@@ -6,15 +6,14 @@ weight = 2
 
 # readflow
 
-[readflow](https://github.com/ncarlier/readflow) is a
-personal news reader service.
+[readflow](https://github.com/ncarlier/readflow) is a personal news reader service.
 
 ## Main features
 
-* [Add](read-flow) web pages to your reading flow that have been cleaned of unwanted content
-* [Organize](read-flow/organize) your reading flows
-* Be [notified](read-flow/notifications) when your reading feed contains new articles
-* [Integrate third-party services](third-party) to extend capabilities
+* [Add](read-flow) web pages to your reading flow that have been cleaned of unwanted content.
+* [Organize](read-flow/categories) your reading flows.
+* Be [notified](read-flow/notifications) when your reading feed contains new articles.
+* [Integrate third-party services](integrations) to extend capabilities.
 
 ## Contribute to this documentation
 

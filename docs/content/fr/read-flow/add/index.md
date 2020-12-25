@@ -13,6 +13,7 @@ En cliquant sur ce bouton vous ouvrez une fenêtre d'ajout de lien:
 ![](images/add-form.png)
 
 Saisissez un lien valide.
+Vous pouvez également spécifier une catégorie.
 Si la page est lisible elle sera ajoutée au flux de lecture.
 
 Une page ne peut être ajoutée qu'une fois dans un flux.
