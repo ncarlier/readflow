@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { NetworkStatus, useQuery } from '@apollo/client'
 import { RouteComponentProps } from 'react-router'
 
 import { Category } from '../categories/models'
@@ -18,6 +18,7 @@ import { ArticleStatus, GetArticlesRequest, GetArticlesResponse } from './models
 import { GetArticles } from './queries'
 import { useMedia } from '../hooks'
 import Search from './components/Search'
+import Center from '../components/Center'
 
 type Variant = 'unread' | 'history' | 'starred'
 
@@ -98,11 +99,11 @@ type AllProps = Props & RouteComponentProps
 export default (props: AllProps) => {
   const { variant, category } = props
 
-  const [reloading, setReloading] = useState(false)
   const { localConfiguration } = useContext(LocalConfigurationContext)
   const [req] = useState<GetArticlesRequest>(buildArticlesRequest(variant, props, localConfiguration))
-  const { data, error, loading, fetchMore, refetch } = useQuery<GetArticlesResponse>(GetArticles, {
+  const { data, error, loading, fetchMore, refetch, networkStatus } = useQuery<GetArticlesResponse>(GetArticles, {
     variables: req,
+    notifyOnNetworkStatusChange: true,
   })
   const isMobileDisplay = useMedia('(max-width: 767px)')
 
@@ -133,16 +134,18 @@ export default (props: AllProps) => {
 
   const refresh = useCallback(async () => {
     console.log('re-fetching articles...')
-    setReloading(true)
     const { errors } = await refetch()
     if (errors) {
       console.error(errors)
     }
-    setReloading(false)
   }, [refetch])
 
   const render = matchResponse<GetArticlesResponse>({
-    Loading: () => <Loader />,
+    Loading: () => (
+      <Center>
+        <Loader />,
+      </Center>
+    ),
     Error: (err) => (
       <Panel>
         <ErrorPanel>{err.message}</ErrorPanel>
@@ -187,9 +190,12 @@ export default (props: AllProps) => {
     </>
   )
 
+  const refetching = networkStatus === NetworkStatus.refetch
+
   return (
     <Page title={title} header={<Appbar title={title} actions={$actions} />}>
-      {render(loading || reloading, data, error)}
+      {refetching && <Loader center />}
+      {render(loading && !refetching, data, error)}
     </Page>
   )
 }

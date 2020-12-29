@@ -35,7 +35,7 @@ const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
   const { data, error, loading } = useQuery<GetCurrentUserResponse>(GetCurrentUser)
 
   const render = matchResponse<GetCurrentUserResponse>({
-    Loading: () => <Loader />,
+    Loading: () => <Loader center />,
     Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
     Data: (data) => {
       let plan = plans.find((p) => p.name === data.me.plan)
@@ -64,7 +64,7 @@ export default () => {
   const { data, error, loading } = useQuery<GetPlansResponse>(GetPlans)
 
   const render = matchResponse<GetPlansResponse>({
-    Loading: () => <Loader />,
+    Loading: () => <Loader center />,
     Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
     Data: (data) => {
       if (data.plans.length === 0) {

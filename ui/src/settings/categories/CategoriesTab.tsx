@@ -89,7 +89,7 @@ export default ({ match }: RouteComponentProps) => {
   )
 
   const render = matchResponse<GetCategoriesResponse>({
-    Loading: () => <Loader />,
+    Loading: () => <Loader center />,
     Error: (err) => <ErrorPanel title="Unable to fetch categories">{err.message}</ErrorPanel>,
     Data: (data) => (
       <DataTable

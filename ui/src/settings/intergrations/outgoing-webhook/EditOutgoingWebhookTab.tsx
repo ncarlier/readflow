@@ -22,7 +22,7 @@ export default ({ history, match }: AllProps) => {
   })
 
   const render = matchResponse<GetOutgoingWebhookResponse>({
-    Loading: () => <Loader />,
+    Loading: () => <Loader center />,
     Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
     Data: ({ outgoingWebhook }) => {
       if (outgoingWebhook) {

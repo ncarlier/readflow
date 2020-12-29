@@ -32,7 +32,7 @@ export default withRouter(({ location }: RouteComponentProps) => {
   }
 
   const renderCategories = matchResponse<GetCategoriesResponse>({
-    Loading: () => <Loader />,
+    Loading: () => <Loader center />,
     Error: (err) => <span>{err.message}</span>,
     Data: (data) => (
       <ul>

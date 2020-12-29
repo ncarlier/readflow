@@ -44,8 +44,8 @@ export default (props: Props) => {
     }
   }, [SendArticleToOutgoingWebhookMutation, article, webhook, showMessage, showErrorMessage])
 
-  if (loading) {
-    return <Loader />
+  if (!loading) {
+    return <Loader center />
   }
 
   return (

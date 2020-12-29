@@ -22,7 +22,7 @@ const OutgoingWebhooksMenuItems = (attrs: Props) => {
   const render = matchResponse<GetOutgoingWebhooksResponse>({
     Loading: () => (
       <li>
-        <Loader />
+        <Loader center />
       </li>
     ),
     Error: (err) => <li>{err.message}</li>,

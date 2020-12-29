@@ -4,6 +4,7 @@ import { useLocation } from 'react-router'
 import ArticleList from '../articles/components/ArticleList'
 import ArticlesPageMenu from '../articles/components/ArticlesPageMenu'
 import { GetArticlesRequest, GetArticlesResponse } from '../articles/models'
+import Center from '../components/Center'
 import Loader from '../components/Loader'
 import Panel from '../components/Panel'
 import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
@@ -56,7 +57,11 @@ export const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: O
   }, [fetchOfflineArticles, req])
 
   const render = matchState<GetArticlesResponse>({
-    Loading: () => <Loader />,
+    Loading: () => (
+      <Center>
+        <Loader />
+      </Center>
+    ),
     Error: (err) => (
       <Panel>
         <ErrorPanel>{err.message}</ErrorPanel>

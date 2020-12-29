@@ -1,33 +1,12 @@
 
 .overlay {
   z-index: 999;
-  height: 100%;
-  width: 100%;
-  text-align: center;
 }
 
 .blur {
   position: absolute !important;
   background-color: #ffffff80;
-}
-
-@keyframes donut-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.spinner {
-  display: inline-block;
-  position: relative;
-  top: 50%;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: var(--button-primary-color);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: donut-spin 1.2s linear infinite;
+  height: 100%;
+  width: 100%;
+  text-align: center;
 }

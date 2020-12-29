@@ -11,6 +11,7 @@ import Page from '../layout/Page'
 import { GetCategoryResponse } from './models'
 import { GetCategory } from './queries'
 import AddArticlePage from '../articles/AddArticlePage'
+import Center from '../components/Center'
 
 export default () => {
   const match = useRouteMatch<{ id: string }>()
@@ -23,7 +24,9 @@ export default () => {
   const render = matchResponse<GetCategoryResponse>({
     Loading: () => (
       <Page>
-        <Loader />
+        <Center>
+          <Loader />
+        </Center>
       </Page>
     ),
     Error: (err) => <ErrorPage>{err.message}</ErrorPage>,

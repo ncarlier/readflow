@@ -3,10 +3,10 @@ import { useApolloClient } from '@apollo/client'
 
 import { Category } from '../../categories/models'
 import Button from '../../components/Button'
-import Loader from '../../components/Loader'
 import Panel from '../../components/Panel'
 import { GetArticlesResponse } from '../models'
 import { GetNbNewArticles } from '../queries'
+import usePageVisibility from '../../hooks/usePageVisibility'
 
 const NewArticlesLabel = ({ nb }: { nb: number }) => {
   switch (true) {
@@ -28,15 +28,17 @@ interface Props {
 }
 
 export default ({ current, category, refresh }: Props) => {
-  const [loading, setLoading] = useState(false)
   const [nbItems, setNbItems] = useState(0)
+  const visibility = usePageVisibility()
 
   const client = useApolloClient()
 
   const reload = useCallback(async () => {
-    setLoading(true)
-    await refresh()
-    // No need to reset loading state because this componemt will be unmounted
+    try {
+      await refresh()
+    } finally {
+      setNbItems(0)
+    }
   }, [refresh])
 
   const getNbArticlesToRead = useCallback(
@@ -68,18 +70,20 @@ export default ({ current, category, refresh }: Props) => {
     }
   }, [current, getNbArticlesToRead])
 
-  switch (true) {
-    case loading:
-      return <Loader />
-    case nbItems !== 0:
-      return (
-        <Panel style={{ flex: '0 0 auto' }}>
-          <Button onClick={reload}>
-            <NewArticlesLabel nb={nbItems} />
-          </Button>
-        </Panel>
-      )
-    default:
-      return null
+  useEffect(() => {
+    if (visibility) {
+      reload()
+    }
+  }, [visibility, reload])
+
+  if (nbItems !== 0) {
+    return (
+      <Panel style={{ flex: '0 0 auto' }}>
+        <Button onClick={reload}>
+          <NewArticlesLabel nb={nbItems} />
+        </Button>
+      </Panel>
+    )
   }
+  return null
 }

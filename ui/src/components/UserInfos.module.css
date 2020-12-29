@@ -1,6 +1,5 @@
 .userInfos {
   display: flex;
-  justify-content: flex-end;
   align-content: center;
   flex: 0 0 auto;
 }

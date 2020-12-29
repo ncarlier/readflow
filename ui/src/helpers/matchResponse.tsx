@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 export interface GQLResponsePattern<T> {
   Loading: () => ReactNode
@@ -10,11 +10,16 @@ export interface GQLResponsePattern<T> {
 export function matchResponse<T>(
   p: GQLResponsePattern<T>
 ): (loading: boolean, data?: T, error?: ApolloError | Error) => ReactNode {
-  return (loading: boolean, data?: T, error?: ApolloError | Error): ReactNode => (
-    <>
-      {loading && p.Loading()}
-      {error && p.Error(error)}
-      {data && p.Data(data)}
-    </>
-  )
+  return (loading: boolean, data?: T, error?: ApolloError | Error): ReactNode => {
+    if (loading) {
+      return p.Loading()
+    }
+    if (error !== undefined) {
+      return p.Error(error)
+    }
+    if (data !== undefined) {
+      return p.Data(data)
+    }
+    return null
+  }
 }

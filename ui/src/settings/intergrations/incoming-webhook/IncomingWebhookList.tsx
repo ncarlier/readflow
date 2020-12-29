@@ -9,6 +9,7 @@ import TimeAgo from '../../../components/TimeAgo'
 import ErrorPanel from '../../../error/ErrorPanel'
 import { GetIncomingWebhooksResponse, IncomingWebhook } from './models'
 import { GetIncomingWebhooks } from './queries'
+import { matchResponse } from '../../../helpers'
 
 const definition = [
   {
@@ -48,18 +49,17 @@ interface Props {
 export default ({ onSelected }: Props) => {
   const { data, error, loading } = useQuery<GetIncomingWebhooksResponse>(GetIncomingWebhooks)
 
-  return (
-    <section>
-      {loading && <Loader />}
-      {error && <ErrorPanel title="Unable to fetch incoming webhooks">{error.message}</ErrorPanel>}
-      {data && (
-        <DataTable
-          definition={definition}
-          data={data.incomingWebhooks}
-          onSelected={onSelected}
-          emptyMessage="No incoming webhook yet"
-        />
-      )}
-    </section>
-  )
+  const render = matchResponse<GetIncomingWebhooksResponse>({
+    Loading: () => <Loader center />,
+    Error: (err) => <ErrorPanel title="Unable to fetch incoming webhooks">{err.message}</ErrorPanel>,
+    Data: (d) => (
+      <DataTable
+        definition={definition}
+        data={d.incomingWebhooks}
+        onSelected={onSelected}
+        emptyMessage="No incoming webhook yet"
+      />
+    ),
+  })
+  return <section>{render(loading, data, error)}</section>
 }

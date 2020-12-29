@@ -7,6 +7,7 @@ import ArticleHeader from '../articles/components/ArticleHeader'
 import ArticleMenu from '../articles/components/ArticleMenu'
 import { Article } from '../articles/models'
 import ButtonIcon from '../components/ButtonIcon'
+import Center from '../components/Center'
 import Loader from '../components/Loader'
 import Panel from '../components/Panel'
 import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
@@ -28,7 +29,11 @@ export const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle
   }, [fetchOfflineArticle, id])
 
   const render = matchResponse<Article>({
-    Loading: () => <Loader />,
+    Loading: () => (
+      <Center>
+        <Loader />
+      </Center>
+    ),
     Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
     Data: (article) => {
       if (article) {
