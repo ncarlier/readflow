@@ -101,7 +101,7 @@ export default (props: AllProps) => {
 
   const { localConfiguration } = useContext(LocalConfigurationContext)
   const [req] = useState<GetArticlesRequest>(buildArticlesRequest(variant, props, localConfiguration))
-  const { data, error, loading, fetchMore, refetch, networkStatus } = useQuery<GetArticlesResponse>(GetArticles, {
+  const { data, error, fetchMore, refetch, networkStatus } = useQuery<GetArticlesResponse>(GetArticles, {
     variables: req,
     notifyOnNetworkStatusChange: true,
   })
@@ -190,12 +190,13 @@ export default (props: AllProps) => {
     </>
   )
 
+  const loading = networkStatus === NetworkStatus.loading
   const refetching = networkStatus === NetworkStatus.refetch
 
   return (
     <Page title={title} header={<Appbar title={title} actions={$actions} />}>
       {refetching && <Loader center />}
-      {render(loading && !refetching, data, error)}
+      {render(loading, data, error)}
     </Page>
   )
 }
