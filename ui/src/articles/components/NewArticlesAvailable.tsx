@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 
 import { Category } from '../../categories/models'
@@ -30,6 +30,7 @@ interface Props {
 export default ({ current, category, refresh }: Props) => {
   const [nbItems, setNbItems] = useState(0)
   const visibility = usePageVisibility()
+  const visibilityDetectionRef = useRef(false)
 
   const client = useApolloClient()
 
@@ -71,8 +72,10 @@ export default ({ current, category, refresh }: Props) => {
   }, [current, getNbArticlesToRead])
 
   useEffect(() => {
-    if (visibility) {
+    if (visibilityDetectionRef.current && visibility) {
       reload()
+    } else {
+      visibilityDetectionRef.current = true
     }
   }, [visibility, reload])
 
