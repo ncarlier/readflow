@@ -10,7 +10,7 @@ import { isNotificationGranted, isNotificationSupported, subscribePush, unSubscr
 import { CreatePushSubscriptionResponse, DeletePushSubscriptionResponse, GetDeviceResponse } from '../components/models'
 import { CreatePushSubscription, DeletePushSubscription, GetDevice } from '../components/queries'
 
-const DEVICE_ID = 'device_id'
+const deviceIdKey = 'readflow.deviceId'
 
 interface NotificationSupportProps {
   children: ReactNode
@@ -52,7 +52,7 @@ const NotificationError = ({ reset, err }: NotificationErrorProps) => (
 
 const NotificationSwitch = () => {
   const [activated, setActivated] = useState(false)
-  const [pushID, setPushID] = useState(localStorage.getItem(DEVICE_ID))
+  const [pushID, setPushID] = useState(localStorage.getItem(deviceIdKey))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const client = useApolloClient()
@@ -60,7 +60,7 @@ const NotificationSwitch = () => {
   const [createPushSubscriptionMutation] = useMutation<CreatePushSubscriptionResponse>(CreatePushSubscription)
 
   const resetSubscription = async () => {
-    localStorage.removeItem(DEVICE_ID)
+    localStorage.removeItem(deviceIdKey)
     setPushID(null)
     setActivated(false)
     try {
@@ -107,7 +107,7 @@ const NotificationSwitch = () => {
         if (res.data) {
           const _id = res.data.createPushSubscription.id
           setPushID(_id.toString())
-          localStorage.setItem(DEVICE_ID, _id.toString())
+          localStorage.setItem(deviceIdKey, _id.toString())
         }
       }
     } catch (err) {

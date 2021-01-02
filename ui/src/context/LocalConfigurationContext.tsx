@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useCallback, useEffect, useState } from 'react'
 
-const key = 'LocalConfiguration'
+const key = 'readflow.localConfiguration'
 
 export type Theme = 'light' | 'dark' | 'auto'
 
@@ -10,6 +10,7 @@ interface SortOrders {
   unread: SortOrder
   offline: SortOrder
   history: SortOrder
+  starred: SortOrder
   [key: string]: SortOrder
 }
 
@@ -23,6 +24,7 @@ const defaultLocalConfiguration: LocalConfiguration = {
   sortOrders: {
     unread: 'asc',
     offline: 'asc',
+    starred: 'asc',
     history: 'desc',
   },
   limit: 10,

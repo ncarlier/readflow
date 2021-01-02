@@ -11,17 +11,19 @@ import configureStore from './configureStore'
 import { getOnlineStatus, isTrustedWebActivity } from './helpers'
 import * as serviceWorker from './serviceWorker'
 
+const lastRunKey = 'readflow.lastRun'
+
 const run = () => {
   const history = createBrowserHistory()
   const initialState = window.initialReduxState
   const store = configureStore(history, initialState)
   ReactDOM.render(<App store={store} history={history} />, document.getElementById('root'))
   serviceWorker.register({ onUpdate: (registration) => store.dispatch(updateAvailable(registration)) })
-  localStorage.setItem('last_run', new Date().toISOString())
+  localStorage.setItem(lastRunKey, new Date().toISOString())
 }
 
 const shouldRedirect = () => {
-  return !isTrustedWebActivity() && localStorage.getItem('last_run') === null && document.location.pathname !== '/login'
+  return !isTrustedWebActivity() && localStorage.getItem(lastRunKey) === null && document.location.pathname !== '/login'
 }
 
 const login = async () => {
