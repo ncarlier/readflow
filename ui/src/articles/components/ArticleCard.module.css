@@ -43,13 +43,20 @@
   padding: 0 1em;
   font-size: small;
   display: flex;
-  align-items: center;
+  align-items: baseline;
+  align-self: end;
   border-radius: inherit;
   width: 100%;
   background-color: var(--panel-body-color);
 }
 .card > footer time {
   flex: 1 1 auto;
+}
+.card > footer time,
+.card > footer > a {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .card > footer > a:after {
   content: "•";
@@ -58,8 +65,8 @@
 .card > footer > a > i {
   font-size: inherit;
   font-variant: initial;
-  padding-left: .2em;
-  vertical-align: bottom;
+  padding-right: .2em;
+  vertical-align: middle;
 }
 
 .active {

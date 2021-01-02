@@ -50,8 +50,8 @@ export default withRouter((props: AllProps) => {
       <footer>
         {article.url !== '' && (
           <a href={article.url} target="_blank" rel="noopener noreferrer" title="Open original article">
-            {getHostname(article.url)}
             <Icon name="open_in_new" />
+            {getHostname(article.url)}
           </a>
         )}
         <TimeAgo dateTime={article.created_at} />
