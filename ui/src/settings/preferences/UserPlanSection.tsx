@@ -72,8 +72,9 @@ export default () => {
       }
       return (
         <section>
-          <h2>User plan</h2>
-          <hr />
+          <header>
+            <h2>User plan</h2>
+          </header>
           <p>Your user plan defines quotas and usage limits.</p>
           <UserPlanBox plans={data.plans} />
         </section>
