@@ -22,8 +22,8 @@ export default () => {
         <InstallationBox />
         <NotificationBox />
         <ThemeBox />
-        <UserPlanSection />
       </section>
+      <UserPlanSection />
       <section>
         <header>
           <h2>Personal data</h2>
