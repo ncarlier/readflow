@@ -113,7 +113,7 @@ func sendArticleToOutgoingWebhookResolver(p graphql.ResolveParams) (interface{},
 		alias = &sVal
 	}
 
-	err := service.Lookup().ArchiveArticle(p.Context, id, alias)
+	err := service.Lookup().SendArticle(p.Context, id, alias)
 	return id, err
 }
 

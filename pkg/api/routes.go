@@ -43,6 +43,13 @@ func routes(conf *config.Config) Routes {
 			middleware.Cors("*"),
 		),
 		route(
+			"/articles/",
+			download(),
+			authnMiddleware,
+			middleware.Methods("GET"),
+			middleware.Cors(origin),
+		),
+		route(
 			"/graphql",
 			graphqlHandler(),
 			authnMiddleware,

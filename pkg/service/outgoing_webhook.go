@@ -140,8 +140,8 @@ func (reg *Registry) DeleteOutgoingWebhooks(ctx context.Context, ids []uint) (in
 	return nb, nil
 }
 
-// ArchiveArticle archive an article using an outgoing webhook
-func (reg *Registry) ArchiveArticle(ctx context.Context, idArticle uint, alias *string) error {
+// SendArticle send an article to outgoing webhook
+func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *string) error {
 	uid := getCurrentUserFromContext(ctx)
 
 	logger := reg.logger.With().Uint(

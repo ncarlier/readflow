@@ -10,6 +10,7 @@ import { Article } from '../models'
 import SendLink from './SendLink'
 import OfflineLink from './OfflineLink'
 import ShareLink from './ShareLink'
+import DownloadLink from './DownloadLink'
 
 interface Props {
   article: Article
@@ -49,6 +50,9 @@ export default (props: Props) => {
             <ShareLink {...attrs} />
           </li>
         )}
+        <li>
+          <DownloadLink {...attrs} />
+        </li>
         <li>
           <OfflineLink {...attrs} />
         </li>

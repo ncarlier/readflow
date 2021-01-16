@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/ncarlier/readflow/pkg/api"
+	"github.com/ncarlier/readflow/pkg/cache"
 	"github.com/ncarlier/readflow/pkg/config"
 	configflag "github.com/ncarlier/readflow/pkg/config/flag"
 	"github.com/ncarlier/readflow/pkg/db"
@@ -76,8 +77,14 @@ func main() {
 		log.Fatal().Err(err).Msg("could not configure database")
 	}
 
+	// Configure download cache
+	downloadCache, err := cache.NewDefault()
+	if err != nil {
+		log.Fatal().Err(err).Msg("could not configure cache")
+	}
+
 	// Configure the service registry
-	err = service.Configure(conf, database, userPlans)
+	err = service.Configure(conf, database, downloadCache, userPlans)
 	if err != nil {
 		database.Close()
 		log.Fatal().Err(err).Msg("could not init service registry")
@@ -128,6 +135,10 @@ func main() {
 			if err := metricsServer.Shutdown(ctx); err != nil {
 				log.Fatal().Err(err).Msg("could not gracefully shutdown metrics server")
 			}
+		}
+
+		if err := downloadCache.Close(); err != nil {
+			log.Error().Err(err).Msg("could not gracefully shutdown cache provider")
 		}
 
 		if err := database.Close(); err != nil {
