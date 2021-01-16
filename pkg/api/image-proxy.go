@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/constant"
 )
 
 const userAgent = "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0"
@@ -65,7 +66,7 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 		}
 
 		// Build image proxy client
-		client := &http.Client{}
+		client := &http.Client{Timeout: constant.DefaultTimeout}
 		req, err := http.NewRequest("GET", conf.ImageProxy+"/resize?"+q.Encode(), nil)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadGateway)

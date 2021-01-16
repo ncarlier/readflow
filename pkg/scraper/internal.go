@@ -11,16 +11,23 @@ import (
 	"time"
 
 	read "github.com/go-shiori/go-readability"
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/html"
 	"golang.org/x/net/html/charset"
 )
 
-type internalWebScraper struct{}
+type internalWebScraper struct {
+	httpClient *http.Client
+}
 
 // NewInternalWebScraper create an internal web scrapping service
 func NewInternalWebScraper() WebScraper {
-	return &internalWebScraper{}
+	return &internalWebScraper{
+		httpClient: &http.Client{
+			Timeout: constant.DefaultTimeout,
+		},
+	}
 }
 
 func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, error) {
@@ -33,7 +40,7 @@ func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, e
 	}
 
 	// Get URL content type
-	contentType, err := getContentType(ctx, url)
+	contentType, err := ws.getContentType(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +50,7 @@ func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, e
 	}
 
 	// Get URL content
-	res, err := get(ctx, url)
+	res, err := ws.get(ctx, url)
 	if err != nil {
 		return nil, err
 	}
@@ -105,24 +112,26 @@ func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, e
 	return result, nil
 }
 
-func getContentType(ctx context.Context, url string) (string, error) {
+func (ws internalWebScraper) getContentType(ctx context.Context, url string) (string, error) {
 	req, err := http.NewRequest("HEAD", url, nil)
 	if err != nil {
 		return "", err
 	}
+	req.Header.Set("User-Agent", constant.UserAgent)
 	req = req.WithContext(ctx)
-	res, err := http.DefaultClient.Do(req)
+	res, err := ws.httpClient.Do(req)
 	if err != nil {
 		return "", err
 	}
 	return res.Header.Get("Content-type"), nil
 }
 
-func get(ctx context.Context, url string) (*http.Response, error) {
+func (ws internalWebScraper) get(ctx context.Context, url string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
+	req.Header.Set("User-Agent", constant.UserAgent)
 	req = req.WithContext(ctx)
-	return http.DefaultClient.Do(req)
+	return ws.httpClient.Do(req)
 }
