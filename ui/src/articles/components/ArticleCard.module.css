@@ -1,5 +1,6 @@
  
 .card {
+  width: inherit;
   max-width: 60rem;
   margin: auto;
   display: flex;
@@ -8,7 +9,6 @@
   border-radius: inherit;
   box-shadow: 0 2px 15px 2px var(--panel-shadow-color);
   color: var(--panel-text-color-alt);
-  /*overflow: hidden;*/
 }
 
 .content {
