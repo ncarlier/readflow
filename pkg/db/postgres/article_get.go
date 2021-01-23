@@ -42,7 +42,7 @@ func (pg *DB) CountArticlesByUser(uid uint, req model.ArticlesPageRequest) (uint
 	}
 
 	if req.Starred != nil {
-		counter = counter.Where(sq.Eq{"starred": *req.Starred})
+		counter = counter.Where(sq.Gt{"stars": 0})
 	}
 	if req.Query != nil && strings.TrimSpace(*req.Query) != "" {
 		counter = counter.Where(sq.Expr("search_vectors @@ websearch_to_tsquery(?)", *req.Query))
@@ -94,16 +94,26 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 	}
 
 	if req.Starred != nil {
-		selectBuilder = selectBuilder.Where(sq.Eq{"starred": *req.Starred})
+		selectBuilder = selectBuilder.Where(sq.Gt{"stars": 0})
 	}
 
 	var offset uint
 	isFullText := req.Query != nil && strings.TrimSpace(*req.Query) != ""
+	isSortedBy := req.SortBy != nil && strings.TrimSpace(*req.SortBy) != "key"
 	if isFullText {
 		// Full-text search query:
 		// Classic Limit-Offset pagination (beware of performance issue)
 		selectBuilder = selectBuilder.Where(sq.Expr("search_vectors @@ websearch_to_tsquery(?)", *req.Query))
 		selectBuilder = selectBuilder.OrderByClause("ts_rank(search_vectors, websearch_to_tsquery(?)) DESC", *req.Query)
+		if req.AfterCursor != nil {
+			offset = *req.AfterCursor
+			selectBuilder = selectBuilder.Offset(uint64(offset))
+		}
+	} else if isSortedBy {
+		// Search query with order by:
+		// Classic Limit-Offset pagination (beware of performance issue)
+		by := strings.TrimSpace(*req.SortBy)
+		selectBuilder = selectBuilder.OrderBy(by + " " + strings.ToUpper(sortOrder))
 		if req.AfterCursor != nil {
 			offset = *req.AfterCursor
 			selectBuilder = selectBuilder.Offset(uint64(offset))
@@ -141,7 +151,7 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 		}
 		if index <= limit {
 			result.Entries = append(result.Entries, article)
-			if isFullText {
+			if isFullText || isSortedBy {
 				result.EndCursor = offset + index
 			} else {
 				result.EndCursor = article.ID

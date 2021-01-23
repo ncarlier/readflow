@@ -3,12 +3,41 @@ import React, { createRef, CSSProperties, MouseEventHandler, ReactNode, useCallb
 import ButtonIcon from './ButtonIcon'
 import styles from './DropdownMenu.module.css'
 
+export interface DropDownOrigin {
+  vertical: 'top' | 'bottom' | number
+  horizontal: 'left' | 'right' | number
+}
+
+const getDropdownOriginStyle = (origin: DropDownOrigin = { horizontal: 'left', vertical: 'bottom' }): CSSProperties => {
+  const result: CSSProperties = {}
+  if (typeof origin.horizontal === 'number') {
+    result.left = origin.horizontal + 'px'
+  } else if (origin.horizontal === 'left') {
+    result.right = 0
+  } else {
+    result.left = '100%'
+  }
+  if (typeof origin.vertical === 'number') {
+    result.bottom = origin.vertical + 'px'
+  } else if (origin.vertical === 'bottom') {
+    result.top = '100%'
+  } else {
+    result.bottom = '100%'
+  }
+
+  return result
+}
+
 interface Props {
   children: ReactNode
   style?: CSSProperties
+  title?: string
+  icon?: string
+  origin?: DropDownOrigin
 }
 
-export default ({ children, style }: Props) => {
+export default (props: Props) => {
+  const { children, icon = 'more_vert', origin, ...attrs } = props
   const ref = createRef<HTMLDetailsElement>()
 
   const handleClickOutside = useCallback(
@@ -16,11 +45,14 @@ export default ({ children, style }: Props) => {
       const $el = e.target
       if (!($el instanceof Element)) return
       if (ref.current) {
+        /*
         const isButton = $el.parentElement && $el.parentElement.tagName === 'BUTTON'
         const $details = $el.closest('details')
         if (!isButton || $details !== ref.current) {
           ref.current.removeAttribute('open')
         }
+        */
+        ref.current.removeAttribute('open')
       }
     },
     [ref]
@@ -43,9 +75,9 @@ export default ({ children, style }: Props) => {
   return (
     <details ref={ref} className={styles.menu}>
       <summary>
-        <ButtonIcon icon="more_vert" onClick={handleClickMenu} />
+        <ButtonIcon icon={icon} {...attrs} onClick={handleClickMenu} />
       </summary>
-      <nav className={styles.nav} style={style} tabIndex={-1}>
+      <nav className={styles.nav} style={getDropdownOriginStyle(origin)} tabIndex={-1}>
         {children}
       </nav>
     </details>

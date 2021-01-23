@@ -11,7 +11,10 @@ export default () => (
           Refresh list<kbd>shift+r</kbd>
         </li>
         <li>
-          Invert list order<kbd>shift+o</kbd>
+          Toggle sort order<kbd>shift+o</kbd>
+        </li>
+        <li>
+          Toggle sort by (if starred)<kbd>shift+b</kbd>
         </li>
         <li>
           Mark all as read (if category or main list)<kbd>shift+m</kbd>

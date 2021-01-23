@@ -1,7 +1,7 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import { useQuery } from '@apollo/client'
 
-import DropdownMenu from '../../components/DropdownMenu'
+import DropdownMenu, { DropDownOrigin } from '../../components/DropdownMenu'
 import Loader from '../../components/Loader'
 import { matchResponse } from '../../helpers'
 import { GetOutgoingWebhooksResponse } from '../../settings/intergrations/outgoing-webhook/models'
@@ -15,7 +15,7 @@ import DownloadLink from './DownloadLink'
 interface Props {
   article: Article
   keyboard?: boolean
-  style?: CSSProperties
+  origin?: DropDownOrigin
 }
 
 const OutgoingWebhooksMenuItems = (attrs: Props) => {
@@ -39,11 +39,11 @@ const OutgoingWebhooksMenuItems = (attrs: Props) => {
 }
 
 export default (props: Props) => {
-  const { style, ...attrs } = props
+  const { origin, ...attrs } = props
   const nvg: any = window.navigator
 
   return (
-    <DropdownMenu style={style}>
+    <DropdownMenu origin={origin} title="More actions...">
       <ul>
         {nvg.share && (
           <li>

@@ -1,0 +1,29 @@
+.stars {
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.stars > li:first-child > button {
+  color: black !important;
+}
+
+.stars button {
+  color: black;
+  background: transparent;
+  border: transparent;
+  cursor: pointer;
+  padding: .5em;
+}
+
+.stars:hover button {
+  color: gold;
+}
+
+.stars li:hover ~ li > button {
+  color: black;
+}
+
+.active > button {
+  color: gold;
+}

@@ -3,6 +3,7 @@ import gql from 'graphql-tag'
 export const GetArticles = gql`
   query articles(
     $limit: Int
+    $sortBy: sortBy
     $sortOrder: sortOrder
     $status: status
     $starred: Boolean
@@ -12,6 +13,7 @@ export const GetArticles = gql`
   ) {
     articles(
       limit: $limit
+      sortBy: $sortBy
       sortOrder: $sortOrder
       status: $status
       starred: $starred
@@ -29,7 +31,7 @@ export const GetArticles = gql`
         url
         image
         status
-        starred
+        stars
         category {
           id
           title
@@ -49,7 +51,7 @@ export const GetArticle = gql`
       html
       url
       status
-      starred
+      stars
       category {
         id
         title
@@ -69,7 +71,7 @@ export const GetFullArticle = gql`
       url
       image
       status
-      starred
+      stars
       category {
         id
         title
@@ -80,12 +82,12 @@ export const GetFullArticle = gql`
 `
 
 export const UpdateArticle = gql`
-  mutation updateArticle($id: ID!, $status: status, $starred: Boolean) {
-    updateArticle(id: $id, status: $status, starred: $starred) {
+  mutation updateArticle($id: ID!, $status: status, $stars: Int) {
+    updateArticle(id: $id, status: $status, stars: $stars) {
       article {
         id
         status
-        starred
+        stars
         category {
           id
           unread
@@ -125,7 +127,7 @@ export const AddNewArticle = gql`
       url
       image
       status
-      starred
+      stars
       category {
         id
         unread

@@ -5,27 +5,33 @@ const key = 'readflow.localConfiguration'
 export type Theme = 'light' | 'dark' | 'auto'
 
 export type SortOrder = 'asc' | 'desc'
+export type SortBy = 'key' | 'stars'
 
-interface SortOrders {
-  unread: SortOrder
-  offline: SortOrder
-  history: SortOrder
-  starred: SortOrder
-  [key: string]: SortOrder
+interface SortPreference {
+  order: SortOrder
+  by: SortBy
+}
+
+interface SortPreferences {
+  unread: SortPreference
+  offline: SortPreference
+  history: SortPreference
+  starred: SortPreference
+  [key: string]: SortPreference
 }
 
 export interface LocalConfiguration {
-  sortOrders: SortOrders
+  sorting: SortPreferences
   limit: number
   theme: Theme
 }
 
 const defaultLocalConfiguration: LocalConfiguration = {
-  sortOrders: {
-    unread: 'asc',
-    offline: 'asc',
-    starred: 'asc',
-    history: 'desc',
+  sorting: {
+    unread: { order: 'asc', by: 'key' },
+    offline: { order: 'asc', by: 'key' },
+    starred: { order: 'asc', by: 'stars' },
+    history: { order: 'desc', by: 'key' },
   },
   limit: 10,
   theme: 'auto',
@@ -53,7 +59,7 @@ const LocalConfigurationProvider = ({ children }: Props) => {
         window.localStorage.setItem(key, JSON.stringify(defaultLocalConfiguration))
         return defaultLocalConfiguration
       } else {
-        return JSON.parse(config)
+        return { ...defaultLocalConfiguration, ...JSON.parse(config) }
       }
     } catch {
       return defaultLocalConfiguration

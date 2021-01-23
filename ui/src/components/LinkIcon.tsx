@@ -1,4 +1,4 @@
-import React, { ReactNode, ReactType } from 'react'
+import React, { ElementType, ReactNode } from 'react'
 import Ink from 'react-ink'
 
 import { classNames } from '../helpers'
@@ -13,7 +13,7 @@ interface LinkIconProps {
   children?: ReactNode
 }
 
-function LinkIcon<Tag extends ReactType = 'a'>(props: { as?: Tag } & LinkIconProps & PropsOf<Tag>) {
+function LinkIcon<Tag extends ElementType = 'a'>(props: { as?: Tag } & LinkIconProps & PropsOf<Tag>) {
   const { as: Element = 'a', children, badge, icon, active, ...attrs } = props
 
   let className = styles.link

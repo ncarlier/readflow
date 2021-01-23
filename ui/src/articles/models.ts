@@ -8,7 +8,7 @@ export interface Article {
   image: string
   url: string
   status: ArticleStatus
-  starred: boolean
+  stars: number
   category?: Category
   isOffline?: boolean
   published_at: string
@@ -18,6 +18,7 @@ export interface Article {
 
 export type ArticleStatus = 'read' | 'unread'
 export type SortOrder = 'asc' | 'desc'
+export type SortBy = 'key' | 'stars'
 
 export interface GetArticlesRequest {
   status: ArticleStatus | null
@@ -26,6 +27,7 @@ export interface GetArticlesRequest {
   limit: number | null
   afterCursor: number | null
   sortOrder: SortOrder | null
+  sortBy: SortBy | null
   query: string | null
 }
 
@@ -45,7 +47,7 @@ export interface GetArticleResponse {
 export interface UpdateArticleRequest {
   id: number
   status?: ArticleStatus
-  starred?: boolean
+  stars?: number
 }
 
 export interface UpdateArticleResponse {

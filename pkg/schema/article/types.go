@@ -27,6 +27,23 @@ var sortOrder = graphql.NewEnum(
 	},
 )
 
+var sortBy = graphql.NewEnum(
+	graphql.EnumConfig{
+		Name:        "sortBy",
+		Description: "Sorting by",
+		Values: graphql.EnumValueConfigMap{
+			"key": &graphql.EnumValueConfig{
+				Value:       "key",
+				Description: "sort by key",
+			},
+			"stars": &graphql.EnumValueConfig{
+				Value:       "stars",
+				Description: "sort by stars",
+			},
+		},
+	},
+)
+
 var articleStatus = graphql.NewEnum(
 	graphql.EnumConfig{
 		Name:        "status",
@@ -69,8 +86,8 @@ var articleType = graphql.NewObject(
 			"status": &graphql.Field{
 				Type: articleStatus,
 			},
-			"starred": &graphql.Field{
-				Type: graphql.Boolean,
+			"stars": &graphql.Field{
+				Type: graphql.Int,
 			},
 			"category": &graphql.Field{
 				Type: category.Type,

@@ -1,4 +1,4 @@
-import React, { ReactType } from 'react'
+import React, { ElementType } from 'react'
 import Ink from 'react-ink'
 
 import classes from './ButtonIcon.module.css'
@@ -13,7 +13,7 @@ interface ButtonIconProps {
   floating?: boolean
 }
 
-function ButtonIcon<Tag extends ReactType = 'button'>(props: { as?: Tag } & ButtonIconProps & PropsOf<Tag>) {
+function ButtonIcon<Tag extends ElementType = 'button'>(props: { as?: Tag } & ButtonIconProps & PropsOf<Tag>) {
   const { as: Element = 'button', icon, variant, loading, floating, ...attrs } = props
   let className = classNames(classes.button, classes[variant], floating ? classes.floating : null)
 

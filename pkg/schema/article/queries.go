@@ -44,6 +44,11 @@ var articlesQueryField = &graphql.Field{
 			Type:         sortOrder,
 			DefaultValue: "asc",
 		},
+		"sortBy": &graphql.ArgumentConfig{
+			Description:  "sorting attribute of the entries",
+			Type:         sortBy,
+			DefaultValue: "key",
+		},
 	},
 	Resolve: articlesResolver,
 }
@@ -52,6 +57,7 @@ func articlesResolver(p graphql.ResolveParams) (interface{}, error) {
 	pageRequest := model.ArticlesPageRequest{
 		Limit:       helper.GetGQLUintParameter("limit", p.Args),
 		SortOrder:   helper.GetGQLStringParameter("sortOrder", p.Args),
+		SortBy:      helper.GetGQLStringParameter("sortBy", p.Args),
 		AfterCursor: helper.GetGQLUintParameter("afterCursor", p.Args),
 		Category:    helper.GetGQLUintParameter("category", p.Args),
 		Status:      helper.GetGQLStringParameter("status", p.Args),

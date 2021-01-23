@@ -145,6 +145,10 @@ create index articles_search_vectors_idx on articles using gin(search_vectors);
 alter table api_keys rename to incoming_webhooks;
 update outgoing_webhooks set provider='generic' where provider = 'webhook';
 `,
+	"db_migration_8": `alter table articles add column stars int not null default 0;
+update articles set stars=1 where starred = true;
+alter table articles drop column starred;
+`,
 }
 
 // DatabaseSQLMigrationChecksums is generated from a fileset and contains files checksums
@@ -156,4 +160,5 @@ var DatabaseSQLMigrationChecksums = map[string]string{
 	"db_migration_5": "16657738407dc4a05c8e2814536078ff598647eb289dfb3aead73f0ac454793b",
 	"db_migration_6": "82606f963d687906ec932d2a6021a29b0d1480260c8a1f7fe7da8edfad8bfbf5",
 	"db_migration_7": "05329d34279e8787592c48e97164dd0be0a1f42835da3f4aa129819296828a8d",
+	"db_migration_8": "36dfebfaec092e686472a440a7d22e318a4f46567d18864ec3e53b94ac12e837",
 }

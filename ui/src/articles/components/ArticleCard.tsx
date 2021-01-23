@@ -5,6 +5,7 @@ import Icon from '../../components/Icon'
 import TimeAgo from '../../components/TimeAgo'
 import { classNames, getHostname } from '../../helpers'
 import useKeyboard from '../../hooks/useKeyboard'
+import { DropDownOrigin } from '../../components/DropdownMenu'
 import { Article } from '../models'
 import styles from './ArticleCard.module.css'
 import ArticleImage from './ArticleImage'
@@ -18,13 +19,9 @@ interface Props {
   onRemove?: () => void
 }
 
-type AllProps = Props & RouteComponentProps
+const dropDownMenuOrigin: DropDownOrigin = { horizontal: 'left', vertical: 'top' }
 
-const menuStyle = {
-  top: 'initial',
-  right: 0,
-  bottom: '100%',
-}
+type AllProps = Props & RouteComponentProps
 
 export default withRouter((props: AllProps) => {
   const { article, isActive, onRemove, history, match } = props
@@ -55,8 +52,8 @@ export default withRouter((props: AllProps) => {
           </a>
         )}
         <TimeAgo dateTime={article.created_at} />
-        <ArticleMenu article={article} keyboard={isActive} style={menuStyle} />
-        {!article.isOffline && <StarsButton article={article} keyboard={isActive} />}
+        <ArticleMenu article={article} keyboard={isActive} origin={dropDownMenuOrigin} />
+        {!article.isOffline && <StarsButton article={article} keyboard={isActive} origin={dropDownMenuOrigin} />}
         {!article.isOffline && <MarkAsButton article={article} onSuccess={onRemove} keyboard={isActive} />}
       </footer>
     </article>

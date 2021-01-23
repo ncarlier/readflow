@@ -33,7 +33,8 @@ const buildArticlesRequest = (variant: Variant, props: AllProps, localConfig: Lo
 
   const req: GetArticlesRequest = {
     limit: getURLParam(params, 'limit', localConfig.limit),
-    sortOrder: getURLParam(params, 'sort', localConfig.sortOrders.unread),
+    sortBy: null,
+    sortOrder: getURLParam(params, 'order', localConfig.sorting.unread.order),
     status: 'unread',
     starred: null,
     category: null,
@@ -43,20 +44,21 @@ const buildArticlesRequest = (variant: Variant, props: AllProps, localConfig: Lo
   switch (variant) {
     case 'history':
       req.status = 'read'
-      req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders.history)
+      req.sortOrder = getURLParam(params, 'order', localConfig.sorting.history.order)
       break
     case 'starred':
       req.status = null
       req.starred = true
-      req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders.starred)
+      req.sortOrder = getURLParam(params, 'order', localConfig.sorting.starred.order)
+      req.sortBy = getURLParam(params, 'by', localConfig.sorting.starred.by)
       break
     case 'unread':
       if (category && category.id) {
         req.category = category.id
         req.status = getURLParam<ArticleStatus>(params, 'status', 'unread')
         const sortKey = `cat_${category.id}`
-        if (Object.prototype.hasOwnProperty.call(localConfig.sortOrders, sortKey)) {
-          req.sortOrder = getURLParam(params, 'sort', localConfig.sortOrders[sortKey])
+        if (Object.prototype.hasOwnProperty.call(localConfig.sorting, sortKey)) {
+          req.sortOrder = getURLParam(params, 'order', localConfig.sorting[sortKey].order)
         }
       }
   }

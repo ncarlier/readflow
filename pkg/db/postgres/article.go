@@ -26,7 +26,7 @@ var articleColumns = []string{
 	"image",
 	"hash",
 	"status",
-	"starred",
+	"stars",
 	"published_at",
 	"created_at",
 	"updated_at",
@@ -46,7 +46,7 @@ func mapRowToArticle(row *sql.Row) (*model.Article, error) {
 		&article.Image,
 		&article.Hash,
 		&article.Status,
-		&article.Starred,
+		&article.Stars,
 		&article.PublishedAt,
 		&article.CreatedAt,
 		&article.UpdatedAt,
@@ -71,7 +71,7 @@ func mapRowsToArticle(rows *sql.Rows, article *model.Article) error {
 		&article.Image,
 		&article.Hash,
 		&article.Status,
-		&article.Starred,
+		&article.Stars,
 		&article.PublishedAt,
 		&article.CreatedAt,
 		&article.UpdatedAt,
@@ -123,8 +123,8 @@ func (pg *DB) UpdateArticleForUser(uid uint, form model.ArticleUpdateForm) (*mod
 	if form.Status != nil {
 		update["status"] = *form.Status
 	}
-	if form.Starred != nil {
-		update["starred"] = *form.Starred
+	if form.Stars != nil {
+		update["stars"] = *form.Stars
 	}
 	query, args, _ := pg.psql.Update(
 		"articles",
@@ -213,7 +213,7 @@ func (pg *DB) DeleteReadArticlesOlderThan(delay time.Duration) (int64, error) {
 	).Where(
 		sq.Eq{"status": "read"},
 	).Where(
-		sq.Eq{"starred": false},
+		sq.Eq{"stars": 0},
 	).Where(
 		sq.Lt{"updated_at": maxAge},
 	).ToSql()
@@ -232,7 +232,7 @@ func (pg *DB) DeleteAllReadArticlesByUser(uid uint) (int64, error) {
 	).Where(
 		sq.Eq{"status": "read"},
 	).Where(
-		sq.Eq{"starred": false},
+		sq.Eq{"stars": 0},
 	).Where(
 		sq.Eq{"user_id": uid},
 	).ToSql()

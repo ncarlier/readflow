@@ -17,8 +17,6 @@
 .nav {
   composes: container from global;
   position: absolute;
-  top: 100%;
-  right: 0;
   z-index: 99;
   width: auto;
   font-weight: 400;

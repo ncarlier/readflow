@@ -63,9 +63,9 @@ func (form ArticleCreateForm) TruncatedTitle() string {
 
 // ArticleUpdateForm structure definition
 type ArticleUpdateForm struct {
-	ID      uint
-	Status  *string
-	Starred *bool
+	ID     uint
+	Status *string
+	Stars  *uint
 }
 
 // CreatedArticlesResponse structure definition
@@ -86,7 +86,7 @@ type Article struct {
 	Image       *string    `json:"image,omitempty"`
 	Hash        string     `json:"hash,omitempty"`
 	Status      string     `json:"status,omitempty"`
-	Starred     bool       `json:"starred,omitempty"`
+	Stars       uint       `json:"stars,omitempty"`
 	PublishedAt *time.Time `json:"published_at,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
@@ -105,6 +105,7 @@ type ArticlesPageRequest struct {
 	Query       *string
 	AfterCursor *uint
 	SortOrder   *string
+	SortBy      *string
 	Limit       *uint
 }
 

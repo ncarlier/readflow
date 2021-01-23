@@ -8,7 +8,7 @@ import ConfirmDialog from '../../components/ConfirmDialog'
 import DropdownMenu from '../../components/DropdownMenu'
 import Kbd from '../../components/Kbd'
 import LinkIcon from '../../components/LinkIcon'
-import { LocalConfigurationContext } from '../../context/LocalConfigurationContext'
+import { LocalConfigurationContext, SortBy, SortOrder } from '../../context/LocalConfigurationContext'
 import { MessageContext } from '../../context/MessageContext'
 import { getGQLError } from '../../helpers'
 import { GetArticlesRequest, MarkAllArticlesAsReadRequest, MarkAllArticlesAsReadResponse } from '../models'
@@ -23,15 +23,36 @@ interface Props {
   variant: Variant
 }
 
-function revertSortOrder(order: string | null) {
+function revertSortOrder(order: SortOrder | null) {
   return order === 'asc' ? 'desc' : 'asc'
+}
+
+function revertSortBy(by: SortBy | null) {
+  return by === 'key' ? 'stars' : 'key'
 }
 
 function revertStatus(status: string | null) {
   return status === 'unread' ? 'read' : 'unread'
 }
 
-function getLocationWithSortParam(loc: Location, order: 'asc' | 'desc') {
+function getSortByMessage(req: GetArticlesRequest) {
+  return req.sortBy === 'stars' ? 'Sort by date' : 'Sort by stars'
+}
+
+function getSortOrderMessage(req: GetArticlesRequest) {
+  if (req.sortBy === 'stars') {
+    return req.sortOrder === 'asc' ? 'More stars first' : 'Less stars first'
+  }
+  return req.sortOrder === 'asc' ? 'Recent articles first' : 'Older articles first'
+}
+
+function getLocationWithSortByParam(loc: Location, by: SortBy) {
+  const params = new URLSearchParams(loc.search)
+  params.set('by', by)
+  return { ...loc, search: params.toString() }
+}
+
+function getLocationWithSortOrderParam(loc: Location, order: SortOrder) {
   const params = new URLSearchParams(loc.search)
   params.set('sort', order)
   return { ...loc, search: params.toString() }
@@ -67,21 +88,41 @@ export default (props: Props) => {
     }
   }, [markAllArticlesAsReadMutation, req, refresh, showErrorMessage])
 
-  const updateLocalConfigSortOrder = useCallback(() => {
-    const orders = localConfiguration.sortOrders
-    const order = revertSortOrder(req.sortOrder)
+  const updateLocalConfigSortBy = useCallback(() => {
+    const { sorting } = localConfiguration
+    const by = revertSortBy(req.sortBy)
     const key = req.category ? `cat_${req.category}` : variant
-    if (!(Object.prototype.hasOwnProperty.call(orders, key) && orders[key] === order)) {
-      orders[key] = order
-      updateLocalConfiguration({ ...localConfiguration, sortOrders: orders })
+    if (!(Object.prototype.hasOwnProperty.call(sorting, key) && sorting[key].by === by)) {
+      sorting[key].by = by
+      updateLocalConfiguration({ ...localConfiguration, sorting })
     }
   }, [req, variant, localConfiguration, updateLocalConfiguration])
+
+  const updateLocalConfigSortOrder = useCallback(() => {
+    const { sorting } = localConfiguration
+    const order = revertSortOrder(req.sortOrder)
+    const key = req.category ? `cat_${req.category}` : variant
+    if (!(Object.prototype.hasOwnProperty.call(sorting, key) && sorting[key].order === order)) {
+      sorting[key].order = order
+      updateLocalConfiguration({ ...localConfiguration, sorting })
+    }
+  }, [req, variant, localConfiguration, updateLocalConfiguration])
+
+  const toggleSortBy = useCallback(
+    (event: KeyboardEvent) => {
+      event.preventDefault()
+      updateLocalConfigSortBy()
+      push(getLocationWithSortByParam(loc, revertSortBy(req.sortBy)))
+      return false
+    },
+    [loc, req, push, updateLocalConfigSortBy]
+  )
 
   const toggleSortOrder = useCallback(
     (event: KeyboardEvent) => {
       event.preventDefault()
       updateLocalConfigSortOrder()
-      push(getLocationWithSortParam(loc, revertSortOrder(req.sortOrder)))
+      push(getLocationWithSortOrderParam(loc, revertSortOrder(req.sortOrder)))
       return false
     },
     [loc, req, push, updateLocalConfigSortOrder]
@@ -107,7 +148,7 @@ export default (props: Props) => {
   ))
 
   return (
-    <DropdownMenu>
+    <DropdownMenu title="Page options...">
       <ul>
         <li>
           <LinkIcon onClick={refresh} icon="refresh">
@@ -115,14 +156,27 @@ export default (props: Props) => {
             <Kbd keys="shift+r" onKeypress={refresh} />
           </LinkIcon>
         </li>
+        {variant === 'starred' && (
+          <li>
+            <LinkIcon
+              as={Link}
+              to={getLocationWithSortByParam(loc, revertSortBy(req.sortBy))}
+              onClick={updateLocalConfigSortBy}
+              icon="swap_horiz"
+            >
+              <span>{getSortByMessage(req)}</span>
+              <Kbd keys="shift+b" onKeypress={toggleSortBy} />
+            </LinkIcon>
+          </li>
+        )}
         <li>
           <LinkIcon
             as={Link}
-            to={getLocationWithSortParam(loc, revertSortOrder(req.sortOrder))}
+            to={getLocationWithSortOrderParam(loc, revertSortOrder(req.sortOrder))}
             onClick={updateLocalConfigSortOrder}
             icon="sort"
           >
-            <span>{req.sortOrder === 'asc' ? 'Recent articles first' : 'Older articles first'}</span>
+            <span>{getSortOrderMessage(req)}</span>
             <Kbd keys="shift+o" onKeypress={toggleSortOrder} />
           </LinkIcon>
         </li>

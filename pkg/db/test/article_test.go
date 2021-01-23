@@ -15,7 +15,7 @@ func assertNewArticle(t *testing.T, uid uint, form model.ArticleCreateForm) *mod
 	assert.NotNil(t, article.ID)
 	assert.Equal(t, form.Title, article.Title)
 	assert.Equal(t, "unread", article.Status, "article status should be unread")
-	assert.False(t, article.Starred)
+	assert.Equal(t, uint(0), article.Stars)
 	return article
 }
 
@@ -141,17 +141,17 @@ func TestStarredArticle(t *testing.T) {
 
 	// Update article
 	status := "read"
-	starred := true
+	stars := uint(2)
 	update := model.ArticleUpdateForm{
-		ID:      article.ID,
-		Status:  &status,
-		Starred: &starred,
+		ID:     article.ID,
+		Status: &status,
+		Stars:  &stars,
 	}
 	article, err := testDB.UpdateArticleForUser(uid, update)
 	assert.Nil(t, err)
 	assert.NotNil(t, article)
 	assert.Equal(t, "read", article.Status, "article status should be read")
-	assert.Equal(t, true, article.Starred, "article status should be starred")
+	assert.Equal(t, uint(2), article.Stars, "article status should be starred")
 
 	// Try to delate all read articles
 	nb, err := testDB.DeleteAllReadArticlesByUser(uid)

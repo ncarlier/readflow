@@ -76,7 +76,7 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 	// TODO maybe too verbose... debug level is maybe an option here
 	reg.logger.Info().Uint("uid", uid).Uint("id", form.ID).Str(
 		"status", article.Status,
-	).Bool("starred", article.Starred).Msg("article updated")
+	).Uint("stars", article.Stars).Msg("article updated")
 
 	return article, nil
 }
