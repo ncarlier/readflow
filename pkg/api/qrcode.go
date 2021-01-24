@@ -34,7 +34,7 @@ func qrcodeHandler(conf *config.Config) http.Handler {
 
 		// Build UI outgoing webhook configuration URL
 		payload := strings.Replace(conf.PublicURL, "api.", "", 1)
-		payload = fmt.Sprintf("%s/settings/integrations/outgoing-webhooks/add?enpoint=%s", payload, url.QueryEscape(u.String()))
+		payload = fmt.Sprintf("%s/settings/integrations/outgoing-webhooks/add?endpoint=%s", payload, url.QueryEscape(u.String()))
 
 		// Build QR code
 		png, err := qrcode.Encode(payload, qrcode.Medium, 256)
