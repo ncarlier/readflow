@@ -71,6 +71,13 @@ func routes(conf *config.Config) Routes {
 			middleware.Cors(origin),
 		),
 		route(
+			"/qr",
+			qrcodeHandler(conf),
+			authnMiddleware,
+			middleware.Methods("GET"),
+			middleware.Cors(origin),
+		),
+		route(
 			"/healthz",
 			healthz(),
 			middleware.Methods("GET"),

@@ -25,7 +25,7 @@ const contentTypes: Map<string, string> = new Map([
 
 const defaultConfig = {
   endpoint: '',
-  contentType: contentTypes.get('json') || '',
+  contentType: contentTypes.get('JSON') || '',
   format: '',
 }
 

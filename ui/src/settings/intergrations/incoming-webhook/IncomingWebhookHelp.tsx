@@ -7,6 +7,7 @@ import Bookmarklet from './Bookmarklet'
 import HelpLink from '../../../components/HelpLink'
 import WebhookLogo from '../WebhookLogo'
 import HelpSection from '../../HelpSection'
+import QRCodeIncomingWebhookButton from './QRCodeIncomingWebhookButton'
 
 interface Props {
   data?: IncomingWebhook
@@ -35,6 +36,12 @@ export default ({ data }: Props) => (
               <th>Bookmarklet</th>
               <td>
                 <Bookmarklet token={data.token} />
+              </td>
+            </tr>
+            <tr>
+              <th>QR code</th>
+              <td>
+                <QRCodeIncomingWebhookButton token={data.token} />
               </td>
             </tr>
           </tbody>

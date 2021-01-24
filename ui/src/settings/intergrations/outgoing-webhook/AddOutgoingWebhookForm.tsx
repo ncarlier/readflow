@@ -26,14 +26,32 @@ interface AddOutgoingWebhookFormFields {
   isDefault: boolean
 }
 
-export default ({ history }: RouteComponentProps) => {
+const extractGenericEndpointFromParams = (qs: string) => {
+  const params = new URLSearchParams(qs)
+  return params.get('endpoint')
+}
+
+const getGenericConfig = (endpoint: string | null) => {
+  if (endpoint == null) {
+    return undefined
+  }
+  return {
+    endpoint,
+    contentType: 'application/json; charset=utf-8',
+    format: '',
+  }
+}
+
+export default ({ history, location }: RouteComponentProps) => {
   usePageTitle('Settings - Add new outgoing webhook')
+
+  const genericEndpoint = extractGenericEndpointFromParams(location.search)
 
   const [config, setConfig] = useState<any>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { showMessage } = useContext(MessageContext)
   const [formState, { text, checkbox, select }] = useFormState<AddOutgoingWebhookFormFields>({
-    provider: '',
+    provider: genericEndpoint ? 'generic' : '',
     alias: '',
     isDefault: false,
   })
@@ -90,7 +108,9 @@ export default ({ history }: RouteComponentProps) => {
             <option value="keeper">Keeper</option>
             <option value="wallabag">Wallabag</option>
           </FormSelectField>
-          {formState.values.provider === 'generic' && <GenericConfigForm onChange={setConfig} />}
+          {formState.values.provider === 'generic' && (
+            <GenericConfigForm onChange={setConfig} config={getGenericConfig(genericEndpoint)} />
+          )}
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} />}
           {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} />}
           <FormCheckboxField label="To use by default" {...checkbox('isDefault')} />

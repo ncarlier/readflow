@@ -8,13 +8,13 @@ import Panel from './Panel'
 
 interface Props {
   title: string
-  confirmLabel: string
+  confirmLabel?: string
   children: ReactNode
   onConfirm: (e: any) => void
   onCancel?: (e: any) => void
 }
 
-export default ({ title, confirmLabel, children, onConfirm, onCancel }: Props) => (
+export default ({ title, confirmLabel = 'ok', children, onConfirm, onCancel }: Props) => (
   <ReactModal
     isOpen
     shouldCloseOnEsc

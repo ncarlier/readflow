@@ -18,6 +18,7 @@ require (
 	github.com/lib/pq v1.9.0
 	github.com/prometheus/client_golang v1.9.0
 	github.com/rs/zerolog v1.20.0
+	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.7.0
 	go.etcd.io/bbolt v1.3.5
 	golang.org/x/net v0.0.0-20210119194325-5f4716e94777
