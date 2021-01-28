@@ -19,7 +19,7 @@ type WebPage struct {
 
 // WebScraper is an interface with Web Scrapping provider
 type WebScraper interface {
-	Scrap(ctx context.Context, url string) (*WebPage, error)
+	Scrap(ctx context.Context, rawurl string) (*WebPage, error)
 }
 
 // NewWebScraper create new Web Scraping service

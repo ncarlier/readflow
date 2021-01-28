@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	nurl "net/url"
+	"net/url"
 	"strings"
 	"time"
 
@@ -30,17 +30,23 @@ func NewInternalWebScraper() WebScraper {
 	}
 }
 
-func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, error) {
+func (ws internalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 	// Validate URL
-	_, err := nurl.ParseRequestURI(url)
+	_, err := url.ParseRequestURI(rawurl)
 	if err != nil {
 		return nil, fmt.Errorf("invalid URL: %v", err)
 	}
 
+	// Get content provider for this URL
+	contentProvider := GetContentProvider(rawurl)
+	if contentProvider != nil {
+		return contentProvider.Get(ctx, rawurl)
+	}
+
 	// Get URL content type
-	contentType, err := ws.getContentType(ctx, url)
+	contentType, err := ws.getContentType(ctx, rawurl)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +56,7 @@ func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, e
 	}
 
 	// Get URL content
-	res, err := ws.get(ctx, url)
+	res, err := ws.get(ctx, rawurl)
 	if err != nil {
 		return nil, err
 	}
@@ -112,8 +118,8 @@ func (ws internalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, e
 	return result, nil
 }
 
-func (ws internalWebScraper) getContentType(ctx context.Context, url string) (string, error) {
-	req, err := http.NewRequest("HEAD", url, nil)
+func (ws internalWebScraper) getContentType(ctx context.Context, rawurl string) (string, error) {
+	req, err := http.NewRequest("HEAD", rawurl, nil)
 	if err != nil {
 		return "", err
 	}
@@ -126,8 +132,8 @@ func (ws internalWebScraper) getContentType(ctx context.Context, url string) (st
 	return res.Header.Get("Content-type"), nil
 }
 
-func (ws internalWebScraper) get(ctx context.Context, url string) (*http.Response, error) {
-	req, err := http.NewRequest("GET", url, nil)
+func (ws internalWebScraper) get(ctx context.Context, rawurl string) (*http.Response, error) {
+	req, err := http.NewRequest("GET", rawurl, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -32,16 +32,16 @@ func NewExternalWebScraper(uri string) (WebScraper, error) {
 	}, nil
 }
 
-func (ws extrenalWebScraper) Scrap(ctx context.Context, url string) (*WebPage, error) {
-	webPage, err := ws.scrap(ctx, url)
+func (ws extrenalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage, error) {
+	webPage, err := ws.scrap(ctx, rawurl)
 	if err != nil {
 		ws.logger.Error().Err(err).Msg("unable to scrap web page with external service, fallback on internal service")
-		return NewInternalWebScraper().Scrap(ctx, url)
+		return NewInternalWebScraper().Scrap(ctx, rawurl)
 	}
 	return webPage, nil
 }
 
-func (ws extrenalWebScraper) scrap(ctx context.Context, url string) (*WebPage, error) {
+func (ws extrenalWebScraper) scrap(ctx context.Context, rawurl string) (*WebPage, error) {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, "GET", ws.uri, nil)
@@ -49,10 +49,10 @@ func (ws extrenalWebScraper) scrap(ctx context.Context, url string) (*WebPage, e
 		return nil, err
 	}
 	q := req.URL.Query()
-	q.Add("u", url)
+	q.Add("u", rawurl)
 	req.URL.RawQuery = q.Encode()
 
-	ws.logger.Debug().Str("url", url).Msg("scraping webpage")
+	ws.logger.Debug().Str("url", rawurl).Msg("scraping webpage")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err

@@ -5,6 +5,9 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/model"
+
+	// activate all content providers
+	_ "github.com/ncarlier/readflow/pkg/scraper/content-provider/all"
 )
 
 // ArticleCreationOptions article creation options
