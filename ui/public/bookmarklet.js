@@ -10,10 +10,14 @@ function b() {
     method: 'POST',
     headers: h,
     mode: 'cors',
-    body: JSON.stringify([{ title: document.title, url: document.location.href }])
+    body: JSON.stringify({ title: document.title, url: document.location.href })
   }).then(
-    function() {
-      alert('Webpage added to your readflow.')
+    function(res) {
+      if (res.ok) {
+        alert('Webpage added to your readflow.')
+      } else {
+        alert('Unable to send the web page to readflow: ',  res.statusText)
+      }
     },
     function(err) {
       alert('Unable to send the web page to readflow: ', err.message)
