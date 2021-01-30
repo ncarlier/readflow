@@ -9,13 +9,13 @@ type ContentProvider interface {
 }
 
 // ContentProviders is the registry of all supported content provider
-var ContentProviders = map[string]ContentProvider{}
+var ContentProviders = []ContentProvider{}
 
 // GetContentProvider return content provider that match the given URL
 func GetContentProvider(rawurl string) ContentProvider {
-	for _, v := range ContentProviders {
-		if v.Match(rawurl) {
-			return v
+	for _, provider := range ContentProviders {
+		if provider.Match(rawurl) {
+			return provider
 		}
 	}
 	return nil

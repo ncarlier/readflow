@@ -1,4 +1,4 @@
-package youtube
+package oembed
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/scraper"
 )
 
-func TestYoutubeContentProvider(t *testing.T) {
+func TestOEmbedContentProvider(t *testing.T) {
 	ctx := context.TODO()
 
 	rawurl := "https://www.youtube.com/watch?v=ee-LhNZPZ1U"
@@ -21,6 +21,7 @@ func TestYoutubeContentProvider(t *testing.T) {
 	page, err := provider.Get(ctx, rawurl)
 	assert.NoError(t, err)
 	assert.NotNil(t, page)
-	assert.Equal(t, "Youtube", page.SiteName)
+	assert.Equal(t, "YouTube", page.SiteName)
 	assert.Equal(t, "Deus Ex Silicium : Les Circuits Intégrés", page.Title)
+	assert.Equal(t, "YouTube video from Deus Ex Silicium", page.Text)
 }
