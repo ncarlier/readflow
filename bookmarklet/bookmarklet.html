@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Bookmarklet UI</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <style>
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+html {
+	box-sizing: border-box;
+	height: 100%;
+}
+html, body {
+	background: #eee;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, sans-serif;
+	font-size: 14px;
+	margin: 0;
+	padding: 0;
+	cursor: default;
+	overflow: hidden;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+header {
+  background-color: #009be5;
+  line-height: 2em;
+  display: flex;
+  color: white;
+}
+header > h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: inherit;
+  flex-grow: 1;
+}
+header > button {
+  margin-right: .5em;
+  background: transparent;
+  color: inherit;
+  border: none;
+}
+button.close {
+  cursor: pointer;
+}
+section {
+  padding: 1em;
+}
+.actions {
+  margin-bottom: .5em;
+}
+kbd {
+  background: #fff;
+  border: gray 1px solid;
+  border-radius: 3px;
+  padding: 1px 3px;
+  margin-right: 1em;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <button>≡</button>
+    <h1>readflow bookmarklet</h1>
+    <button class="close" onclick="window.parent.postMessage('close', '*')">×</button>
+  </header>
+  <section>
+    <div class="actions">
+      <button onclick="window.parent.postMessage('content', '*')">Send content</button>
+      or
+      <button onclick="window.parent.postMessage('page', '*')">Send page</button>
+    </div>
+    <footer>
+      <details open>
+        <summary>Help?</summary>
+        <article>
+          <p>
+            Click on an item on the page to delete it.
+          </p>
+          <p>
+            <kbd>ctrl+click</kbd>to keep only this item.
+          </p>
+          <p>
+            <kbd>ctrl+z</kbd>to undo
+          </p>
+        </aricle>
+      </details> 
+    </footer>
+  </section>
+<script>
+window.addEventListener('message', (evt) => {
+  if (evt.data === 'loading') {
+    console.debug('loading...')
+  }
+})
+</script>
+</body>
+</html>

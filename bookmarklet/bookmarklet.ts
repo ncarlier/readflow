@@ -1,36 +1,35 @@
+import * as styles from './styles'
+
 export {}
 
 declare global {
   interface Window {
-    readflowBookmarklet: ReadflowBookmarklet
+    rfB: ReadflowBookmarklet
   }
 }
 
-const trapMouseEvent = function (callback: (el: HTMLElement) => void) {
+const trapMouseEvent = function (callback: (el: HTMLElement, evt?: MouseEvent) => void) {
   return function (ev: MouseEvent) {
     ev.cancelBubble = true
     ev.stopPropagation()
+    ev.preventDefault()
     const el = this as HTMLElement
-    callback(el)
+    callback(el, ev)
   }
 }
 
-const setRemoveStyle = function (el: HTMLElement) {
-  el.style.background = 'orange'
-  el.style.border = '2px dashed red'
-  el.style.cursor = 'crosshair'
-}
-
-const setKeepStyle = function (el: HTMLElement) {
-  el.style.background = 'greenyellow'
-  el.style.border = '2px dashed green'
-  el.style.cursor = 'crosshair'
+const setMouserOverStyle = function (el: HTMLElement, evt: MouseEvent) {
+  Object.assign(el.style, evt.ctrlKey ? styles.keep : styles.remove)
 }
 
 const unsetMouseOverStyle = function (el: HTMLElement) {
-  el.style.background = 'initial'
-  el.style.border = 'initial'
-  el.style.cursor = 'initial'
+  Object.assign(el.style, styles.initial)
+}
+
+type Article = {
+  title: string
+  url: string
+  html?: string
 }
 
 type HistoryItem = {
@@ -40,21 +39,24 @@ type HistoryItem = {
 }
 
 class ReadflowBookmarklet {
+  private ui: string
   private doc: Document
   private history: HistoryItem[]
-  private alt: boolean
+  private endpoint: string
+  private key: string
+  private popup: Window
+  private controls: Node
 
   constructor() {
     this.doc = document
     this.history = []
-    this.alt = false
   }
 
-  private clickElement(el: HTMLElement) {
+  private clickElement(el: HTMLElement, evt: MouseEvent) {
     unsetMouseOverStyle(el)
-    if (this.alt) {
+    if (evt.ctrlKey) {
       this.doc.body.childNodes.forEach((node) => {
-        if (node.nodeType === Node.ELEMENT_NODE && node.nodeName !== 'SCRIPT') {
+        if (node.nodeType === Node.ELEMENT_NODE && node.nodeName !== 'SCRIPT' && node !== this.controls) {
           const placeholder = this.doc.createTextNode('')
           this.history.push({
             parent: this.doc.body,
@@ -83,12 +85,8 @@ class ReadflowBookmarklet {
     }
   }
 
-  private toggleMouseOverStyle(el: HTMLElement) {
-    this.alt ? setKeepStyle(el) : setRemoveStyle(el)
-  }
-
   private registerEventsListeners() {
-    const onmouseover = trapMouseEvent(this.toggleMouseOverStyle.bind(this))
+    const onmouseover = trapMouseEvent(setMouserOverStyle)
     const onmouseout = trapMouseEvent(unsetMouseOverStyle)
     const onclick = trapMouseEvent(this.clickElement.bind(this))
     this.doc.body.querySelectorAll<HTMLElement>('*').forEach((node) => {
@@ -100,20 +98,118 @@ class ReadflowBookmarklet {
 
   private registerKeyboardShortcuts() {
     this.doc.body.addEventListener('keydown', (ev: KeyboardEvent) => {
-      if (ev.ctrlKey && ev.code === 'Backspace') {
+      if (ev.ctrlKey && ev.code === 'KeyZ') {
         this.undo()
-      }
-      if (ev.ctrlKey && ev.code === 'Backslash') {
-        this.alt = !this.alt
       }
     })
   }
 
-  boot() {
-    console.log('running bookmarklet...')
+  private getContent() {
+    let result = ''
+    this.doc.body.childNodes.forEach((node) => {
+      if (node.nodeType === Node.ELEMENT_NODE && node.nodeName !== 'SCRIPT' && node !== this.controls) {
+        result += (node as HTMLElement).outerHTML
+        console.log(node)
+      }
+    })
+    return result
+  }
+
+  private addControls() {
+    // Build controls
+    const controls = this.doc.createElement('div')
+    Object.assign(controls.style, styles.controls)
+    const frame = this.doc.createElement('iframe')
+    frame.setAttribute('src', this.ui)
+    Object.assign(frame.style, styles.iframe)
+    const drag = this.doc.createElement('div')
+    Object.assign(drag.style, styles.drag)
+    // Add drag support
+    let dragging = false
+    const offset = [0, 0]
+    drag.onmousedown = (evt) => {
+      dragging = true
+      offset[0] = controls.offsetLeft - evt.clientX
+      offset[1] = controls.offsetTop - evt.clientY
+    }
+    this.doc.onmouseup = () => (dragging = false)
+    this.doc.onmousemove = (evt) => {
+      evt.preventDefault()
+      if (dragging) {
+        controls.style.left = evt.clientX + offset[0] + 'px'
+        controls.style.top = evt.clientY + offset[1] + 'px'
+      }
+    }
+    // Add controls to the DOM
+    controls.appendChild(frame)
+    controls.appendChild(drag)
+    this.controls = this.doc.body.appendChild(controls)
+    this.popup = frame.contentWindow
+  }
+
+  private async post(article: Article) {
+    const r = new Request(this.endpoint)
+    const headers = new Headers({
+      Accept: 'application/json',
+      Authorization: 'Basic ' + this.key,
+      'Content-Type': 'application/json',
+    })
+    const res = await fetch(r, {
+      method: 'POST',
+      headers,
+      mode: 'cors',
+      body: JSON.stringify(article),
+    })
+    if (res.ok) {
+      console.debug('article added to readflow')
+    } else {
+      throw `unable to send article: ${res.statusText}`
+    }
+  }
+
+  private onMessage(evt: MessageEvent) {
+    const event = evt.data
+    switch (event) {
+      case 'content':
+      case 'page':
+        console.debug(`sending ${event}...`)
+        this.popup.postMessage('loading', '*')
+        this.post({
+          title: document.title,
+          url: document.location.href,
+          html: event === 'content' ? this.getContent() : undefined,
+        }).then(
+          () => {
+            alert('Article successfully put in your reaflow!')
+            document.location.reload()
+          },
+          (err) => {
+            alert(err)
+          }
+        )
+        break
+      case 'close':
+        this.close()
+        break
+      default:
+        console.warn('unknown message event:', event)
+    }
+  }
+
+  boot(origin, baseurl, key: string) {
+    this.endpoint = baseurl + '/articles'
+    this.ui = origin + '/bookmarklet.html'
+    this.key = key
     this.registerEventsListeners()
     this.registerKeyboardShortcuts()
+    this.addControls()
+    window.addEventListener('message', this.onMessage.bind(this))
+    console.debug('bookmarklet up and running...')
+  }
+
+  close() {
+    this.doc.location.reload()
   }
 }
 
-window.readflowBookmarklet = new ReadflowBookmarklet()
+window.rfB = new ReadflowBookmarklet()

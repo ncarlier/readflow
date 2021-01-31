@@ -96,6 +96,14 @@ ui:
 	cd ui && npm install --silent && REACT_APP_VERSION=${VERSION} npm run build
 .PHONY: ui
 
+## Build bookmarklet
+bookmarklet:
+	echo ">>> Building Bookmarklet..."
+	cd bookmarklet && npm install --silent && npm run clean && npm run build
+	cp dist/bookmarklet.html ../ui/public/
+	cp dist/bookmarklet.*.js ../ui/public/bookmarklet.js
+.PHONY: bookmarklet
+
 ## Create archive
 archive: release/$(EXECUTABLE)
 	echo ">>> Creating release/$(ARCHIVE) archive..."

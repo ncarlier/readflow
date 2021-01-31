@@ -1,4 +1,10 @@
 <html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Bookmarklet playground</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
 <body>
   <h1>Readflow bookmarklet</h1>
   <p>
@@ -16,9 +22,10 @@
   <p>
     Sed aliquet risus a tortor. Integer id quam. Morbi mi. Quisque nisl felis, venenatis tristique, dignissim in, ultrices sit amet, augue. Proin sodales libero eget ante. Nulla quam. Aenean laoreet. Vestibulum nisi lectus, commodo ac, facilisis ac, ultricies eu, pede. Ut orci risus, accumsan porttitor, cursus quis, aliquet eget, justo. Sed pretium blandit orci. Ut eu diam at pede suscipit sodales. </p>
   </p>
+  <a href="./bookmarklet.html">Bookmarklet UI</a>
   <script src="./bookmarklet.ts"></script>
   <script>
-    window.readflowBookmarklet.boot()
+    window.rfB.boot('', '//api.readflow.app', 'mykey')
   </script>
 </body>
 </html>
