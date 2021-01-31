@@ -1,7 +1,9 @@
 release/
+dist/
 node_modules/
 ui/build/
 TODO.md
 _gen/
 .env
 .vscode
+.cache
