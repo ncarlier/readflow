@@ -105,7 +105,7 @@ func addArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 }
 
 var cleanHistoryMutationField = &graphql.Field{
-	Type:        graphql.NewList(category.Type),
+	Type:        category.ListResponseType,
 	Description: "remove all read articles",
 	Resolve:     cleanHistoryResolver,
 }

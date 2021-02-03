@@ -13,8 +13,7 @@ import { getGQLError } from '../../helpers'
 const CleanHistory = gql`
   mutation {
     cleanHistory {
-      id
-      unread
+      _all
     }
   }
 `
