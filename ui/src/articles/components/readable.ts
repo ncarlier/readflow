@@ -25,6 +25,7 @@ img, figure, iframe {
   display: block;
   max-width: 100%;
   margin: 0;
+  border: none;
 }
 div {
   max-width: 100%;
