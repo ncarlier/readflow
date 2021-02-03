@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/ncarlier/readflow/pkg/event"
+	"github.com/ncarlier/readflow/pkg/html"
 	"github.com/ncarlier/readflow/pkg/model"
 
 	// activate all content providers
@@ -81,6 +82,12 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 				return nil, err
 			}
 		}
+	}
+
+	// Sanitize HTML content
+	if form.HTML != nil {
+		content := html.Sanitize(*form.HTML)
+		form.HTML = &content
 	}
 
 	reg.logger.Debug().Uint(
