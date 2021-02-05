@@ -1,13 +1,29 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"errors"
-	"strings"
+	"text/template"
 
 	"github.com/go-shiori/obelisk"
 	"github.com/ncarlier/readflow/pkg/constant"
 )
+
+var articleAsHTMLTpl = template.Must(template.New("article-as-html").Parse(`
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ .Title }}</title>
+	<meta charset="utf-8" />
+	<meta name="og:title" content="{{ .Title }}"/>
+	<meta name="og:url" content="{{ .URL }}"/>
+	<meta name="og:image" content="{{ .Image }}"/>
+	<meta name="og:revised" content="{{ .PublishedAt }}"/>
+</head>
+<body>{{ .HTML }}</body>
+</html>
+`))
 
 // ArchiveArticle save artice as a single HTML page
 func (reg *Registry) ArchiveArticle(ctx context.Context, idArticle uint) ([]byte, error) {
@@ -41,10 +57,14 @@ func (reg *Registry) ArchiveArticle(ctx context.Context, idArticle uint) ([]byte
 		return data, nil
 	}
 
-	input := strings.NewReader(*article.HTML)
+	var buffer bytes.Buffer
+	err = articleAsHTMLTpl.Execute(&buffer, article)
+	if err != nil {
+		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
+	}
 
 	req := obelisk.Request{
-		Input: input,
+		Input: &buffer,
 		URL:   *article.URL,
 	}
 
@@ -55,7 +75,7 @@ func (reg *Registry) ArchiveArticle(ctx context.Context, idArticle uint) ([]byte
 	}
 	arc.Validate()
 
-	result, _, err := arc.Archive(context.Background(), req)
+	result, _, err := arc.Archive(ctx, req)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
 		return nil, err
