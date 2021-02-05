@@ -1,24 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Authentification...</title>
+  <title>readflow</title>
+  <style>
+html, body {
+  height: 100%;
+  margin: 0;
+  background-color: #eaeff1;
+}
+body {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.loader{
+  text-align: center;
+}
+.loader-svg{
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  fill: none;
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke: #009be5;
+}
+.loader-svg.bg{
+  stroke-width: 8px;
+  stroke: #b6d6e6;
+}
+.animate{
+  stroke-dasharray: 242.6;
+  animation: fill-animation 1s cubic-bezier(1,1,1,1) 0s infinite;
+}
+@keyframes fill-animation{
+  0%{
+    stroke-dasharray: 40 242.6;
+    stroke-dashoffset: 0;
+  }
+  50%{
+    stroke-dasharray: 141.3;
+    stroke-dashoffset: 141.3;
+  }
+  100%{
+    stroke-dasharray: 40 242.6;
+    stroke-dashoffset: 282.6;
+  }
+}
+  </style>
 </head>
 <body>
   <noscript>
     You need to enable JavaScript to run this app.
   </noscript>
-  <p>Authentification...</p>
+  <div class="loader">
+    <svg class="svg-container" height="100" width="100" viewBox="0 0 100 100">
+        <circle class="loader-svg bg" cx="50" cy="50" r="45"></circle>
+        <circle class="loader-svg animate" cx="50" cy="50" r="45"></circle>
+    </svg>
+    <p id="message">authentification...</p>
+  </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/oidc-client/1.9.1/oidc-client.min.js"></script>
   <script>
     var mgr = new Oidc.UserManager();
     mgr.signinRedirectCallback().then(function () {
+      document.getElementById("message").textContent = "redirecting...";
       var urlParams = new URLSearchParams(window.location.search);
       window.history.replaceState({},
         window.document.title,
         window.location.origin);
       window.location = urlParams.has("redirect") ? decodeURIComponent(urlParams.get("redirect")) : "/";
-    }, function (error) {
-      console.error(error);
+    }, function (err) {
+      console.error(err);
+      document.getElementById("message").textContent = err;
     });
   </script>
 </body>
