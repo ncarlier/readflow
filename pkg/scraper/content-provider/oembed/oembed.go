@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/scraper"
@@ -90,7 +91,7 @@ func init() {
 				}
 				scraper.ContentProviders = append(scraper.ContentProviders, &oEmbedContentProvider{
 					name:       provider.Name,
-					endpoint:   endpoint.URL,
+					endpoint:   strings.ReplaceAll(endpoint.URL, "{format}", "json"),
 					re:         re,
 					httpClient: httpClient,
 				})

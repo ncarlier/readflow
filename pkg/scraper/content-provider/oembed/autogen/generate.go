@@ -54,8 +54,9 @@ func generateProviders(target, pkg string, supportedProviders map[string]bool) {
 	defer f.Close()
 
 	code := fmt.Sprintf("%#v", providers)
-	code = strings.ReplaceAll(code, "oembed.", "")
-	log.Println(code)
+	code = strings.ReplaceAll(code, "oembed.Provider", "Provider")
+	code = strings.ReplaceAll(code, "oembed.Endpoint", "Endpoint")
+	// log.Println(code)
 
 	tpl.Execute(f, struct {
 		Timestamp time.Time
