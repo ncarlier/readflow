@@ -92,20 +92,28 @@ export default (props: Props) => {
     const { sorting } = localConfiguration
     const by = revertSortBy(req.sortBy)
     const key = req.category ? `cat_${req.category}` : variant
-    if (!(Object.prototype.hasOwnProperty.call(sorting, key) && sorting[key].by === by)) {
+    if (!Object.prototype.hasOwnProperty.call(sorting, key)) {
+      sorting[key] = { order: 'desc', by }
+    } else if (sorting[key].by !== by) {
       sorting[key].by = by
-      updateLocalConfiguration({ ...localConfiguration, sorting })
+    } else {
+      return
     }
+    updateLocalConfiguration({ ...localConfiguration, sorting })
   }, [req, variant, localConfiguration, updateLocalConfiguration])
 
   const updateLocalConfigSortOrder = useCallback(() => {
     const { sorting } = localConfiguration
     const order = revertSortOrder(req.sortOrder)
     const key = req.category ? `cat_${req.category}` : variant
-    if (!(Object.prototype.hasOwnProperty.call(sorting, key) && sorting[key].order === order)) {
+    if (!Object.prototype.hasOwnProperty.call(sorting, key)) {
+      sorting[key] = { order, by: 'key' }
+    } else if (sorting[key].order !== order) {
       sorting[key].order = order
-      updateLocalConfiguration({ ...localConfiguration, sorting })
+    } else {
+      return
     }
+    updateLocalConfiguration({ ...localConfiguration, sorting })
   }, [req, variant, localConfiguration, updateLocalConfiguration])
 
   const toggleSortBy = useCallback(
