@@ -99,6 +99,7 @@ func (reg *Registry) DeleteAccount(ctx context.Context) (bool, error) {
 	if err = reg.db.DeleteUser(*user); err != nil {
 		return false, err
 	}
+	event.Emit(event.DeleteUser, *user)
 	return true, nil
 }
 
@@ -154,6 +155,8 @@ func (reg *Registry) UpdateUser(ctx context.Context, form model.UserForm) (*mode
 		).Msg("unable to update user")
 		return nil, err
 	}
+
+	event.Emit(event.UpdateUser, *user)
 
 	return reg.db.CreateOrUpdateUser(*user)
 }

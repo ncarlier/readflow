@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
@@ -35,11 +34,11 @@ func (ue *UserEvent) Buffer() *bytes.Buffer {
 }
 
 // NewUserEvent create a user event
-func NewUserEvent(user model.User) *UserEvent {
+func NewUserEvent(user model.User, action string) *UserEvent {
 	evt := &UserEvent{
 		Payload: user,
 	}
-	evt.Action = event.CreateUser
+	evt.Action = action
 	evt.Issue = Issue{
 		Date: time.Now(),
 		// TODO: set proper issuer URL
