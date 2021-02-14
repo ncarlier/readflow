@@ -1,0 +1,16 @@
+
+.header {
+  position: relative;
+  min-height: 3.8rem;
+  transition: all .3s;
+  z-index: 99;
+}
+
+.header > * {
+  max-width: var(--width-content);
+  margin: 0 auto;
+}
+
+.header img {
+  max-height: 2rem;
+}
