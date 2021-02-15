@@ -7,5 +7,8 @@ export const AUTHORITY = process.env.REACT_APP_AUTHORITY || 'https://login.readf
 // OIDC client ID
 export const CLIENT_ID = process.env.REACT_APP_CLIENT_ID || 'webapp'
 
+// Unauthenticated user redirect
+export const REDIR_URL = process.env.REACT_APP_REDIR_URL || 'https://about.readflow.app'
+
 // VERSION
 export const VERSION = process.env.REACT_APP_VERSION || 'snapshot'
