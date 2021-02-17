@@ -11,7 +11,7 @@ You can configure the webapp build by setting environment variables:
 | `REACT_APP_API_ROOT` | `https://api.readflow.app` | API base URL. |
 | `REACT_APP_AUTHORITY` | `https://login.readflow.app/auth/realms/readflow` | OpenID Connect authority provider URL. Set to `mock` for both proxy and mock authentication. |
 | `REACT_APP_CLIENT_ID` | `webapp` | OpenID Connect client ID. |
-| `REACT_APP_REDIR_URL` | `https://about.readflow.app` | Page to redirect unauthenticated clients to. Set to `/login` for selfhosting.
+| `REACT_APP_REDIRECT_URL` | `https://about.readflow.app` | Page to redirect unauthenticated clients to. Set to `/login` for selfhosting.
 
 Example:
 
@@ -33,4 +33,3 @@ The result is stored into the `./build` directory.
 This directory can be served by any web server.
 
 ---
-
