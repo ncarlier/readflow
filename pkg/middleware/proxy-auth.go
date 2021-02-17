@@ -11,6 +11,8 @@ import (
 var usernameHeaderKeys = []string{
 	"X-WEBAUTH-USER",
 	"X-Auth-Username",
+	"Remote-User",
+	"Remote-Name",
 }
 
 func getUsernameFromHeader(header http.Header) string {
