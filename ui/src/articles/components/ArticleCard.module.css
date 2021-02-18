@@ -26,6 +26,7 @@
   background-color: var(--panel-body-color);
   font-size: larger;
   padding-bottom: .5em;
+  word-break: break-word;
 }
 .content > p {
   flex: 1 1 100%;
