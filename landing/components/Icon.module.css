@@ -1,0 +1,18 @@
+
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: .5em;
+  background-color: white;
+}
+
+.github {
+  mask-image: url(./icons/github.svg);
+}
+.twitter {
+  mask-image: url(./icons/twitter.svg);
+}
+
+
+

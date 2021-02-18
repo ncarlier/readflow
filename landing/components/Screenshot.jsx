@@ -1,20 +1,25 @@
+import useTranslation from 'next-translate/useTranslation'
+
 import styles from './Screenshot.module.css'
 
-const Screenshot = () => (
-  <section className={styles.screenshot}>
-    <header>
-      <h1>Screenshot</h1>
-      <hr />
-    </header>
-    <figure>
-      <img src="./img/screenshot.png" alt="screenshot" />
-    </figure>
-    <header className={styles.try}>
-      <h1>Give a try?</h1>
-      <h2>our hosted service is waiting for you!</h2>
-      <a href="https://readflow.app/login" className="primary btn">Get started</a>
-    </header>
-  </section>
-)
+const Screenshot = () => {
+  const { t } = useTranslation('home')
+  return (
+    <section className={styles.screenshot}>
+      <header>
+        <h1>{t('screenshot')}</h1>
+        <hr />
+      </header>
+      <figure>
+        <img src="./img/screenshot.png" alt="screenshot" />
+      </figure>
+      <header className={styles.try}>
+        <h1>{t('try')}</h1>
+        <h2>{t('hosted-service')}</h2>
+        <a href="https://readflow.app/login" className="primary btn">{t('get-started')}</a>
+      </header>
+    </section>
+  )
+}
 
 export default Screenshot

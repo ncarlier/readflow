@@ -1,18 +1,24 @@
+import Link from 'next/link'
+import useTranslation from 'next-translate/useTranslation'
+
 import styles from './Header.module.css'
 
-const Header = () => (
-  <header className={styles.header}>
-    <nav>
-      <a href="/"><img alt="readflow" src="./img/logo.svg" /></a>
-      <ul>
-        <li><a href="/#features">Features</a></li>
-        <li><a href="/pricing">Pricing</a></li>
-        <li><a href="https://about.readflow.app/docs">Docs</a></li>
-        <li><a href="https://www.github.com/ncarlier/readflow/" target="_blank">Sources</a></li>
-        <li><a href="https://readflow.app/login">Login</a></li>
-      </ul>
-    </nav>
-  </header>
-)
+const Header = () => {
+  const { t } = useTranslation('common')
+  return (
+    <header className={styles.header}>
+      <nav>
+        <Link href="/"><img alt="readflow" src="./img/logo.svg" /></Link>
+        <ul>
+          <li><Link href="/#features">{t('features')}</Link></li>
+          <li><Link href="/pricing">{t('pricing')}</Link></li>
+          <li><a href="https://about.readflow.app/docs">{t('docs')}</a></li>
+          <li><a href="https://www.github.com/ncarlier/readflow/" target="_blank">{t('sources')}</a></li>
+          <li><a href="https://readflow.app/login">{t('login')}</a></li>
+        </ul>
+      </nav>
+    </header>
+  )
+}
 
 export default Header

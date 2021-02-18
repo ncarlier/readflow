@@ -1,0 +1,12 @@
+{
+  "pricing": "prix",
+  "plans": "Des formules pour tout le monde",
+  "free-desc": "Découvrez readflow gratuitement.",
+  "standard-desc": "Idéal pour les besoins courants.",
+  "premium-desc": "Batterie incluse.",
+  "up-to-art": "jusqu'à {{count}} articles",
+  "up-to-cat": "jusqu'à {{count}} catégories",
+  "subscribe": "S'abonner",
+  "get-started": "Commencer",
+  "month": "mois"
+}
