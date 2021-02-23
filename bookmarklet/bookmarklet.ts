@@ -185,6 +185,7 @@ class ReadflowBookmarklet {
           },
           (err) => {
             alert(err)
+            this.popup.postMessage('error', '*')
           }
         )
         break

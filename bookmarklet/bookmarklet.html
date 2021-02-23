@@ -49,9 +49,37 @@ button.close {
 }
 section {
   padding: 1em;
+  position: relative;
 }
 .actions {
   margin-bottom: .5em;
+}
+#loader {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffffcc;
+  align-items: center;
+  justify-content: center;
+}
+.loader-svg{
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  fill: none;
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke: #009be5;
+}
+.loader-svg.bg{
+  stroke-width: 8px;
+  stroke: #b6d6e6;
+}
+.animate{
+  stroke-dasharray: 242.6;
+  animation: fill-animation 1s cubic-bezier(1,1,1,1) 0s infinite;
 }
 kbd {
   background: #fff;
@@ -59,6 +87,20 @@ kbd {
   border-radius: 3px;
   padding: 1px 3px;
   margin-right: 1em;
+}
+@keyframes fill-animation{
+  0%{
+    stroke-dasharray: 40 242.6;
+    stroke-dashoffset: 0;
+  }
+  50%{
+    stroke-dasharray: 141.3;
+    stroke-dashoffset: 141.3;
+  }
+  100%{
+    stroke-dasharray: 40 242.6;
+    stroke-dashoffset: 282.6;
+  }
 }
   </style>
 </head>
@@ -69,6 +111,12 @@ kbd {
     <button class="close" onclick="window.parent.postMessage('close', '*')">×</button>
   </header>
   <section>
+    <div id="loader">
+      <svg class="svg-container" height="100" width="100" viewBox="0 0 100 100">
+        <circle class="loader-svg bg" cx="50" cy="50" r="45"></circle>
+        <circle class="loader-svg animate" cx="50" cy="50" r="45"></circle>
+      </svg>
+    </div>
     <div class="actions">
       <button onclick="window.parent.postMessage('content', '*')">Send content</button>
       or
@@ -92,10 +140,9 @@ kbd {
     </footer>
   </section>
 <script>
+const $loader = document.getElementById('loader')
 window.addEventListener('message', (evt) => {
-  if (evt.data === 'loading') {
-    console.debug('loading...')
-  }
+  $loader.style.display = evt.data === 'loading' ? 'flex' : 'none'
 })
 </script>
 </body>
