@@ -3,6 +3,9 @@
 <head>
   <title>readflow</title>
   <style>
+:root {
+  --button-primary-color: #009be5;
+}
 html, body {
   height: 100%;
   margin: 0;
@@ -17,34 +20,23 @@ body {
 .loader{
   text-align: center;
 }
-.loader-svg{
-  position: absolute;
-  left: 0; right: 0; top: 0; bottom: 0;
-  fill: none;
-  stroke-width: 5px;
-  stroke-linecap: round;
-  stroke: #009be5;
+.spinner {
+  display: inline-block;
+  position: relative;
+  top: 50%;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--button-primary-color);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: donut-spin 1.2s linear infinite;
 }
-.loader-svg.bg{
-  stroke-width: 8px;
-  stroke: #b6d6e6;
-}
-.animate{
-  stroke-dasharray: 242.6;
-  animation: fill-animation 1s cubic-bezier(1,1,1,1) 0s infinite;
-}
-@keyframes fill-animation{
-  0%{
-    stroke-dasharray: 40 242.6;
-    stroke-dashoffset: 0;
+@keyframes donut-spin {
+  0% {
+    transform: rotate(0deg);
   }
-  50%{
-    stroke-dasharray: 141.3;
-    stroke-dashoffset: 141.3;
-  }
-  100%{
-    stroke-dasharray: 40 242.6;
-    stroke-dashoffset: 282.6;
+  100% {
+    transform: rotate(360deg);
   }
 }
   </style>
@@ -54,10 +46,7 @@ body {
     You need to enable JavaScript to run this app.
   </noscript>
   <div class="loader">
-    <svg class="svg-container" height="100" width="100" viewBox="0 0 100 100">
-        <circle class="loader-svg bg" cx="50" cy="50" r="45"></circle>
-        <circle class="loader-svg animate" cx="50" cy="50" r="45"></circle>
-    </svg>
+    <div class="spinner"></div>
     <p id="message">authentification...</p>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/oidc-client/1.9.1/oidc-client.min.js"></script>
