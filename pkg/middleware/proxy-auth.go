@@ -41,7 +41,6 @@ func ProxyAuth(inner http.Handler) http.Handler {
 			return
 		}
 		w.Header().Set("WWW-Authenticate", `Basic realm="Ah ah ah, you didn't say the magic word"`)
-		w.WriteHeader(401)
-		w.Write([]byte("Unauthorized\n"))
+		jsonErrors(w, "Unauthorized", 401)
 	})
 }

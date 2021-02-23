@@ -33,7 +33,7 @@ func OpenIDConnectJWTAuth(authority string) Middleware {
 				return nil, errors.New("kid header not found in token")
 			})
 			if err != nil {
-				http.Error(w, err.Error(), 401)
+				jsonErrors(w, err.Error(), 401)
 				return
 			}
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -44,12 +44,12 @@ func OpenIDConnectJWTAuth(authority string) Middleware {
 					username = val.(string)
 				}
 				if username == "" {
-					http.Error(w, "No username inside token", 403)
+					jsonErrors(w, "No username inside token", 403)
 					return
 				}
 				user, err := service.Lookup().GetOrRegisterUser(ctx, username)
 				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
+					jsonErrors(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 				isAdmin := false
@@ -68,7 +68,7 @@ func OpenIDConnectJWTAuth(authority string) Middleware {
 				inner.ServeHTTP(w, r.WithContext(ctx))
 				return
 			}
-			http.Error(w, "Unauthorized", 401)
+			jsonErrors(w, "Unauthorized", 401)
 		})
 	}
 }
