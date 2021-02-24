@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import useTranslation from 'next-translate/useTranslation'
 
 import styles from './Footer.module.css'
@@ -38,6 +39,9 @@ const Footer = () => {
           <ul>
             <li>
               <a href="/docs">{t('user-guide')}</a>
+            </li>
+            <li>
+              <Link href="/privacy">{t('privacy-policy')}</Link>
             </li>
           </ul>
         </li>
