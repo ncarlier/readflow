@@ -1,6 +1,7 @@
 .settings section > header {
   display: flex;
   flex-wrap: wrap;
+  gap: 1em;
   padding-bottom: 1em;
   border-bottom: 1px solid rgba(0,0,0,.12);
 }
@@ -17,6 +18,5 @@
 
 .settings section > header > a,
 .settings section > header > button {
-  margin-left: 1em;
   align-self: flex-start;
 }
