@@ -14,4 +14,5 @@ type Config struct {
 	ImageProxy        string `flag:"image-proxy" desc:"Image proxy service (passthrough if empty)"`
 	UserPlans         string `flag:"user-plans" desc:"User plans definition file (deactivated if empty)"`
 	WebScraping       string `flag:"web-scraping" desc:"Web Scraping service (internal if empty)"`
+	PocketConsumerKey string `flag:"pocket-consumer-key" desc:"Pocket consumer key"`
 }

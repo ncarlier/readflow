@@ -3,11 +3,12 @@ package webhook
 import (
 	"fmt"
 
+	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
 // Creator function for create an webhook provider
-type Creator func(srv model.OutgoingWebhook) (Provider, error)
+type Creator func(srv model.OutgoingWebhook, conf config.Config) (Provider, error)
 
 // Def is a webhook provider definition
 type Def struct {
@@ -25,10 +26,10 @@ func Register(name string, def *Def) {
 }
 
 // NewOutgoingWebhookProvider create new outgoing webhook provider
-func NewOutgoingWebhookProvider(conf model.OutgoingWebhook) (Provider, error) {
-	def, ok := Registry[conf.Provider]
+func NewOutgoingWebhookProvider(webhook model.OutgoingWebhook, conf config.Config) (Provider, error) {
+	def, ok := Registry[webhook.Provider]
 	if !ok {
-		return nil, fmt.Errorf("unknown webhook service provider: %s", conf.Provider)
+		return nil, fmt.Errorf("unknown webhook service provider: %s", webhook.Provider)
 	}
-	return def.Create(conf)
+	return def.Create(webhook, conf)
 }

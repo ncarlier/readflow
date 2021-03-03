@@ -16,6 +16,7 @@ var instance *Registry
 
 // Registry is the structure definition of the service registry
 type Registry struct {
+	conf            config.Config
 	db              db.DB
 	UserPlans       userplan.UserPlans
 	logger          zerolog.Logger
@@ -37,6 +38,7 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache, pl
 		return err
 	}
 	instance = &Registry{
+		conf:            conf,
 		db:              database,
 		UserPlans:       plans,
 		logger:          log.With().Str("component", "service").Logger(),

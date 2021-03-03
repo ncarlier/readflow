@@ -18,18 +18,15 @@ interface Props {
 
 const defaultConfig = {
   endpoint: 'https://app.wallabag.it',
-  // eslint-disable-next-line @typescript-eslint/camelcase
-  client_id: '',
-  // eslint-disable-next-line @typescript-eslint/camelcase
-  client_secret: '',
-  username: '',
-  password: '',
 }
 
-export default ({ onChange, config = defaultConfig }: Props) => {
-  const [formState, { url, text, password }] = useFormState<WallabagConfigFormFields>(config, {
-    onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
-  })
+export default ({ onChange, config }: Props) => {
+  const [formState, { url, text, password }] = useFormState<WallabagConfigFormFields>(
+    { ...defaultConfig, ...config },
+    {
+      onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
+    }
+  )
 
   return (
     <>

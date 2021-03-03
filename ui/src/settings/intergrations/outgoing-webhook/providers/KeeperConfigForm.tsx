@@ -15,14 +15,15 @@ interface Props {
 
 const defaultConfig = {
   endpoint: 'https://api.nunux.org/keeper/v2/documents',
-  // eslint-disable-next-line @typescript-eslint/camelcase
-  api_key: '',
 }
 
-export default ({ onChange, config = defaultConfig }: Props) => {
-  const [formState, { url, text }] = useFormState<KeeperConfigFormFields>(config, {
-    onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
-  })
+export default ({ onChange, config }: Props) => {
+  const [formState, { url, text }] = useFormState<KeeperConfigFormFields>(
+    { ...defaultConfig, ...config },
+    {
+      onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
+    }
+  )
 
   return (
     <>

@@ -10,6 +10,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -51,7 +52,7 @@ type Provider struct {
 	tpl    *template.Template
 }
 
-func newWebhookProvider(srv model.OutgoingWebhook) (webhook.Provider, error) {
+func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
 	config := ProviderConfig{}
 	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
 		return nil, err
@@ -86,7 +87,7 @@ func newWebhookProvider(srv model.OutgoingWebhook) (webhook.Provider, error) {
 	return provider, nil
 }
 
-// Archive article to Webhook endpoint.
+// Send article to Webhook endpoint.
 func (whp *Provider) Send(ctx context.Context, article model.Article) error {
 	art := webhookArticle{
 		Title:       article.Title,

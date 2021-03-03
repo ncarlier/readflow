@@ -57,6 +57,13 @@ func routes(conf *config.Config) Routes {
 			middleware.Cors(origin),
 		),
 		route(
+			"/linking/",
+			linking(conf),
+			authnMiddleware,
+			middleware.Methods("GET"),
+			middleware.Cors(origin),
+		),
+		route(
 			"/admin",
 			adminHandler(),
 			middleware.IsAdmin,

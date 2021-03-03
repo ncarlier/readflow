@@ -21,6 +21,10 @@ var providerEnum = graphql.NewEnum(
 				Value:       "wallabag",
 				Description: "Use Wallabag as outgoing webhook provider",
 			},
+			"pocket": &graphql.EnumValueConfig{
+				Value:       "pocket",
+				Description: "Use Pocket as outgoing webhook provider",
+			},
 		},
 	},
 )

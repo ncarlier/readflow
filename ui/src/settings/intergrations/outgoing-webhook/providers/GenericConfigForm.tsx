@@ -23,12 +23,6 @@ const contentTypes: Map<string, string> = new Map([
   ['HTML', 'text/html; charset=utf-8'],
 ])
 
-const defaultConfig = {
-  endpoint: '',
-  contentType: contentTypes.get('JSON') || '',
-  format: '',
-}
-
 const ContentTypes = () => (
   <>
     {Array.from(contentTypes.keys()).map((key) => (
@@ -39,7 +33,7 @@ const ContentTypes = () => (
   </>
 )
 
-export default ({ onChange, config = defaultConfig }: Props) => {
+export default ({ onChange, config }: Props) => {
   const [formState, { url, select, textarea }] = useFormState<GenericConfigFormFields>(config, {
     onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
   })

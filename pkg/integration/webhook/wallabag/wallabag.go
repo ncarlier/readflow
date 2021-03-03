@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	"github.com/ncarlier/readflow/pkg/model"
 )
@@ -43,7 +45,7 @@ type wallabagProvider struct {
 	endpoint *url.URL
 }
 
-func newWallabagProvider(srv model.OutgoingWebhook) (webhook.Provider, error) {
+func newWallabagProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
 	config := wallabagProviderConfig{}
 	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
 		return nil, err
@@ -88,7 +90,7 @@ func (wp *wallabagProvider) Send(ctx context.Context, article model.Article) err
 	if err != nil {
 		return err
 	}
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", constant.ContentTypeJSON)
 	req.Header.Set("Authorization", "Bearer "+token.AccessToken)
 	client := &http.Client{}
 	resp, err := client.Do(req)

@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useContext, useState } from 'react'
+import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
@@ -19,6 +19,7 @@ import KeeperConfigForm from './providers/KeeperConfigForm'
 import { CreateOrUpdateOutgoingWebhook } from './queries'
 import WallabagConfigForm from './providers/WallabagConfigForm'
 import GenericConfigForm from './providers/GenericConfigForm'
+import PocketConfigForm from './providers/PocketConfigForm'
 
 interface AddOutgoingWebhookFormFields {
   alias: string
@@ -26,35 +27,34 @@ interface AddOutgoingWebhookFormFields {
   isDefault: boolean
 }
 
-const extractGenericEndpointFromParams = (qs: string) => {
+const getFormStateFromQueryParams = (qs: string) => {
   const params = new URLSearchParams(qs)
-  return params.get('endpoint')
-}
-
-const getGenericConfig = (endpoint: string | null) => {
-  if (endpoint == null) {
-    return undefined
-  }
   return {
-    endpoint,
-    contentType: 'application/json; charset=utf-8',
-    format: '',
+    alias: params.get('alias') || '',
+    provider: params.get('provider') || '',
+    isDefault: false,
   }
 }
 
-export default ({ history, location }: RouteComponentProps) => {
+const getConfigFromQueryParams = (qs: string) => {
+  const params = new URLSearchParams(qs)
+  const result: any = {}
+  params.forEach((v, k) => (result[k] = v))
+  return result
+}
+
+export default ({ history, location: { search } }: RouteComponentProps) => {
   usePageTitle('Settings - Add new outgoing webhook')
-
-  const genericEndpoint = extractGenericEndpointFromParams(location.search)
-
-  const [config, setConfig] = useState<any>(null)
+  const [config, setConfig] = useState<any>(getConfigFromQueryParams(search))
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { showMessage } = useContext(MessageContext)
-  const [formState, { text, checkbox, select }] = useFormState<AddOutgoingWebhookFormFields>({
-    provider: genericEndpoint ? 'generic' : '',
-    alias: '',
-    isDefault: false,
-  })
+  const [formState, { text, checkbox, select }] = useFormState<AddOutgoingWebhookFormFields>(
+    getFormStateFromQueryParams(search)
+  )
+
+  useEffect(() => {
+    setConfig(getConfigFromQueryParams(search))
+  }, [search])
 
   const [addOutgoingWebhookMutation] = useMutation<
     CreateOrUpdateOutgoingWebhookResponse,
@@ -71,7 +71,7 @@ export default ({ history, location }: RouteComponentProps) => {
         if (res.data) {
           showMessage(`New outgoing webhook: ${res.data.createOrUpdateOutgoingWebhook.alias}`)
         }
-        history.goBack()
+        history.replace('/settings/integrations')
       } catch (err) {
         setErrorMessage(getGQLError(err))
       }
@@ -83,6 +83,7 @@ export default ({ history, location }: RouteComponentProps) => {
     (e: FormEvent | MouseEvent) => {
       e.preventDefault()
       if (!isValidForm(formState) || !config) {
+        console.log(formState, config)
         setErrorMessage('Please fill out correctly the mandatory fields.')
         return
       }
@@ -103,16 +104,16 @@ export default ({ history, location }: RouteComponentProps) => {
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
           <FormSelectField label="Provider" {...select('provider')} error={formState.errors.provider} required>
-            <option>Please select an archive provider</option>
+            <option>Please select a webhook provider</option>
             <option value="generic">Generic webhook</option>
             <option value="keeper">Keeper</option>
             <option value="wallabag">Wallabag</option>
+            <option value="pocket">Pocket</option>
           </FormSelectField>
-          {formState.values.provider === 'generic' && (
-            <GenericConfigForm onChange={setConfig} config={getGenericConfig(genericEndpoint)} />
-          )}
-          {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} />}
-          {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} />}
+          {formState.values.provider === 'generic' && <GenericConfigForm onChange={setConfig} config={config} />}
+          {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
+          {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} config={config} />}
+          {formState.values.provider === 'pocket' && <PocketConfigForm onChange={setConfig} config={config} />}
           <FormCheckboxField label="To use by default" {...checkbox('isDefault')} />
         </form>
       </section>

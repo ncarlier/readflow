@@ -46,3 +46,8 @@
 .warning:hover {
   background-color: var(--button-warning-hover-color);
 }
+
+.button > i {
+  vertical-align: middle;
+  margin-right: 5px;
+}

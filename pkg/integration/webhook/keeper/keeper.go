@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	"github.com/ncarlier/readflow/pkg/model"
 )
@@ -31,7 +33,7 @@ type Provider struct {
 	config ProviderConfig
 }
 
-func newKeeperProvider(srv model.OutgoingWebhook) (webhook.Provider, error) {
+func newKeeperProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
 	config := ProviderConfig{}
 	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
 		return nil, err
@@ -66,7 +68,7 @@ func (kp *Provider) Send(ctx context.Context, article model.Article) error {
 	if err != nil {
 		return err
 	}
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", constant.ContentTypeJSON)
 	req.SetBasicAuth("api", kp.config.APIKey)
 	client := &http.Client{}
 	resp, err := client.Do(req)

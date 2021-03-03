@@ -50,7 +50,7 @@ func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.Outgo
 		Provider: form.Provider,
 		Config:   form.Config,
 	}
-	_, err := webhookProvider.NewOutgoingWebhookProvider(dummy)
+	_, err := webhookProvider.NewOutgoingWebhookProvider(dummy, reg.conf)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
@@ -78,7 +78,7 @@ func (reg *Registry) UpdateOutgoingWebhook(ctx context.Context, form model.Outgo
 			Provider: *form.Provider,
 			Config:   *form.Config,
 		}
-		_, err := webhookProvider.NewOutgoingWebhookProvider(dummy)
+		_, err := webhookProvider.NewOutgoingWebhookProvider(dummy, reg.conf)
 		if err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
@@ -170,7 +170,7 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 		return err
 	}
 
-	provider, err := webhookProvider.NewOutgoingWebhookProvider(*webhookConf)
+	provider, err := webhookProvider.NewOutgoingWebhookProvider(*webhookConf, reg.conf)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
 		return err
