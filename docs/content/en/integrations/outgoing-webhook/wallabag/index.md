@@ -14,7 +14,7 @@ To use readflow with Wallabag you must first create [an API client](https://doc.
 
 Once obtained, you can [configure your outgoing webhook](https://readflow.app/settings/integrations):
 
-![](../../incoming-webhook/images/integrations.png)
+![](../../incoming-webhook/integrations.png)
 
 Click on the `Add` button to add an outgoing webhook.
 The webhook add page opens.

@@ -13,7 +13,7 @@ Read your Internet article flow in one place with complete peace of mind and fre
 - Read articles from anywhere in one place.
 - Save articles for offline reading.
 - Create categories and classify new articles automatically thanks to a customizable rule engine.
-- External service integration thanks to incoming and outgoing webhooks ([Keeper][keeper], [Wallabag][wallabag], Webhooks...).
+- External service integration thanks to incoming and outgoing webhooks ([Keeper][keeper], [Pocket][pocket], [Wallabag][wallabag], custom...).
 - Receive notifications when new articles are to be read.
 - Good user experience on mobile devices.
 - No tracking and no publicity.
@@ -116,3 +116,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 [keeper]: https://keeper.nunux.org
 [wallabag]: https://www.wallabag.org
+[pocket]: https://getpocket.com/

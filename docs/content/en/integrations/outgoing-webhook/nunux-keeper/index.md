@@ -14,7 +14,7 @@ To use readflow with Nunux Keeper you must first obtain [an API key in Nunux Kee
 
 Once obtained, you can [configure your outgoing webhook](https://readflow.app/settings/integrations):
 
-![](../../incoming-webhook/images/integrations.png)
+![](../../incoming-webhook/integrations.png)
 
 Click on the `Add` button to add an outgoing webhook.
 The outgoing webhook creation page opens:

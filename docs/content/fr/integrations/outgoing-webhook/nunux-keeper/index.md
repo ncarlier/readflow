@@ -14,7 +14,7 @@ Pour utiliser readflow avec Nunux Keeper vous devez au préalable obtenir [une c
 
 Une fois obtenue, vous pouvez [configurer votre webhook sortant](https://readflow.app/settings/integrations):
 
-![](../../incoming-webhook/images/integrations.png)
+![](../../incoming-webhook/integrations.png)
 
 Cliquer sur le bouton `Add` pour ajouter un webhook sortant.
 La page d'ajout de webhook s'ouvre:

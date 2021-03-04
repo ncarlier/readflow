@@ -1,7 +1,7 @@
 +++
 title = "Wallabag"
 description = "Envoyer des articles vers Wallabag"
-weight = 3
+weight = 4
 +++
 
 ![](images/wallabag.webp)
@@ -14,7 +14,7 @@ Pour utiliser readflow avec Wallabag vous devez au préalable créer [un client 
 
 Une fois obtenue, vous pouvez [configurer votre webhook sortant](https://readflow.app/settings/integrations):
 
-![](../../incoming-webhook/images/integrations.png)
+![](../../incoming-webhook/integrations.png)
 
 Cliquer sur le bouton `Add` pour ajouter un webhook sortant.
 La page d'ajout de webhook s'ouvre:

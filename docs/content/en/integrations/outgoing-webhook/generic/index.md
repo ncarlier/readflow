@@ -40,7 +40,7 @@ For example, the `title` property can be accessed with the `{{.Title}}` syntax.
 
 To add a generic webhook, you must[configure your outgoing webhook](https://readflow.app/settings/integrations):
 
-![](../../incoming-webhook/images/integrations.png)
+![](../../incoming-webhook/integrations.png)
 
 Click on the `Add` button to add an outgoing webhook.
 The outgoing webhook creation page opens:

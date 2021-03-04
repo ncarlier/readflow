@@ -40,7 +40,7 @@ Par exemple, la propriété `title` est accessible avec la syntaxe `{{.Title}}`.
 
 Pour ajouter un webhook générique, vous devez [configurer votre webhook sortant](https://readflow.app/settings/integrations):
 
-![](../../incoming-webhook/images/integrations.png)
+![](../../incoming-webhook/integrations.png)
 
 Cliquer sur le bouton `Add` pour ajouter un webhook sortant.
 La page d'ajout de webhook s'ouvre:
