@@ -23,8 +23,13 @@ func Print() {
 Git commit: %s
 Built:      %s
 
-Copyright (C) 2020 Nicolas Carlier
-This is free software: you are free to change and redistribute it.
+readflow  Copyright (C) 2021  Nicolas Carlier
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
 There is NO WARRANTY, to the extent permitted by law.
 `, Version, GitCommit, Built)
 }
