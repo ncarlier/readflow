@@ -19,6 +19,11 @@ export class OIDCAuthService implements AuthService {
       scope: 'openid profile email',
     }
     this.userManager = new UserManager(settings)
+    this.userManager.events.addUserSignedOut(async () => {
+      console.log('user signed out...')
+      this.logout()
+    })
+    this.userManager.clearStaleState()
 
     Log.logger = console
     Log.level = Log.WARN
