@@ -15,7 +15,7 @@ export class OIDCAuthService implements AuthService {
       redirect_uri: `${document.location.origin}/signin-callback.html?redirect=${redirect}`,
       silent_redirect_uri: `${document.location.origin}/silent-renew.html`,
       post_logout_redirect_uri: document.location.origin,
-      response_type: 'id_token token',
+      response_type: 'code',
       scope: 'openid profile email',
     }
     this.userManager = new UserManager(settings)
