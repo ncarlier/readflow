@@ -14,8 +14,10 @@ import { NavbarContext } from '../context/NavbarContext'
 import { matchResponse } from '../helpers'
 import logo from './logo_header.svg'
 import styles from './Navbar.module.css'
+import AddArticleLink from '../articles/components/AddArticleLink'
+import { Article } from '../articles/models'
 
-export default withRouter(({ location }: RouteComponentProps) => {
+export default withRouter(({ location, history }: RouteComponentProps) => {
   const { pathname } = location
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
   const navbar = useContext(NavbarContext)
@@ -29,6 +31,11 @@ export default withRouter(({ location }: RouteComponentProps) => {
     if (window.innerWidth <= 767) {
       setTimeout(navbar.close, 300)
     }
+  }
+
+  const redirectToNewArticle = (article: Article) => {
+    history.push(`/unread/${article.id}`)
+    menuAutoClose()
   }
 
   const renderCategories = matchResponse<GetCategoriesResponse>({
@@ -120,6 +127,9 @@ export default withRouter(({ location }: RouteComponentProps) => {
                 >
                   History
                 </LinkIcon>
+              </li>
+              <li>
+                <AddArticleLink onSuccess={redirectToNewArticle} />
               </li>
             </NetworkStatus>
           </ul>

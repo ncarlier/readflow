@@ -10,7 +10,6 @@ import ErrorPanel from '../error/ErrorPanel'
 import { getURLParam, matchResponse } from '../helpers'
 import Appbar from '../layout/Appbar'
 import Page from '../layout/Page'
-import AddButton from './components/AddButton'
 import ArticleList from './components/ArticleList'
 import ArticlesPageMenu from './components/ArticlesPageMenu'
 import NewArticlesAvailable from './components/NewArticlesAvailable'
@@ -171,7 +170,6 @@ export default (props: AllProps) => {
             swipeable={isMobileDisplay && variant !== 'starred'}
             fetchMoreArticles={fetchMoreArticles}
           />
-          {variant === 'unread' && <AddButton category={category} onSuccess={refresh} />}
         </>
       )
     },
@@ -196,7 +194,7 @@ export default (props: AllProps) => {
   const refetching = networkStatus === NetworkStatus.refetch
 
   return (
-    <Page title={title} header={<Appbar title={title} actions={$actions} />}>
+    <Page title={title} header={<Appbar title={title} actions={$actions} />} scrollToTop>
       {refetching && <Loader center />}
       {render(loading, data, error)}
     </Page>

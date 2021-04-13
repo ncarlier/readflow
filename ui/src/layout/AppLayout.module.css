@@ -28,7 +28,7 @@
 @media (max-width: 767px) {
   .layout > span > aside {
     position: fixed;
-    z-index: 1100;
+    z-index: 998;
   }
   .fog {
     position: absolute;
@@ -36,6 +36,6 @@
     left: 0;
     bottom: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 997;
   }
 }

@@ -37,6 +37,9 @@ export default () => (
         <li>
           Open active article<kbd>enter</kbd>
         </li>
+        <li>
+          Add new article<kbd>+</kbd>
+        </li>
       </ul>
     </section>
     <section>

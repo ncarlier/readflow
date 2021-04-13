@@ -3,7 +3,7 @@
   height: 100%;
   width: 256px;
   display: flex;
-  z-index: 1200;
+  z-index: 998;
   outline: none;
   overflow-y: auto;
   flex-direction: column;

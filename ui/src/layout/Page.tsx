@@ -13,10 +13,11 @@ interface Props {
   children: ReactNode
   header?: ReactNode
   actions?: ReactNode
+  scrollToTop?: boolean
 }
 
 export default (props: Props) => {
-  const { title, subtitle, className, children, actions } = props
+  const { title, subtitle, className, children, actions, scrollToTop } = props
   const { header = <Appbar title={title} actions={actions} /> } = props
 
   usePageTitle(title, subtitle)
@@ -24,7 +25,7 @@ export default (props: Props) => {
   return (
     <section className={classNames(styles.page, className)}>
       <header>{header}</header>
-      <Content>{children}</Content>
+      <Content scrollToTop={scrollToTop}>{children}</Content>
     </section>
   )
 }
