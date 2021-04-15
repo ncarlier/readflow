@@ -1,5 +1,5 @@
 import { Location } from 'history'
-import React, { useCallback, useContext } from 'react'
+import React, { SyntheticEvent, useCallback, useContext } from 'react'
 import { useMutation } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
 import { Link, useHistory, useLocation } from 'react-router-dom'
@@ -8,14 +8,21 @@ import ConfirmDialog from '../../components/ConfirmDialog'
 import DropdownMenu from '../../components/DropdownMenu'
 import Kbd from '../../components/Kbd'
 import LinkIcon from '../../components/LinkIcon'
-import { LocalConfigurationContext, SortBy, SortOrder } from '../../context/LocalConfigurationContext'
+import {
+  DisplayMode,
+  DisplayPreference,
+  DisplayPreferences,
+  LocalConfigurationContext,
+  SortBy,
+  SortOrder,
+} from '../../context/LocalConfigurationContext'
 import { MessageContext } from '../../context/MessageContext'
 import { getGQLError } from '../../helpers'
 import { GetArticlesRequest, MarkAllArticlesAsReadRequest, MarkAllArticlesAsReadResponse } from '../models'
 import { MarkAllArticlesAsRead } from '../queries'
 import { updateCacheAfterMarkAllAsRead } from '../cache'
 
-type Variant = 'unread' | 'history' | 'starred' | 'offline'
+type Variant = keyof DisplayPreferences
 
 interface Props {
   refresh: () => void
@@ -35,6 +42,10 @@ function revertStatus(status: string | null) {
   return status === 'unread' ? 'read' : 'unread'
 }
 
+function revertDisplayMode(mode: DisplayMode | null) {
+  return mode === 'grid' ? 'list' : 'grid'
+}
+
 function getSortByMessage(req: GetArticlesRequest) {
   return req.sortBy === 'stars' ? 'Sort by date' : 'Sort by stars'
 }
@@ -44,6 +55,10 @@ function getSortOrderMessage(req: GetArticlesRequest) {
     return req.sortOrder === 'asc' ? 'More stars first' : 'Less stars first'
   }
   return req.sortOrder === 'asc' ? 'Recent articles first' : 'Older articles first'
+}
+
+function getDisplayModeMessage(mode: DisplayMode) {
+  return mode === 'grid' ? 'Display as list' : 'Display as grid'
 }
 
 function getLocationWithSortByParam(loc: Location, by: SortBy) {
@@ -76,6 +91,29 @@ export default (props: Props) => {
     MarkAllArticlesAsRead
   )
 
+  const getDisplayConfigKey = useCallback(() => {
+    return req.category ? `cat_${req.category}` : variant
+  }, [variant, req])
+
+  const getDisplayPreference = useCallback((): DisplayPreference => {
+    const { display } = localConfiguration
+    const key = getDisplayConfigKey()
+    if (Object.prototype.hasOwnProperty.call(display, key)) {
+      return display[key]
+    }
+    return { by: 'key', order: 'asc', mode: 'list' }
+  }, [localConfiguration, getDisplayConfigKey])
+
+  const setDisplayPreference = useCallback(
+    (pref: Partial<DisplayPreference>) => {
+      const update = { ...getDisplayPreference(), ...pref }
+      const { display } = localConfiguration
+      display[getDisplayConfigKey()] = update
+      updateLocalConfiguration({ ...localConfiguration, display })
+    },
+    [getDisplayPreference, localConfiguration, getDisplayConfigKey, updateLocalConfiguration]
+  )
+
   const markAllAsRead = useCallback(async () => {
     try {
       await markAllArticlesAsReadMutation({
@@ -88,59 +126,39 @@ export default (props: Props) => {
     }
   }, [markAllArticlesAsReadMutation, req, refresh, showErrorMessage])
 
-  const updateLocalConfigSortBy = useCallback(() => {
-    const { sorting } = localConfiguration
-    const by = revertSortBy(req.sortBy)
-    const key = req.category ? `cat_${req.category}` : variant
-    if (!Object.prototype.hasOwnProperty.call(sorting, key)) {
-      sorting[key] = { order: 'desc', by }
-    } else if (sorting[key].by !== by) {
-      sorting[key].by = by
-    } else {
-      return
-    }
-    updateLocalConfiguration({ ...localConfiguration, sorting })
-  }, [req, variant, localConfiguration, updateLocalConfiguration])
-
-  const updateLocalConfigSortOrder = useCallback(() => {
-    const { sorting } = localConfiguration
-    const order = revertSortOrder(req.sortOrder)
-    const key = req.category ? `cat_${req.category}` : variant
-    if (!Object.prototype.hasOwnProperty.call(sorting, key)) {
-      sorting[key] = { order, by: 'key' }
-    } else if (sorting[key].order !== order) {
-      sorting[key].order = order
-    } else {
-      return
-    }
-    updateLocalConfiguration({ ...localConfiguration, sorting })
-  }, [req, variant, localConfiguration, updateLocalConfiguration])
-
   const toggleSortBy = useCallback(
-    (event: KeyboardEvent) => {
+    (event: SyntheticEvent | KeyboardEvent) => {
       event.preventDefault()
-      updateLocalConfigSortBy()
+      const by = revertSortBy(req.sortBy)
+      setDisplayPreference({ by })
       push(getLocationWithSortByParam(loc, revertSortBy(req.sortBy)))
-      return false
     },
-    [loc, req, push, updateLocalConfigSortBy]
+    [loc, req, push, setDisplayPreference]
   )
 
   const toggleSortOrder = useCallback(
-    (event: KeyboardEvent) => {
+    (event: SyntheticEvent | KeyboardEvent) => {
       event.preventDefault()
-      updateLocalConfigSortOrder()
+      const order = revertSortOrder(req.sortOrder)
+      setDisplayPreference({ order })
       push(getLocationWithSortOrderParam(loc, revertSortOrder(req.sortOrder)))
-      return false
     },
-    [loc, req, push, updateLocalConfigSortOrder]
+    [loc, req, push, setDisplayPreference]
+  )
+
+  const toggleDisplayMode = useCallback(
+    (event: SyntheticEvent | KeyboardEvent) => {
+      event.preventDefault()
+      const mode = revertDisplayMode(getDisplayPreference().mode)
+      setDisplayPreference({ mode })
+    },
+    [getDisplayPreference, setDisplayPreference]
   )
 
   const toggleStatus = useCallback(
-    (event: KeyboardEvent) => {
+    (event: SyntheticEvent | KeyboardEvent) => {
       event.preventDefault()
       push(getLocationWithStatusParam(loc, revertStatus(req.status)))
-      return false
     },
     [loc, req, push]
   )
@@ -169,7 +187,7 @@ export default (props: Props) => {
             <LinkIcon
               as={Link}
               to={getLocationWithSortByParam(loc, revertSortBy(req.sortBy))}
-              onClick={updateLocalConfigSortBy}
+              onClick={toggleSortBy}
               icon="swap_horiz"
             >
               <span>{getSortByMessage(req)}</span>
@@ -181,11 +199,17 @@ export default (props: Props) => {
           <LinkIcon
             as={Link}
             to={getLocationWithSortOrderParam(loc, revertSortOrder(req.sortOrder))}
-            onClick={updateLocalConfigSortOrder}
-            icon="sort"
+            onClick={toggleSortOrder}
+            icon="low_priority"
           >
             <span>{getSortOrderMessage(req)}</span>
             <Kbd keys="shift+o" onKeypress={toggleSortOrder} />
+          </LinkIcon>
+        </li>
+        <li>
+          <LinkIcon onClick={toggleDisplayMode} icon="dashboard">
+            <span>{getDisplayModeMessage(getDisplayPreference().mode)}</span>
+            <Kbd keys="shift+d" onKeypress={toggleDisplayMode} />
           </LinkIcon>
         </li>
         {req.status === 'unread' && (

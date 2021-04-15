@@ -16,10 +16,15 @@
 
 .grid article {
   height: 100%;
+  max-width: 320px;
 }
 
 .grid article img {
   max-width: 100%;
+}
+
+.grid article > a {
+  border-top-right-radius: inherit;
 }
 
 .grid .item {
@@ -48,6 +53,9 @@
   }
   .grid {
     grid-template-columns: repeat(1, 1fr);
+  }
+  .grid article {
+    max-width: inherit;
   }
   .item {
     margin: 1em;

@@ -17,6 +17,7 @@ interface Props {
   emptyMessage: string
   hasMore: boolean
   swipeable?: boolean
+  variant?: 'list' | 'grid'
   fetchMoreArticles: () => Promise<void>
   refetch: () => Promise<any>
 }
@@ -52,6 +53,7 @@ export default (props: Props) => {
     hasMore,
     emptyMessage = 'No more article to read',
     swipeable = false,
+    variant = 'list',
   } = props
 
   const ref = useRef<HTMLUListElement>(null)
@@ -94,7 +96,7 @@ export default (props: Props) => {
   }
 
   return (
-    <ul className={styles.list} ref={ref}>
+    <ul className={styles[variant]} ref={ref}>
       {articles.map((article, idx) => (
         <li key={`article-${article.id}`} className={styles.item} tabIndex={-1} onFocus={() => setActiveIndex(idx)}>
           {swipeable ? (

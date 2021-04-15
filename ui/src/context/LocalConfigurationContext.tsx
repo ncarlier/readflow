@@ -6,32 +6,34 @@ export type Theme = 'light' | 'dark' | 'auto'
 
 export type SortOrder = 'asc' | 'desc'
 export type SortBy = 'key' | 'stars'
+export type DisplayMode = 'list' | 'grid'
 
-interface SortPreference {
+export interface DisplayPreference {
   order: SortOrder
   by: SortBy
+  mode: DisplayMode
 }
 
-interface SortPreferences {
-  unread: SortPreference
-  offline: SortPreference
-  history: SortPreference
-  starred: SortPreference
-  [key: string]: SortPreference
+export interface DisplayPreferences {
+  unread: DisplayPreference
+  offline: DisplayPreference
+  history: DisplayPreference
+  starred: DisplayPreference
+  [key: string]: DisplayPreference
 }
 
 export interface LocalConfiguration {
-  sorting: SortPreferences
+  display: DisplayPreferences
   limit: number
   theme: Theme
 }
 
 const defaultLocalConfiguration: LocalConfiguration = {
-  sorting: {
-    unread: { order: 'asc', by: 'key' },
-    offline: { order: 'asc', by: 'key' },
-    starred: { order: 'asc', by: 'stars' },
-    history: { order: 'desc', by: 'key' },
+  display: {
+    unread: { order: 'asc', by: 'key', mode: 'list' },
+    offline: { order: 'asc', by: 'key', mode: 'list' },
+    starred: { order: 'asc', by: 'stars', mode: 'grid' },
+    history: { order: 'desc', by: 'key', mode: 'list' },
   },
   limit: 10,
   theme: 'auto',

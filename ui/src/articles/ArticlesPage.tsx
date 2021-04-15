@@ -33,7 +33,7 @@ const buildArticlesRequest = (variant: Variant, props: AllProps, localConfig: Lo
   const req: GetArticlesRequest = {
     limit: getURLParam(params, 'limit', localConfig.limit),
     sortBy: null,
-    sortOrder: getURLParam(params, 'order', localConfig.sorting.unread.order),
+    sortOrder: getURLParam(params, 'order', localConfig.display.unread.order),
     status: 'unread',
     starred: null,
     category: null,
@@ -43,26 +43,36 @@ const buildArticlesRequest = (variant: Variant, props: AllProps, localConfig: Lo
   switch (variant) {
     case 'history':
       req.status = 'read'
-      req.sortOrder = getURLParam(params, 'order', localConfig.sorting.history.order)
+      req.sortOrder = getURLParam(params, 'order', localConfig.display.history.order)
       break
     case 'starred':
       req.status = null
       req.starred = true
-      req.sortOrder = getURLParam(params, 'order', localConfig.sorting.starred.order)
-      req.sortBy = getURLParam(params, 'by', localConfig.sorting.starred.by)
+      req.sortOrder = getURLParam(params, 'order', localConfig.display.starred.order)
+      req.sortBy = getURLParam(params, 'by', localConfig.display.starred.by)
       break
     case 'unread':
       if (category && category.id) {
         req.category = category.id
         req.status = getURLParam<ArticleStatus>(params, 'status', 'unread')
         const sortKey = `cat_${category.id}`
-        if (Object.prototype.hasOwnProperty.call(localConfig.sorting, sortKey)) {
-          req.sortOrder = getURLParam(params, 'order', localConfig.sorting[sortKey].order)
+        if (Object.prototype.hasOwnProperty.call(localConfig.display, sortKey)) {
+          req.sortOrder = getURLParam(params, 'order', localConfig.display[sortKey].order)
         }
       }
   }
 
   return req
+}
+
+const getDisplayMode = (variant: Variant, localConfig: LocalConfiguration, category?: Category) => {
+  if (category && category.id) {
+    const key = `cat_${category.id}`
+    if (Object.prototype.hasOwnProperty.call(localConfig.display, key)) {
+      return localConfig.display[key].mode
+    }
+  }
+  return localConfig.display[variant].mode
 }
 
 const buildTitle = (status: string | null, category?: Category) => {
@@ -153,6 +163,7 @@ export default (props: AllProps) => {
       </Panel>
     ),
     Data: (d) => {
+      const mode = getDisplayMode(variant, localConfiguration, category)
       let { entries } = d.articles
       if (req.status) {
         entries = entries.filter((a) => a.status === req.status)
@@ -169,6 +180,7 @@ export default (props: AllProps) => {
             refetch={refetch}
             swipeable={isMobileDisplay && variant !== 'starred'}
             fetchMoreArticles={fetchMoreArticles}
+            variant={mode}
           />
         </>
       )

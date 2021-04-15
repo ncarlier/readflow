@@ -23,7 +23,6 @@ export default ({ title = 'Scroll to top', parent }: Props) => {
   useEffect(() => {
     if (parent && parent.current) {
       const $el = parent.current
-      console.log($el)
       const toggleVisibility = () => {
         setIsVisible($el.scrollTop > 500)
       }
