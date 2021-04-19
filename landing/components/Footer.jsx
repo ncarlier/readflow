@@ -38,10 +38,13 @@ const Footer = () => {
           </header>
           <ul>
             <li>
-              <a href="/docs">{t('user-guide')}</a>
+              <a href="https://about.readflow.app/docs">{t('user-guide')}</a>
             </li>
             <li>
               <Link href="/privacy">{t('privacy-policy')}</Link>
+            </li>
+            <li>
+              <Link href="/terms">{t('terms-and-conditions')}</Link>
             </li>
           </ul>
         </li>

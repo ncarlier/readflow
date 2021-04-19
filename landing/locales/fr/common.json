@@ -1,6 +1,6 @@
 {
   "features": "Fonctionnalités",
-  "pricing": "Prix",
+  "pricing": "Tarifs",
   "docs": "Docs",
   "sources": "Sources",
   "login": "Connexion",
@@ -11,5 +11,6 @@
   "bug": "Signaler un bug",
   "rfq": "Demande de fonctionnalités",
   "user-guide": "Guide utilisateur",
-  "privacy-policy": "Politique de confidentialité"
+  "privacy-policy": "Politique de confidentialité",
+  "terms-and-conditions": "CGU et CGV"
 }
