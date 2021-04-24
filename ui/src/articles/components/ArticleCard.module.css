@@ -45,7 +45,7 @@
   font-size: small;
   display: flex;
   align-items: baseline;
-  align-self: end;
+  align-self: flex-end;
   border-radius: inherit;
   width: 100%;
   background-color: var(--panel-body-color);
