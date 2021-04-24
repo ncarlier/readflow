@@ -3,14 +3,14 @@ import useTranslation from "next-translate/useTranslation"
 
 import Layout from '../components/Layout'
 
-const Terms = ({content}) => {
+const Legal = ({content}) => {
   const { t } = useTranslation("common")
   return (
     <Layout>
       <section>
         <section>
           <header>
-            <h1>{t("terms-and-conditions")}</h1>
+            <h1>{t("legal-mentions")}</h1>
             <hr />
           </header>
           <ReactMarkdown source={content} />
@@ -22,10 +22,10 @@ const Terms = ({content}) => {
 
 export async function getStaticProps(context) {
   const { locale } = context
-  const content = await import(`../policies/terms_${locale}.md`)
+  const content = await import(`../policies/legal_${locale}.md`)
   return {
     props: { content: content.default },
   }
 }
 
-export default Terms
+export default Legal

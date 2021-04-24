@@ -30,6 +30,11 @@ const Footer = () => {
                 {t('rfq')}
               </a>
             </li>
+            <li>
+              <a href="/contact">
+                {t('contact')}
+              </a>
+            </li>
           </ul>
         </li>
         <li>
@@ -41,10 +46,13 @@ const Footer = () => {
               <a href="https://about.readflow.app/docs">{t('user-guide')}</a>
             </li>
             <li>
-              <Link href="/privacy">{t('privacy-policy')}</Link>
+              <Link href="/terms">{t('terms-and-conditions')}</Link>
             </li>
             <li>
-              <Link href="/terms">{t('terms-and-conditions')}</Link>
+              <Link href="/legal">{t('legal-mentions')}</Link>
+            </li>
+            <li>
+              <Link href="/privacy">{t('privacy-policy')}</Link>
             </li>
           </ul>
         </li>
