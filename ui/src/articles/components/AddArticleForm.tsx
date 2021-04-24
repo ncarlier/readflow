@@ -1,4 +1,4 @@
-import React, { FormEvent, MouseEvent, useCallback, useContext, useState } from 'react'
+import React, { CSSProperties, FormEvent, MouseEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { useFormState } from 'react-use-form-state'
 
@@ -24,11 +24,12 @@ interface AddArticleFormFields {
 interface Props {
   value?: string
   category?: Category
+  style?: CSSProperties
   onSuccess: (article: Article) => void
   onCancel: (e: any) => void
 }
 
-export default ({ value, category, onSuccess, onCancel }: Props) => {
+export default ({ value, category, style, onSuccess, onCancel }: Props) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { showMessage } = useContext(MessageContext)
@@ -79,7 +80,7 @@ export default ({ value, category, onSuccess, onCancel }: Props) => {
       <header>
         <h1>Add new article</h1>
       </header>
-      <section>
+      <section style={style}>
         {errorMessage != null && <ErrorPanel title="Unable to add new article">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="URL" {...url('url')} error={formState.errors.url} required autoFocus />

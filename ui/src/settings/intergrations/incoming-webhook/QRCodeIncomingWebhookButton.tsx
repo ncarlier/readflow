@@ -20,7 +20,9 @@ export default ({ token }: Props) => {
     () => (
       <ConfirmDialog title="Incoming Webhook" onConfirm={hideQRCodeModal}>
         Scan this QR code with another device to allow someone else to send you articles from his readflow.
-        <img src={dataURI} alt="QR code" />
+        <div style={{ textAlign: 'center' }}>
+          <img src={dataURI} alt="QR code" />
+        </div>
       </ConfirmDialog>
     ),
     [dataURI]

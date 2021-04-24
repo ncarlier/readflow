@@ -30,6 +30,7 @@ export default ({ category, onSuccess }: Props) => {
     >
       <AddArticleForm
         category={category}
+        style={{ minWidth: '50vw' }}
         onSuccess={(a) => {
           onSuccess(a)
           hideAddModal()
