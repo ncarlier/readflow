@@ -1,3 +1,3 @@
-![](/images/logos/logo-white.svg?height=20px)
+![](/images/logo-white.svg?height=20px)
 
 *Documentation*

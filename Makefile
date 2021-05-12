@@ -83,12 +83,17 @@ changelog:
 	standard-changelog --first-release
 .PHONY: changelog
 
-## Generate HTML website
-html:
-	echo ">>> Building static website..."
-	hugo -s landing -d ../release/html --cleanDestinationDir
-	hugo -s docs -d ../release/html/docs --cleanDestinationDir
-.PHONY: html
+## Generate documentation website
+docs:
+	echo ">>> Building documentation website..."
+	hugo -s docs -d ../release/docs --cleanDestinationDir
+.PHONY: docs
+
+## Generate landing pages
+landing:
+	echo ">>> Building landing pages..."
+	cd landing && npm install --silent && npm run build
+.PHONY: landing
 
 ## Generate Web UI
 ui:

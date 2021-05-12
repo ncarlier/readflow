@@ -18,7 +18,7 @@ const items = [
 ]
 
 const Actions = () => (
-  <a href="https://about.readflow.app/docs/en/" rel="noreferrer noopener" target="_blank">
+  <a href="https://docs.readflow.app" rel="noreferrer noopener" target="_blank">
     Go to docs
   </a>
 )

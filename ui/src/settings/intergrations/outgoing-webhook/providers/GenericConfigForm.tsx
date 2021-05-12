@@ -45,9 +45,7 @@ export default ({ onChange, config }: Props) => {
         <ContentTypes />
       </FormSelectField>
       <FormTextareaField label="Format" {...textarea('format')} error={formState.errors.format}>
-        <HelpLink href="https://about.readflow.app/docs/en/third-party/archive/webhook/#format">
-          View format syntax
-        </HelpLink>
+        <HelpLink href="https://docs.readflow.app/en/third-party/archive/webhook/#format">View format syntax</HelpLink>
       </FormTextareaField>
     </>
   )

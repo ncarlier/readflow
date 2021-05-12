@@ -1,0 +1,8 @@
+
+.screenshot img {
+  box-shadow: var(--box-shadow);
+}
+
+.try {
+  margin: 3rem 0;
+}
