@@ -3,7 +3,7 @@
   publish = "landing/out"
 
 [[plugins]]
-  package = "@netlify/plugin-nextjs"
+  package = "@netlify/plugin-nextjs@3.2.2"
 
 [context.production.environment]
 NEXT_SERVERLESS = "true"
