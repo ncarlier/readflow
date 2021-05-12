@@ -3,6 +3,7 @@ import useTranslation from 'next-translate/useTranslation'
 
 import styles from './Footer.module.css'
 import Icon from './Icon'
+import Wip from './Wip'
 
 const Footer = () => {
   const { t } = useTranslation('common')
@@ -30,11 +31,13 @@ const Footer = () => {
                 {t('rfq')}
               </a>
             </li>
-            <li>
-              <a href="/contact">
-                {t('contact')}
+            <Wip>
+              <li>
+                <a href="/contact">
+                  {t('contact')}
               </a>
-            </li>
+              </li>
+            </Wip>
           </ul>
         </li>
         <li>
@@ -45,15 +48,17 @@ const Footer = () => {
             <li>
               <a href="https://about.readflow.app/docs">{t('user-guide')}</a>
             </li>
-            <li>
-              <Link href="/terms">{t('terms-and-conditions')}</Link>
-            </li>
-            <li>
-              <Link href="/legal">{t('legal-mentions')}</Link>
-            </li>
-            <li>
-              <Link href="/privacy">{t('privacy-policy')}</Link>
-            </li>
+            <Wip>
+              <li>
+                <Link href="/terms">{t('terms-and-conditions')}</Link>
+              </li>
+              <li>
+                <Link href="/legal">{t('legal-mentions')}</Link>
+              </li>
+              <li>
+                <Link href="/privacy">{t('privacy-policy')}</Link>
+              </li>
+            </Wip>
           </ul>
         </li>
         <li>

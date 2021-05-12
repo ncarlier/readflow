@@ -11,7 +11,6 @@ const Header = () => {
         <Link href="/"><img alt="readflow" src="./img/logo.svg" /></Link>
         <ul>
           <li><Link href="/#features">{t('features')}</Link></li>
-          <li><Link href="/pricing">{t('pricing')}</Link></li>
           <li><a href="https://about.readflow.app/docs">{t('docs')}</a></li>
           <li><a href="https://www.github.com/ncarlier/readflow/" target="_blank">{t('sources')}</a></li>
           <li><a href="https://readflow.app/login">{t('login')}</a></li>
