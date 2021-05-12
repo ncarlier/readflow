@@ -20,7 +20,7 @@ const Features = () => {
             <img src="./img/read.svg" />
           </picture>
           <p>{t('feat-1-desc')}</p>
-          <a href="https://about.readflow.app/docs/en/read-flow/read/" target="_blank" className="btn">{t('read-more')}</a>
+          <a href="https://docs.readflow.app/en/read-flow/read/" target="_blank" className="btn">{t('read-more')}</a>
         </li>
         <li>
           <header>
@@ -30,7 +30,7 @@ const Features = () => {
             <img src="./img/pwa.svg" />
           </picture>
           <p>{t('feat-2-desc')}</p>
-          <a href="https://about.readflow.app/docs/en/read-flow/mobile/" target="_blank" className="btn">{t('read-more')}</a>
+          <a href="https://docs.readflow.app/en/read-flow/mobile/" target="_blank" className="btn">{t('read-more')}</a>
         </li>
         <li>
           <header>
@@ -40,7 +40,7 @@ const Features = () => {
             <img src="./img/cloud.svg" />
           </picture>
           <p>{t('feat-3-desc')}</p>
-          <a href="https://about.readflow.app/docs/en/integrations/" target="_blank" className="btn">{t('read-more')}</a>
+          <a href="https://docs.readflow.app/en/integrations/" target="_blank" className="btn">{t('read-more')}</a>
         </li>
       </ul>
     </section>

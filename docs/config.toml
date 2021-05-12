@@ -1,4 +1,4 @@
-baseURL = "https://about.readflow.app/docs"
+baseURL = "https://docs.readflow.app"
 
 languageCode = "en-us"
 DefaultContentLanguage = "en"

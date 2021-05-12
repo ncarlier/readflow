@@ -46,7 +46,7 @@ const Footer = () => {
           </header>
           <ul>
             <li>
-              <a href="https://about.readflow.app/docs">{t('user-guide')}</a>
+              <a href="https://docs.readflow.app">{t('user-guide')}</a>
             </li>
             <Wip>
               <li>

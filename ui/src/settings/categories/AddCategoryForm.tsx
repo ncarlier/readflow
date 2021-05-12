@@ -74,7 +74,7 @@ export default ({ history }: AllProps) => {
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="Title" {...text('title')} error={formState.errors.title} required autoFocus />
           <FormTextareaField label="Rule" {...textarea('rule')} error={formState.errors.rule}>
-            <HelpLink href="https://about.readflow.app/docs/en/read-flow/categories/#rule">View rule syntax</HelpLink>
+            <HelpLink href="https://docs.readflow.app/en/read-flow/categories/#rule">View rule syntax</HelpLink>
           </FormTextareaField>
         </form>
       </section>

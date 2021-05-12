@@ -86,7 +86,7 @@ changelog:
 ## Generate documentation website
 docs:
 	echo ">>> Building documentation website..."
-	hugo -s docs -d ../release/html/docs --cleanDestinationDir
+	hugo -s docs -d ../release/docs --cleanDestinationDir
 .PHONY: docs
 
 ## Generate landing pages
