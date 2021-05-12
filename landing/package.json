@@ -16,7 +16,7 @@
     "react-markdown": "^6.0.2"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^1.1.5",
+    "@netlify/plugin-nextjs": "^3.2.2",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "eslint": "^7.26.0",
