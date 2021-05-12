@@ -4,3 +4,7 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[context.production.environment]
+NEXT_SERVERLESS = "true"
+NODE_ENV = "production"
