@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import useTranslation from "next-translate/useTranslation"
 
-import Layout from '../components/Layout'
+import Layout from '@/components/Layout'
 
 const Terms = ({content}) => {
   const { t } = useTranslation("common")
@@ -13,7 +13,7 @@ const Terms = ({content}) => {
             <h1>{t("terms-and-conditions")}</h1>
             <hr />
           </header>
-          <ReactMarkdown source={content} />
+          <ReactMarkdown children={content} />
         </section>
       </section>
     </Layout>

@@ -1,19 +1,24 @@
+import { useAuth } from "oidc-react"
 import useTranslation from "next-translate/useTranslation"
 
 import Layout from '@/components/Layout'
+import UserInfo from '@/components/UserInfo'
+import { useEffect } from 'react'
 
-const Contact = () => {
+const Account = () => {
   const { t } = useTranslation("common")
+  const auth = useAuth()
+
   return (
     <Layout>
       <section>
         <section>
           <header>
-            <h1>{t("contact")}</h1>
+            <h1>{t("account")}</h1>
             <hr />
           </header>
           <section>
-            FORM
+            <UserInfo userData={auth.userData} />
           </section>
         </section>
       </section>
@@ -21,4 +26,4 @@ const Contact = () => {
   )
 }
 
-export default Contact
+export default Account

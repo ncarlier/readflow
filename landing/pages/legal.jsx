@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import useTranslation from "next-translate/useTranslation"
 
-import Layout from '../components/Layout'
+import Layout from '@/components/Layout'
 
 const Legal = ({content}) => {
   const { t } = useTranslation("common")
@@ -13,7 +13,7 @@ const Legal = ({content}) => {
             <h1>{t("legal-mentions")}</h1>
             <hr />
           </header>
-          <ReactMarkdown source={content} />
+          <ReactMarkdown children={content} />
         </section>
       </section>
     </Layout>
