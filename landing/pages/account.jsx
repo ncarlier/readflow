@@ -3,7 +3,7 @@ import useTranslation from "next-translate/useTranslation"
 
 import Layout from '@/components/Layout'
 import UserInfo from '@/components/UserInfo'
-import { useEffect } from 'react'
+import StripeCustomer from '@/components/StripeCustomer'
 
 const Account = () => {
   const { t } = useTranslation("common")
@@ -19,6 +19,7 @@ const Account = () => {
           </header>
           <section>
             <UserInfo userData={auth.userData} />
+            <StripeCustomer userData={auth.userData} />
           </section>
         </section>
       </section>

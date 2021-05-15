@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks --project-name=readflow"
   },
   "dependencies": {
     "@stripe/stripe-js": "^1.14.0",

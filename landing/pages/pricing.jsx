@@ -2,9 +2,8 @@ import { useAuth } from "oidc-react"
 
 import Layout from '@/components/Layout'
 import Plans from '@/components/Plans'
-import { createCheckoutSession } from '@/helpers/checkout'
-import { getStripe } from '@/helpers/strip'
-import { pricing } from '@/config/strip'
+import { postData } from '@/helpers/http'
+import { getStripe } from '@/helpers/stripe-client'
 
 const Pricing = () => {
   const auth = useAuth()
@@ -18,12 +17,8 @@ const Pricing = () => {
       return auth.signIn({redirect_uri: document.location})
     }
     try {
-      const { id_token } = auth.userData
-      const price = pricing[plan]
-      if (!price) {
-        throw `price not found the ${plan} plan`
-      }
-      const { sessionId } = await createCheckoutSession(price, id_token)
+      const { id_token: token } = auth.userData
+      const { sessionId } = await postData('/api/create-checkout-session', { plan, token })
       const stripe = await getStripe()
       stripe.redirectToCheckout({ sessionId })
     } catch (error) {

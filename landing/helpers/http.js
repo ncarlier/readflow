@@ -1,15 +1,12 @@
 
-export const createCheckoutSession = async (price, token) => {
-  const res = await fetch('/api/create-checkout-session', {
+export const postData = async (url, body) => {
+  const res = await fetch(url, {
     method: 'POST',
     headers: new Headers({
       'Content-Type': 'application/json'
     }),
     credentials: 'same-origin',
-    body: JSON.stringify({
-      price,
-      token
-    })
+    body: JSON.stringify(body)
   })
 
   if (res.error) {
