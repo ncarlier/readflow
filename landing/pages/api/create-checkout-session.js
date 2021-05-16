@@ -1,8 +1,8 @@
 import { base_url } from '@/config/url'
 import { pricing } from '@/config/stripe'
-import { getUser, updateUserAttributes } from '@/helpers/keycloak'
 import { stripe } from '@/helpers/stripe-server'
 import { decodeToken } from '@/helpers/token'
+import { getOrRegisterUser, updateUser } from '@/helpers/readflow'
 
 const createCheckoutSession = async (req, res) => {
   if (req.method !== 'POST') {
@@ -16,26 +16,28 @@ const createCheckoutSession = async (req, res) => {
       throw `price not found the ${plan} plan`
     }
     const decoded = decodeToken(token)
+    // TODO user username instead of email
     const { sub, email } = decoded
     let { customer } = decoded
     if (!customer) {
       // try to retrieve customer info from account
-      const user = await getUser(sub)
-      if (user.attributes && user.attributes.customer_id) {
-        customer = user.attributes.customer_id[0]
+      let user = await getOrRegisterUser(email)
+      if (user.customer_id) {
+        customer = user.customer_id
       } else {
-        console.debug('upgrading user as customer', sub, email)
+        console.debug('upgrading user as customer', user)
         // Create stripe customer
-        const { id } = await stripe.customers.create({
+        const stripeCustomer = await stripe.customers.create({
           email,
           metadata: {
-            subject: sub
+            subject: sub,
+            uid: user.id
           }
         })
-        customer = id
+        customer = stripeCustomer.id
         // Link user account with customer account
-        await updateUserAttributes(sub, {customer_id: id})
-        console.info('customer created', email, id)
+        user = await updateUser(user.id, {customer_id: customer})
+        console.info('customer created', user)
       }
     }
 

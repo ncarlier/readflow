@@ -1,6 +1,6 @@
 import { decodeToken } from '@/helpers/token'
 import { base_url } from '@/config/url'
-import { getUser } from '@/helpers/keycloak'
+import { getOrRegisterUser } from '@/helpers/readflow'
 import { stripe } from '@/helpers/stripe-server'
 
 const createPortalLink = async (req, res) => {
@@ -11,12 +11,12 @@ const createPortalLink = async (req, res) => {
   const { token } = req.body
   try {
     const decoded = decodeToken(token)
-    const { sub } = decoded
+    const { email } = decoded
     let { customer } = decoded
     if (!customer) {
-      const user = await getUser(sub)
-      if (user.attributes && user.attributes.customer_id) {
-        customer = user.attributes.customer_id[0]
+      const user = await getOrRegisterUser(email)
+      if (user.customer_id) {
+        customer = user.customer_id
       } else {
         return res.status(200).json({url: null})
       }
