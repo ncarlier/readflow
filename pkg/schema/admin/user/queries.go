@@ -13,22 +13,24 @@ var userQueryField = &graphql.Field{
 	Type: userType,
 	Args: graphql.FieldConfigArgument{
 		"uid": &graphql.ArgumentConfig{
-			Type: graphql.NewNonNull(graphql.ID),
+			Type: graphql.ID,
+		},
+		"username": &graphql.ArgumentConfig{
+			Type: graphql.String,
 		},
 	},
 	Resolve: userResolver,
 }
 
 func userResolver(p graphql.ResolveParams) (interface{}, error) {
-	uid, ok := helper.ConvGQLStringToUint(p.Args["uid"])
-	if !ok {
-		return nil, errors.New("invalid user ID")
+	uid := helper.GetGQLUintParameter("uid", p.Args)
+	username := helper.GetGQLStringParameter("username", p.Args)
+	if uid != nil {
+		return service.Lookup().GetUserByID(p.Context, *uid)
+	} else if username != nil {
+		return service.Lookup().GetUserByUsername(p.Context, *username)
 	}
-	user, err := service.Lookup().GetUserByID(p.Context, uid)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return nil, errors.New("missing uid or username parameter")
 }
 
 func init() {

@@ -37,12 +37,13 @@ func (pg *DB) updateUser(user model.User) (*model.User, error) {
 		UPDATE users SET
 			enabled=$2,
 			plan=$3,
-			last_login_at=$4,
+			customer_id=$4,
+			last_login_at=$5,
 			updated_at=NOW()
 			WHERE id=$1
-			RETURNING id, username, enabled, plan, last_login_at, created_at, updated_at
+			RETURNING id, username, enabled, plan, customer_id, last_login_at, created_at, updated_at
 		`,
-		user.ID, user.Enabled, user.Plan, user.LastLoginAt,
+		user.ID, user.Enabled, user.Plan, user.CustomerID, user.LastLoginAt,
 	)
 
 	result := model.User{}
@@ -52,6 +53,7 @@ func (pg *DB) updateUser(user model.User) (*model.User, error) {
 		&result.Username,
 		&result.Enabled,
 		&result.Plan,
+		&result.CustomerID,
 		&result.LastLoginAt,
 		&result.CreatedAt,
 		&result.UpdatedAt,
@@ -78,6 +80,7 @@ func (pg *DB) GetUserByID(id uint) (*model.User, error) {
 			username,
 			enabled,
 			plan,
+			customer_id,
 			last_login_at,
 			created_at,
 			updated_at
@@ -93,6 +96,7 @@ func (pg *DB) GetUserByID(id uint) (*model.User, error) {
 		&result.Username,
 		&result.Enabled,
 		&result.Plan,
+		&result.CustomerID,
 		&result.LastLoginAt,
 		&result.CreatedAt,
 		&result.UpdatedAt,
@@ -114,6 +118,7 @@ func (pg *DB) GetUserByUsername(username string) (*model.User, error) {
 			username,
 			enabled,
 			plan,
+			customer_id,
 			last_login_at,
 			created_at,
 			updated_at
@@ -129,6 +134,7 @@ func (pg *DB) GetUserByUsername(username string) (*model.User, error) {
 		&result.Username,
 		&result.Enabled,
 		&result.Plan,
+		&result.CustomerID,
 		&result.LastLoginAt,
 		&result.CreatedAt,
 		&result.UpdatedAt,

@@ -35,7 +35,7 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 	if user != nil {
 		// Checks that the user is not disabled
 		if !user.Enabled {
-			err = errors.New("user diabled")
+			err = errors.New("user disabled")
 			reg.logger.Info().Err(err).Str(
 				"username", username,
 			).Msg("unable to login")
@@ -103,7 +103,7 @@ func (reg *Registry) DeleteAccount(ctx context.Context) (bool, error) {
 	return true, nil
 }
 
-// GetUserByID get current user
+// GetUserByID get user by id
 func (reg *Registry) GetUserByID(ctx context.Context, uid uint) (*model.User, error) {
 	reg.logger.Debug().Uint(
 		"id", uid,
@@ -117,6 +117,29 @@ func (reg *Registry) GetUserByID(ctx context.Context, uid uint) (*model.User, er
 		}
 		reg.logger.Info().Err(err).Uint(
 			"id", uid,
+		).Msg("unable to find user")
+		return nil, err
+	}
+	// Compute user hash
+	user.Hash = helper.Hash(strings.ToLower(user.Username))
+
+	return user, nil
+}
+
+// GetUserByUsername get user by username
+func (reg *Registry) GetUserByUsername(ctx context.Context, username string) (*model.User, error) {
+	reg.logger.Debug().Str(
+		"username", username,
+	).Msg("getting user...")
+
+	// Try to fetch existing user...
+	user, err := reg.db.GetUserByUsername(username)
+	if err != nil || user == nil {
+		if user == nil {
+			err = errors.New("user not found")
+		}
+		reg.logger.Info().Err(err).Str(
+			"username", username,
 		).Msg("unable to find user")
 		return nil, err
 	}
@@ -145,6 +168,9 @@ func (reg *Registry) UpdateUser(ctx context.Context, form model.UserForm) (*mode
 	}
 	if form.Plan != nil {
 		user.Plan = *form.Plan
+	}
+	if form.CustomerID != nil {
+		user.CustomerID = *form.CustomerID
 	}
 
 	// Self protection

@@ -12,6 +12,9 @@ var userType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "User",
 		Fields: graphql.Fields{
+			"id": &graphql.Field{
+				Type: graphql.Int,
+			},
 			"username": &graphql.Field{
 				Type: graphql.String,
 			},
@@ -22,6 +25,9 @@ var userType = graphql.NewObject(
 				Type: graphql.Boolean,
 			},
 			"plan": &graphql.Field{
+				Type: graphql.String,
+			},
+			"customer_id": &graphql.Field{
 				Type: graphql.String,
 			},
 			"last_login_at": &graphql.Field{

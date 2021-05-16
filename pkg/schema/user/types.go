@@ -17,6 +17,9 @@ var userType = graphql.NewObject(
 			"plan": &graphql.Field{
 				Type: graphql.String,
 			},
+			"customer_id": &graphql.Field{
+				Type: graphql.String,
+			},
 			"last_login_at": &graphql.Field{
 				Type: graphql.DateTime,
 			},

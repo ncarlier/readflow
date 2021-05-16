@@ -8,6 +8,7 @@ type User struct {
 	Username    string     `json:"username,omitempty"`
 	Enabled     bool       `json:"enabled,omitempty"`
 	Plan        string     `json:"plan,omitempty"`
+	CustomerID  string     `json:"customer_id,omitempty"`
 	Hash        string     `json:"hash,omitempty"`
 	LastLoginAt *time.Time `json:"last_login_at,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
@@ -16,7 +17,8 @@ type User struct {
 
 // UserForm structure definition
 type UserForm struct {
-	ID      uint
-	Enabled *bool
-	Plan    *string
+	ID         uint
+	Enabled    *bool
+	Plan       *string
+	CustomerID *string
 }

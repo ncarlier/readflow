@@ -149,6 +149,8 @@ update outgoing_webhooks set provider='generic' where provider = 'webhook';
 update articles set stars=1 where starred = true;
 alter table articles drop column starred;
 `,
+	"db_migration_9": `alter table users add column customer_id varchar not null default '';
+`,
 }
 
 // DatabaseSQLMigrationChecksums is generated from a fileset and contains files checksums
@@ -161,4 +163,5 @@ var DatabaseSQLMigrationChecksums = map[string]string{
 	"db_migration_6": "82606f963d687906ec932d2a6021a29b0d1480260c8a1f7fe7da8edfad8bfbf5",
 	"db_migration_7": "05329d34279e8787592c48e97164dd0be0a1f42835da3f4aa129819296828a8d",
 	"db_migration_8": "36dfebfaec092e686472a440a7d22e318a4f46567d18864ec3e53b94ac12e837",
+	"db_migration_9": "ecfa9532599414b3e79dad336e7069b22f888b981db90b067104026ecb0a56ac",
 }
