@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@stripe/stripe-js": "^1.14.0",
+    "deep-email-validator": "^0.1.18",
     "jwt-decode": "^3.1.2",
     "next": "^10.2.0",
     "next-translate": "^1.0.6",
