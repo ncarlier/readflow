@@ -23,7 +23,7 @@ const contactForm = async (req, res) => {
   })
   if (!valid) {
     const message = validators[reason].reason
-    console.error('unable to send contact form: invalid email', message)
+    console.error('❌ unable to send contact form: invalid email', message)
     return res.redirect(`/result?variant=contact-error&reason=${message}`)
   }
 
@@ -39,7 +39,7 @@ const contactForm = async (req, res) => {
   })
 
   if (resp.error) {
-    console.error('unable to send contact form', resp.error)
+    console.error('❌ unable to send contact form', resp.error)
     return res.redirect(`/result?variant=contact-error&reason=${resp.error}`)
   }
 

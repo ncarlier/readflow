@@ -15,30 +15,25 @@ const createCheckoutSession = async (req, res) => {
     if (!price) {
       throw `price not found the ${plan} plan`
     }
-    const decoded = decodeToken(token)
     // TODO user username instead of email
-    const { sub, email } = decoded
-    let { customer } = decoded
+    const { sub, email } = decodeToken(token)
+    // Retrieve user account
+    const user = await getOrRegisterUser(email)
+    let customer = user.customer_id
     if (!customer) {
-      // try to retrieve customer info from account
-      let user = await getOrRegisterUser(email)
-      if (user.customer_id) {
-        customer = user.customer_id
-      } else {
-        console.debug('upgrading user as customer', user)
-        // Create stripe customer
-        const stripeCustomer = await stripe.customers.create({
-          email,
-          metadata: {
-            subject: sub,
-            uid: user.id
-          }
-        })
-        customer = stripeCustomer.id
-        // Link user account with customer account
-        user = await updateUser(user.id, {customer_id: customer})
-        console.info('customer created', user)
-      }
+      console.debug('promoting user as a customer...', user)
+      // Create stripe customer
+      const stripeCustomer = await stripe.customers.create({
+        email,
+        metadata: {
+          subject: sub,
+          uid: user.id
+        }
+      })
+      customer = stripeCustomer.id
+      // Link user account with customer account
+      user = await updateUser(user.id, {customer_id: customer})
+      console.info('customer created', user)
     }
 
     // Create checkout session
@@ -59,7 +54,7 @@ const createCheckoutSession = async (req, res) => {
     })
     return res.status(200).json({ sessionId: session.id })
   } catch (err) {
-    console.error(err);
+    console.error('❌ error while creating checkout session', err);
     res.status(500).json({
       error: { statusCode: 500, message: err.message }
     })

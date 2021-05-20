@@ -3,6 +3,4 @@ export const pricing = {
   premium: 'price_1IIBKUFmuse653uB580Sulj4'
 }
 
-export default {
-  pricing
-}
+export const getPlan = (price) => Object.keys(pricing).find(key => pricing[key] === price)
