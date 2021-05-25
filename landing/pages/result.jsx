@@ -2,10 +2,12 @@ import { useRouter } from 'next/router'
 import useTranslation from "next-translate/useTranslation"
 
 import Layout from '@/components/Layout'
+import { useAuth } from 'oidc-react'
 
 const Result = () => {
   const { t } = useTranslation("message")
   const router = useRouter()
+  const { userData } = useAuth()
   const { variant, reason } = router.query
 
   return (
@@ -19,6 +21,7 @@ const Result = () => {
           <article>
             <p>{t(variant)}</p>
             { reason && <pre>{reason}</pre> }
+            { userData && <a href="https://readflow.app">Back to my readflow</a> }
           </article>
         </section>
       </section>

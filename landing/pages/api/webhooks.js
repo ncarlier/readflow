@@ -84,10 +84,9 @@ const manageSubscriptionStatusChange = async (
   const { price } = subscription.items.data[0]
   const plan = subscription.status ===  'active' ? getPlan(price.id) : 'default'
   if (plan === null) {
-    throw new Error(`no plan defined for this price id: ${proce.id}`)
+    throw new Error(`no plan defined for this price id: ${price.id}`)
   }
   await updateUser(uid, { plan })
-  // TODO send notification to activate third party services
 }
 
 export default webhookHandler

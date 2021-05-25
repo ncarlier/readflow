@@ -1,26 +1,28 @@
 import { useAuth } from "oidc-react"
-import useTranslation from "next-translate/useTranslation"
 
 import Layout from '@/components/Layout'
-import UserInfo from '@/components/UserInfo'
-import StripeCustomer from '@/components/StripeCustomer'
+import { useEffect } from 'react'
 
 const Account = () => {
-  const { t } = useTranslation("common")
-  const auth = useAuth()
+  const { userData } = useAuth()
+
+  useEffect(async () => {
+    if (userData === null) {
+      return auth.signIn({redirect_uri: document.location})
+    }
+    const { id_token: token } = userData
+    const { url, error } = await postData('/api/create-portal-link', { token })
+    if (error) return alert(error.message)
+    if (url != null) {
+      window.location.assign(url)
+    }
+  }, [userData])
 
   return (
     <Layout>
       <section>
         <section>
-          <header>
-            <h1>{t("account")}</h1>
-            <hr />
-          </header>
-          <section>
-            <UserInfo userData={auth.userData} />
-            <StripeCustomer userData={auth.userData} />
-          </section>
+          <p>redirecting to the billing portal...</p>
         </section>
       </section>
     </Layout>

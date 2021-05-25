@@ -2,5 +2,7 @@
   "contact-success-title": "Thank you!",
   "contact-success": "Your message has been sent. We will answer it as soon as possible.",
   "contact-error-title": "Oops!",
-  "contact-error": "Your message cannot be sent for the following reason:"
+  "contact-error": "Your message cannot be sent for the following reason:",
+  "subscription-success-title": "Thank you!",
+  "subscription-success": "Your subscription has been confirmed."
 }

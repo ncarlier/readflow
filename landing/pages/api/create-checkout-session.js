@@ -15,10 +15,9 @@ const createCheckoutSession = async (req, res) => {
     if (!price) {
       throw `price not found the ${plan} plan`
     }
-    // TODO user username instead of email
-    const { sub, email } = decodeToken(token)
+    const { sub, email, preferred_username: username } = decodeToken(token)
     // Retrieve user account
-    const user = await getOrRegisterUser(email)
+    const user = await getOrRegisterUser(username)
     let customer = user.customer_id
     if (!customer) {
       console.debug('promoting user as a customer...', user)
@@ -49,8 +48,8 @@ const createCheckoutSession = async (req, res) => {
           quantity: 1
         }
       ],
-      success_url: `${base_url}/account?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${base_url}/`
+      success_url: `${base_url}/result?variant=subscription-success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${base_url}/pricing`
     })
     return res.status(200).json({ sessionId: session.id })
   } catch (err) {

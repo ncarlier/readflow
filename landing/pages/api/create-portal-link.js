@@ -11,10 +11,10 @@ const createPortalLink = async (req, res) => {
   const { token } = req.body
   try {
     const decoded = decodeToken(token)
-    const { email } = decoded
+    const { preferred_username: username } = decoded
     let { customer } = decoded
     if (!customer) {
-      const user = await getOrRegisterUser(email)
+      const user = await getOrRegisterUser(username)
       if (user.customer_id) {
         customer = user.customer_id
       } else {
