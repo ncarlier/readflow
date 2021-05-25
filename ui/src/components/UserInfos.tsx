@@ -16,16 +16,18 @@ export const GetCurrentUser = gql`
       username
       hash
       plan
+      customer_id
       last_login_at
       created_at
     }
   }
 `
 
-interface User {
+export interface User {
   username: string
   hash: string
   plan: string
+  customer_id: string
   created_at: string
   last_login_at: string
 }

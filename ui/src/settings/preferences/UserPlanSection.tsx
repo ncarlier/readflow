@@ -7,6 +7,7 @@ import Loader from '../../components/Loader'
 import { GetCurrentUser, GetCurrentUserResponse } from '../../components/UserInfos'
 import ErrorPanel from '../../error/ErrorPanel'
 import { matchResponse } from '../../helpers'
+import PlanManagement from '../components/PlanManagement'
 
 export const GetPlans = gql`
   query {
@@ -37,8 +38,8 @@ const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
   const render = matchResponse<GetCurrentUserResponse>({
     Loading: () => <Loader center />,
     Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
-    Data: (data) => {
-      let plan = plans.find((p) => p.name === data.me.plan)
+    Data: ({ me }) => {
+      let plan = plans.find((p) => p.name === me.plan)
       if (!plan) {
         plan = plans[0]
       }
@@ -52,7 +53,7 @@ const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
               Max number of categories: <b>{plan.total_categories}</b>
             </li>
           </ul>
-          <p>You can ask administrator to update your plan if needed.</p>
+          <PlanManagement user={me} />
         </Box>
       )
     },
@@ -73,7 +74,7 @@ export default () => {
       return (
         <section>
           <header>
-            <h2>User plan</h2>
+            <h2 id="plan">User plan</h2>
           </header>
           <p>Your user plan defines quotas and usage limits.</p>
           <UserPlanBox plans={data.plans} />
