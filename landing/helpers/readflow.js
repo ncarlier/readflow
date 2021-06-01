@@ -28,6 +28,10 @@ mutation {
 }`
 }
 
+/**
+ * Get OIDC access token.
+ * @returns {string} OIDC access token
+ */
 const getAccessToken = async () => {
   const res = await fetch(`${oidcConfig.authority}/protocol/openid-connect/token`, {
     method: 'POST',
@@ -51,6 +55,12 @@ const getAccessToken = async () => {
   return data.access_token
 }
 
+/**
+ * Update readflow user.
+ * @param {number} id user ID
+ * @param {Object} payload update payload
+ * @returns {Object} updated user
+ */
 export const updateUser = async (id, payload) => {
   const token = await getAccessToken()
   console.debug('updating user:', id, payload)
@@ -79,6 +89,10 @@ export const updateUser = async (id, payload) => {
   return data.data.updateUser
 }
 
+/**
+ * Get or register readfloe user.
+ * @param {string} username 
+ */
 export const getOrRegisterUser = async (username) => {
   const token = await getAccessToken()
   const gql = {

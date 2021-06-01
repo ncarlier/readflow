@@ -4,6 +4,11 @@ import { stripe } from '@/helpers/stripe-server'
 import { decodeToken } from '@/helpers/token'
 import { getOrRegisterUser, updateUser } from '@/helpers/readflow'
 
+/**
+ * Create checkout session.
+ * @param {import("next").NextApiRequest} req 
+ * @param {import("next").NextApiResponse} res 
+ */
 const createCheckoutSession = async (req, res) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')

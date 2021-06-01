@@ -3,6 +3,11 @@ import { base_url } from '@/config/url'
 import { getOrRegisterUser } from '@/helpers/readflow'
 import { stripe } from '@/helpers/stripe-server'
 
+/**
+ * Get Stripe customer portal link.
+ * @param {import("next").NextApiRequest} req 
+ * @param {import("next").NextApiResponse} res 
+ */
 const createPortalLink = async (req, res) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')

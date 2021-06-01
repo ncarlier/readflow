@@ -1,4 +1,9 @@
 
+/**
+ * Post JSON data to HTTP endpoint.
+ * @param {string} url endpoint URL
+ * @param {Object} body JSON data
+ */
 export const postData = async (url, body) => {
   const res = await fetch(url, {
     method: 'POST',

@@ -2,6 +2,11 @@ import validate from 'deep-email-validator'
 
 import { sendmail_url } from '@/config/url'
 
+/**
+ * Post contact form to HTTP endpoint.
+ * @param {import("next").NextApiRequest} req 
+ * @param {import("next").NextApiResponse} res 
+ */
 const contactForm = async (req, res) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')

@@ -25,6 +25,11 @@ const relevantEvents = new Set([
   'customer.subscription.deleted'
 ])
 
+/**
+ * Webhooks to handle Stripe callbacks.
+ * @param {import("next").NextApiRequest} req 
+ * @param {import("next").NextApiResponse} res 
+ */
 const webhookHandler = async (req, res) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
@@ -69,6 +74,11 @@ const webhookHandler = async (req, res) => {
   res.json({ received: true })
 }
 
+/**
+ * Update user plan regarding subscription status.
+ * @param {string} subscriptionId 
+ * @param {string} customerId 
+ */
 const manageSubscriptionStatusChange = async (
   subscriptionId,
   customerId,
