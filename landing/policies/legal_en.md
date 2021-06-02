@@ -1,4 +1,4 @@
-Effective 15/21/2021
+*Effective 15/21/2021*
 
 In accordance with the provisions of Articles 6-III and 19 of Law No. 2004-575 of June 21, 2004 for "Confiance dans l’économie numériqueC", known as L.C.E.N., Users of the site https://readflow.app ( referred as the "Services") are informed of the present legal notice.
 

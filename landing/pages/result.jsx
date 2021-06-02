@@ -9,6 +9,10 @@ const Result = () => {
   const router = useRouter()
   const { userData } = useAuth()
   const { variant, reason } = router.query
+  let className = ''
+  if (variant) {
+    className = variant.split('-')[1]
+  }
 
   return (
     <Layout>
@@ -18,7 +22,7 @@ const Result = () => {
             <h1>{t(`${variant}-title`)}</h1>
             <hr />
           </header>
-          <article>
+          <article className={className}>
             <p>{t(variant)}</p>
             { reason && <pre>{reason}</pre> }
             { userData && <a href="https://readflow.app">Back to my readflow</a> }

@@ -13,7 +13,9 @@ const Legal = ({content}) => {
             <h1>{t("legal-mentions")}</h1>
             <hr />
           </header>
-          <ReactMarkdown children={content} />
+          <article>
+            <ReactMarkdown children={content} />
+          </article>
         </section>
       </section>
     </Layout>

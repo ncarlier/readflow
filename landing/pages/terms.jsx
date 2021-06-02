@@ -13,7 +13,9 @@ const Terms = ({content}) => {
             <h1>{t("terms-and-conditions")}</h1>
             <hr />
           </header>
-          <ReactMarkdown children={content} />
+          <article>
+            <ReactMarkdown children={content} />
+          </article>
         </section>
       </section>
     </Layout>

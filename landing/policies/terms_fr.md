@@ -11,7 +11,7 @@ En cas de contradiction, les conditions particulières prévalent sur ces condit
 ## 2. Exploitant des Services
 
 Les Services sont exploités par la société Nunux (ci-après : "L'Éditeur").
-L'Éditeur peut être contacté [ici](/contact).
+L'Éditeur peut être contacté [ici](/fr/contact).
 
 ## 3. Accès au site et aux Services
 
@@ -99,7 +99,7 @@ L'Utilisateur est informé et accepte expressément que tout retard de paiement 
 
 Conformément à l'article L. 121-20 du Code de la consommation, *"le consommateur dispose d'un délai de quatorze jours francs pour exercer son droit de rétractation sans avoir à justifier de motifs ni à payer de pénalités, à l'exception, le cas échéant, des frais de retour"*.
 *"Le délai mentionné à l'alinéa précédent court à compter de la réception pour les biens ou de l'acceptation de l'offre pour les prestations de services".*
-Le droit de rétractation peut être exercé en [contactant la Société](/contact).
+Le droit de rétractation peut être exercé en [contactant la Société](/fr/contact).
 En cas d'exercice du droit de rétractation dans le délai susmentionné, L'Editeur se rerve le droit de suspendre le Compte de l'Utilisateur en cas de dépassement des quotas d'utilisation de l'offre gratuite.
 
 ### 8. Données
@@ -214,7 +214,7 @@ Tous désassemblages, décompilations, décryptages, extractions, réutilisation
 
 ## 15. Données à caractère personnel
 
-L'Éditeur pratique une [politique de protection des données personnelles](/privacy).
+L'Éditeur pratique une [politique de protection des données personnelles](/fr/privacy).
 
 ## 16. Publicité
 

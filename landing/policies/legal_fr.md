@@ -1,4 +1,4 @@
-En vigueur au 21/15/2021
+*En vigueur au 21/15/2021*
 
 Conformément aux dispositions des Articles 6-III et 19 de la Loi n°2004-575 du 21 juin 2004 pour la Confiance dans l’économie numérique, dite L.C.E.N., il est porté à la connaissance des Utilisateurs du site https://readflow.app (mentioné ci-après les "Services") les présentes mentions légales.
 
@@ -8,7 +8,7 @@ Ces dernières sont accessibles sur le site à la rubrique « Mentions légales 
 ## 1. L’Éditeur
 
 L’édition et la direction de la publication des Services est assurée par Nicolas Carlier, domiciliée impasse de la vertue.
-[Contact](/contact).
+[Contact](/fr/contact).
 
 Nunux, micro-entreprise
 RCS Tours XXX XXX XXX
@@ -28,7 +28,7 @@ En cas de modification, interruption ou suspension des Services l'Éditeur ne sa
 
 ## 4. Collecte des données
 
-L’Éditeur pratique une [politique de protection des données personnelles](/privacy).
+L’Éditeur pratique une [politique de protection des données personnelles](/fr/privacy).
 
 ## 5. Cookies
 

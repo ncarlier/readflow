@@ -76,3 +76,6 @@
 .plan button {
   width: 100%;
 }
+.emphasis {
+  scale: 1.1;
+}

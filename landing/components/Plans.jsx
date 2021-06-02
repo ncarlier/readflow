@@ -30,7 +30,7 @@ const Plans = ({ onChoosePlan }) => {
             </footer>
           </section>
         </li>
-        <li>
+        <li className={styles.emphasis}>
           <section className={styles.plan}>
             <header>
               <h1>Standard</h1>

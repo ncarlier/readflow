@@ -13,7 +13,9 @@ const Privacy = ({content}) => {
             <h1>{t("privacy-policy")}</h1>
             <hr />
           </header>
-          <ReactMarkdown children={content} />
+          <article>
+            <ReactMarkdown children={content} />
+          </article>
         </section>
       </section>
     </Layout>
