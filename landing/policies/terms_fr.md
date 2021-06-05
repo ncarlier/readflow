@@ -1,4 +1,3 @@
-
 ## 1. Objet
 
 Les présentes conditions générales ont pour objet de définir les modalités et conditions d'utilisation des services proposés sur le site Readflow (mentioné ci-après : les "Services"), ainsi que de définir les droits et obligations des parties dans ce cadre.
@@ -164,7 +163,6 @@ Il s'engage à indemniser L'Éditeur de tout préjudice qu'elle subirait et à l
 Il est strictement interdit d'utiliser les Services aux fins suivantes :
 
 1. l'exercice d'activités illégales, frauduleuses ou portant atteinte aux droits ou à la sécurité des tiers,
-
 1. l'atteinte à l'ordre public ou la violation des lois et règlements en vigueur,
 1. l'intrusion dans le système informatique d'un tiers ou toute activité de nature à nuire, contrôler, interférer, ou intercepter tout ou partie du système informatique d'un tiers, en violer l'intégrité ou la sécurité,
 1. l'envoi d'emails non sollicités et/ou de prospection ou sollicitation commerciale,
@@ -205,9 +203,7 @@ De même, L'Éditeur ne saurait être tenue responsable des difficultés ou impo
 
 1. En tout état de cause, la responsabilité susceptible d'être encourue par L'Éditeur au titre des présentes est expressément limitée aux seuls dommages directs avérés subis par l'Utilisateur.
 
-
 ## 14. Propriété intellectuelle
-
 
 Les systèmes, logiciels, structures, infrastructures, bases de données et contenus de toute nature (textes, images, visuels, musiques, logos, marques, base de données, etc...) exploités par L'Éditeur au sein du site sont protégés par tous droits de propriété intellectuelle ou droits des producteurs de bases de données en vigueur.
 Tous désassemblages, décompilations, décryptages, extractions, réutilisations, copies et plus généralement, tous actes de reproduction, représentation, diffusion et utilisation de l'un quelconque de ces éléments, en tout ou partie, sans l'autorisation de L'Éditeur sont strictement interdits et pourront faire l'objet de poursuites judiciaires telles que notamment prévues par le Code de la propriété intellectuelle et le Code civil.
