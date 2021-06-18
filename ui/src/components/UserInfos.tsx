@@ -51,7 +51,7 @@ export default () => {
           </small>
         </span>
         <a href={authService.getAccountUrl()} target="_blank" title="Go to my profile page">
-          <img src={`https://www.gravatar.com/avatar/${data.me.hash}?d=mp&s=42"`} alt={data.me.username} />
+          <img src={`https://seccdn.libravatar.org/avatar/${data.me.hash}?d=mp&s=42"`} alt={data.me.username} />
         </a>
       </>
     ),

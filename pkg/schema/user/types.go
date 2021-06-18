@@ -13,6 +13,16 @@ var userType = graphql.NewObject(
 			},
 			"hash": &graphql.Field{
 				Type: graphql.String,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					user, ok := p.Source.(*model.User)
+					if !ok {
+						return nil, errors.New("unsuported type received by hash resolver")
+					}
+					if user.ID != nil {
+						return helper.Hash(strings.ToLower(user.Username)), nil
+					}
+					return nil, nil
+				},
 			},
 			"plan": &graphql.Field{
 				Type: graphql.String,
