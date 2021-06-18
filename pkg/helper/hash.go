@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Hash creats a hash from a payload string
+// Hash creates a hash from a payload string
 func Hash(values ...string) string {
 	payload := strings.Join(values, "")
 	hasher := md5.New()

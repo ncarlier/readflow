@@ -4,6 +4,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/cache"
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/db"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
 	"github.com/ncarlier/readflow/pkg/scraper"
@@ -24,16 +25,16 @@ type Registry struct {
 	properties      *model.Properties
 	webScraper      scraper.WebScraper
 	downloadCache   cache.Cache
-}
-
-// GetProperties retrieve service properties
-func (reg *Registry) GetProperties() model.Properties {
-	return *reg.properties
+	hashid          *helper.HashIDHandler
 }
 
 // Configure the global service registry
 func Configure(conf config.Config, database db.DB, downloadCache cache.Cache, plans userplan.UserPlans) error {
 	webScraper, err := scraper.NewWebScraper(conf.WebScraping)
+	if err != nil {
+		return err
+	}
+	hashid, err := helper.NewHashIDHandler(conf.SecretSalt)
 	if err != nil {
 		return err
 	}
@@ -45,6 +46,7 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache, pl
 		ruleEngineCache: ruleengine.NewRuleEngineCache(1024),
 		webScraper:      webScraper,
 		downloadCache:   downloadCache,
+		hashid:          hashid,
 	}
 	return instance.initProperties()
 }

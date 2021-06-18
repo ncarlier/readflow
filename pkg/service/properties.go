@@ -35,3 +35,8 @@ func (reg *Registry) initProperties() error {
 	reg.properties = properties
 	return nil
 }
+
+// GetProperties retrieve service properties
+func (reg *Registry) GetProperties() model.Properties {
+	return *reg.properties
+}
