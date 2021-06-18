@@ -20,6 +20,7 @@
 
 .userInfos > a > img {
   border-radius: 50%;
+  max-width: 48px;
 }
 
 .userInfos > span {

@@ -9,6 +9,7 @@ import { matchResponse } from '../helpers'
 import Loader from './Loader'
 import TimeAgo from './TimeAgo'
 import styles from './UserInfos.module.css'
+import { getRoboHash } from '../helpers/avatar'
 
 export const GetCurrentUser = gql`
   query {
@@ -51,7 +52,7 @@ export default () => {
           </small>
         </span>
         <a href={authService.getAccountUrl()} target="_blank" title="Go to my profile page">
-          <img src={`https://seccdn.libravatar.org/avatar/${data.me.hash}?d=mp&s=42"`} alt={data.me.username} />
+          <img src={getRoboHash(data.me.hash, '48')} alt={data.me.username} />
         </a>
       </>
     ),
