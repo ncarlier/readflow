@@ -15,7 +15,7 @@ const UpgradePlanButton = () => (
 )
 
 const ManagePlanButton = () => (
-  <Button as={'a'} href={`${REDIRECT_URL}/account`} target="_blank" tile="Manage your plan">
+  <Button as={'a'} href={`${REDIRECT_URL}/account`} target="_blank" title="Manage your plan">
     Manage your plan
   </Button>
 )
