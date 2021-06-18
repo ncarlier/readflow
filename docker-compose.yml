@@ -8,7 +8,7 @@ services:
     image: postgres:11
     restart: always
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-reader}
+      - POSTGRES_DB=${POSTGRES_DB:-readflow}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     networks:
@@ -49,7 +49,7 @@ services:
       - web
       - internal
     environment:
-      - READFLOW_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB:-reader}?sslmode=disable
+      - READFLOW_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB:-readflow}?sslmode=disable
       - READFLOW_BROKER=${EVENT_BROKER}
       - READFLOW_SENTRY_DSN=${SENTRY_DSN}
       - READFLOW_LISTEN_METRICS=:9090
