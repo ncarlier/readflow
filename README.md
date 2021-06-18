@@ -1,6 +1,6 @@
 # readflow
 
-[![Build Status](https://travis-ci.org/ncarlier/readflow.svg?branch=master)](https://travis-ci.org/ncarlier/readflow)
+[![Build Status](https://github.com/ncarlier/readflow/actions/workflows/build.yml/badge.svg)](https://github.com/ncarlier/readflow/actions/workflows/build.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ncarlier/readflow)](https://goreportcard.com/report/github.com/ncarlier/readflow)
 [![Docker pulls](https://img.shields.io/docker/pulls/ncarlier/readflow.svg)](https://hub.docker.com/r/ncarlier/readflow/)
 
@@ -29,6 +29,8 @@ $ go get -v github.com/ncarlier/readflow
 **Or** download the binary regarding your architecture:
 
 ```bash
+$ curl -sf https://gobinaries.com/ncarlier/readflow | sh
+$ # or
 $ curl -s https://raw.githubusercontent.com/ncarlier/readflow/master/install.sh | bash
 ```
 
@@ -82,7 +84,7 @@ Type `make help` to see other possibilities.
 
 These amazing people have sponsored this project:
 
-[![Code Lutin](landing/static/images/logos/code-lutin.svg)](https://www.codelutin.com/)
+[![Code Lutin](landing/public/img/code-lutin.svg)](https://www.codelutin.com/)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/nunux)
 
