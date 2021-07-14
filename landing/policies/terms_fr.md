@@ -1,4 +1,3 @@
-
 ## 1. Objet
 
 Les présentes conditions générales ont pour objet de définir les modalités et conditions d'utilisation des services proposés sur le site Readflow (mentioné ci-après : les "Services"), ainsi que de définir les droits et obligations des parties dans ce cadre.
@@ -11,7 +10,7 @@ En cas de contradiction, les conditions particulières prévalent sur ces condit
 ## 2. Exploitant des Services
 
 Les Services sont exploités par la société Nunux (ci-après : "L'Éditeur").
-L'Éditeur peut être contacté [ici](/contact).
+L'Éditeur peut être contacté [ici](/fr/contact).
 
 ## 3. Accès au site et aux Services
 
@@ -99,7 +98,7 @@ L'Utilisateur est informé et accepte expressément que tout retard de paiement 
 
 Conformément à l'article L. 121-20 du Code de la consommation, *"le consommateur dispose d'un délai de quatorze jours francs pour exercer son droit de rétractation sans avoir à justifier de motifs ni à payer de pénalités, à l'exception, le cas échéant, des frais de retour"*.
 *"Le délai mentionné à l'alinéa précédent court à compter de la réception pour les biens ou de l'acceptation de l'offre pour les prestations de services".*
-Le droit de rétractation peut être exercé en [contactant la Société](/contact).
+Le droit de rétractation peut être exercé en [contactant la Société](/fr/contact).
 En cas d'exercice du droit de rétractation dans le délai susmentionné, L'Editeur se rerve le droit de suspendre le Compte de l'Utilisateur en cas de dépassement des quotas d'utilisation de l'offre gratuite.
 
 ### 8. Données
@@ -164,7 +163,6 @@ Il s'engage à indemniser L'Éditeur de tout préjudice qu'elle subirait et à l
 Il est strictement interdit d'utiliser les Services aux fins suivantes :
 
 1. l'exercice d'activités illégales, frauduleuses ou portant atteinte aux droits ou à la sécurité des tiers,
-
 1. l'atteinte à l'ordre public ou la violation des lois et règlements en vigueur,
 1. l'intrusion dans le système informatique d'un tiers ou toute activité de nature à nuire, contrôler, interférer, ou intercepter tout ou partie du système informatique d'un tiers, en violer l'intégrité ou la sécurité,
 1. l'envoi d'emails non sollicités et/ou de prospection ou sollicitation commerciale,
@@ -205,16 +203,14 @@ De même, L'Éditeur ne saurait être tenue responsable des difficultés ou impo
 
 1. En tout état de cause, la responsabilité susceptible d'être encourue par L'Éditeur au titre des présentes est expressément limitée aux seuls dommages directs avérés subis par l'Utilisateur.
 
-
 ## 14. Propriété intellectuelle
-
 
 Les systèmes, logiciels, structures, infrastructures, bases de données et contenus de toute nature (textes, images, visuels, musiques, logos, marques, base de données, etc...) exploités par L'Éditeur au sein du site sont protégés par tous droits de propriété intellectuelle ou droits des producteurs de bases de données en vigueur.
 Tous désassemblages, décompilations, décryptages, extractions, réutilisations, copies et plus généralement, tous actes de reproduction, représentation, diffusion et utilisation de l'un quelconque de ces éléments, en tout ou partie, sans l'autorisation de L'Éditeur sont strictement interdits et pourront faire l'objet de poursuites judiciaires telles que notamment prévues par le Code de la propriété intellectuelle et le Code civil.
 
 ## 15. Données à caractère personnel
 
-L'Éditeur pratique une [politique de protection des données personnelles](/privacy).
+L'Éditeur pratique une [politique de protection des données personnelles](/fr/privacy).
 
 ## 16. Publicité
 

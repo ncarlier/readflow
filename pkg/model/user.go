@@ -9,7 +9,6 @@ type User struct {
 	Enabled     bool       `json:"enabled,omitempty"`
 	Plan        string     `json:"plan,omitempty"`
 	CustomerID  string     `json:"customer_id,omitempty"`
-	Hash        string     `json:"hash,omitempty"`
 	LastLoginAt *time.Time `json:"last_login_at,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`

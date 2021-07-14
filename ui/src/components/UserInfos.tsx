@@ -9,23 +9,28 @@ import { matchResponse } from '../helpers'
 import Loader from './Loader'
 import TimeAgo from './TimeAgo'
 import styles from './UserInfos.module.css'
+import { getRoboHash } from '../helpers/avatar'
 
 export const GetCurrentUser = gql`
   query {
     me {
       username
       hash
+      hashid
       plan
+      customer_id
       last_login_at
       created_at
     }
   }
 `
 
-interface User {
+export interface User {
   username: string
   hash: string
+  hashid: string
   plan: string
+  customer_id: string
   created_at: string
   last_login_at: string
 }
@@ -49,7 +54,7 @@ export default () => {
           </small>
         </span>
         <a href={authService.getAccountUrl()} target="_blank" title="Go to my profile page">
-          <img src={`https://www.gravatar.com/avatar/${data.me.hash}?d=mp&s=42"`} alt={data.me.username} />
+          <img src={getRoboHash(data.me.hash, '48')} alt={data.me.username} />
         </a>
       </>
     ),

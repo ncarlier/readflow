@@ -1,6 +1,7 @@
 
 .button {
   composes: button from global;
+  display: inline-block;
   color: var(--button-text-color);
   background-color: var(--button-default-color);
 }

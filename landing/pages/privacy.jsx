@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import useTranslation from "next-translate/useTranslation"
 
-import Layout from '../components/Layout'
+import Layout from '@/components/Layout'
 
 const Privacy = ({content}) => {
   const { t } = useTranslation("common")
@@ -13,7 +13,9 @@ const Privacy = ({content}) => {
             <h1>{t("privacy-policy")}</h1>
             <hr />
           </header>
-          <ReactMarkdown source={content} />
+          <article>
+            <ReactMarkdown children={content} />
+          </article>
         </section>
       </section>
     </Layout>

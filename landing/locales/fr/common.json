@@ -4,6 +4,7 @@
   "docs": "Docs",
   "sources": "Sources",
   "login": "Connexion",
+  "my-readflow": "Mon readflow",
   "product": "Produit",
   "documentation": "Documentation",
   "follow-us": "Nous suivre",
@@ -14,5 +15,6 @@
   "privacy-policy": "Politique de confidentialité",
   "terms-and-conditions": "CGU et CGV",
   "legal-mentions": "Mentions légales",
-  "contact": "Contact"
+  "contact": "Contact",
+  "account": "Informations du compte"
 }

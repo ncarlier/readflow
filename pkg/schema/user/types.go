@@ -1,7 +1,14 @@
 package user
 
 import (
+	"errors"
+	"strings"
+
 	"github.com/graphql-go/graphql"
+
+	"github.com/ncarlier/readflow/pkg/helper"
+	"github.com/ncarlier/readflow/pkg/model"
+	"github.com/ncarlier/readflow/pkg/service"
 )
 
 var userType = graphql.NewObject(
@@ -11,8 +18,31 @@ var userType = graphql.NewObject(
 			"username": &graphql.Field{
 				Type: graphql.String,
 			},
+			"hashid": &graphql.Field{
+				Type: graphql.String,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					user, ok := p.Source.(*model.User)
+					if !ok {
+						return nil, errors.New("unsuported type received by hashid resolver")
+					}
+					if user.ID != nil {
+						return service.Lookup().GetUserHashID(user), nil
+					}
+					return nil, nil
+				},
+			},
 			"hash": &graphql.Field{
 				Type: graphql.String,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					user, ok := p.Source.(*model.User)
+					if !ok {
+						return nil, errors.New("unsuported type received by hash resolver")
+					}
+					if user.ID != nil {
+						return helper.Hash(strings.ToLower(user.Username)), nil
+					}
+					return nil, nil
+				},
 			},
 			"plan": &graphql.Field{
 				Type: graphql.String,

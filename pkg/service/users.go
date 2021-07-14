@@ -3,12 +3,10 @@ package service
 import (
 	"context"
 	"errors"
-	"strings"
 	"time"
 
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/event"
-	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	userplan "github.com/ncarlier/readflow/pkg/user-plan"
 )
@@ -120,8 +118,6 @@ func (reg *Registry) GetUserByID(ctx context.Context, uid uint) (*model.User, er
 		).Msg("unable to find user")
 		return nil, err
 	}
-	// Compute user hash
-	user.Hash = helper.Hash(strings.ToLower(user.Username))
 
 	return user, nil
 }
@@ -143,8 +139,6 @@ func (reg *Registry) GetUserByUsername(ctx context.Context, username string) (*m
 		).Msg("unable to find user")
 		return nil, err
 	}
-	// Compute user hash
-	user.Hash = helper.Hash(strings.ToLower(user.Username))
 
 	return user, nil
 }
@@ -185,4 +179,12 @@ func (reg *Registry) UpdateUser(ctx context.Context, form model.UserForm) (*mode
 	event.Emit(event.UpdateUser, *user)
 
 	return reg.db.CreateOrUpdateUser(*user)
+}
+
+// GetUserHashID returns user hashid
+func (reg *Registry) GetUserHashID(user *model.User) string {
+	if user != nil && user.ID != nil {
+		return reg.hashid.Encode([]int{int(*user.ID)})
+	}
+	return ""
 }

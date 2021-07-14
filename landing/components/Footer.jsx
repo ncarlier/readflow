@@ -22,20 +22,20 @@ const Footer = () => {
               <a href="https://www.paypal.me/nunux">{t('support')}</a>
             </li>
             <li>
-              <a href="https://github.com/ncarlier/readflow/issue">
+              <a href="https://github.com/ncarlier/readflow/issues">
                 {t('bug')}
               </a>
             </li>
             <li>
-              <a href="https://github.com/ncarlier/readflow/issue">
+              <a href="https://github.com/ncarlier/readflow/issues">
                 {t('rfq')}
               </a>
             </li>
             <Wip>
               <li>
-                <a href="/contact">
+                <Link href="/contact">
                   {t('contact')}
-              </a>
+                </Link>
               </li>
             </Wip>
           </ul>

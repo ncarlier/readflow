@@ -1,7 +1,16 @@
 import '../styles/globals.css'
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
+import dynamic from "next/dynamic"
 
-export default MyApp
+const Auth = dynamic(() => import("../components/Auth"), {
+  ssr: false,
+});
+
+
+const App = ({ Component, pageProps }) => (
+  <Auth>
+    <Component {...pageProps} />
+  </Auth>
+)
+
+export default App

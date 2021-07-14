@@ -1,0 +1,81 @@
+.plans {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  list-style: none;
+}
+
+.plans > * {
+  border: 1px solid var(--color-bg-secondary);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin: 1rem;
+  padding: 1.25rem;
+  background-color: var(--color-bg);
+}
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.plan > header {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.plan > header h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.plan > header p {
+  font-style: italic;
+  color: var(--color-text-alt);
+}
+
+.plan > ul {
+  padding: 0;
+  background-color: var(--color-bg-alt);
+  list-style: none;
+  font-size: small;
+}
+
+.plan > ul > li::before {
+  content: "\2713";
+  color: green;
+  font-weight: bold;
+}
+
+.plan > ul span {
+  display: block;
+  margin-left: 1em;
+  color: var(--color-text-alt);
+  font-style: italic;
+}
+
+.plan > footer {
+  text-align: center;
+}
+
+.plan > footer h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 1rem 0;
+  color: var(--color-text-accent);
+}
+
+.plan > footer h2 sub {
+  position: relative;
+  top: -.4em;
+  font-size: 1rem;
+  color: var(--color-text-alt);
+}
+
+.plan button {
+  width: 100%;
+}
+.emphasis {
+  scale: 1.1;
+}
