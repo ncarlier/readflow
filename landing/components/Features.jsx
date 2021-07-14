@@ -17,30 +17,30 @@ const Features = () => {
             <h2>{t('feat-1-title')}</h2>
           </header>
           <picture>
-            <img src="./img/read.svg" />
+            <img src="./img/read.svg" alt="" />
           </picture>
           <p>{t('feat-1-desc')}</p>
-          <a href="https://docs.readflow.app/en/read-flow/read/" target="_blank" className="btn">{t('read-more')}</a>
+          <a href="https://docs.readflow.app/en/read-flow/read/" target="_blank" rel="noreferrer" className="btn">{t('read-more')}</a>
         </li>
         <li>
           <header>
             <h2>{t('feat-2-title')}</h2>
           </header>
           <picture>
-            <img src="./img/pwa.svg" />
+            <img src="./img/pwa.svg" alt="" />
           </picture>
           <p>{t('feat-2-desc')}</p>
-          <a href="https://docs.readflow.app/en/read-flow/mobile/" target="_blank" className="btn">{t('read-more')}</a>
+          <a href="https://docs.readflow.app/en/read-flow/mobile/" target="_blank" rel="noreferrer" className="btn">{t('read-more')}</a>
         </li>
         <li>
           <header>
             <h2>{t('feat-3-title')}</h2>
           </header>
           <picture>
-            <img src="./img/cloud.svg" />
+            <img src="./img/cloud.svg" alt="" />
           </picture>
           <p>{t('feat-3-desc')}</p>
-          <a href="https://docs.readflow.app/en/integrations/" target="_blank" className="btn">{t('read-more')}</a>
+          <a href="https://docs.readflow.app/en/integrations/" target="_blank" rel="noreferrer" className="btn">{t('read-more')}</a>
         </li>
       </ul>
     </section>
