@@ -2,6 +2,7 @@ import { useAuth } from "oidc-react"
 
 import Layout from '@/components/Layout'
 import Plans from '@/components/Plans'
+import Wip from '@/components/Wip'
 import { postData } from '@/helpers/http'
 import { getStripe } from '@/helpers/stripe-client'
 
@@ -28,7 +29,9 @@ const Pricing = () => {
   return (
     <Layout>
       <section>
-        <Plans onChoosePlan={handlePlanCheckout} />
+        <Wip placeholder={<p>WORK IN PROGRESS...</p>}>
+          <Plans onChoosePlan={handlePlanCheckout} />
+        </Wip>
       </section>
     </Layout>
   )
