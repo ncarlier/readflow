@@ -1,4 +1,4 @@
-import { useAuth } from "oidc-react"
+import { useAuth } from 'oidc-react'
 
 import Layout from '@/components/Layout'
 import Plans from '@/components/Plans'

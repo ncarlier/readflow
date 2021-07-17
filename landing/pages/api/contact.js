@@ -33,7 +33,7 @@ const contactForm = async (req, res) => {
   }
 
   const url = new URL(sendmail_url)
-  url.searchParams.set('subject', "[readflow-contact] " + subject)
+  url.searchParams.set('subject', '[readflow-contact] ' + subject)
   url.searchParams.set('from', from)
   const resp = await fetch(url, {
     method: 'POST',

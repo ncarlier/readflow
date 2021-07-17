@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router'
-import useTranslation from "next-translate/useTranslation"
+import useTranslation from 'next-translate/useTranslation'
 
 import Layout from '@/components/Layout'
 import { useAuth } from 'oidc-react'
 
 const Result = () => {
-  const { t } = useTranslation("message")
+  const { t } = useTranslation('message')
   const router = useRouter()
   const { userData } = useAuth()
   const { variant, reason } = router.query

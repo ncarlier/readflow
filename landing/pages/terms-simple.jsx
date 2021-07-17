@@ -3,7 +3,9 @@ import ReactMarkdown from 'react-markdown'
 const TermsSimple = ({content}) => {
   return (
     <article>
-      <ReactMarkdown children={content} />
+      <ReactMarkdown>
+        {content}
+      </ReactMarkdown>
     </article>
   )
 }

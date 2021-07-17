@@ -58,7 +58,7 @@ const createCheckoutSession = async (req, res) => {
     })
     return res.status(200).json({ sessionId: session.id })
   } catch (err) {
-    console.error('❌ error while creating checkout session', err);
+    console.error('❌ error while creating checkout session', err)
     res.status(500).json({
       error: { statusCode: 500, message: err.message }
     })

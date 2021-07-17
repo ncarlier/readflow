@@ -12,8 +12,8 @@
     "@stripe/stripe-js": "^1.14.0",
     "deep-email-validator": "^0.1.18",
     "jwt-decode": "^3.1.2",
-    "next": "^10.2.0",
-    "next-translate": "^1.0.6",
+    "next": "^11.0.1",
+    "next-translate": "^1.0.7",
     "oidc-react": "^1.5.1",
     "raw-loader": "^4.0.2",
     "react": "^17.0.2",
@@ -24,6 +24,6 @@
   "devDependencies": {
     "@netlify/plugin-nextjs": "^3.6.3",
     "eslint": "^7.26.0",
-    "eslint-plugin-react": "^7.23.2"
+    "eslint-config-next": "^11.0.1"
   }
 }

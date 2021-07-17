@@ -1,11 +1,10 @@
 import '../styles/globals.css'
 
-import dynamic from "next/dynamic"
+import dynamic from 'next/dynamic'
 
-const Auth = dynamic(() => import("../components/Auth"), {
+const Auth = dynamic(() => import('../components/Auth'), {
   ssr: false,
-});
-
+})
 
 const App = ({ Component, pageProps }) => (
   <Auth>

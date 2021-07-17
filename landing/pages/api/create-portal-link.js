@@ -32,10 +32,10 @@ const createPortalLink = async (req, res) => {
     })
     return res.status(200).json({ url })
   } catch (err) {
-    console.log(err);
+    console.log(err)
     res
       .status(500)
-      .json({ error: { statusCode: 500, message: err.message } });
+      .json({ error: { statusCode: 500, message: err.message } })
   }
 }
 

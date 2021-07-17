@@ -1,16 +1,16 @@
-import useTranslation from "next-translate/useTranslation"
+import useTranslation from 'next-translate/useTranslation'
 
 import Layout from '@/components/Layout'
 
 const Contact = () => {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation('common')
 
   return (
     <Layout>
       <section>
         <section>
           <header>
-            <h1>{t("contact")}</h1>
+            <h1>{t('contact')}</h1>
             <hr />
           </header>
           <section>

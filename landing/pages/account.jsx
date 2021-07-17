@@ -1,4 +1,4 @@
-import { useAuth } from "oidc-react"
+import { useAuth } from 'oidc-react'
 
 import Layout from '@/components/Layout'
 import { useEffect } from 'react'
@@ -6,16 +6,19 @@ import { useEffect } from 'react'
 const Account = () => {
   const { userData } = useAuth()
 
-  useEffect(async () => {
-    if (userData === null) {
-      return auth.signIn({redirect_uri: document.location})
+  useEffect(() => {
+    async function getPortalLink() {
+      if (userData === null) {
+        return auth.signIn({redirect_uri: document.location})
+      }
+      const { id_token: token } = userData
+      const { url, error } = await postData('/api/create-portal-link', { token })
+      if (error) return alert(error.message)
+      if (url != null) {
+        window.location.assign(url)
+      }
     }
-    const { id_token: token } = userData
-    const { url, error } = await postData('/api/create-portal-link', { token })
-    if (error) return alert(error.message)
-    if (url != null) {
-      window.location.assign(url)
-    }
+    getPortalLink()
   }, [userData])
 
   return (
