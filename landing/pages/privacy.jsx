@@ -24,12 +24,9 @@ const Privacy = ({content}) => {
   )
 }
 
-export async function getStaticProps(context) {
-  const { locale } = context
-  const content = await import(`../policies/privacy_${locale}.md`)
-  return {
-    props: { content: content.default },
-  }
+export const getStaticProps = async ({ locale }) => {
+  const { default: content } = await import(`../policies/privacy_${locale}.md`)
+  return { props: { content } }
 }
 
 export default Privacy

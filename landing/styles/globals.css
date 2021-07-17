@@ -79,13 +79,17 @@ main > section article {
   padding: 1em;
 }
 
+article.success {
+  color: var(--color-text-contrast);
+  background-color: var(--color-success);
+}
 article.error {
   color: var(--color-text-contrast);
   background-color: var(--color-error);
 }
-article.success {
+article.success a,
+article.error a {
   color: var(--color-text-contrast);
-  background-color: var(--color-success);
 }
 
 main > section hr {

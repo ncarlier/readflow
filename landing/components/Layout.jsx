@@ -1,11 +1,33 @@
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 
 import Header from './Header'
 import Footer from './Footer'
 
+const AppAuthProvider = dynamic(() => import('../context/AppAuthProvider'), {
+  ssr: false,
+})
+
+const Page = ({children}) => (
+  <>
+    <Header />
+    <main>
+        {children}
+    </main>
+    <Footer />
+  </>
+)
+
+const AutheticatedPage = ({children}) => (
+  <AppAuthProvider>
+    <Page>{children}</Page>
+  </AppAuthProvider>
+)
+
 const Layout = ({
   children,
   title = 'Welcome to readflow!',
+  authenticated = false,
 }) => (
   <>
     <Head>
@@ -19,11 +41,7 @@ const Layout = ({
       <meta property="og:image" content="https://about.readflow.app/images/readflow.png" />
       <link rel="icon" type="image/png" href="/favicon.png"></link>
     </Head>
-    <Header />
-    <main>
-      {children}
-    </main>
-    <Footer />
+    { authenticated ? <AutheticatedPage>{children}</AutheticatedPage> : <Page>{children}</Page>}
   </>
 )
 

@@ -5,6 +5,7 @@
     "*": ["common"],
     "/": ["home"],
     "/pricing": ["pricing"],
-    "/result": ["message"]
+    "/result": ["message"],
+    "/contact": ["contact"]
   }
 }

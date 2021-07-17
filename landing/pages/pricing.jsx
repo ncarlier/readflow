@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic'
 import { useAuth } from 'oidc-react'
 
 import Layout from '@/components/Layout'
@@ -6,7 +7,7 @@ import Wip from '@/components/Wip'
 import { postData } from '@/helpers/http'
 import { getStripe } from '@/helpers/stripe-client'
 
-const Pricing = () => {
+const PricingSection = () => {
   const auth = useAuth()
 
   const handlePlanCheckout = async (plan) => {
@@ -27,14 +28,18 @@ const Pricing = () => {
     }
   }
   return (
-    <Layout>
-      <section>
-        <Wip placeholder={<p>WORK IN PROGRESS...</p>}>
-          <Plans onChoosePlan={handlePlanCheckout} />
-        </Wip>
-      </section>
-    </Layout>
+    <section>
+      <Wip placeholder={<p>WORK IN PROGRESS...</p>}>
+        <Plans onChoosePlan={handlePlanCheckout} />
+      </Wip>
+    </section>
   )
 }
+
+const Pricing = () => (
+  <Layout authenticated>
+    <PricingSection />
+  </Layout>
+)
 
 export default Pricing

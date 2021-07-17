@@ -1,13 +1,28 @@
+import { useContext } from 'react'
+import { AuthContext } from 'oidc-react'
 import { useRouter } from 'next/router'
 import useTranslation from 'next-translate/useTranslation'
 
 import Layout from '@/components/Layout'
-import { useAuth } from 'oidc-react'
+
+const BackLink = () => {
+  const { t } = useTranslation('common')
+  const authContext = useContext(AuthContext)
+  if (!authContext || !authContext.userData) {
+    return null
+  }
+  const { userData } = authContext
+  const title = userData.profile.preferred_username
+  return (
+    <a href="https://readflow.app" title={ title }>
+      { t('back-to-my-readflow') }
+    </a>
+  )
+}
 
 const Result = () => {
   const { t } = useTranslation('message')
   const router = useRouter()
-  const { userData } = useAuth()
   const { variant, reason } = router.query
   let className = ''
   if (variant) {
@@ -15,7 +30,7 @@ const Result = () => {
   }
 
   return (
-    <Layout>
+    <Layout authenticated>
       <section>
         <section>
           <header>
@@ -25,7 +40,7 @@ const Result = () => {
           <article className={className}>
             <p>{t(variant)}</p>
             { reason && <pre>{reason}</pre> }
-            { userData && <a href="https://readflow.app">Back to my readflow</a> }
+            <BackLink />
           </article>
         </section>
       </section>
