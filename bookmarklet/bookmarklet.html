@@ -77,9 +77,36 @@ section {
   stroke-width: 8px;
   stroke: #b6d6e6;
 }
-.animate{
+.loader-svg.animate{
   stroke-dasharray: 242.6;
   animation: fill-animation 1s cubic-bezier(1,1,1,1) 0s infinite;
+}
+.success {
+  text-align: center;
+}
+.success > .svg-container {
+  display: inline-block;
+  border-radius: 50%;
+  stroke-width: 5;
+  stroke: white;
+  stroke-miterlimit: 10;
+  box-shadow: inset 0px 0px 0px #009be5;
+  animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+}
+.success-svg.circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: #009be5;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+.success-svg.check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
 }
 kbd {
   background: #fff;
@@ -102,6 +129,25 @@ kbd {
     stroke-dashoffset: 282.6;
   }
 }
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes scale {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}
+@keyframes fill {
+  100% {
+    box-shadow: inset 0px 0px 0px 50px #009be5;
+  }
+}
   </style>
 </head>
 <body>
@@ -117,33 +163,55 @@ kbd {
         <circle class="loader-svg animate" cx="50" cy="50" r="45"></circle>
       </svg>
     </div>
-    <div class="actions">
-      <button onclick="window.parent.postMessage('content', '*')">Send content</button>
-      or
-      <button onclick="window.parent.postMessage('page', '*')">Send page</button>
+    <div id="content">
+      <div class="actions">
+        <button onclick="window.parent.postMessage('content', '*')">Send content</button>
+        or
+        <button onclick="window.parent.postMessage('page', '*')">Send page</button>
+      </div>
+      <footer>
+        <details open>
+          <summary>Help?</summary>
+          <article>
+            <p>
+              Click on an item on the page to delete it.
+            </p>
+            <p>
+              <kbd>ctrl+click</kbd>to keep only this item.
+            </p>
+            <p>
+              <kbd>ctrl+z</kbd>to undo
+            </p>
+          </article>
+        </details> 
+      </footer>      
     </div>
-    <footer>
-      <details open>
-        <summary>Help?</summary>
-        <article>
-          <p>
-            Click on an item on the page to delete it.
-          </p>
-          <p>
-            <kbd>ctrl+click</kbd>to keep only this item.
-          </p>
-          <p>
-            <kbd>ctrl+z</kbd>to undo
-          </p>
-        </aricle>
-      </details> 
-    </footer>
   </section>
+
+<script id="success" type="text/html">
+  <div class="success">
+    <svg class="svg-container" height="80" width="80" viewBox="0 0 50 50">
+      <circle class="success-svg circle" cx="25" cy="25" r="25" fill="none"/>
+      <path class="success-svg check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+    </svg>
+    <p>Article successfully put in your reaflow!</p>
+    <button onclick="window.parent.postMessage('openResult', '*')">Open result</button>
+  </div>
+</script>
 <script>
-const $loader = document.getElementById('loader')
-window.addEventListener('message', (evt) => {
-  $loader.style.display = evt.data === 'loading' ? 'flex' : 'none'
-})
+(function () {
+  const $content = document.getElementById('content')
+  const $success = document.getElementById('success')
+  const $loader = document.getElementById('loader')
+  const setLoader = (status) => $loader.style.display = status ? 'flex' : 'none'
+  window.addEventListener('message', (evt) => {
+    const payload = evt.data
+    if (payload === 'success') {
+      $content.innerHTML = $success.innerHTML
+    }
+    setLoader(payload === 'loading')
+  })
+})()
 </script>
 </body>
 </html>

@@ -27,6 +27,7 @@ const unsetMouseOverStyle = function (el: HTMLElement) {
 }
 
 type Article = {
+  id?: number
   title: string
   url: string
   html?: string
@@ -39,17 +40,19 @@ type HistoryItem = {
 }
 
 class ReadflowBookmarklet {
-  private ui: string
+  private origin: string
   private doc: Document
   private history: HistoryItem[]
   private endpoint: string
   private key: string
   private popup: Window
   private controls: Node
+  private article: Article | null
 
   constructor() {
     this.doc = document
     this.history = []
+    this.article = null
   }
 
   private clickElement(el: HTMLElement, evt: MouseEvent) {
@@ -109,7 +112,7 @@ class ReadflowBookmarklet {
     this.doc.body.childNodes.forEach((node) => {
       if (node.nodeType === Node.ELEMENT_NODE && node.nodeName !== 'SCRIPT' && node !== this.controls) {
         result += (node as HTMLElement).outerHTML
-        console.log(node)
+        // console.log(node)
       }
     })
     return result
@@ -120,7 +123,7 @@ class ReadflowBookmarklet {
     const controls = this.doc.createElement('div')
     Object.assign(controls.style, styles.controls)
     const frame = this.doc.createElement('iframe')
-    frame.setAttribute('src', this.ui)
+    frame.setAttribute('src', this.origin + '/bookmarklet.html')
     Object.assign(frame.style, styles.iframe)
     const drag = this.doc.createElement('div')
     Object.assign(drag.style, styles.drag)
@@ -162,8 +165,15 @@ class ReadflowBookmarklet {
     })
     if (res.ok) {
       console.debug('article added to readflow')
+      return res.json()
     } else {
       throw `unable to send article: ${res.statusText}`
+    }
+  }
+
+  private openResult() {
+    if (this.article) {
+      document.location.href = `${this.origin}/unread/${this.article.id}`
     }
   }
 
@@ -179,15 +189,18 @@ class ReadflowBookmarklet {
           url: document.location.href,
           html: event === 'content' ? this.getContent() : undefined,
         }).then(
-          () => {
-            alert('Article successfully put in your reaflow!')
-            document.location.reload()
+          (resp) => {
+            this.article = resp.Articles[0]
+            this.popup.postMessage('success', '*')
           },
           (err) => {
             alert(err)
             this.popup.postMessage('error', '*')
           }
         )
+        break
+      case 'openResult':
+        this.openResult()
         break
       case 'close':
         this.close()
@@ -199,7 +212,7 @@ class ReadflowBookmarklet {
 
   boot(origin, baseurl, key: string) {
     this.endpoint = baseurl + '/articles'
-    this.ui = origin + '/bookmarklet.html'
+    this.origin = origin
     this.key = key
     this.registerEventsListeners()
     this.registerKeyboardShortcuts()
