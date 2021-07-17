@@ -27,10 +27,10 @@ export default ({ category, onSuccess }: Props) => {
       onRequestClose={hideAddModal}
       className={styles.dialog}
       overlayClassName={styles.overlay}
+      style={{ content: { minWidth: '50vw' } }}
     >
       <AddArticleForm
         category={category}
-        style={{ minWidth: '50vw' }}
         onSuccess={(a) => {
           onSuccess(a)
           hideAddModal()
