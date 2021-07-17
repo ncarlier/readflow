@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import mousetrap from 'mousetrap'
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { LocalConfigurationContext } from '../../context/LocalConfigurationContext'
 import { Article } from '../models'
@@ -33,6 +33,7 @@ window.onload = function() {
 `
 
 export default ({ article }: Props) => {
+  const [alreadyRendered, setAlreadyRendered] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
   const { localConfiguration } = useContext(LocalConfigurationContext)
   let { theme } = localConfiguration
@@ -42,8 +43,9 @@ export default ({ article }: Props) => {
   }
 
   useEffect(() => {
-    if (contentRef.current) {
+    if (contentRef.current && !alreadyRendered) {
       const ifrm = document.createElement('iframe')
+      console.log('render')
       contentRef.current.innerHTML = ''
       contentRef.current.appendChild(ifrm)
       const doc = ifrm.contentWindow ? ifrm.contentWindow.document : ifrm.contentDocument
@@ -78,8 +80,9 @@ export default ({ article }: Props) => {
         doc.close()
       }
       ifrm.focus()
+      setAlreadyRendered(true)
     }
-  }, [article, theme])
+  }, [alreadyRendered, article, theme])
 
   return <article className={styles.content} ref={contentRef} />
 }
