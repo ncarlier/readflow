@@ -15,7 +15,7 @@ func (reg *Registry) GetIncomingWebhookByToken(token string) (*model.IncomingWeb
 
 // GetIncomingWebhooks get incoming webhook from current user
 func (reg *Registry) GetIncomingWebhooks(ctx context.Context) (*[]model.IncomingWebhook, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	result, err := reg.db.GetIncomingWebhooksByUser(uid)
 	if err != nil {
@@ -30,7 +30,7 @@ func (reg *Registry) GetIncomingWebhooks(ctx context.Context) (*[]model.Incoming
 
 // GetIncomingWebhook get an incoming webhook of the current user
 func (reg *Registry) GetIncomingWebhook(ctx context.Context, id uint) (*model.IncomingWebhook, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	result, err := reg.db.GetIncomingWebhookByID(id)
 	if err != nil || result == nil || result.UserID != uid {
@@ -44,7 +44,7 @@ func (reg *Registry) GetIncomingWebhook(ctx context.Context, id uint) (*model.In
 
 // CreateIncomingWebhook create an incoming webhook for current user
 func (reg *Registry) CreateIncomingWebhook(ctx context.Context, form model.IncomingWebhookCreateForm) (*model.IncomingWebhook, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	result, err := reg.db.CreateIncomingWebhookForUser(uid, form)
 	if err != nil {
@@ -58,7 +58,7 @@ func (reg *Registry) CreateIncomingWebhook(ctx context.Context, form model.Incom
 
 // UpdateIncomingWebhook update an incoming webhook for current user
 func (reg *Registry) UpdateIncomingWebhook(ctx context.Context, form model.IncomingWebhookUpdateForm) (*model.IncomingWebhook, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	result, err := reg.db.UpdateIncomingWebhookForUser(uid, form)
 	if err != nil {
@@ -74,7 +74,7 @@ func (reg *Registry) UpdateIncomingWebhook(ctx context.Context, form model.Incom
 
 // DeleteIncomingWebhook delete an incoming webhook of the current user
 func (reg *Registry) DeleteIncomingWebhook(ctx context.Context, id uint) (*model.IncomingWebhook, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	result, err := reg.GetIncomingWebhook(ctx, id)
 	if err != nil {
@@ -93,7 +93,7 @@ func (reg *Registry) DeleteIncomingWebhook(ctx context.Context, id uint) (*model
 
 // DeleteIncomingWebhooks delete incoming webhooks of the current user
 func (reg *Registry) DeleteIncomingWebhooks(ctx context.Context, ids []uint) (int64, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
 	nb, err := reg.db.DeleteIncomingWebhooksByUser(uid, ids)

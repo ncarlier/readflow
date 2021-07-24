@@ -27,7 +27,7 @@ var articleAsHTMLTpl = template.Must(template.New("article-as-html").Parse(`
 
 // ArchiveArticle save artice as a single HTML page
 func (reg *Registry) ArchiveArticle(ctx context.Context, idArticle uint) ([]byte, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	logger := reg.logger.With().Uint(
 		"uid", uid,

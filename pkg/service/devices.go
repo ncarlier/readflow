@@ -13,7 +13,7 @@ import (
 
 // GetDevices get devices from current user
 func (reg *Registry) GetDevices(ctx context.Context) (*[]model.Device, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	devices, err := reg.db.GetDevicesByUser(uid)
 	if err != nil {
@@ -28,7 +28,7 @@ func (reg *Registry) GetDevices(ctx context.Context) (*[]model.Device, error) {
 
 // GetDevice get a device of the current user
 func (reg *Registry) GetDevice(ctx context.Context, id uint) (*model.Device, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	device, err := reg.db.GetDeviceByID(id)
 	if err != nil || device == nil || *device.UserID != uid {
@@ -42,7 +42,7 @@ func (reg *Registry) GetDevice(ctx context.Context, id uint) (*model.Device, err
 
 // CreateDevice create or update a device for current user
 func (reg *Registry) CreateDevice(ctx context.Context, sub string) (*model.Device, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	builder := model.NewDeviceBuilder()
 	device := builder.UserID(uid).Subscription(sub).Build()
@@ -67,7 +67,7 @@ func (reg *Registry) CreateDevice(ctx context.Context, sub string) (*model.Devic
 
 // DeleteDevice delete a device of the current user
 func (reg *Registry) DeleteDevice(ctx context.Context, id uint) (*model.Device, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	device, err := reg.GetDevice(ctx, id)
 	if err != nil {
@@ -86,7 +86,7 @@ func (reg *Registry) DeleteDevice(ctx context.Context, id uint) (*model.Device, 
 
 // DeleteDevices delete devices of the current user
 func (reg *Registry) DeleteDevices(ctx context.Context, ids []uint) (int64, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
 	nb, err := reg.db.DeleteDevicesByUser(uid, ids)
@@ -104,14 +104,12 @@ func (reg *Registry) DeleteDevices(ctx context.Context, ids []uint) (int64, erro
 
 // NotifyDevices send a notification to all user devices
 func (reg *Registry) NotifyDevices(ctx context.Context, msg string) (int, error) {
-	uid := getCurrentUserFromContext(ctx)
 	user, err := reg.GetCurrentUser(ctx)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Msg("unable to notify devices")
+		reg.logger.Info().Err(err).Msg("unable to notify devices")
 		return 0, err
 	}
+	uid := *user.ID
 
 	devices, err := reg.GetDevices(ctx)
 	if err != nil {

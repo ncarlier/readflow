@@ -18,7 +18,7 @@ type ArticleCreationOptions struct {
 
 // CreateArticle creates new article
 func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreateForm, opts ArticleCreationOptions) (*model.Article, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	plan, err := reg.GetCurrentUserPlan(ctx)
 	if err != nil {

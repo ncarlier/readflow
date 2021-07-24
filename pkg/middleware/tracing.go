@@ -15,7 +15,7 @@ func Tracing(nextRequestID func() string) Middleware {
 			if requestID == "" {
 				requestID = nextRequestID()
 			}
-			ctx := context.WithValue(r.Context(), constant.RequestID, requestID)
+			ctx := context.WithValue(r.Context(), constant.ContextRequestID, requestID)
 			w.Header().Set("X-Request-Id", requestID)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})

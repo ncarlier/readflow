@@ -47,8 +47,9 @@ func APIKeyAuth(inner http.Handler) http.Handler {
 			http.Error(w, "Not authorized", 401)
 			return
 		}
-		ctx = context.WithValue(ctx, constant.UserID, incomingWebhook.UserID)
-		ctx = context.WithValue(ctx, constant.IncomingWebhookAlias, incomingWebhook.Alias)
+		ctx = context.WithValue(ctx, constant.ContextUserID, incomingWebhook.UserID)
+		ctx = context.WithValue(ctx, constant.ContextIncomingWebhookAlias, incomingWebhook.Alias)
+		ctx = context.WithValue(ctx, constant.ContextIsAdmin, false)
 
 		inner.ServeHTTP(w, r.WithContext(ctx))
 	})

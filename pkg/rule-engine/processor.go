@@ -55,7 +55,7 @@ func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleCreate
 		url = *article.URL
 	}
 	incomingWebhookAlias := ""
-	if alias := ctx.Value(constant.IncomingWebhookAlias); alias != nil {
+	if alias := ctx.Value(constant.ContextIncomingWebhookAlias); alias != nil {
 		incomingWebhookAlias = alias.(string)
 	}
 

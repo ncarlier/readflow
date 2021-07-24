@@ -17,8 +17,9 @@ func MockAuth(inner http.Handler) http.Handler {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		ctx = context.WithValue(ctx, constant.UserID, *user.ID)
-		ctx = context.WithValue(ctx, constant.IsAdmin, true)
+		ctx = context.WithValue(ctx, constant.ContextUser, *user)
+		ctx = context.WithValue(ctx, constant.ContextUserID, *user.ID)
+		ctx = context.WithValue(ctx, constant.ContextIsAdmin, true)
 		inner.ServeHTTP(w, r.WithContext(ctx))
 		return
 	})

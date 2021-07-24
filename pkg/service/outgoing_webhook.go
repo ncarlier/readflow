@@ -14,7 +14,7 @@ import (
 
 // GetOutgoingWebhooks get outgoing webhooks from current user
 func (reg *Registry) GetOutgoingWebhooks(ctx context.Context) (*[]model.OutgoingWebhook, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	webhooks, err := reg.db.GetOutgoingWebhooksByUser(uid)
 	if err != nil {
@@ -29,7 +29,7 @@ func (reg *Registry) GetOutgoingWebhooks(ctx context.Context) (*[]model.Outgoing
 
 // GetOutgoingWebhook get an outgoing webhook of the current user
 func (reg *Registry) GetOutgoingWebhook(ctx context.Context, id uint) (*model.OutgoingWebhook, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	webhook, err := reg.db.GetOutgoingWebhookByID(id)
 	if err != nil || webhook == nil || *webhook.UserID != uid {
@@ -43,7 +43,7 @@ func (reg *Registry) GetOutgoingWebhook(ctx context.Context, id uint) (*model.Ou
 
 // CreateOutgoingWebhook create an outgoing webhook for current user
 func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.OutgoingWebhookCreateForm) (*model.OutgoingWebhook, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	// Validate outgoing webhook configuration
 	dummy := model.OutgoingWebhook{
@@ -70,7 +70,7 @@ func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.Outgo
 
 // UpdateOutgoingWebhook update an outgoing webhook for current user
 func (reg *Registry) UpdateOutgoingWebhook(ctx context.Context, form model.OutgoingWebhookUpdateForm) (*model.OutgoingWebhook, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	if form.Provider != nil && form.Config != nil {
 		// Validate outgoing webhook configuration
@@ -105,7 +105,7 @@ func (reg *Registry) UpdateOutgoingWebhook(ctx context.Context, form model.Outgo
 
 // DeleteOutgoingWebhook delete an outgoing webhook of the current user
 func (reg *Registry) DeleteOutgoingWebhook(ctx context.Context, id uint) (*model.OutgoingWebhook, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	webhook, err := reg.GetOutgoingWebhook(ctx, id)
 	if err != nil {
@@ -124,7 +124,7 @@ func (reg *Registry) DeleteOutgoingWebhook(ctx context.Context, id uint) (*model
 
 // DeleteOutgoingWebhooks delete outgoing webhooks of the current user
 func (reg *Registry) DeleteOutgoingWebhooks(ctx context.Context, ids []uint) (int64, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
 	nb, err := reg.db.DeleteOutgoingWebhooksByUser(uid, ids)
@@ -142,7 +142,7 @@ func (reg *Registry) DeleteOutgoingWebhooks(ctx context.Context, ids []uint) (in
 
 // SendArticle send an article to outgoing webhook
 func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *string) error {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	logger := reg.logger.With().Uint(
 		"uid", uid,

@@ -9,7 +9,7 @@ import (
 
 // ProcessArticleByRuleEngine apply user's rules on the article
 func (reg *Registry) ProcessArticleByRuleEngine(ctx context.Context, article *model.ArticleCreateForm) error {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 	// Retrieve pipeline from cache
 	pipeline := reg.ruleEngineCache.Get(uid)
 	if pipeline == nil {

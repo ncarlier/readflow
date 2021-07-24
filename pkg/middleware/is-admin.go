@@ -9,7 +9,7 @@ import (
 // IsAdmin is a middleware to limit access to administrators
 func IsAdmin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		isAdmin := r.Context().Value(constant.IsAdmin)
+		isAdmin := r.Context().Value(constant.ContextIsAdmin)
 		if isAdmin != nil && isAdmin.(bool) {
 			next.ServeHTTP(w, r)
 			return

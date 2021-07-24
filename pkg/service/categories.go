@@ -11,7 +11,7 @@ import (
 
 // GetCategories get categories from current user
 func (reg *Registry) GetCategories(ctx context.Context) ([]model.Category, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	categories, err := reg.db.GetCategoriesByUser(uid)
 	if err != nil {
@@ -24,13 +24,13 @@ func (reg *Registry) GetCategories(ctx context.Context) ([]model.Category, error
 
 // CountCurrentUserCategories get total categories of current user
 func (reg *Registry) CountCurrentUserCategories(ctx context.Context) (uint, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 	return reg.db.CountCategoriesByUser(uid)
 }
 
 // GetCategory get a category of the current user
 func (reg *Registry) GetCategory(ctx context.Context, id uint) (*model.Category, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	category, err := reg.db.GetCategoryByID(id)
 	if err != nil || category == nil || *category.UserID != uid {
@@ -44,7 +44,7 @@ func (reg *Registry) GetCategory(ctx context.Context, id uint) (*model.Category,
 
 // CreateCategory create a category for current user
 func (reg *Registry) CreateCategory(ctx context.Context, form model.CategoryCreateForm) (*model.Category, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	// Validate user quota
 	plan, err := reg.GetCurrentUserPlan(ctx)
@@ -95,7 +95,7 @@ func (reg *Registry) CreateCategory(ctx context.Context, form model.CategoryCrea
 
 // UpdateCategory update a category for current user
 func (reg *Registry) UpdateCategory(ctx context.Context, form model.CategoryUpdateForm) (*model.Category, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	// Validate category's rule
 	if err := validateCategoryRule(form.Rule); err != nil {
@@ -124,7 +124,7 @@ func (reg *Registry) UpdateCategory(ctx context.Context, form model.CategoryUpda
 
 // DeleteCategory delete a category of the current user
 func (reg *Registry) DeleteCategory(ctx context.Context, id uint) (*model.Category, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	category, err := reg.GetCategory(ctx, id)
 	if err != nil {
@@ -147,7 +147,7 @@ func (reg *Registry) DeleteCategory(ctx context.Context, id uint) (*model.Catego
 
 // DeleteCategories delete categories of the current user
 func (reg *Registry) DeleteCategories(ctx context.Context, ids []uint) (int64, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
 	nb, err := reg.db.DeleteCategoriesByUser(uid, ids)

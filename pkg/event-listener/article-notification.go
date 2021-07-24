@@ -20,7 +20,7 @@ func init() {
 	event.Subscribe(event.CreateArticle, func(payload ...interface{}) {
 		if article, ok := payload[0].(model.Article); ok {
 			uid := article.UserID
-			ctx := context.WithValue(context.TODO(), constant.UserID, uid)
+			ctx := context.WithValue(context.TODO(), constant.ContextUserID, uid)
 			req := model.ArticlesPageRequest{Status: &status}
 
 			user, err := service.Lookup().GetCurrentUser(ctx)

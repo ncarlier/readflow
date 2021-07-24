@@ -54,7 +54,7 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 	}
 	testUser = assertUserExists(t, defaultUsername)
 	testContext = context.Background()
-	testContext = context.WithValue(testContext, constant.UserID, *testUser.ID)
+	testContext = context.WithValue(testContext, constant.ContextUserID, *testUser.ID)
 	userPlans, _ := userplan.NewUserPlans("user-plans.yml")
 	downloadCache, _ := cache.NewDefault()
 	conf := config.Config{}

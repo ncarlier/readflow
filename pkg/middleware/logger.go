@@ -13,7 +13,7 @@ func Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		defer func() {
-			requestID, ok := r.Context().Value(constant.RequestID).(string)
+			requestID, ok := r.Context().Value(constant.ContextRequestID).(string)
 			if !ok {
 				requestID = "unknown"
 			}

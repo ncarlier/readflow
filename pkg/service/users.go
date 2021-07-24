@@ -11,8 +11,25 @@ import (
 	userplan "github.com/ncarlier/readflow/pkg/user-plan"
 )
 
-func getCurrentUserFromContext(ctx context.Context) uint {
-	return ctx.Value(constant.UserID).(uint)
+func getCurrentUserIDFromContext(ctx context.Context) uint {
+	return ctx.Value(constant.ContextUserID).(uint)
+}
+
+func isAdmin(ctx context.Context) bool {
+	if value := ctx.Value(constant.ContextIsAdmin); value != nil {
+		return value.(bool)
+	}
+	return false
+}
+
+// GetCurrentUser get current user
+func (reg *Registry) GetCurrentUser(ctx context.Context) (*model.User, error) {
+	if value := ctx.Value(constant.ContextUser); value != nil {
+		user := value.(model.User)
+		return &user, nil
+	}
+	uid := getCurrentUserIDFromContext(ctx)
+	return reg.GetUserByID(ctx, uid)
 }
 
 // GetOrRegisterUser get an existing user or creates new one
@@ -70,13 +87,6 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 	).Str("username", username).Msg("user registered")
 	event.Emit(event.CreateUser, *user)
 	return user, nil
-}
-
-// GetCurrentUser get current user
-func (reg *Registry) GetCurrentUser(ctx context.Context) (*model.User, error) {
-	// TODO retrieve current user object from context
-	uid := getCurrentUserFromContext(ctx)
-	return reg.GetUserByID(ctx, uid)
 }
 
 // GetCurrentUserPlan get current user plan
@@ -143,9 +153,16 @@ func (reg *Registry) GetUserByUsername(ctx context.Context, username string) (*m
 	return user, nil
 }
 
-// UpdateUser update user account
+// UpdateUser update user account (required admin access)
 func (reg *Registry) UpdateUser(ctx context.Context, form model.UserForm) (*model.User, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
+	if !isAdmin(ctx) {
+		err := errors.New("forbidden")
+		reg.logger.Info().Err(err).Uint(
+			"uid", form.ID,
+		).Msg("unable to update user")
+		return nil, err
+	}
 	user, err := reg.db.GetUserByID(form.ID)
 	if err != nil || user == nil {
 		if user == nil {

@@ -9,7 +9,7 @@ import (
 
 // CountCurrentUserArticles count current user articles
 func (reg *Registry) CountCurrentUserArticles(ctx context.Context, req model.ArticlesPageRequest) (uint, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 	return reg.CountUserArticles(ctx, uid, req)
 }
 
@@ -27,7 +27,7 @@ func (reg *Registry) CountUserArticles(ctx context.Context, uid uint, req model.
 
 // GetArticles get articles
 func (reg *Registry) GetArticles(ctx context.Context, req model.ArticlesPageRequest) (*model.ArticlesPageResponse, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	result, err := reg.db.GetPaginatedArticlesByUser(uid, req)
 	if err != nil {
@@ -41,7 +41,7 @@ func (reg *Registry) GetArticles(ctx context.Context, req model.ArticlesPageRequ
 
 // GetArticle get article
 func (reg *Registry) GetArticle(ctx context.Context, id uint) (*model.Article, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	article, err := reg.db.GetArticleByID(id)
 	if err != nil || article == nil || article.UserID != uid {
@@ -59,7 +59,7 @@ func (reg *Registry) GetArticle(ctx context.Context, id uint) (*model.Article, e
 
 // UpdateArticle update article
 func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdateForm) (*model.Article, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	article, err := reg.GetArticle(ctx, form.ID)
 	if err != nil {
@@ -83,7 +83,7 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 
 // MarkAllArticlesAsRead set status to read for all articles (of a category if provided)
 func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, categoryID *uint) (int64, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	nb, err := reg.db.MarkAllArticlesAsReadByUser(uid, categoryID)
 	if err != nil {
@@ -101,7 +101,7 @@ func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, categoryID *uint
 
 // CleanHistory remove all read articles
 func (reg *Registry) CleanHistory(ctx context.Context) (int64, error) {
-	uid := getCurrentUserFromContext(ctx)
+	uid := getCurrentUserIDFromContext(ctx)
 
 	nb, err := reg.db.DeleteAllReadArticlesByUser(uid)
 	if err != nil {
