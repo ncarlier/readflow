@@ -151,7 +151,7 @@ backup:
 	echo "Backuping PosgreSQL database ($$archive)..."
 	mkdir -p backup
 	docker exec -u postgres readflow_db_1 pg_dump -Fc reader > $$archive
-	gzip $$archive
+	gzip -f $$archive
 	echo "done."
 .ONESHELL:
 .PHONY: backup

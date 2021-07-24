@@ -2,8 +2,8 @@ release/
 dist/
 node_modules/
 ui/build/
-TODO.md
-_gen/
+hosting/
+backup/
 .env
 .vscode
 .cache
