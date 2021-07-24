@@ -7,6 +7,7 @@ import DataTable, { OnSelectedFn } from '../../../components/DataTable'
 import Loader from '../../../components/Loader'
 import TimeAgo from '../../../components/TimeAgo'
 import ErrorPanel from '../../../error/ErrorPanel'
+import Logo from '../../../logos/Logo'
 import { GetOutgoingWebhooksResponse, OutgoingWebhook } from './models'
 import { GetOutgoingWebhooks } from './queries'
 import { matchResponse } from '../../../helpers'
@@ -22,7 +23,9 @@ const definition = [
   },
   {
     title: 'Provider',
-    render: (val: OutgoingWebhook) => val.provider,
+    render: (val: OutgoingWebhook) => (
+      <Logo name={val.provider} style={{ maxWidth: '2em' }} title={`${val.provider} provider`} />
+    ),
   },
   {
     title: 'Created',

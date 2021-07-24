@@ -4,7 +4,7 @@ import { Link, useRouteMatch } from 'react-router-dom'
 import Button from '../../../components/Button'
 import { MessageContext } from '../../../context/MessageContext'
 import ErrorPanel from '../../../error/ErrorPanel'
-import WebhookLogo from '../WebhookLogo'
+import Logo from '../../../logos/Logo'
 import DeleteOutgoingWebhooksButton from './DeleteOutgoingWebhookButton'
 import OutgoingWebhooksList from './OutgoingWebhookList'
 
@@ -23,7 +23,7 @@ export default () => {
     <section>
       <header>
         <h2>
-          <WebhookLogo />
+          <Logo name="webhook" style={{ maxWidth: '2em', verticalAlign: 'middle' }} />
           Outgoing Webhooks
         </h2>
         <DeleteOutgoingWebhooksButton

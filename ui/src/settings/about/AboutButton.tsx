@@ -6,9 +6,9 @@ import { useModal } from 'react-modal-hook'
 import ButtonIcon from '../../components/ButtonIcon'
 import dialogStyles from '../../components/Dialog.module.css'
 import Panel from '../../components/Panel'
+import Logo from '../../logos/Logo'
 import { VERSION } from '../../constants'
 import styles from './AboutButton.module.css'
-import logo from './logo.svg'
 
 interface Props {
   closeHandler: () => void
@@ -18,7 +18,7 @@ const AboutPanel = ({ closeHandler }: Props) => (
   <Panel className={styles.about}>
     <ButtonIcon title="close" onClick={closeHandler} icon="close" />
     <h1>
-      <img src={logo} alt="logo" />
+      <Logo name="readflow" />
     </h1>
     <span>({VERSION})</span>
     <p>Read your Internet article flow in one place with complete peace of mind and freedom.</p>

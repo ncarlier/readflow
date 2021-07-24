@@ -14,7 +14,7 @@ import ErrorPanel from '../../../error/ErrorPanel'
 import { getGQLError, isValidForm } from '../../../helpers'
 import { usePageTitle } from '../../../hooks'
 import { updateCacheAfterCreate } from './cache'
-import { CreateOrUpdateOutgoingWebhookResponse, CreateOrUpdateOutgoingWebhookRequest } from './models'
+import { CreateOrUpdateOutgoingWebhookResponse, CreateOrUpdateOutgoingWebhookRequest, Provider } from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
 import { CreateOrUpdateOutgoingWebhook } from './queries'
 import WallabagConfigForm from './providers/WallabagConfigForm'
@@ -23,15 +23,15 @@ import PocketConfigForm from './providers/PocketConfigForm'
 
 interface AddOutgoingWebhookFormFields {
   alias: string
-  provider: string
+  provider: Provider
   isDefault: boolean
 }
 
-const getFormStateFromQueryParams = (qs: string) => {
+const getFormStateFromQueryParams = (qs: string): AddOutgoingWebhookFormFields => {
   const params = new URLSearchParams(qs)
   return {
     alias: params.get('alias') || '',
-    provider: params.get('provider') || '',
+    provider: (params.get('provider') as Provider) || '',
     isDefault: false,
   }
 }

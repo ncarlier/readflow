@@ -1,7 +1,9 @@
+export type Provider = 'keeper' | 'pocket' | 'wallabag' | 'generic'
+
 export interface OutgoingWebhook {
   id: number
   alias: string
-  provider: string
+  provider: Provider
   config: string
   is_default: boolean
   created_at?: string
@@ -19,7 +21,7 @@ export interface GetOutgoingWebhookResponse {
 export interface CreateOrUpdateOutgoingWebhookRequest {
   id?: number
   alias: string
-  provider: string
+  provider: Provider
   config: string
   is_default: boolean
 }

@@ -5,7 +5,7 @@ import Masked from '../../../components/Masked'
 import { IncomingWebhook } from './models'
 import Bookmarklet from './Bookmarklet'
 import HelpLink from '../../../components/HelpLink'
-import WebhookLogo from '../WebhookLogo'
+import Logo from '../../../logos/Logo'
 import HelpSection from '../../HelpSection'
 import QRCodeIncomingWebhookButton from './QRCodeIncomingWebhookButton'
 
@@ -15,7 +15,7 @@ interface Props {
 
 export default ({ data }: Props) => (
   <HelpSection>
-    <WebhookLogo maxWidth="10%" />
+    <Logo name="webhook" style={{ maxWidth: '10%', verticalAlign: 'middle' }} />
     <span>
       Use incoming webhooks to post articles to your Readflow. <br />
       Messages are sent via an HTTP POST request to Readflow integration URL.

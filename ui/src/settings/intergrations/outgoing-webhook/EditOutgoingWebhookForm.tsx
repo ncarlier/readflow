@@ -12,7 +12,12 @@ import FormSelectField from '../../../components/FormSelectField'
 import { MessageContext } from '../../../context/MessageContext'
 import ErrorPanel from '../../../error/ErrorPanel'
 import { getGQLError, isValidForm } from '../../../helpers'
-import { OutgoingWebhook, CreateOrUpdateOutgoingWebhookResponse, CreateOrUpdateOutgoingWebhookRequest } from './models'
+import {
+  OutgoingWebhook,
+  CreateOrUpdateOutgoingWebhookResponse,
+  CreateOrUpdateOutgoingWebhookRequest,
+  Provider,
+} from './models'
 import KeeperConfigForm from './providers/KeeperConfigForm'
 import { CreateOrUpdateOutgoingWebhook } from './queries'
 import WallabagConfigForm from './providers/WallabagConfigForm'
@@ -21,7 +26,7 @@ import PocketConfigForm from './providers/PocketConfigForm'
 
 interface EditOutgoingWebhookFormFields {
   alias: string
-  provider: string
+  provider: Provider
   is_default: boolean
 }
 
