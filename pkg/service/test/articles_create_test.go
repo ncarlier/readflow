@@ -23,7 +23,7 @@ func TestCreateArticle(t *testing.T) {
 	opts := service.ArticleCreationOptions{}
 	art, err := service.Lookup().CreateArticle(testContext, req, opts)
 	assert.Nil(t, err)
-	assert.Equal(t, "ncarlier/readflow", art.Title)
+	assert.Equal(t, "GitHub - ncarlier/readflow: Read the Internet with complete peace of mind and freedom.", art.Title)
 	assert.NotNil(t, art.URL)
 	assert.Equal(t, url, *art.URL)
 	assert.NotNil(t, art.Image)
