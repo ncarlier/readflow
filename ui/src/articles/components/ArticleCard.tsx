@@ -9,7 +9,7 @@ import { DropDownOrigin } from '../../components/DropdownMenu'
 import { Article } from '../models'
 import styles from './ArticleCard.module.css'
 import ArticleImage from './ArticleImage'
-import ArticleMenu from './ArticleMenu'
+import ArticleContextMenu from './context-menu/ArticleContextMenu'
 import MarkAsButton from './MarkAsButton'
 import StarsButton from './StarsButton'
 
@@ -52,7 +52,7 @@ export default withRouter((props: AllProps) => {
           </a>
         )}
         <TimeAgo dateTime={article.created_at} />
-        <ArticleMenu article={article} keyboard={isActive} origin={dropDownMenuOrigin} />
+        <ArticleContextMenu article={article} keyboard={isActive} origin={dropDownMenuOrigin} />
         {!article.isOffline && <StarsButton article={article} keyboard={isActive} origin={dropDownMenuOrigin} />}
         {!article.isOffline && <MarkAsButton article={article} onSuccess={onRemove} keyboard={isActive} />}
       </footer>

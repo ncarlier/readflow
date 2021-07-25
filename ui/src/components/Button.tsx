@@ -8,7 +8,7 @@ import { PropsOf } from './PropsOf'
 
 interface ButtonProps {
   icon?: string
-  variant?: 'default' | 'primary' | 'danger'
+  variant?: 'default' | 'primary' | 'danger' | 'flat'
   disabled?: boolean
   children: ReactNode
 }

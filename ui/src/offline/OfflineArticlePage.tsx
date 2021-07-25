@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import ArticleContent from '../articles/components/ArticleContent'
 import ArticleHeader from '../articles/components/ArticleHeader'
-import ArticleMenu from '../articles/components/ArticleMenu'
+import ArticleMenu from '../articles/components/context-menu/ArticleContextMenu'
 import { Article } from '../articles/models'
 import ButtonIcon from '../components/ButtonIcon'
 import Center from '../components/Center'

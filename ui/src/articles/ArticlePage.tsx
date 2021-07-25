@@ -13,7 +13,7 @@ import useKeyboard from '../hooks/useKeyboard'
 import Page from '../layout/Page'
 import ArticleContent from './components/ArticleContent'
 import ArticleHeader from './components/ArticleHeader'
-import ArticleMenu from './components/ArticleMenu'
+import ArticleContextMenu from './components/context-menu/ArticleContextMenu'
 import MarkAsButton from './components/MarkAsButton'
 import StarsButton from './components/StarsButton'
 import { GetArticleResponse } from './models'
@@ -50,7 +50,7 @@ export default ({ title, match, history }: AllProps) => {
           <>
             <ArticleHeader article={article}>
               <StarsButton article={article} keyboard />
-              <ArticleMenu article={article} keyboard />
+              <ArticleContextMenu article={article} keyboard />
             </ArticleHeader>
             <ArticleContent article={article} />
             <MarkAsButton article={article} floating onSuccess={goBack} keyboard />

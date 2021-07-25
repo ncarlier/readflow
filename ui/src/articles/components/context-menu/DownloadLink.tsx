@@ -1,10 +1,10 @@
 import React, { useCallback, useContext, useState } from 'react'
 
-import LinkIcon from '../../components/LinkIcon'
-import Loader from '../../components/Loader'
-import { MessageContext } from '../../context/MessageContext'
-import fetchAPI from '../../helpers/fetchAPI'
-import { Article } from '../models'
+import LinkIcon from '../../../components/LinkIcon'
+import Loader from '../../../components/Loader'
+import { MessageContext } from '../../../context/MessageContext'
+import fetchAPI from '../../../helpers/fetchAPI'
+import { Article } from '../../models'
 
 interface Props {
   article: Article

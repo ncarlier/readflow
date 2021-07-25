@@ -2,13 +2,13 @@ import React, { useContext } from 'react'
 import { useApolloClient } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
 
-import ConfirmDialog from '../../components/ConfirmDialog'
-import Kbd from '../../components/Kbd'
-import LinkIcon from '../../components/LinkIcon'
-import { connectOfflineDispatch, IOfflineDispatchProps } from '../../containers/OfflineContainer'
-import { MessageContext } from '../../context/MessageContext'
-import { Article, GetArticleResponse } from '../models'
-import { GetFullArticle } from '../queries'
+import ConfirmDialog from '../../../components/ConfirmDialog'
+import Kbd from '../../../components/Kbd'
+import LinkIcon from '../../../components/LinkIcon'
+import { connectOfflineDispatch, IOfflineDispatchProps } from '../../../containers/OfflineContainer'
+import { MessageContext } from '../../../context/MessageContext'
+import { Article, GetArticleResponse } from '../../models'
+import { GetFullArticle } from '../../queries'
 
 interface Props {
   article: Article

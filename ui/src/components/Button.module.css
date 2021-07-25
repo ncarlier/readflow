@@ -48,6 +48,12 @@
   background-color: var(--button-warning-hover-color);
 }
 
+.flat {
+  background-color: transparent;
+  box-shadow: none;
+  vertical-align: text-top;
+}
+
 .button > i {
   vertical-align: middle;
   margin-right: 5px;
