@@ -1,48 +1,51 @@
 import React, { useCallback, useState } from 'react'
 
 import Loader from '../../../components/Loader'
-import { OutgoingWebhook } from '../../../settings/intergrations/outgoing-webhook/models'
 import Button from '../../../components/Button'
 import Panel from '../../../components/Panel'
-import Logo from '../../../logos/Logo'
+import Icon from '../../../components/Icon'
+
+const formats = [
+  { value: 'html', label: 'HTML page', icon: 'code' },
+  { value: 'offline', label: 'HTML page with images', icon: 'image' },
+]
 
 interface Props {
-  webhooks: OutgoingWebhook[]
-  sendArticle: (alias: string) => any
+  download: (format: string) => Promise<any>
   onCancel: (e: any) => void
 }
 
-export default ({ webhooks, sendArticle, onCancel }: Props) => {
+export default ({ download, onCancel }: Props) => {
   const [loading, setLoading] = useState(false)
-  const handleSendArticle = useCallback(
-    async (alias: string) => {
+  const handleDownloadArticle = useCallback(
+    async (format: string) => {
       setLoading(true)
       try {
-        await sendArticle(alias)
+        await download(format)
       } finally {
         setLoading(false)
       }
     },
-    [sendArticle]
+    [download]
   )
 
   return (
     <Panel>
       {loading && <Loader blur />}
       <header>
-        <h1>Send article to ...</h1>
+        <h1>Download article as ...</h1>
       </header>
       <section>
-        {webhooks.map((webhook) => (
+        {formats.map((format) => (
           <Button
-            key={`wh${webhook.id}`}
+            key={`format_${format.value}`}
             variant="flat"
             style={{ width: '10rem', padding: '1rem' }}
-            title={`Send article to ${webhook.alias}`}
-            onClick={() => handleSendArticle(webhook.alias).then(onCancel)}
+            title={`Download article as ${format.label}`}
+            onClick={() => handleDownloadArticle(format.value).then(onCancel)}
           >
-            <Logo name={webhook.provider} style={{ maxWidth: '2em', verticalAlign: 'middle' }} />
-            <p>Send to {webhook.alias}</p>
+            <Icon name={format.icon} />
+            <p>{format.label}</p>
           </Button>
         ))}
       </section>

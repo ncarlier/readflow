@@ -13,7 +13,7 @@ interface Props {
 }
 
 const OtherWebhooksLink = ({ webhooks, sendArticle }: Props) => {
-  const [showSenToModal, hideSendToModal] = useModal(() => (
+  const [showSendToModal, hideSendToModal] = useModal(() => (
     <ReactModal
       isOpen
       shouldCloseOnEsc
@@ -31,7 +31,7 @@ const OtherWebhooksLink = ({ webhooks, sendArticle }: Props) => {
 
   if (webhooks.length) {
     return (
-      <LinkIcon title="Send article to ..." icon="backup" onClick={showSenToModal}>
+      <LinkIcon title="Send article to ..." icon="backup" onClick={showSendToModal}>
         <span>Send to ...</span>
       </LinkIcon>
     )

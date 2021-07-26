@@ -4,7 +4,7 @@ import DropdownMenu, { DropDownOrigin } from '../../../components/DropdownMenu'
 import { Article } from '../../models'
 import OfflineLink from './OfflineLink'
 import ShareLink from './ShareLink'
-import DownloadLink from './DownloadLink'
+import DownloadAsLink from './DownloadAsLink'
 import OutgoingWebhooksMenuItems from './OutgoingWebhooksMenuItems'
 
 interface Props {
@@ -26,7 +26,7 @@ export default (props: Props) => {
           </li>
         )}
         <li>
-          <DownloadLink {...attrs} />
+          <DownloadAsLink {...attrs} />
         </li>
         <li>
           <OfflineLink {...attrs} />

@@ -21,16 +21,22 @@ func download() http.Handler {
 			http.Error(w, "invalid article ID", http.StatusBadRequest)
 			return
 		}
+		// Extract and validate token parameter
+		q := r.URL.Query()
+		format := q.Get("f")
+		if format == "" {
+			format = "html"
+		}
 
 		// Archive the article
-		data, err := service.Lookup().ArchiveArticle(r.Context(), idArticle)
+		data, contentType, err := service.Lookup().DownloadArticle(r.Context(), idArticle, format)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		// Write response
-		w.Header().Set("Content-Type", "application/octet-stream")
+		w.Header().Set("Content-Type", contentType)
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
 	})

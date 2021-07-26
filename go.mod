@@ -10,8 +10,8 @@ require (
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/getsentry/raven-go v0.2.0
+	github.com/go-shiori/dom v0.0.0-20201011032054-d6b74a54fe52
 	github.com/go-shiori/go-readability v0.0.0-20201011032228-bdc871772408
-	github.com/go-shiori/obelisk v0.0.0-20201115143556-8de0d40b0a9b
 	github.com/google/uuid v1.2.0
 	github.com/graphql-go/graphql v0.7.9
 	github.com/graphql-go/handler v0.2.3
@@ -24,6 +24,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	go.etcd.io/bbolt v1.3.5
 	golang.org/x/net v0.0.0-20210119194325-5f4716e94777
+	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 	gopkg.in/yaml.v2 v2.4.0
 )
 

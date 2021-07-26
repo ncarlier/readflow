@@ -1,8 +1,10 @@
 package service
 
 import (
+	"github.com/ncarlier/readflow/pkg/archiver"
 	"github.com/ncarlier/readflow/pkg/cache"
 	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/db"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -22,14 +24,16 @@ type Registry struct {
 	UserPlans       userplan.UserPlans
 	logger          zerolog.Logger
 	ruleEngineCache *ruleengine.Cache
+	downloadCache   cache.Cache
 	properties      *model.Properties
 	webScraper      scraper.WebScraper
-	downloadCache   cache.Cache
+	webArchiver     *archiver.WebArchiver
 	hashid          *helper.HashIDHandler
 }
 
 // Configure the global service registry
 func Configure(conf config.Config, database db.DB, downloadCache cache.Cache, plans userplan.UserPlans) error {
+	webArchiver := archiver.NewWebArchiver(downloadCache, 10, constant.DefaultTimeout)
 	webScraper, err := scraper.NewWebScraper(conf.WebScraping)
 	if err != nil {
 		return err
@@ -44,8 +48,9 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache, pl
 		UserPlans:       plans,
 		logger:          log.With().Str("component", "service").Logger(),
 		ruleEngineCache: ruleengine.NewRuleEngineCache(1024),
-		webScraper:      webScraper,
 		downloadCache:   downloadCache,
+		webScraper:      webScraper,
+		webArchiver:     webArchiver,
 		hashid:          hashid,
 	}
 	return instance.initProperties()
