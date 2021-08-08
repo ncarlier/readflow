@@ -1,11 +1,9 @@
-import React from 'react'
-import ReactModal from 'react-modal'
-import { useModal } from 'react-modal-hook'
+import React, { useState } from 'react'
 
 import LinkIcon from '../../../components/LinkIcon'
-import styles from '../../../components/Dialog.module.css'
 import { OutgoingWebhook } from '../../../settings/intergrations/outgoing-webhook/models'
 import OutgoingWebhooksPanel from './OutgoingWebhooksPanel'
+import Overlay from '../../../components/Overlay'
 
 interface Props {
   webhooks: OutgoingWebhook[]
@@ -13,26 +11,20 @@ interface Props {
 }
 
 const OtherWebhooksLink = ({ webhooks, sendArticle }: Props) => {
-  const [showSendToModal, hideSendToModal] = useModal(() => (
-    <ReactModal
-      isOpen
-      shouldCloseOnEsc
-      shouldCloseOnOverlayClick
-      shouldFocusAfterRender
-      onRequestClose={hideSendToModal}
-      className={styles.dialog}
-      overlayClassName={styles.overlay}
-      style={{ content: { minWidth: '50vw' } }}
-    >
-      <OutgoingWebhooksPanel onCancel={hideSendToModal} sendArticle={sendArticle} webhooks={webhooks} />
-    </ReactModal>
-  ))
+  const [isVisible, setIsVisible] = useState(false)
+  const showOverlay = () => setIsVisible(true)
+  const hideOverlay = () => setIsVisible(false)
 
-  if (webhooks.length) {
+  if (webhooks.length > 1) {
     return (
-      <LinkIcon title="Send article to ..." icon="backup" onClick={showSendToModal}>
-        <span>Send to ...</span>
-      </LinkIcon>
+      <>
+        <LinkIcon title="Send article to ..." icon="backup" onClick={showOverlay}>
+          <span>Send to ...</span>
+        </LinkIcon>
+        <Overlay visible={isVisible}>
+          <OutgoingWebhooksPanel onCancel={hideOverlay} sendArticle={sendArticle} webhooks={webhooks} />
+        </Overlay>
+      </>
     )
   }
   return null

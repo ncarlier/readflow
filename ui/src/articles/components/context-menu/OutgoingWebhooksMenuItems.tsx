@@ -58,10 +58,7 @@ export default ({ article, keyboard }: Props) => {
           />
         </li>
         <li>
-          <OtherWebhooksLink
-            webhooks={outgoingWebhooks.filter((webhook) => !webhook.is_default)}
-            sendArticle={sendArticle}
-          />
+          <OtherWebhooksLink webhooks={outgoingWebhooks} sendArticle={sendArticle} />
         </li>
       </>
     ),

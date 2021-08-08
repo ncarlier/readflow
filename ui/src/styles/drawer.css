@@ -15,7 +15,9 @@
 
 .drawer__handle {}
 
-.drawer__content {}
+.drawer__content {
+  position: relative;
+}
 
 .drawer ul {
   padding: 0;

@@ -1,9 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
+import LinkIcon from '../../../components/LinkIcon'
 import Loader from '../../../components/Loader'
-import Button from '../../../components/Button'
-import Panel from '../../../components/Panel'
-import Icon from '../../../components/Icon'
 
 const formats = [
   { value: 'html', label: 'HTML page', icon: 'code' },
@@ -29,31 +27,28 @@ export default ({ download, onCancel }: Props) => {
     [download]
   )
 
+  if (loading) {
+    return <Loader blur />
+  }
+
   return (
-    <Panel>
-      {loading && <Loader blur />}
-      <header>
-        <h1>Download article as ...</h1>
-      </header>
-      <section>
-        {formats.map((format) => (
-          <Button
-            key={`format_${format.value}`}
-            variant="flat"
-            style={{ width: '10rem', padding: '1rem' }}
-            title={`Download article as ${format.label}`}
+    <ul>
+      {formats.map((format) => (
+        <li key={`format_${format.value}`}>
+          <LinkIcon
+            title="Download article as ..."
+            icon={format.icon}
             onClick={() => handleDownloadArticle(format.value).then(onCancel)}
           >
-            <Icon name={format.icon} />
-            <p>{format.label}</p>
-          </Button>
-        ))}
-      </section>
-      <footer>
-        <Button title="Cancel" onClick={onCancel}>
-          Cancel
-        </Button>
-      </footer>
-    </Panel>
+            <span>{format.label}</span>
+          </LinkIcon>
+        </li>
+      ))}
+      <li>
+        <LinkIcon title="Cancel" icon="cancel" onClick={onCancel}>
+          <span>Cancel</span>
+        </LinkIcon>
+      </li>
+    </ul>
   )
 }

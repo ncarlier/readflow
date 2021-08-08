@@ -7,7 +7,7 @@ import styles from './LinkIcon.module.css'
 import { PropsOf } from './PropsOf'
 
 interface LinkIconProps {
-  icon: string
+  icon: string | ReactNode
   active?: boolean
   badge?: string | number
   children?: ReactNode
@@ -23,7 +23,7 @@ function LinkIcon<Tag extends ElementType = 'a'>(props: { as?: Tag } & LinkIconP
 
   return (
     <Element {...attrs} style={{ position: 'relative' }} className={className}>
-      <Icon name={icon} />
+      {typeof icon === 'string' ? <Icon name={icon} /> : icon}
       {children}
       {!!badge && <span className={styles.badge}>{badge}</span>}
       <Ink />

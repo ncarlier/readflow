@@ -1,13 +1,11 @@
-import React, { useCallback, useContext } from 'react'
-import ReactModal from 'react-modal'
-import { useModal } from 'react-modal-hook'
+import React, { useCallback, useContext, useState } from 'react'
 
 import LinkIcon from '../../../components/LinkIcon'
-import styles from '../../../components/Dialog.module.css'
 import { MessageContext } from '../../../context/MessageContext'
 import fetchAPI from '../../../helpers/fetchAPI'
 import { Article } from '../../models'
 import DownloadPanel from './DownloadPanel'
+import Overlay from '../../../components/Overlay'
 
 interface Props {
   article: Article
@@ -16,6 +14,9 @@ interface Props {
 
 export default ({ article }: Props) => {
   const { showErrorMessage } = useContext(MessageContext)
+  const [isVisible, setIsVisible] = useState(false)
+  const showOverlay = () => setIsVisible(true)
+  const hideOverlay = () => setIsVisible(false)
 
   const download = useCallback(
     async (format: string) => {
@@ -40,24 +41,15 @@ export default ({ article }: Props) => {
     },
     [article, showErrorMessage]
   )
-  const [showDownloadModal, hideDownloadModal] = useModal(() => (
-    <ReactModal
-      isOpen
-      shouldCloseOnEsc
-      shouldCloseOnOverlayClick
-      shouldFocusAfterRender
-      onRequestClose={hideDownloadModal}
-      className={styles.dialog}
-      overlayClassName={styles.overlay}
-      style={{ content: { minWidth: '50vw' } }}
-    >
-      <DownloadPanel onCancel={hideDownloadModal} download={download} />
-    </ReactModal>
-  ))
 
   return (
-    <LinkIcon title="Download article as ..." icon="download" onClick={showDownloadModal}>
-      <span>Download as ...</span>
-    </LinkIcon>
+    <>
+      <LinkIcon title="Download article as ..." icon="download" onClick={showOverlay}>
+        <span>Download as ...</span>
+      </LinkIcon>
+      <Overlay visible={isVisible}>
+        <DownloadPanel onCancel={hideOverlay} download={download} />
+      </Overlay>
+    </>
   )
 }

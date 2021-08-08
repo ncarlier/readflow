@@ -2,9 +2,8 @@ import React, { useCallback, useState } from 'react'
 
 import Loader from '../../../components/Loader'
 import { OutgoingWebhook } from '../../../settings/intergrations/outgoing-webhook/models'
-import Button from '../../../components/Button'
-import Panel from '../../../components/Panel'
 import Logo from '../../../logos/Logo'
+import LinkIcon from '../../../components/LinkIcon'
 
 interface Props {
   webhooks: OutgoingWebhook[]
@@ -25,32 +24,28 @@ export default ({ webhooks, sendArticle, onCancel }: Props) => {
     },
     [sendArticle]
   )
+  if (loading) {
+    return <Loader blur />
+  }
 
   return (
-    <Panel>
-      {loading && <Loader blur />}
-      <header>
-        <h1>Send article to ...</h1>
-      </header>
-      <section>
-        {webhooks.map((webhook) => (
-          <Button
-            key={`wh${webhook.id}`}
-            variant="flat"
-            style={{ width: '10rem', padding: '1rem' }}
+    <ul>
+      {webhooks.map((webhook) => (
+        <li key={`wh${webhook.id}`}>
+          <LinkIcon
+            icon={<Logo name={webhook.provider} style={{ maxWidth: '2em', verticalAlign: 'middle' }} />}
             title={`Send article to ${webhook.alias}`}
             onClick={() => handleSendArticle(webhook.alias).then(onCancel)}
           >
-            <Logo name={webhook.provider} style={{ maxWidth: '2em', verticalAlign: 'middle' }} />
-            <p>Send to {webhook.alias}</p>
-          </Button>
-        ))}
-      </section>
-      <footer>
-        <Button title="Cancel" onClick={onCancel}>
-          Cancel
-        </Button>
-      </footer>
-    </Panel>
+            <span>Send to {webhook.alias}</span>
+          </LinkIcon>
+        </li>
+      ))}
+      <li>
+        <LinkIcon title="Cancel" icon="cancel" onClick={onCancel}>
+          <span>Cancel</span>
+        </LinkIcon>
+      </li>
+    </ul>
   )
 }
