@@ -96,7 +96,7 @@ func TestMarkAllArticlesAsRead(t *testing.T) {
 
 	nb, err := testDB.MarkAllArticlesAsReadByUser(uid, nil)
 	assert.Nil(t, err)
-	assert.NotEqual(t, 0, nb, "all articles sould be marked as read")
+	assert.NotEqual(t, 0, nb, "all articles should be marked as read")
 
 	res, err = testDB.GetPaginatedArticlesByUser(uid, req)
 	assert.Nil(t, err)

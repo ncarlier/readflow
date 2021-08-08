@@ -83,7 +83,7 @@ func (reg *Registry) CreateCategory(ctx context.Context, form model.CategoryCrea
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
-		).Str("title", form.Title).Msg("unabel to create category")
+		).Str("title", form.Title).Msg("unable to create category")
 		return nil, err
 	}
 

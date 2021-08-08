@@ -9,7 +9,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-var OutgoingWebhookColumns = []string{
+var outgoingWebhookColumns = []string{
 	"id",
 	"user_id",
 	"alias",
@@ -58,7 +58,7 @@ func (pg *DB) CreateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookC
 		form.Provider,
 		form.Config,
 	).Suffix(
-		"RETURNING " + strings.Join(OutgoingWebhookColumns, ","),
+		"RETURNING " + strings.Join(outgoingWebhookColumns, ","),
 	).ToSql()
 
 	row := pg.db.QueryRow(query, args...)
@@ -107,7 +107,7 @@ func (pg *DB) UpdateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookU
 	).Where(
 		sq.Eq{"user_id": uid},
 	).Suffix(
-		"RETURNING " + strings.Join(OutgoingWebhookColumns, ","),
+		"RETURNING " + strings.Join(outgoingWebhookColumns, ","),
 	).ToSql()
 
 	if err != nil {
@@ -151,7 +151,7 @@ func (pg *DB) setDefaultOutgoingWebhook(OutgoingWebhook *model.OutgoingWebhook) 
 
 // GetOutgoingWebhookByID get an outgoing webhook from the DB
 func (pg *DB) GetOutgoingWebhookByID(id uint) (*model.OutgoingWebhook, error) {
-	query, args, _ := pg.psql.Select(OutgoingWebhookColumns...).From(
+	query, args, _ := pg.psql.Select(outgoingWebhookColumns...).From(
 		"outgoing_webhooks",
 	).Where(
 		sq.Eq{"id": id},
@@ -163,7 +163,7 @@ func (pg *DB) GetOutgoingWebhookByID(id uint) (*model.OutgoingWebhook, error) {
 // GetOutgoingWebhookByUserAndAlias get an outgoing webhook from the DB.
 // Default outgoing webhook is returned if alias is nil.
 func (pg *DB) GetOutgoingWebhookByUserAndAlias(uid uint, alias *string) (*model.OutgoingWebhook, error) {
-	selectBuilder := pg.psql.Select(OutgoingWebhookColumns...).From(
+	selectBuilder := pg.psql.Select(outgoingWebhookColumns...).From(
 		"outgoing_webhooks",
 	).Where(
 		sq.Eq{"user_id": uid},
@@ -182,7 +182,7 @@ func (pg *DB) GetOutgoingWebhookByUserAndAlias(uid uint, alias *string) (*model.
 
 // GetOutgoingWebhooksByUser returns outgoing webhooks of an user from DB
 func (pg *DB) GetOutgoingWebhooksByUser(uid uint) ([]model.OutgoingWebhook, error) {
-	query, args, _ := pg.psql.Select(OutgoingWebhookColumns...).From(
+	query, args, _ := pg.psql.Select(outgoingWebhookColumns...).From(
 		"outgoing_webhooks",
 	).Where(
 		sq.Eq{"user_id": uid},
