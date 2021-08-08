@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext } from 'react'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import CSSTransition from 'react-transition-group/CSSTransition'
 import { useModal } from 'react-modal-hook'
 
 import InfoDialog from '../components/InfoDialog'
@@ -39,13 +39,11 @@ export default (props: Props) => {
 
   return (
     <div className={classNames(classes.layout, deviceClassName)}>
-      <ReactCSSTransitionGroup transitionName="fold" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
-        {navbar.opened && (
-          <aside>
-            <Navbar />
-          </aside>
-        )}
-      </ReactCSSTransitionGroup>
+      <CSSTransition in={navbar.opened} classNames="fold" timeout={300} unmountOnExit>
+        <aside>
+          <Navbar />
+        </aside>
+      </CSSTransition>
       <section>
         {navbar.opened && <div id="navbar-fog" className={classes.fog} onClick={() => navbar.close()} />}
         {children}

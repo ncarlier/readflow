@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { Log, UserManager } from 'oidc-client'
 
 import { AUTHORITY, CLIENT_ID } from '../constants'

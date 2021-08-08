@@ -74,7 +74,6 @@ export default ({ provider }: Props) => {
     let data: any
     try {
       const params = {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         redirect_uri: document.location.origin + document.location.pathname + '?' + qs.toString(),
       }
       const res = await fetchAPI(`/linking/${provider}/request`, params, { method: 'GET' })

@@ -24,3 +24,7 @@ export interface OfflineArticlesState {
   readonly selected?: Article
   readonly error?: Error
 }
+
+export interface ErrorResponse {
+  readonly error: any
+}

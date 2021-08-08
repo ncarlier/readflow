@@ -19,7 +19,6 @@ const OtherWebhooksLink = ({ webhooks, sendArticle }: Props) => {
       shouldCloseOnEsc
       shouldCloseOnOverlayClick
       shouldFocusAfterRender
-      appElement={document.getElementById('root')!}
       onRequestClose={hideSendToModal}
       className={styles.dialog}
       overlayClassName={styles.overlay}

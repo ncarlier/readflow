@@ -88,7 +88,6 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
         return
       }
       const { alias, provider, isDefault } = formState.values
-      // eslint-disable-next-line @typescript-eslint/camelcase
       addOutgoingWebhook({ alias, provider, is_default: isDefault, config: JSON.stringify(config) })
     },
     [formState, config, addOutgoingWebhook]

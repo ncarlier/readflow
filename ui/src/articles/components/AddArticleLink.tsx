@@ -23,7 +23,6 @@ export default ({ category, onSuccess }: Props) => {
       shouldCloseOnEsc
       shouldCloseOnOverlayClick
       shouldFocusAfterRender
-      appElement={document.getElementById('root')!}
       onRequestClose={hideAddModal}
       className={styles.dialog}
       overlayClassName={styles.overlay}

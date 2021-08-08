@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { DataProxy } from '@apollo/client'
 
 import { CreateOrUpdateOutgoingWebhookResponse, GetOutgoingWebhooksResponse } from './models'

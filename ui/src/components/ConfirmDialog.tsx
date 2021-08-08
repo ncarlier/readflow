@@ -20,7 +20,6 @@ export default ({ title, confirmLabel = 'ok', children, onConfirm, onCancel }: P
     shouldCloseOnEsc
     shouldCloseOnOverlayClick
     shouldFocusAfterRender
-    appElement={document.getElementById('root')!}
     onRequestClose={onCancel}
     className={styles.dialog}
     overlayClassName={styles.overlay}

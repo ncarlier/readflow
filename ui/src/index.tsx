@@ -11,13 +11,16 @@ import configureStore from './configureStore'
 import { getOnlineStatus, isTrustedWebActivity } from './helpers'
 import * as serviceWorker from './serviceWorker'
 import { REDIRECT_URL } from './constants'
+import { ApplicationState } from './store'
+import ReactModal from 'react-modal'
 
 const lastRunKey = 'readflow.lastRun'
 
 const run = () => {
   const history = createBrowserHistory()
-  const initialState = window.initialReduxState
+  const initialState = window.initialReduxState as ApplicationState
   const store = configureStore(history, initialState)
+  ReactModal.setAppElement('#root')
   ReactDOM.render(<App store={store} history={history} />, document.getElementById('root'))
   serviceWorker.register({ onUpdate: (registration) => store.dispatch(updateAvailable(registration)) })
   localStorage.setItem(lastRunKey, new Date().toISOString())

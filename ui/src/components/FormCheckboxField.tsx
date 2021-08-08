@@ -1,5 +1,5 @@
 import React, { forwardRef, Ref } from 'react'
-import { CheckboxProps } from 'react-use-form-state'
+import { CheckableInputProps } from 'react-use-form-state'
 
 import { classNames } from '../helpers'
 
@@ -10,7 +10,7 @@ interface Props {
   error?: string
 }
 
-type AllProps = Props & CheckboxProps<any>
+type AllProps = Props & CheckableInputProps<any>
 
 export default forwardRef((props: AllProps, ref: Ref<any>) => {
   const { error, label, ...rest } = { ...props, ref }

@@ -46,7 +46,6 @@ export default ({ article }: Props) => {
       shouldCloseOnEsc
       shouldCloseOnOverlayClick
       shouldFocusAfterRender
-      appElement={document.getElementById('root')!}
       onRequestClose={hideDownloadModal}
       className={styles.dialog}
       overlayClassName={styles.overlay}

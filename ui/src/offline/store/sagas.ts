@@ -1,4 +1,5 @@
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
+import { Article, GetArticlesResponse } from '../../articles/models'
 
 import { getArticle, getArticles, removeArticle, saveArticle } from '../dao/articles'
 import {
@@ -15,7 +16,7 @@ import {
   selectRequest,
   selectSuccess,
 } from './actions'
-import { OfflineArticlesActionTypes } from './types'
+import { ErrorResponse, OfflineArticlesActionTypes } from './types'
 
 // Here we use `redux-saga` to trigger actions asynchronously. `redux-saga` uses something called a
 // "generator function", which you can read about here:
@@ -24,9 +25,9 @@ import { OfflineArticlesActionTypes } from './types'
 function* handleFetch({ payload }: ReturnType<typeof fetchRequest>) {
   try {
     // To call async functions, use redux-saga's `call()`.
-    const res = yield call(getArticles, payload)
+    const res: GetArticlesResponse | ErrorResponse = yield call(getArticles, payload)
 
-    if (res.error) {
+    if ('error' in res) {
       yield put(fetchError(new Error(res.error)))
     } else {
       yield put(fetchSuccess(res))
@@ -42,9 +43,9 @@ function* handleFetch({ payload }: ReturnType<typeof fetchRequest>) {
 
 function* handleSave({ payload }: ReturnType<typeof saveRequest>) {
   try {
-    const res = yield call(saveArticle, { ...payload, isOffline: true })
+    const res: Article | ErrorResponse = yield call(saveArticle, { ...payload, isOffline: true })
 
-    if (res.error) {
+    if ('error' in res) {
       yield put(saveError(new Error(res.error)))
     } else {
       yield put(saveSuccess(res))
@@ -60,9 +61,9 @@ function* handleSave({ payload }: ReturnType<typeof saveRequest>) {
 
 function* handleRemove({ payload }: ReturnType<typeof removeRequest>) {
   try {
-    const res = yield call(removeArticle, payload)
+    const res: Article | ErrorResponse = yield call(removeArticle, payload)
 
-    if (res.error) {
+    if ('error' in res) {
       yield put(removeError(new Error(res.error)))
     } else {
       yield put(removeSuccess(res))
@@ -79,9 +80,9 @@ function* handleRemove({ payload }: ReturnType<typeof removeRequest>) {
 function* handleSelect({ payload }: ReturnType<typeof selectRequest>) {
   try {
     // To call async functions, use redux-saga's `call()`.
-    const res = yield call(getArticle, payload)
+    const res: Article | ErrorResponse = yield call(getArticle, payload)
 
-    if (res.error) {
+    if ('error' in res) {
       yield put(selectError(new Error(res.error)))
     } else {
       yield put(selectSuccess(res))

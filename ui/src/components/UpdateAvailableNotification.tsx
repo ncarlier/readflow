@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import CSSTransition from 'react-transition-group/CSSTransition'
 
 import { AppState } from '../appStore'
 import { connectApp } from '../containers/AppContainer'
@@ -14,13 +14,11 @@ const reload = async (registration: ServiceWorkerRegistration | null) => {
 }
 
 const UpdateAvailableNotification = ({ updateAvailable, registration }: AppState) => (
-  <ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-    {updateAvailable && (
-      <Notification message="A new version is available" variant="warning">
-        <button onClick={() => reload(registration)}>reload</button>
-      </Notification>
-    )}
-  </ReactCSSTransitionGroup>
+  <CSSTransition in={updateAvailable} classNames="fade" timeout={500} unmountOnExit>
+    <Notification message="A new version is available" variant="warning">
+      <button onClick={() => reload(registration)}>reload</button>
+    </Notification>
+  </CSSTransition>
 )
 
 export default connectApp(UpdateAvailableNotification)

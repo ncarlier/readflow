@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { History } from 'history'
 import React, { FormEvent, useCallback, useContext, useState } from 'react'
 import { useMutation } from '@apollo/client'

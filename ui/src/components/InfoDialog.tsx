@@ -18,7 +18,6 @@ export default ({ title, children, onOk }: Props) => (
     shouldCloseOnEsc
     shouldCloseOnOverlayClick
     shouldFocusAfterRender
-    appElement={document.getElementById('root')!}
     onRequestClose={onOk}
     className={styles.dialog}
     overlayClassName={styles.overlay}

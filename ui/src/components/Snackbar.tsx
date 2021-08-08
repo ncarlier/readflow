@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import CSSTransition from 'react-transition-group/CSSTransition'
 
 import { MessageContext } from '../context/MessageContext'
 import Notification from './Notification'
@@ -23,12 +23,10 @@ export default ({ ttl = 5000 }: Props) => {
   }, [ttl, message, showMessage])
 
   return (
-    <ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-      {message.text && (
-        <Notification message={message.text} variant={message.variant}>
-          <button onClick={() => showMessage('')}>dismiss</button>
-        </Notification>
-      )}
-    </ReactCSSTransitionGroup>
+    <CSSTransition in={!!message.text} className="fade" timeout={500} unmountOnExit>
+      <Notification message={message.text} variant={message.variant}>
+        <button onClick={() => showMessage('')}>dismiss</button>
+      </Notification>
+    </CSSTransition>
   )
 }

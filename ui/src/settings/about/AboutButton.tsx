@@ -49,7 +49,6 @@ export default () => {
       shouldCloseOnEsc
       shouldCloseOnOverlayClick
       shouldFocusAfterRender
-      appElement={document.getElementById('root')!}
       onRequestClose={hideAboutModal}
       className={dialogStyles.dialog}
       overlayClassName={dialogStyles.overlay}

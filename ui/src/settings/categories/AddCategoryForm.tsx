@@ -22,7 +22,7 @@ interface AddCategoryFormFields {
   rule: string
 }
 
-type AllProps = RouteComponentProps<{}>
+type AllProps = RouteComponentProps
 
 export default ({ history }: AllProps) => {
   usePageTitle('Settings - Add new category')
