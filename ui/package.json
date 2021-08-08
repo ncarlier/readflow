@@ -38,8 +38,8 @@
     "typesafe-actions": "^5.1.0"
   },
   "scripts": {
-    "start": "react-scripts start && cra-append-sw --mode dev ./public/custom-sw.js",
-    "build": "npm run lint && react-scripts build && cra-append-sw ./public/custom-sw.js",
+    "start": "react-scripts start",
+    "build": "npm run lint && react-scripts build",
     "test": "react-scripts test",
     "lint": "eslint './src/**/*.{ts,tsx}'"
   },
@@ -56,7 +56,6 @@
     "@types/react": "^17.0.16",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
-    "cra-append-sw": "^2.7.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-react": "^1.1.7",
     "eslint-plugin-cypress": "^2.11.3",
