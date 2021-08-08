@@ -1,0 +1,33 @@
+  
+.drawer {
+  position: absolute !important;
+  width: 100% !important;
+  max-height: 100%;
+  padding: 0 !important;
+  background: var(--panel-body-color) !important;
+}
+
+.drawer__backdrop {
+  position: absolute !important;
+}
+
+.drawer__handle-wrapper {}
+
+.drawer__handle {}
+
+.drawer__content {}
+
+.drawer ul {
+  padding: 0;
+  list-style: none;
+  line-height: 2rem;
+}
+
+.drawer ul > li:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.drawer ul > li > a {
+  display: flex;
+  padding: 0 1em;
+} 

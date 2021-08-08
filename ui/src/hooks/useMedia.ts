@@ -9,8 +9,8 @@ export default (query: string) => {
       setMatches(media.matches)
     }
     const listener = () => setMatches(media.matches)
-    media.addListener(listener)
-    return () => media.removeListener(listener)
+    media.addEventListener('change', listener)
+    return () => media.removeEventListener('change', listener)
   }, [matches, query])
 
   return matches

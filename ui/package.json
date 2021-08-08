@@ -21,6 +21,7 @@
     "mousetrap": "^1.6.5",
     "oidc-client": "^1.11.5",
     "react": "^17.0.2",
+    "react-bottom-drawer": "^0.1.1",
     "react-dom": "^17.0.2",
     "react-ink": "^6.5.1",
     "react-modal": "^3.14.3",

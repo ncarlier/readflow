@@ -1,7 +1,7 @@
 .stars {
   list-style: none;
   padding: 0;
-  display: flex;
+  display: inline-flex;
 }
 
 .stars > li:first-child > button {

@@ -1,5 +1,7 @@
  
 .card {
+  position: relative;
+  overflow: hidden;
   width: inherit;
   max-width: 60rem;
   margin: auto;

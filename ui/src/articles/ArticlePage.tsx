@@ -67,7 +67,7 @@ export default ({ title, match, history }: AllProps) => {
       subtitle={data && data.article ? data.article.title : ''}
       actions={<ButtonIcon onClick={goBack} icon="arrow_back" title="back to the list" />}
     >
-      <Panel style={{ flex: '1 1 auto' }}>{render(loading, data, error)}</Panel>
+      <Panel style={{ flex: '1 1 auto', overflow: 'hidden' }}>{render(loading, data, error)}</Panel>
     </Page>
   )
 }

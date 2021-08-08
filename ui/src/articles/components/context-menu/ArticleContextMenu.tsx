@@ -1,38 +1,37 @@
 import React from 'react'
 
-import DropdownMenu, { DropDownOrigin } from '../../../components/DropdownMenu'
 import { Article } from '../../models'
 import OfflineLink from './OfflineLink'
 import ShareLink from './ShareLink'
 import DownloadAsLink from './DownloadAsLink'
 import OutgoingWebhooksMenuItems from './OutgoingWebhooksMenuItems'
+import DrawerMenu from '../../../components/DrawerMenu'
 
 interface Props {
   article: Article
   keyboard?: boolean
-  origin?: DropDownOrigin
 }
 
 export default (props: Props) => {
-  const { origin, ...attrs } = props
   const nvg: any = window.navigator
+  const title = 'More actions...'
 
   return (
-    <DropdownMenu origin={origin} title="More actions...">
+    <DrawerMenu title={title}>
       <ul>
         {nvg.share && (
           <li>
-            <ShareLink {...attrs} />
+            <ShareLink {...props} />
           </li>
         )}
         <li>
-          <DownloadAsLink {...attrs} />
+          <DownloadAsLink {...props} />
         </li>
         <li>
-          <OfflineLink {...attrs} />
+          <OfflineLink {...props} />
         </li>
-        <OutgoingWebhooksMenuItems {...attrs} />
+        <OutgoingWebhooksMenuItems {...props} />
       </ul>
-    </DropdownMenu>
+    </DrawerMenu>
   )
 }
