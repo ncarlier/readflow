@@ -1,10 +1,12 @@
-package service
+package html
 
 import (
 	"bytes"
 	"context"
 	"text/template"
 
+	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/converter"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
@@ -23,14 +25,23 @@ var articleAsHTMLTpl = template.Must(template.New("article-as-html").Parse(`
 </html>
 `))
 
-func (reg *Registry) downloadArticleAsHTML(ctx context.Context, article *model.Article, offline bool) ([]byte, error) {
+// HTMLConverter convert an article to HTML format
+type HTMLConverter struct{}
+
+// Convert an article to HTML format
+func (conv *HTMLConverter) Convert(ctx context.Context, article *model.Article) (*model.FileAsset, error) {
 	var buffer bytes.Buffer
 	if err := articleAsHTMLTpl.Execute(&buffer, article); err != nil {
 		return nil, err
 	}
-	if !offline {
-		return buffer.Bytes(), nil
-	}
+	return &model.FileAsset{
+		Data:        buffer.Bytes(),
+		ContentType: constant.ContentTypeHTML,
+		Name:        article.Title + ".html",
+	}, nil
+}
 
-	return reg.webArchiver.Archive(ctx, &buffer, *article.URL)
+func init() {
+	converter.Register("html", &HTMLConverter{})
+	converter.Register("offline", &HTMLConverter{})
 }

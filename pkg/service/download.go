@@ -1,17 +1,19 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"errors"
 
-	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/converter"
+	_ "github.com/ncarlier/readflow/pkg/converter/all"
 	"github.com/ncarlier/readflow/pkg/helper"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 // DownloadArticle get artice as a binary file
-func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format string) ([]byte, string, error) {
+func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format string) (*model.FileAsset, error) {
 	uid := getCurrentUserIDFromContext(ctx)
-	contentType := getFormatContentType(format)
 
 	logger := reg.logger.With().Uint(
 		"uid", uid,
@@ -21,43 +23,51 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		"format", format,
 	).Logger()
 
+	conv, err := converter.GetArticleConverter(format)
+	if err != nil {
+		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
+		return nil, err
+	}
+
 	article, err := reg.db.GetArticleByID(idArticle)
 	if err != nil || article == nil || article.UserID != uid {
 		if err == nil {
 			err = errors.New("article not found")
 		}
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
-		return nil, contentType, err
+		return nil, err
 	}
 
 	if article.HTML == nil || article.URL == nil {
 		err := errors.New("missing require attributes")
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
-		return nil, contentType, err
+		return nil, err
 	}
 	logger.Debug().Msg("preparing article download artifact")
 
 	key := helper.Hash(format, article.Hash)
-	data, err := reg.downloadCache.Get(key)
+	result, err := reg.downloadCache.Get(key)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
 	}
-	if data != nil {
+	if result != nil {
 		reg.logger.Debug().Uint("uid", uid).Uint("id", idArticle).Msg("returns article download artefact from cache")
-		return data, contentType, nil
+		return result, nil
 	}
 
-	var result []byte
-	switch format {
-	case "offline":
-		result, err = reg.downloadArticleAsHTML(ctx, article, true)
-	default:
-		result, err = reg.downloadArticleAsHTML(ctx, article, false)
-	}
-
+	result, err = conv.Convert(ctx, article)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
-		return nil, contentType, err
+		return result, err
+	}
+	if format == "offline" {
+		r := bytes.NewReader(result.Data)
+		data, err := reg.webArchiver.Archive(ctx, r, *article.URL)
+		if err != nil {
+			logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
+			return nil, err
+		}
+		result.Data = data
 	}
 
 	if err := reg.downloadCache.Put(key, result); err != nil {
@@ -66,13 +76,5 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 
 	reg.logger.Info().Uint("uid", uid).Uint("id", idArticle).Msg("article download artifact created")
 
-	return result, contentType, nil
-}
-
-func getFormatContentType(format string) string {
-	switch format {
-	case "makdown":
-		return constant.ContentTypeText
-	}
-	return constant.ContentTypeHTML
+	return result, nil
 }

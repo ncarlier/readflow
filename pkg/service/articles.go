@@ -61,12 +61,7 @@ func (reg *Registry) GetArticle(ctx context.Context, id uint) (*model.Article, e
 func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdateForm) (*model.Article, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
-	article, err := reg.GetArticle(ctx, form.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	article, err = reg.db.UpdateArticleForUser(uid, form)
+	article, err := reg.db.UpdateArticleForUser(uid, form)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,

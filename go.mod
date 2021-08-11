@@ -17,6 +17,7 @@ require (
 	github.com/graphql-go/handler v0.2.3
 	github.com/lib/pq v1.9.0
 	github.com/microcosm-cc/bluemonday v1.0.4
+	github.com/minio/minio-go/v7 v7.0.12
 	github.com/prometheus/client_golang v1.9.0
 	github.com/rs/zerolog v1.20.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e

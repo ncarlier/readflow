@@ -19,6 +19,7 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/cache"
 	"github.com/ncarlier/readflow/pkg/helper"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 var errSkippedURL = errors.New("skip processing url")
@@ -92,51 +93,49 @@ func (arc *WebArchiver) processURLAttribute(ctx context.Context, node *html.Node
 	}
 
 	url := dom.GetAttribute(node, attrName)
-	content, contentType, err := arc.processURL(ctx, url, baseURL.String())
+	asset, err := arc.processURL(ctx, url, baseURL.String())
 	if err != nil && err != errSkippedURL {
 		return err
 	}
 
 	newURL := url
 	if err == nil {
-		newURL = createDataURL(content, contentType)
+		// TODO convert images to webp format
+		newURL = asset.ToDataURL()
 	}
 
 	dom.SetAttribute(node, attrName, newURL)
 	return nil
 }
 
-func (arc *WebArchiver) processURL(ctx context.Context, url string, parentURL string) ([]byte, string, error) {
+func (arc *WebArchiver) processURL(ctx context.Context, url string, parentURL string) (*model.FileAsset, error) {
 	// Ignore special URLs
 	url = strings.TrimSpace(url)
 	if url == "" || strings.HasPrefix(url, "data:") || strings.HasPrefix(url, "#") {
-		return nil, "", errSkippedURL
+		return nil, errSkippedURL
 	}
 	// Validate URL
 	parsedURL, err := nurl.ParseRequestURI(url)
 	if err != nil || parsedURL.Scheme == "" || parsedURL.Hostname() == "" {
-		return nil, "", errSkippedURL
+		return nil, errSkippedURL
 	}
 
 	// Get the asset from cache
 	hurl := helper.Hash(url)
-	b, _ := arc.cache.Get(hurl)
-	if b != nil {
-		asset, _ := DecodeWebAsset(b)
-		if asset != nil {
-			return asset.Data, asset.ContentType, nil
-		}
+	asset, _ := arc.cache.Get(hurl)
+	if asset != nil {
+		return asset, nil
 	}
 
 	// Download the asset, use semaphore to limit concurrent downloads
 	err = arc.dlSemaphore.Acquire(ctx, 1)
 	if err != nil {
-		return nil, "", nil
+		return nil, err
 	}
 	resp, err := arc.downloadFile(url, parentURL)
 	arc.dlSemaphore.Release(1)
 	if err != nil {
-		return nil, "", errSkippedURL
+		return nil, errSkippedURL
 	}
 	defer resp.Body.Close()
 
@@ -150,18 +149,18 @@ func (arc *WebArchiver) processURL(ctx context.Context, url string, parentURL st
 	// Get response body
 	bodyContent, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
 	// Put asset into the cache
-	asset := WebAsset{
+	asset = &model.FileAsset{
 		Data:        bodyContent,
 		ContentType: contentType,
+		Name:        url,
 	}
-	b, _ = asset.Encode()
-	if b != nil {
-		arc.cache.Put(hurl, b)
+	if err := arc.cache.Put(hurl, asset); err != nil {
+		return nil, err
 	}
 
-	return bodyContent, contentType, nil
+	return asset, nil
 }

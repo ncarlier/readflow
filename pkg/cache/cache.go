@@ -6,6 +6,7 @@ import (
 	"os"
 
 	boltcache "github.com/ncarlier/readflow/pkg/cache/bolt"
+	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/rs/zerolog/log"
 )
 
@@ -14,8 +15,8 @@ const DefaultCacheSize = 100
 
 // Cache interface
 type Cache interface {
-	Put(key string, data []byte) error
-	Get(key string) ([]byte, error)
+	Put(key string, data *model.FileAsset) error
+	Get(key string) (*model.FileAsset, error)
 	Close() error
 }
 
@@ -43,6 +44,8 @@ func New(conn string, size int) (Cache, error) {
 
 // NewDefault return default cache
 func NewDefault() (Cache, error) {
-	conn := "boltdb://" + os.TempDir() + string(os.PathSeparator) + "readflow.cache"
+	cacheFileName := os.TempDir() + string(os.PathSeparator) + "readflow.cache"
+	os.Remove(cacheFileName)
+	conn := "boltdb://" + cacheFileName
 	return New(conn, DefaultCacheSize)
 }
