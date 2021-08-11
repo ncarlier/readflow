@@ -20,6 +20,7 @@ import { CreateOrUpdateOutgoingWebhook } from './queries'
 import WallabagConfigForm from './providers/WallabagConfigForm'
 import GenericConfigForm from './providers/GenericConfigForm'
 import PocketConfigForm from './providers/PocketConfigForm'
+import S3ConfigForm from './providers/S3ConfigForm'
 
 interface AddOutgoingWebhookFormFields {
   alias: string
@@ -108,11 +109,13 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
             <option value="keeper">Keeper</option>
             <option value="wallabag">Wallabag</option>
             <option value="pocket">Pocket</option>
+            <option value="s3">S3</option>
           </FormSelectField>
           {formState.values.provider === 'generic' && <GenericConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 'pocket' && <PocketConfigForm onChange={setConfig} config={config} />}
+          {formState.values.provider === 's3' && <S3ConfigForm onChange={setConfig} config={config} />}
           <FormCheckboxField label="To use by default" {...checkbox('isDefault')} />
         </form>
       </section>

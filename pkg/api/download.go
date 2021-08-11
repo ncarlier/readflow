@@ -29,15 +29,16 @@ func download() http.Handler {
 		}
 
 		// Archive the article
-		data, contentType, err := service.Lookup().DownloadArticle(r.Context(), idArticle, format)
+		asset, err := service.Lookup().DownloadArticle(r.Context(), idArticle, format)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		// Write response
-		w.Header().Set("Content-Type", contentType)
+		w.Header().Set("Content-Type", asset.ContentType)
+		w.Header().Set("Content-Disposition", "inline; filename=\""+asset.Name+"\"")
 		w.WriteHeader(http.StatusOK)
-		w.Write(data)
+		w.Write(asset.Data)
 	})
 }

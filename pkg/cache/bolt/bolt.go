@@ -5,6 +5,7 @@ import (
 	"errors"
 	"sync"
 
+	"github.com/ncarlier/readflow/pkg/model"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -56,13 +57,14 @@ func New(size int, path string) (*BoltLRUCache, error) {
 }
 
 // Get item from cache
-func (c *BoltLRUCache) Get(key string) (value []byte, err error) {
+func (c *BoltLRUCache) Get(key string) (asset *model.FileAsset, err error) {
 	err = c.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucketName)
-		value = b.Get([]byte(key))
-		return nil
+		data := b.Get([]byte(key))
+		asset, err = model.DecodeFileAsset(data)
+		return err
 	})
-	if value != nil {
+	if asset != nil {
 		c.lock.Lock()
 		if item, ok := c.items[key]; ok {
 			c.evictionList.MoveToFront(item)
@@ -73,10 +75,14 @@ func (c *BoltLRUCache) Get(key string) (value []byte, err error) {
 }
 
 // Put item into the cache
-func (c *BoltLRUCache) Put(key string, data []byte) error {
+func (c *BoltLRUCache) Put(key string, asset *model.FileAsset) error {
 	return c.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucketName)
-		err := b.Put([]byte(key), data)
+		data, err := asset.Encode()
+		if err != nil {
+			return err
+		}
+		err = b.Put([]byte(key), data)
 		if err != nil {
 			return err
 		}

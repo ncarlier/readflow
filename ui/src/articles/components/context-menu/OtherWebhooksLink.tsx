@@ -15,7 +15,7 @@ const OtherWebhooksLink = ({ webhooks, sendArticle }: Props) => {
   const showOverlay = () => setIsVisible(true)
   const hideOverlay = () => setIsVisible(false)
 
-  if (webhooks.length > 1) {
+  if (webhooks.length > 0) {
     return (
       <>
         <LinkIcon title="Send article to ..." icon="backup" onClick={showOverlay}>
