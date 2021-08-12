@@ -15,7 +15,7 @@ const contactForm = async (req, res) => {
   const { subject, from, body, name } = req.body
 
   if (name) {
-    return res.redirect('/result?variant=contact-success&honey')
+    return res.redirect(302, '/result?variant=contact-success&honey')
   }
 
   const { valid, reason, validators } = await validate({
@@ -29,7 +29,7 @@ const contactForm = async (req, res) => {
   if (!valid) {
     const message = validators[reason].reason
     console.error('❌ unable to send contact form: invalid email', message)
-    return res.redirect(`/result?variant=contact-error&reason=${message}`)
+    return res.redirect(302, `/result?variant=contact-error&reason=${message}`)
   }
 
   const url = new URL(sendmail_url)
@@ -45,12 +45,12 @@ const contactForm = async (req, res) => {
 
   if (resp.error) {
     console.error('❌ unable to send contact form', resp.error)
-    return res.redirect(`/result?variant=contact-error&reason=${resp.error}`)
+    return res.redirect(302, `/result?variant=contact-error&reason=${resp.error}`)
   }
 
   console.info('contact form sent', from, subject, resp.headers.get('x-hook-id'))
 
-  res.redirect('/result?variant=contact-success')
+  res.redirect(302, '/result?variant=contact-success')
 }
 
 export default contactForm
