@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 
 import Button from '../../../components/Button'
 import Loader from '../../../components/Loader'
-import { MessageContext } from '../../../context/MessageContext'
+import { MessageContext } from '../../../contexts/MessageContext'
 import fetchAPI from '../../../helpers/fetchAPI'
 
 const sessionStoragePrefix = 'readflow.accountLinker'

@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client'
 
 import Icon from '../../components/Icon'
 import SwipeableListItem from '../../components/SwipeableListItem'
-import { MessageContext } from '../../context/MessageContext'
+import { MessageContext } from '../../contexts/MessageContext'
 import { getGQLError } from '../../helpers'
 import { updateCacheAfterUpdate } from '../cache'
 import { Article, ArticleStatus, UpdateArticleRequest, UpdateArticleResponse } from '../models'

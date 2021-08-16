@@ -6,7 +6,7 @@ import ConfirmDialog from '../../../components/ConfirmDialog'
 import Kbd from '../../../components/Kbd'
 import LinkIcon from '../../../components/LinkIcon'
 import { connectOfflineDispatch, IOfflineDispatchProps } from '../../../containers/OfflineContainer'
-import { MessageContext } from '../../../context/MessageContext'
+import { MessageContext } from '../../../contexts/MessageContext'
 import { Article, GetArticleResponse } from '../../models'
 import { GetFullArticle } from '../../queries'
 

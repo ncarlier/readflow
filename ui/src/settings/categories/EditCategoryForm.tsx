@@ -10,7 +10,7 @@ import Button from '../../components/Button'
 import FormInputField from '../../components/FormInputField'
 import FormTextareaField from '../../components/FormTextareaField'
 import HelpLink from '../../components/HelpLink'
-import { MessageContext } from '../../context/MessageContext'
+import { MessageContext } from '../../contexts/MessageContext'
 import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, isValidForm } from '../../helpers'
 

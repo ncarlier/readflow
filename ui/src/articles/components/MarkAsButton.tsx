@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
 
 import ButtonIcon from '../../components/ButtonIcon'
-import { MessageContext } from '../../context/MessageContext'
+import { MessageContext } from '../../contexts/MessageContext'
 import { getGQLError } from '../../helpers'
 import useKeyboard from '../../hooks/useKeyboard'
 import { updateCacheAfterUpdate } from '../cache'

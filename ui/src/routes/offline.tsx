@@ -1,8 +1,8 @@
 import React from 'react'
 import { Route, RouteComponentProps, Switch } from 'react-router-dom'
 
-import OfflineArticlePage from './OfflineArticlePage'
-import OfflineArticlesPage from './OfflineArticlesPage'
+import OfflineArticlePage from '../offline/OfflineArticlePage'
+import OfflineArticlesPage from '../offline/OfflineArticlesPage'
 
 export default ({ match }: RouteComponentProps) => (
   <Switch>

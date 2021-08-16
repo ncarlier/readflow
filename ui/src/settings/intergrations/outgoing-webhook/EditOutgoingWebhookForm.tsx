@@ -8,7 +8,7 @@ import Button from '../../../components/Button'
 import FormCheckboxField from '../../../components/FormCheckboxField'
 import FormInputField from '../../../components/FormInputField'
 import FormSelectField from '../../../components/FormSelectField'
-import { MessageContext } from '../../../context/MessageContext'
+import { MessageContext } from '../../../contexts/MessageContext'
 import ErrorPanel from '../../../error/ErrorPanel'
 import { getGQLError, isValidForm } from '../../../helpers'
 import {

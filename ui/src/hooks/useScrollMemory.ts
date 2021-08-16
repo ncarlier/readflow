@@ -1,6 +1,6 @@
 import { RefObject, useContext, useEffect, useLayoutEffect } from 'react'
 
-import { ScrollMemoryContext, setScrollPosition } from '../context/ScrollMemoryContext'
+import { ScrollMemoryContext, setScrollPosition } from '../contexts/ScrollMemoryContext'
 
 export default (ref: RefObject<HTMLDivElement>) => {
   const scrollPosition = useContext(ScrollMemoryContext)

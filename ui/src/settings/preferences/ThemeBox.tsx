@@ -3,7 +3,7 @@ import { useFormState } from 'react-use-form-state'
 
 import Box from '../../components/Box'
 import FormSelectField from '../../components/FormSelectField'
-import { LocalConfigurationContext, Theme } from '../../context/LocalConfigurationContext'
+import { LocalConfigurationContext, Theme } from '../../contexts/LocalConfigurationContext'
 
 interface SwitchThemeFormFields {
   theme: Theme

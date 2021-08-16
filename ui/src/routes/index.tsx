@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
-import CategoryRoutes from './categories/Routes'
-import ErrorPage from './error/ErrorPage'
-import GraphiQLPage from './graphiql/GraphiQLPage'
-import HistoryRoutes from './history/Routes'
-import OfflineRoutes from './offline/Routes'
-import SettingsPage from './settings/SettingsPage'
-import StarredRoutes from './starred/Routes'
-import UnreadRoutes from './unread/Routes'
+import CategoryRoutes from './categories'
+import ErrorPage from '../error/ErrorPage'
+import GraphiQLPage from '../graphiql/GraphiQLPage'
+import HistoryRoutes from './history'
+import OfflineRoutes from './offline'
+import SettingsPage from '../settings/SettingsPage'
+import StarredRoutes from './starred'
+import UnreadRoutes from './unread'
 
 const Routes = () => (
   <Switch>

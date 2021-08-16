@@ -4,7 +4,7 @@ import { useModal } from 'react-modal-hook'
 import ConfirmDialog from '../../../components/ConfirmDialog'
 import ButtonIcon from '../../../components/ButtonIcon'
 import fetchAPI from '../../../helpers/fetchAPI'
-import { MessageContext } from '../../../context/MessageContext'
+import { MessageContext } from '../../../contexts/MessageContext'
 import Loader from '../../../components/Loader'
 
 interface Props {
