@@ -1,5 +1,5 @@
 import { useEffect, useContext } from 'react'
-import { LocalConfigurationContext, Theme } from '../context/LocalConfigurationContext'
+import { LocalConfigurationContext, Theme } from '../contexts/LocalConfigurationContext'
 
 const getMql = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react'
 
 import LinkIcon from '../../../components/LinkIcon'
-import { MessageContext } from '../../../context/MessageContext'
+import { MessageContext } from '../../../contexts/MessageContext'
 import fetchAPI from '../../../helpers/fetchAPI'
 import { Article } from '../../models'
 import DownloadPanel from './DownloadPanel'

@@ -1,7 +1,7 @@
 import React, { ReactNode, useContext } from 'react'
 
 import ButtonIcon from '../components/ButtonIcon'
-import { NavbarContext } from '../context/NavbarContext'
+import { NavbarContext } from '../contexts/NavbarContext'
 import styles from './Appbar.module.css'
 
 interface Props {

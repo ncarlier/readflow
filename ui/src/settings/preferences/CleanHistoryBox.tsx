@@ -7,7 +7,7 @@ import { Category } from '../../categories/models'
 import Box from '../../components/Box'
 import Button from '../../components/Button'
 import ConfirmDialog from '../../components/ConfirmDialog'
-import { MessageContext } from '../../context/MessageContext'
+import { MessageContext } from '../../contexts/MessageContext'
 import { getGQLError } from '../../helpers'
 
 const CleanHistory = gql`

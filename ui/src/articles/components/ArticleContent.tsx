@@ -2,7 +2,7 @@
 import mousetrap from 'mousetrap'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import { LocalConfigurationContext } from '../../context/LocalConfigurationContext'
+import { LocalConfigurationContext } from '../../contexts/LocalConfigurationContext'
 import { Article } from '../models'
 import styles from './ArticleContent.module.css'
 import readable from './readable'

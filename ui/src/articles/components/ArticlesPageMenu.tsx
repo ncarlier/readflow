@@ -15,8 +15,8 @@ import {
   LocalConfigurationContext,
   SortBy,
   SortOrder,
-} from '../../context/LocalConfigurationContext'
-import { MessageContext } from '../../context/MessageContext'
+} from '../../contexts/LocalConfigurationContext'
+import { MessageContext } from '../../contexts/MessageContext'
 import { getGQLError } from '../../helpers'
 import { GetArticlesRequest, MarkAllArticlesAsReadRequest, MarkAllArticlesAsReadResponse } from '../models'
 import { MarkAllArticlesAsRead } from '../queries'

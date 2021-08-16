@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { Link, useRouteMatch } from 'react-router-dom'
 
 import Button from '../../../components/Button'
-import { MessageContext } from '../../../context/MessageContext'
+import { MessageContext } from '../../../contexts/MessageContext'
 import ErrorPanel from '../../../error/ErrorPanel'
 import Logo from '../../../logos/Logo'
 import DeleteOutgoingWebhooksButton from './DeleteOutgoingWebhookButton'

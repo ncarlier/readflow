@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import CSSTransition from 'react-transition-group/CSSTransition'
 
-import { MessageContext } from '../context/MessageContext'
+import { MessageContext } from '../contexts/MessageContext'
 import Notification from './Notification'
 
 interface Props {

@@ -8,7 +8,7 @@ import { GetOutgoingWebhooks } from '../../../settings/intergrations/outgoing-we
 import { Article } from '../../models'
 import DefaultWebhookLink from './DefaultWebhookLink'
 import OtherWebhooksLink from './OtherWebhooksLink'
-import { MessageContext } from '../../../context/MessageContext'
+import { MessageContext } from '../../../contexts/MessageContext'
 import { SendArticleToOutgoingWebhook } from '../../queries'
 
 interface SendArticleFields {
