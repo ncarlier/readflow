@@ -19,11 +19,11 @@ func Cors(allowOrigin string) Middleware {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+			w.Header().Set("Access-Control-Expose-Headers", "*")
 
 			if r.Method != "OPTIONS" {
 				next.ServeHTTP(w, r)
 			}
-			return
 		})
 	}
 }
