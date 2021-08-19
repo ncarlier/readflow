@@ -4,13 +4,15 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"net/url"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 
 	"github.com/ncarlier/readflow/pkg/config"
-	"github.com/ncarlier/readflow/pkg/converter"
+	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	"github.com/ncarlier/readflow/pkg/model"
 )
@@ -27,20 +29,13 @@ type ProviderConfig struct {
 
 // Provider is the structure definition of a S3 outbound service
 type Provider struct {
-	config    ProviderConfig
-	client    *minio.Client
-	converter converter.ArticleConverter
+	config ProviderConfig
+	client *minio.Client
 }
 
 func newS3Provider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
 	config := ProviderConfig{}
 	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
-		return nil, err
-	}
-
-	// Get article converter
-	conv, err := converter.GetArticleConverter(config.Format)
-	if err != nil {
 		return nil, err
 	}
 
@@ -60,9 +55,8 @@ func newS3Provider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provi
 	}
 
 	provider := &Provider{
-		config:    config,
-		client:    client,
-		converter: conv,
+		config: config,
+		client: client,
 	}
 
 	return provider, nil
@@ -70,7 +64,20 @@ func newS3Provider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provi
 
 // Send article to Webhook endpoint.
 func (s3p *Provider) Send(ctx context.Context, article model.Article) error {
-	asset, err := s3p.converter.Convert(ctx, &article)
+	// Get download from context
+	// /!\ this is a ugly hack required to simplify service coupling
+	ctxValue := ctx.Value(constant.ContextDownloader)
+	if ctxValue == nil {
+		return errors.New("downloader not found inside the context")
+	}
+	downloader := ctxValue.(exporter.Downloader)
+
+	// Get article exporter
+	exp, err := exporter.NewArticleExporter(s3p.config.Format, downloader)
+	if err != nil {
+		return err
+	}
+	asset, err := exp.Export(ctx, &article)
 	if err != nil {
 		return err
 	}

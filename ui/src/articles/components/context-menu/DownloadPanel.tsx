@@ -5,7 +5,7 @@ import Loader from '../../../components/Loader'
 
 const formats = [
   { value: 'html', label: 'HTML page', icon: 'code' },
-  { value: 'offline', label: 'HTML page with images', icon: 'image' },
+  { value: 'html-single', label: 'HTML page with images', icon: 'image' },
 ]
 
 interface Props {

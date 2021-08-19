@@ -6,7 +6,7 @@ import (
 	"text/template"
 
 	"github.com/ncarlier/readflow/pkg/constant"
-	"github.com/ncarlier/readflow/pkg/converter"
+	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
@@ -25,11 +25,15 @@ var articleAsHTMLTpl = template.Must(template.New("article-as-html").Parse(`
 </html>
 `))
 
-// HTMLConverter convert an article to HTML format
-type HTMLConverter struct{}
+// HTMLExporter convert an article to HTML format
+type HTMLExporter struct{}
 
-// Convert an article to HTML format
-func (conv *HTMLConverter) Convert(ctx context.Context, article *model.Article) (*model.FileAsset, error) {
+func newHTMLExporter(downloader exporter.Downloader) (exporter.ArticleExporter, error) {
+	return &HTMLExporter{}, nil
+}
+
+// Export an article to HTML format
+func (exp *HTMLExporter) Export(ctx context.Context, article *model.Article) (*model.FileAsset, error) {
 	var buffer bytes.Buffer
 	if err := articleAsHTMLTpl.Execute(&buffer, article); err != nil {
 		return nil, err
@@ -42,6 +46,5 @@ func (conv *HTMLConverter) Convert(ctx context.Context, article *model.Article) 
 }
 
 func init() {
-	converter.Register("html", &HTMLConverter{})
-	converter.Register("offline", &HTMLConverter{})
+	exporter.Register("html", newHTMLExporter)
 }

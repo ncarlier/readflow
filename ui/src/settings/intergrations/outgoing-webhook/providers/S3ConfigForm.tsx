@@ -23,7 +23,10 @@ const defaultConfig = {
   format: 'html',
 }
 
-const formats: Map<string, string> = new Map([['HTML', 'html']])
+const formats: Map<string, string> = new Map([
+  ['HTML', 'html'],
+  ['HTML with images', 'html-single'],
+])
 
 const Formats = () => (
   <>
