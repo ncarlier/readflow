@@ -11,7 +11,7 @@ import (
 )
 
 // DefaultCacheSize is the maximum number of items
-const DefaultCacheSize = 100
+const DefaultCacheSize = 256
 
 // Cache interface
 type Cache interface {

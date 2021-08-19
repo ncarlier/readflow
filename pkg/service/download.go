@@ -1,12 +1,10 @@
 package service
 
 import (
-	"bytes"
 	"context"
 	"errors"
 
-	"github.com/ncarlier/readflow/pkg/converter"
-	_ "github.com/ncarlier/readflow/pkg/converter/all"
+	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 )
@@ -23,7 +21,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		"format", format,
 	).Logger()
 
-	conv, err := converter.GetArticleConverter(format)
+	conv, err := exporter.NewArticleExporter(format, reg.downloader)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
 		return nil, err
@@ -55,20 +53,13 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		return result, nil
 	}
 
-	result, err = conv.Convert(ctx, article)
+	result, err = conv.Export(ctx, article)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
 		return result, err
 	}
-	if format == "offline" {
-		r := bytes.NewReader(result.Data)
-		data, err := reg.webArchiver.Archive(ctx, r, *article.URL)
-		if err != nil {
-			logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
-			return nil, err
-		}
-		result.Data = data
-	}
+
+	// TODO compute user quota
 
 	if err := reg.downloadCache.Put(key, result); err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())

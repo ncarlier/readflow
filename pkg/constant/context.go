@@ -11,4 +11,6 @@ const (
 	ContextIncomingWebhookAlias
 	// ContextIsAdmin is true when the user is an admin
 	ContextIsAdmin
+	// ContextDownloader is the key used to store downloader service (uggly hack)
+	ContextDownloader
 )

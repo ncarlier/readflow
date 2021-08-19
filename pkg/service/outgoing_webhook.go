@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ncarlier/readflow/pkg/constant"
 	webhookProvider "github.com/ncarlier/readflow/pkg/integration/webhook"
+
 	// import all outgoing webhook providers
 	_ "github.com/ncarlier/readflow/pkg/integration/webhook/all"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -177,7 +179,10 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 	}
 
 	logger.Debug().Msg("sending article...")
-	err = provider.Send(ctx, *article)
+	// HACK: put downloader inside the context
+	// This is needed by some providers (S3 for instance)
+	providerContext := context.WithValue(ctx, constant.ContextDownloader, reg.downloader)
+	err = provider.Send(providerContext, *article)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
 		return err
