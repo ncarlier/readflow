@@ -29,7 +29,7 @@ func TestDownloadArticle(t *testing.T) {
 	assert.NotNil(t, art.Image)
 	assert.True(t, strings.HasPrefix(*art.Image, "https://repository-images.githubusercontent.com"), "unexpected image URL")
 	// Download article
-	asset, err := service.Lookup().DownloadArticle(testContext, art.ID, "offline")
+	asset, err := service.Lookup().DownloadArticle(testContext, art.ID, "html-single")
 	assert.Nil(t, err)
 	assert.Equal(t, "text/html; charset=utf-8", asset.ContentType)
 	assert.NotNil(t, asset.Data)
