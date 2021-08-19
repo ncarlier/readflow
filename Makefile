@@ -66,6 +66,13 @@ test:
 	go test ./...
 .PHONY: test
 
+## Run test coverage
+test-cov:
+	echo ">>> Running test coverage..."
+	go test -coverprofile=release/coverage.out ./...
+	go tool cover -html=release/coverage.out -o release/coverage.html
+.PHONY: test-cov
+
 ## Install executable
 install: release/$(EXECUTABLE)
 	echo ">>> Installing $(EXECUTABLE) to ${HOME}/.local/bin/$(EXECUTABLE) ..."
