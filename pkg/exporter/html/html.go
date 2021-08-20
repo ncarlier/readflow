@@ -3,6 +3,7 @@ package html
 import (
 	"bytes"
 	"context"
+	"strings"
 	"text/template"
 
 	"github.com/ncarlier/readflow/pkg/constant"
@@ -41,7 +42,7 @@ func (exp *HTMLExporter) Export(ctx context.Context, article *model.Article) (*m
 	return &model.FileAsset{
 		Data:        buffer.Bytes(),
 		ContentType: constant.ContentTypeHTML,
-		Name:        article.Title + ".html",
+		Name:        strings.TrimRight(article.Title, ".") + ".html",
 	}, nil
 }
 

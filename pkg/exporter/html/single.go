@@ -19,19 +19,19 @@ import (
 
 var errSkippedURL = errors.New("skip processing url")
 
-// HTMLOfflineExporter convert an article to HTML offline format
-type HTMLOfflineExporter struct {
+// SingleHTMLExporter convert an article to HTML offline format
+type SingleHTMLExporter struct {
 	downloader exporter.Downloader
 }
 
 func newHTMLOffflineExporter(downloader exporter.Downloader) (exporter.ArticleExporter, error) {
-	return &HTMLOfflineExporter{
+	return &SingleHTMLExporter{
 		downloader: downloader,
 	}, nil
 }
 
 // Export an article to HTML offline format
-func (exp *HTMLOfflineExporter) Export(ctx context.Context, article *model.Article) (*model.FileAsset, error) {
+func (exp *SingleHTMLExporter) Export(ctx context.Context, article *model.Article) (*model.FileAsset, error) {
 	var buffer bytes.Buffer
 	if err := articleAsHTMLTpl.Execute(&buffer, article); err != nil {
 		return nil, err
@@ -45,11 +45,11 @@ func (exp *HTMLOfflineExporter) Export(ctx context.Context, article *model.Artic
 	return &model.FileAsset{
 		Data:        data,
 		ContentType: constant.ContentTypeHTML,
-		Name:        article.Title + ".html",
+		Name:        strings.TrimRight(article.Title, ".") + ".html",
 	}, nil
 }
 
-func (exp *HTMLOfflineExporter) exportWithEmbededAssets(ctx context.Context, input io.Reader, baseURL string) ([]byte, error) {
+func (exp *SingleHTMLExporter) exportWithEmbededAssets(ctx context.Context, input io.Reader, baseURL string) ([]byte, error) {
 	url, err := nurl.ParseRequestURI(baseURL)
 	if err != nil || url.Scheme == "" || url.Hostname() == "" {
 		return nil, fmt.Errorf("url \"%s\" is not valid", baseURL)
@@ -80,7 +80,7 @@ func (exp *HTMLOfflineExporter) exportWithEmbededAssets(ctx context.Context, inp
 	return buffer.Bytes(), err
 }
 
-func (exp *HTMLOfflineExporter) processNode(ctx context.Context, node *html.Node, baseURL *nurl.URL) error {
+func (exp *SingleHTMLExporter) processNode(ctx context.Context, node *html.Node, baseURL *nurl.URL) error {
 	err := exp.processURLAttribute(ctx, node, "src", baseURL)
 	if err != nil {
 		return err
@@ -88,7 +88,7 @@ func (exp *HTMLOfflineExporter) processNode(ctx context.Context, node *html.Node
 	return nil
 }
 
-func (exp *HTMLOfflineExporter) processURLAttribute(ctx context.Context, node *html.Node, attrName string, baseURL *nurl.URL) error {
+func (exp *SingleHTMLExporter) processURLAttribute(ctx context.Context, node *html.Node, attrName string, baseURL *nurl.URL) error {
 	if !dom.HasAttribute(node, attrName) {
 		return nil
 	}
@@ -109,7 +109,7 @@ func (exp *HTMLOfflineExporter) processURLAttribute(ctx context.Context, node *h
 	return nil
 }
 
-func (exp *HTMLOfflineExporter) processURL(ctx context.Context, url string, parentURL string) (*model.FileAsset, error) {
+func (exp *SingleHTMLExporter) processURL(ctx context.Context, url string, parentURL string) (*model.FileAsset, error) {
 	// Ignore special URLs
 	url = strings.TrimSpace(url)
 	if url == "" || strings.HasPrefix(url, "data:") || strings.HasPrefix(url, "#") {

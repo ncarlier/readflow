@@ -21,7 +21,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		"format", format,
 	).Logger()
 
-	conv, err := exporter.NewArticleExporter(format, reg.downloader)
+	exp, err := exporter.NewArticleExporter(format, reg.downloader)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
 		return nil, err
@@ -53,7 +53,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		return result, nil
 	}
 
-	result, err = conv.Export(ctx, article)
+	result, err = exp.Export(ctx, article)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
 		return result, err

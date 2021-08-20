@@ -34,6 +34,8 @@ export default ({ article }: Props) => {
             setIsDownloading(true)
           }
           const contentType = res.headers.get('Content-Type') || 'application/octet-stream'
+          const contentDisposition = res.headers.get('Content-Disposition') || `filename="${article.title}"`
+          const filename = contentDisposition.split('filename=')[1]
           let receivedLength = 0
           const chunks = []
           for (;;) {
@@ -57,7 +59,7 @@ export default ({ article }: Props) => {
           const href = window.URL.createObjectURL(data)
           const link = document.createElement('a')
           link.href = href
-          link.setAttribute('download', `${article.title}.html`)
+          link.setAttribute('download', filename)
           document.body.appendChild(link)
           link.click()
           document.body.removeChild(link)

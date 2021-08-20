@@ -26,6 +26,7 @@ const defaultConfig = {
 const formats: Map<string, string> = new Map([
   ['HTML', 'html'],
   ['HTML with images', 'html-single'],
+  ['ZIP with HTML and images', 'zip'],
 ])
 
 const Formats = () => (

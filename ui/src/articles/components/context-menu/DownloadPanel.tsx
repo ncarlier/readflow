@@ -6,6 +6,7 @@ import Loader from '../../../components/Loader'
 const formats = [
   { value: 'html', label: 'HTML page', icon: 'code' },
   { value: 'html-single', label: 'HTML page with images', icon: 'image' },
+  { value: 'zip', label: 'ZIP archive', icon: 'archive' },
 ]
 
 interface Props {
