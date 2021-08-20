@@ -21,6 +21,7 @@ import WallabagConfigForm from './providers/WallabagConfigForm'
 import GenericConfigForm from './providers/GenericConfigForm'
 import PocketConfigForm from './providers/PocketConfigForm'
 import S3ConfigForm from './providers/S3ConfigForm'
+import OutgoingWebhookHelp from './OutgoingWebhookHelp'
 
 interface AddOutgoingWebhookFormFields {
   alias: string
@@ -100,6 +101,7 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
         <h1>Add new outgoing webhook</h1>
       </header>
       <section>
+        <OutgoingWebhookHelp />
         {errorMessage != null && <ErrorPanel title="Unable to add new outgoing webhook">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
