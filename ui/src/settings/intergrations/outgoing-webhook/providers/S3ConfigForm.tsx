@@ -24,9 +24,10 @@ const defaultConfig = {
 }
 
 const formats: Map<string, string> = new Map([
-  ['HTML', 'html'],
-  ['HTML with images', 'html-single'],
-  ['ZIP with HTML and images', 'zip'],
+  ['HTML file', 'html'],
+  ['Single HTML file with images', 'html-single'],
+  ['ZIP file with HTML and images', 'zip'],
+  ['EPUB file', 'epub'],
 ])
 
 const Formats = () => (

@@ -19,4 +19,6 @@ const (
 	ContentTypeHTML = "text/html; charset=utf-8"
 	// ContentTypeText for text Content-Type
 	ContentTypeText = "text/plain; charset=utf-8"
+	// ContentTypeEpub for EPUB Content-Type
+	ContentTypeEpub = "application/epub+zip"
 )

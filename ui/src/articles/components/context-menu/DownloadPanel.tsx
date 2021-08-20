@@ -4,9 +4,10 @@ import LinkIcon from '../../../components/LinkIcon'
 import Loader from '../../../components/Loader'
 
 const formats = [
-  { value: 'html', label: 'HTML page', icon: 'code' },
-  { value: 'html-single', label: 'HTML page with images', icon: 'image' },
-  { value: 'zip', label: 'ZIP archive', icon: 'archive' },
+  { value: 'html', label: 'HTML file', icon: 'code' },
+  { value: 'html-single', label: 'HTML file with images', icon: 'image' },
+  { value: 'zip', label: 'ZIP file', icon: 'archive' },
+  { value: 'epub', label: 'EPUB file', icon: 'menu_book' },
 ]
 
 interface Props {
