@@ -103,6 +103,7 @@ func (exp *SingleHTMLExporter) processURLAttribute(ctx context.Context, node *ht
 	if err == nil {
 		// TODO convert images to webp format
 		newURL = asset.ToDataURL()
+		dom.SetAttribute(node, "data-"+attrName, url)
 	}
 
 	dom.SetAttribute(node, attrName, newURL)

@@ -13,11 +13,14 @@ const proxifyImageURL = (url: string, width: number) =>
 
 export default ({ src, alt = '' }: Props) => {
   const mobileDisplay = useMedia('(max-width: 767px)')
+  const attrs: any = {}
+  if (src.match(/^https?:\/\//)) {
+    attrs.srcSet = `${proxifyImageURL(src, 320)} 320w, ${proxifyImageURL(src, 767)} 767w`
+  }
   return (
     <img
       src={src}
-      srcSet={`${proxifyImageURL(src, 320)} 320w,
-              ${proxifyImageURL(src, 767)} 767w`}
+      {...attrs}
       sizes={mobileDisplay ? '100vw' : '320px'}
       alt={alt}
       onError={(e) => (e.currentTarget.style.display = 'none')}

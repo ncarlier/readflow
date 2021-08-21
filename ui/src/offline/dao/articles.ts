@@ -1,13 +1,37 @@
 import { Article, GetArticlesRequest, GetArticlesResponse } from '../../articles/models'
+import fetchAPI from '../../helpers/fetchAPI'
 import { db } from '../db'
 
-export const saveArticle = (article: Article) => {
-  return db.transaction('rw', db.articles, async () => {
-    article.isOffline = true
-    const id = await db.articles.put(article)
-    console.log('Article put into offline storage:', id)
-    return article
-  })
+export const getAsDataURL = async (src: string) => {
+  const res = await fetchAPI('/img', { url: encodeURIComponent(src), width: '767w' }, { method: 'GET' })
+  console.log(res)
+  if (res.ok && res.body) {
+    const blob = await res.blob()
+    return window.URL.createObjectURL(blob)
+  }
+  return src
+}
+
+export const saveArticle = async (article: Article) => {
+  // download article content with embendded images
+  const res = await fetchAPI(`/articles/${article.id}`, { f: 'html-single' }, { method: 'GET' })
+  if (res.ok && res.body) {
+    article.html = await res.text()
+  } else {
+    const err = await res.json()
+    throw new Error(err.detail || res.statusText)
+  }
+  // convert illustration to data URL
+  if (article.image) {
+    try {
+      article.image = await getAsDataURL(article.image)
+    } catch (err) {
+      console.error('unable to get illustration', err)
+    }
+  }
+  const id = await db.articles.put(article)
+  console.log('Article put into offline storage:', id)
+  return article
 }
 
 export const removeArticle = (article: Article) => {
@@ -55,7 +79,8 @@ export const getArticles = async (req: GetArticlesRequest) => {
           pageKeys.push(id)
         }
       })
-    result.articles.entries = await Promise.all<Article>(pageKeys.map((id) => table.get(id)))
+    const articles = await table.bulkGet(pageKeys)
+    result.articles.entries = articles.filter((art): art is Article => !!art)
   } else {
     let collection = table.orderBy('id')
     if (!asc) {

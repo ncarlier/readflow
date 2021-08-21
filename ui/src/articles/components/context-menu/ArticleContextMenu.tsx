@@ -15,6 +15,7 @@ interface Props {
 export default (props: Props) => {
   const nvg: any = window.navigator
   const title = 'More actions...'
+  const isOnline = !props.article.isOffline
 
   return (
     <DrawerMenu title={title}>
@@ -30,7 +31,7 @@ export default (props: Props) => {
         <li>
           <OfflineLink {...props} />
         </li>
-        <OutgoingWebhooksMenuItems {...props} />
+        {isOnline && <OutgoingWebhooksMenuItems {...props} />}
       </ul>
     </DrawerMenu>
   )

@@ -22,6 +22,17 @@ export default ({ article }: Props) => {
   const showOverlay = () => setIsVisible(true)
   const hideOverlay = () => setIsVisible(false)
 
+  const downloadOffline = useCallback(async () => {
+    const blob = new Blob([article.html], { type: 'text/html' })
+    const href = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = href
+    link.setAttribute('download', article.title.replace(/\.$/, '') + '.html')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }, [article, showErrorMessage])
+
   const download = useCallback(
     async (format: string) => {
       try {
@@ -76,13 +87,21 @@ export default ({ article }: Props) => {
     [article, showErrorMessage]
   )
 
+  const attrs: any = {
+    download,
+  }
+  if (article.isOffline) {
+    attrs.download = downloadOffline
+    attrs.only = 'html'
+  }
+
   return (
     <>
       <LinkIcon title="Download article as ..." icon="download" onClick={showOverlay}>
         <span>Download as ...</span>
       </LinkIcon>
       <Overlay visible={isVisible}>
-        <DownloadPanel onCancel={hideOverlay} download={download} />
+        <DownloadPanel onCancel={hideOverlay} {...attrs} />
       </Overlay>
       <Overlay visible={isDownloading}>
         <DownloadProgress total={contentLength} value={contentReceived} />

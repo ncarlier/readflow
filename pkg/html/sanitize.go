@@ -15,5 +15,5 @@ func init() {
 	policy = bluemonday.UGCPolicy()
 	policy.AddTargetBlankToFullyQualifiedLinks(true)
 	policy.AllowAttrs("width", "height", "src", "allowfullscreen", "sandbox").OnElements("iframe")
-	policy.AllowAttrs("srcset", "sizes").OnElements("img")
+	policy.AllowAttrs("srcset", "sizes", "data-src").OnElements("img")
 }

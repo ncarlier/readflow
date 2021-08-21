@@ -18,7 +18,7 @@ const initialState: OfflineArticlesState = {
   },
   selected: undefined,
   error: undefined,
-  loading: true,
+  loading: false,
 }
 
 // Thanks to Redux 4's much simpler typings, we can take away a lot of typings on the reducer side,
@@ -32,7 +32,11 @@ const reducer: Reducer<OfflineArticlesState> = (state = initialState, action) =>
       return { ...state, loading: false, error: undefined }
     }
     case OfflineArticlesActionTypes.SAVE_ERROR: {
-      return { ...state, loading: false, error: action.payload }
+      const error = action.payload
+      if (error) {
+        console.error(error)
+      }
+      return { ...state, loading: false, error }
     }
     case OfflineArticlesActionTypes.REMOVE_REQUEST: {
       return { ...state, loading: true }

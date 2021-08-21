@@ -11,11 +11,12 @@ const formats = [
 ]
 
 interface Props {
+  only?: string
   download: (format: string) => Promise<any>
   onCancel: (e: any) => void
 }
 
-export default ({ download, onCancel }: Props) => {
+export default ({ download, onCancel, only }: Props) => {
   const [loading, setLoading] = useState(false)
   const handleDownloadArticle = useCallback(
     async (format: string) => {
@@ -29,13 +30,15 @@ export default ({ download, onCancel }: Props) => {
     [download]
   )
 
+  const onlyFilter = (format: { value: string }) => (only ? format.value === only : true)
+
   if (loading) {
     return <Loader blur />
   }
 
   return (
     <ul>
-      {formats.map((format) => (
+      {formats.filter(onlyFilter).map((format) => (
         <li key={`format_${format.value}`}>
           <LinkIcon
             title="Download article as ..."

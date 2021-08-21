@@ -5,21 +5,24 @@ import { useModal } from 'react-modal-hook'
 import ConfirmDialog from '../../../components/ConfirmDialog'
 import Kbd from '../../../components/Kbd'
 import LinkIcon from '../../../components/LinkIcon'
-import { connectOfflineDispatch, IOfflineDispatchProps } from '../../../containers/OfflineContainer'
+import { connectOffline, OfflineProps } from '../../../containers/OfflineContainer'
 import { MessageContext } from '../../../contexts/MessageContext'
 import { Article, GetArticleResponse } from '../../models'
 import { GetFullArticle } from '../../queries'
+import Loader from '../../../components/Loader'
+import Overlay from '../../../components/Overlay'
 
 interface Props {
   article: Article
   keyboard?: boolean
 }
 
-type AllProps = Props & IOfflineDispatchProps
+type AllProps = Props & OfflineProps
 
 export const OfflineLink = (props: AllProps) => {
-  const { article, keyboard = false, saveOfflineArticle, removeOfflineArticle } = props
+  const { article, keyboard = false, saveOfflineArticle, removeOfflineArticle, offlineArticles } = props
   const { showMessage, showErrorMessage } = useContext(MessageContext)
+  const { loading } = offlineArticles
 
   const client = useApolloClient()
 
@@ -72,11 +75,16 @@ export const OfflineLink = (props: AllProps) => {
   }
 
   return (
-    <LinkIcon title="Put offline" onClick={putArticleOffline} icon="signal_wifi_off">
-      <span>Put offline</span>
-      {keyboard && <Kbd keys="o" onKeypress={putArticleOffline} />}
-    </LinkIcon>
+    <>
+      <LinkIcon title="Put offline" onClick={putArticleOffline} icon="signal_wifi_off">
+        <span>Put offline</span>
+        {keyboard && <Kbd keys="o" onKeypress={putArticleOffline} />}
+      </LinkIcon>
+      <Overlay visible={loading}>
+        <Loader center />
+      </Overlay>
+    </>
   )
 }
 
-export default connectOfflineDispatch(OfflineLink)
+export default connectOffline(OfflineLink)
