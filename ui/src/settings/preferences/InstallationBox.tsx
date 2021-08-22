@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
-import Box from '../../components/Box'
-import Button from '../../components/Button'
+import { Box, Button } from '../../components'
 import { isInstalled } from '../../helpers'
 
 interface InstallProps {
@@ -37,7 +36,7 @@ const Uninstallable = () => (
   </p>
 )
 
-export default () => {
+const InstallationBox = () => {
   const [installed, setInstalled] = useState(isInstalled())
   const { deferredPrompt } = window
 
@@ -69,3 +68,5 @@ export default () => {
     </Box>
   )
 }
+
+export default InstallationBox

@@ -2,13 +2,13 @@ import React, { useContext, useEffect } from 'react'
 import CSSTransition from 'react-transition-group/CSSTransition'
 
 import { MessageContext } from '../contexts/MessageContext'
-import Notification from './Notification'
+import { Notification } from '.'
 
 interface Props {
   ttl?: number
 }
 
-export default ({ ttl = 5000 }: Props) => {
+export const Snackbar = ({ ttl = 5000 }: Props) => {
   const { message, showMessage } = useContext(MessageContext)
 
   useEffect(() => {

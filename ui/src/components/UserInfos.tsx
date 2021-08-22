@@ -1,15 +1,12 @@
 /* eslint-disable react/jsx-no-target-blank */
-import gql from 'graphql-tag'
 import React from 'react'
+import gql from 'graphql-tag'
 import { useQuery } from '@apollo/client'
 
 import authService from '../auth'
-import ErrorPanel from '../error/ErrorPanel'
-import { matchResponse } from '../helpers'
-import Loader from './Loader'
-import TimeAgo from './TimeAgo'
+import { ErrorPanel, Loader, TimeAgo } from '.'
+import { matchResponse, getRoboHash } from '../helpers'
 import styles from './UserInfos.module.css'
-import { getRoboHash } from '../helpers/avatar'
 
 export const GetCurrentUser = gql`
   query {
@@ -39,7 +36,7 @@ export interface GetCurrentUserResponse {
   me: User
 }
 
-export default () => {
+export const UserInfos = () => {
   const { data, error, loading } = useQuery<GetCurrentUserResponse>(GetCurrentUser)
 
   const render = matchResponse<GetCurrentUserResponse>({
@@ -62,3 +59,5 @@ export default () => {
 
   return <div className={styles.userInfos}>{render(loading, data, error)}</div>
 }
+
+export default UserInfos

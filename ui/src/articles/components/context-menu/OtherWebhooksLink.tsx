@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 
-import LinkIcon from '../../../components/LinkIcon'
+import { LinkIcon, Overlay } from '../../../components'
 import { OutgoingWebhook } from '../../../settings/intergrations/outgoing-webhook/models'
 import OutgoingWebhooksPanel from './OutgoingWebhooksPanel'
-import Overlay from '../../../components/Overlay'
 
 interface Props {
   webhooks: OutgoingWebhook[]

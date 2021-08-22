@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useState } from 'react'
+import React, { createContext, FC, useState } from 'react'
 
 type MessageType = 'error' | 'warning' | 'info'
 
@@ -19,11 +19,7 @@ const MessageContext = createContext<MessageContextType>({
   showErrorMessage: () => true,
 })
 
-interface Props {
-  children: ReactNode
-}
-
-const MessageProvider = ({ children }: Props) => {
+const MessageProvider: FC = ({ children }) => {
   const [message, setMessage] = useState<Message>({ text: '', variant: 'info' })
 
   const showMessage = (text: string, variant: MessageType = 'info') => setMessage({ text, variant })

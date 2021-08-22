@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react'
 
-export default (initial: string) => {
+export const useField = (initial: string) => {
   const [value, setValue] = useState(initial)
 
   return {

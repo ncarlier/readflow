@@ -2,14 +2,28 @@ import React from 'react'
 import { useQuery } from '@apollo/client'
 import { Link } from 'react-router-dom'
 
-import DataTable, { OnSelectedFn } from '../../../components/DataTable'
-import ButtonIcon from '../../../components/ButtonIcon'
-import Loader from '../../../components/Loader'
-import TimeAgo from '../../../components/TimeAgo'
-import ErrorPanel from '../../../error/ErrorPanel'
+import { ButtonIcon, DataTable, ErrorPanel, Loader, TimeAgo, OnSelectedFn } from '../../../components'
 import { GetIncomingWebhooksResponse, IncomingWebhook } from './models'
 import { GetIncomingWebhooks } from './queries'
 import { matchResponse } from '../../../helpers'
+
+const IncomingWebhookDates = ({ val }: { val: IncomingWebhook }) => (
+  <small>
+    {val.last_usage_at && (
+      <>
+        Last usage <TimeAgo dateTime={val.last_usage_at} />
+        <br />
+      </>
+    )}
+    Created <TimeAgo dateTime={val.created_at} />
+    {val.updated_at && (
+      <>
+        <br />
+        Updated <TimeAgo dateTime={val.updated_at} />
+      </>
+    )}
+  </small>
+)
 
 const definition = [
   {
@@ -21,16 +35,8 @@ const definition = [
     ),
   },
   {
-    title: 'Last usage',
-    render: (val: IncomingWebhook) => <TimeAgo dateTime={val.last_usage_at} />,
-  },
-  {
-    title: 'Created',
-    render: (val: IncomingWebhook) => <TimeAgo dateTime={val.created_at} />,
-  },
-  {
-    title: 'Updated',
-    render: (val: IncomingWebhook) => <TimeAgo dateTime={val.updated_at} />,
+    title: 'Date(s)',
+    render: (val: IncomingWebhook) => <IncomingWebhookDates val={val} />,
   },
   {
     title: '',
@@ -46,7 +52,7 @@ interface Props {
   onSelected?: OnSelectedFn
 }
 
-export default ({ onSelected }: Props) => {
+const IncomingWebhookList = ({ onSelected }: Props) => {
   const { data, error, loading } = useQuery<GetIncomingWebhooksResponse>(GetIncomingWebhooks)
 
   const render = matchResponse<GetIncomingWebhooksResponse>({
@@ -63,3 +69,5 @@ export default ({ onSelected }: Props) => {
   })
   return <section>{render(loading, data, error)}</section>
 }
+
+export default IncomingWebhookList

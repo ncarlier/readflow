@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import CategoryRoutes from './categories'
-import ErrorPage from '../error/ErrorPage'
+import { ErrorPage } from '../components/errors'
 import GraphiQLPage from '../graphiql/GraphiQLPage'
 import HistoryRoutes from './history'
 import OfflineRoutes from './offline'

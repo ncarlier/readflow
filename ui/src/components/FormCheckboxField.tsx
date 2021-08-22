@@ -12,7 +12,7 @@ interface Props {
 
 type AllProps = Props & CheckableInputProps<any>
 
-export default forwardRef((props: AllProps, ref: Ref<any>) => {
+export const FormCheckboxField = forwardRef((props: AllProps, ref: Ref<any>) => {
   const { error, label, ...rest } = { ...props, ref }
   const className = classNames('checkbox', error ? 'has-error' : null)
   return (

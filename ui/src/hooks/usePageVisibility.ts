@@ -4,7 +4,7 @@ const isSupported = () => {
   return 'visibilityState' in document
 }
 
-export default () => {
+export const usePageVisibility = () => {
   const [isVisible, setIsVisible] = useState<boolean>(!isSupported() || document.visibilityState === 'visible')
 
   useEffect(() => {

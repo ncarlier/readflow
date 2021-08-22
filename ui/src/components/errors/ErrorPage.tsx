@@ -1,17 +1,15 @@
-import React, { ReactNode } from 'react'
+import React, { FC } from 'react'
 
-import Button from '../components/Button'
-import Panel from '../components/Panel'
-import Page from '../layout/Page'
-import ErrorPanel from './ErrorPanel'
+import { Panel } from '..'
+import { Page } from '../../layout'
+import { Button, ErrorPanel } from '..'
 import { Link } from 'react-router-dom'
 
 interface Props {
   title?: string
-  children: ReactNode
 }
 
-export default ({ title = 'Error', children }: Props) => (
+export const ErrorPage: FC<Props> = ({ title = 'Error', children }) => (
   <Page title={title}>
     <Panel>
       <ErrorPanel

@@ -2,7 +2,7 @@ import React, { ElementType, ReactNode } from 'react'
 import Ink from 'react-ink'
 
 import { classNames } from '../helpers'
-import Icon from './Icon'
+import { Icon } from '.'
 import styles from './LinkIcon.module.css'
 import { PropsOf } from './PropsOf'
 
@@ -13,7 +13,7 @@ interface LinkIconProps {
   children?: ReactNode
 }
 
-function LinkIcon<Tag extends ElementType = 'a'>(props: { as?: Tag } & LinkIconProps & PropsOf<Tag>) {
+export function LinkIcon<Tag extends ElementType = 'a'>(props: { as?: Tag } & LinkIconProps & PropsOf<Tag>) {
   const { as: Element = 'a', children, badge, icon, active, ...attrs } = props
 
   let className = styles.link
@@ -30,5 +30,3 @@ function LinkIcon<Tag extends ElementType = 'a'>(props: { as?: Tag } & LinkIconP
     </Element>
   )
 }
-
-export default LinkIcon

@@ -2,10 +2,10 @@
 import React from 'react'
 import { RouteComponentProps, Link } from 'react-router-dom'
 
-import ButtonIcon from '../components/ButtonIcon'
+import { ButtonIcon } from '../components'
 import { URLRegExp } from '../helpers'
-import Page from '../layout/Page'
-import AddArticleForm from './components/AddArticleForm'
+import { Page } from '../layout'
+import { AddArticleForm } from './components'
 import { Article } from './models'
 import { Category } from '../categories/models'
 

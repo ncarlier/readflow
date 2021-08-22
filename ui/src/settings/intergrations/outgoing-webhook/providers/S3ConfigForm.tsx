@@ -1,8 +1,7 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import FormInputField from '../../../../components/FormInputField'
-import FormSelectField from '../../../../components/FormSelectField'
+import { FormInputField, FormSelectField } from '../../../../components'
 
 interface S3ConfigFormFields {
   endpoint: string
@@ -40,7 +39,7 @@ const Formats = () => (
   </>
 )
 
-export default ({ onChange, config }: Props) => {
+export const S3ConfigForm = ({ onChange, config }: Props) => {
   const [formState, { url, text, password, select }] = useFormState<S3ConfigFormFields>(
     { ...defaultConfig, ...config },
     {

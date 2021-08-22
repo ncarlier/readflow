@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
-import Icon from './Icon'
 
+import { Icon } from '.'
 import styles from './Stars.module.css'
 
 interface StarProps {
@@ -28,7 +28,7 @@ interface Props {
   onChange: (value: number) => void
 }
 
-export default (props: Props) => {
+export const Stars = (props: Props) => {
   const { value, size = 5, onChange } = props
   const stars = Array.from(Array(size).keys())
 

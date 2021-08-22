@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { FC } from 'react'
 
 import { useMedia } from '../hooks'
 
@@ -7,14 +7,11 @@ interface Props {
   desktop?: boolean
 }
 
-const DeviceSpecific: FunctionComponent<Props> = ({ mobile, desktop, children }) => {
+export const DeviceSpecific: FC<Props> = ({ mobile, desktop, children }) => {
   // const isMobile = useMedia('(max-width: 400px)')
   const isMobile = useMedia('(max-width: 767px)')
   const isDesktop = useMedia('(min-width: 767px)')
-  if ((isMobile && mobile) || (isDesktop && desktop)) {
-    return <>{children}</>
-  }
-  return null
+  return (isMobile && mobile) || (isDesktop && desktop) ? <>{children}</> : null
 }
 
 export default DeviceSpecific

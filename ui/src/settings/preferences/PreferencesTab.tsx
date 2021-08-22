@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Panel from '../../components/Panel'
+import { Panel } from '../../components'
 import { usePageTitle } from '../../hooks'
 import CleanHistoryBox from './CleanHistoryBox'
 import DeleteAccountBox from './DeleteAccountBox'
@@ -9,7 +9,7 @@ import NotificationBox from './NotificationBox'
 import ThemeBox from './ThemeBox'
 import UserPlanSection from './UserPlanSection'
 
-export default () => {
+const PreferencesTab = () => {
   usePageTitle('Settings - Preferences')
 
   return (
@@ -35,3 +35,5 @@ export default () => {
     </Panel>
   )
 }
+
+export default PreferencesTab

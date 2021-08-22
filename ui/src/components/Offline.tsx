@@ -1,9 +1,8 @@
 import React from 'react'
 
-import Center from './Center'
-import Icon from './Icon'
+import { Center, Icon } from '.'
 
-export default () => (
+export const Offline = () => (
   <Center>
     <Icon name="signal_wifi_off" />
   </Center>

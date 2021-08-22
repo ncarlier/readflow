@@ -4,14 +4,12 @@ import { Route, RouteComponentProps, Switch, useRouteMatch } from 'react-router-
 
 import ArticlePage from '../articles/ArticlePage'
 import ArticlesPage from '../articles/ArticlesPage'
-import Loader from '../components/Loader'
-import ErrorPage from '../error/ErrorPage'
+import { ErrorPage, Center, Loader } from '../components'
 import { matchResponse } from '../helpers'
-import Page from '../layout/Page'
+import { Page } from '../layout'
 import { GetCategoryResponse } from '../categories/models'
 import { GetCategory } from '../categories/queries'
 import AddArticlePage from '../articles/AddArticlePage'
-import Center from '../components/Center'
 
 export default () => {
   const match = useRouteMatch<{ id: string }>()

@@ -15,7 +15,7 @@ const onBrowserThemeChanged = (callback: (theme: Theme) => void) => {
   return () => mql && mql.removeListener(mqlListener)
 }
 
-export default () => {
+export const useTheme = () => {
   const { localConfiguration } = useContext(LocalConfigurationContext)
 
   const applyTheme = (theme: Theme) => {

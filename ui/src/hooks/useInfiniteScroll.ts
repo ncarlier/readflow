@@ -1,6 +1,10 @@
 import { RefObject, useCallback, useEffect, useState } from 'react'
 
-export default (ref: RefObject<HTMLElement>, hasMore: boolean, fetchMoreItems: () => Promise<void>): boolean => {
+export const useInfiniteScroll = (
+  ref: RefObject<HTMLElement>,
+  hasMore: boolean,
+  fetchMoreItems: () => Promise<void>
+): boolean => {
   const [isFetching, setIsFetching] = useState(false)
 
   const fetchMore = useCallback(async () => {

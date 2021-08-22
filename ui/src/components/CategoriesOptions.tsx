@@ -5,7 +5,7 @@ import { GetCategoriesResponse } from '../categories/models'
 import { GetCategories } from '../categories/queries'
 import { matchResponse } from '../helpers'
 
-export default () => {
+export const CategoriesOptions = () => {
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
 
   const render = matchResponse<GetCategoriesResponse>({

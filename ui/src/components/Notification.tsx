@@ -1,15 +1,14 @@
-import React, { ReactNode } from 'react'
+import React, { FC } from 'react'
 
 import { classNames } from '../helpers'
 import styles from './Notification.module.css'
 
 interface Props {
-  children?: ReactNode
   message: string
   variant?: 'error' | 'info' | 'warning'
 }
 
-export default ({ message, variant = 'info', children }: Props) => {
+export const Notification: FC<Props> = ({ message, variant = 'info', children }) => {
   const className = classNames(styles.notification, styles[variant])
 
   return (

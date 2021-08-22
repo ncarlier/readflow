@@ -11,7 +11,7 @@ interface Props {
 const proxifyImageURL = (url: string, width: number) =>
   `${API_BASE_URL}/img?url=${encodeURIComponent(url)}&width=${width}`
 
-export default ({ src, alt = '' }: Props) => {
+export const ArticleImage = ({ src, alt = '' }: Props) => {
   const mobileDisplay = useMedia('(max-width: 767px)')
   const attrs: any = {}
   if (src.match(/^https?:\/\//)) {

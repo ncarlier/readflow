@@ -1,21 +1,14 @@
-import React, { ReactNode } from 'react'
+import React, { FC } from 'react'
 
-import useOnlineStatus from '../hooks/useOnlineStatus'
+import { useOnlineStatus } from '../hooks'
 
 interface Props {
   status: 'online' | 'offline'
-  children: ReactNode
 }
 
-function NetworkStatus({ status, children }: Props) {
+export const NetworkStatus: FC<Props> = ({ status, children }) => {
   const isOnline = useOnlineStatus()
   const display = (isOnline && status === 'online') || (!isOnline && status === 'offline')
 
-  if (display) {
-    return <>{children}</>
-  } else {
-    return null
-  }
+  return display ? <>{children}</> : null
 }
-
-export default NetworkStatus

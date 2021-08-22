@@ -1,15 +1,15 @@
 import React, { useCallback, useContext } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 
-import Loader from '../../../components/Loader'
+import { Loader } from '../../../components'
 import { getGQLError, matchResponse } from '../../../helpers'
 import { GetOutgoingWebhooksResponse } from '../../../settings/intergrations/outgoing-webhook/models'
 import { GetOutgoingWebhooks } from '../../../settings/intergrations/outgoing-webhook/queries'
 import { Article } from '../../models'
+import { SendArticleToOutgoingWebhook } from '../../queries'
 import DefaultWebhookLink from './DefaultWebhookLink'
 import OtherWebhooksLink from './OtherWebhooksLink'
 import { MessageContext } from '../../../contexts/MessageContext'
-import { SendArticleToOutgoingWebhook } from '../../queries'
 
 interface SendArticleFields {
   id: number

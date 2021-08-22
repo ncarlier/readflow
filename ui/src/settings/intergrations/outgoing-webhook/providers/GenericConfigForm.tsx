@@ -1,10 +1,7 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import FormInputField from '../../../../components/FormInputField'
-import FormSelectField from '../../../../components/FormSelectField'
-import FormTextareaField from '../../../../components/FormTextareaField'
-import HelpLink from '../../../../components/HelpLink'
+import { FormInputField, FormSelectField, FormTextareaField, HelpLink } from '../../../../components'
 
 interface GenericConfigFormFields {
   endpoint: string
@@ -33,7 +30,7 @@ const ContentTypes = () => (
   </>
 )
 
-export default ({ onChange, config }: Props) => {
+export const GenericConfigForm = ({ onChange, config }: Props) => {
   const [formState, { url, select, textarea }] = useFormState<GenericConfigFormFields>(config, {
     onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
   })

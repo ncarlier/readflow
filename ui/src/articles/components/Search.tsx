@@ -3,10 +3,9 @@ import { Location } from 'history'
 import { useLocation, useHistory } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
-import Icon from '../../components/Icon'
-
-import styles from './Search.module.css'
+import { Icon } from '../../components'
 import { GetArticlesRequest } from '../models'
+import styles from './Search.module.css'
 
 function getLocationWithQueryParam(loc: Location, query: string) {
   const params = new URLSearchParams(loc.search)
@@ -22,7 +21,7 @@ interface SearchFormFields {
   query: string
 }
 
-export default ({ req }: Props) => {
+export const Search = ({ req }: Props) => {
   const loc = useLocation()
   const { push } = useHistory()
   const [formState, { search }] = useFormState<SearchFormFields>({ query: req.query || '' })

@@ -2,7 +2,7 @@ import React from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Link } from 'react-router-dom'
 
-import LinkIcon from '../../components/LinkIcon'
+import { LinkIcon } from '../../components'
 import styles from './Tabs.module.css'
 
 interface TabItem {
@@ -15,7 +15,7 @@ interface Props {
   items: TabItem[]
 }
 
-export default withRouter(({ location: { pathname }, items }: Props & RouteComponentProps) => (
+export const Tabs = withRouter(({ location: { pathname }, items }: Props & RouteComponentProps) => (
   <nav className={styles.tabs}>
     <ul>
       {items.map((item) => (

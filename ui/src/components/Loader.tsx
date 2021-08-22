@@ -1,8 +1,8 @@
 import React, { CSSProperties } from 'react'
 
 import { classNames } from '../helpers'
+import { Spinner } from '.'
 import styles from './Loader.module.css'
-import Spinner from './Spinner'
 
 interface Props {
   blur?: boolean
@@ -10,7 +10,7 @@ interface Props {
   style?: CSSProperties
 }
 
-export default ({ blur, style = {}, center }: Props) => {
+export const Loader = ({ blur, style = {}, center }: Props) => {
   if (center) {
     style.textAlign = 'center'
   }

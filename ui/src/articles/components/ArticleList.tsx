@@ -1,16 +1,11 @@
 import React, { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
-import ButtonIcon from '../../components/ButtonIcon'
-import Center from '../../components/Center'
-import Empty from '../../components/Empty'
-import Panel from '../../components/Panel'
+import { ButtonIcon, Center, Empty, Panel } from '../../components'
 import { useMedia } from '../../hooks'
-import useInfiniteScroll from '../../hooks/useInfiniteScroll'
-import useKeyboard from '../../hooks/useKeyboard'
+import { useInfiniteScroll, useKeyboard } from '../../hooks'
 import { Article } from '../models'
-import ArticleCard from './ArticleCard'
+import { ArticleCard, SwipeableArticleCard } from '.'
 import styles from './ArticleList.module.css'
-import SwipeableArticleCard from './SwipeableArticleCard'
 
 interface Props {
   articles: Article[]
@@ -45,7 +40,7 @@ const useKeyNavigation = (ref: RefObject<HTMLUListElement>, itemClassName: strin
   )
 }
 
-export default (props: Props) => {
+export const ArticleList = (props: Props) => {
   const {
     articles,
     fetchMoreArticles,

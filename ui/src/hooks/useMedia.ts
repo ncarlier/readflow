@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export default (query: string) => {
+export const useMedia = (query: string) => {
   const [matches, setMatches] = useState(window.matchMedia(query).matches)
 
   useEffect(() => {

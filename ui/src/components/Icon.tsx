@@ -4,4 +4,4 @@ interface Props {
   name: string
 }
 
-export default ({ name }: Props) => <i className="material-icons">{name}</i>
+export const Icon = ({ name }: Props) => <i className="material-icons">{name}</i>

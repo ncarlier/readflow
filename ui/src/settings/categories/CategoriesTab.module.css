@@ -1,0 +1,7 @@
+.rule {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 10em;
+  display: inline-block;
+  white-space: nowrap;
+}

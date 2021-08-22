@@ -4,16 +4,12 @@ import { RouteComponentProps } from 'react-router'
 
 import { GetCategoryResponse } from '../../categories/models'
 import { GetCategory } from '../../categories/queries'
-import Loader from '../../components/Loader'
-import Panel from '../../components/Panel'
-import ErrorPanel from '../../error/ErrorPanel'
+import { ErrorPanel, Loader, Panel } from '../../components'
 import { matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 import EditCategoryForm from './EditCategoryForm'
 
-type AllProps = RouteComponentProps<{ id: string }>
-
-export default ({ history, match }: AllProps) => {
+const EditCategoryTab = ({ history, match }: RouteComponentProps<{ id: string }>) => {
   const { id } = match.params
   usePageTitle(`Settings - Edit category #${id}`)
 
@@ -35,3 +31,5 @@ export default ({ history, match }: AllProps) => {
 
   return <Panel>{render(loading, data, error)}</Panel>
 }
+
+export default EditCategoryTab

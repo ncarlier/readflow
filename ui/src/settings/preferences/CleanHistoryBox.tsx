@@ -4,9 +4,7 @@ import { useMutation } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
 
 import { Category } from '../../categories/models'
-import Box from '../../components/Box'
-import Button from '../../components/Button'
-import ConfirmDialog from '../../components/ConfirmDialog'
+import { Box, Button, ConfirmDialog } from '../../components'
 import { MessageContext } from '../../contexts/MessageContext'
 import { getGQLError } from '../../helpers'
 
@@ -22,7 +20,7 @@ interface CleanHistoryResponse {
   cleanHistory: Category[]
 }
 
-export default () => {
+const CleanHistoryBox = () => {
   const { showMessage, showErrorMessage } = useContext(MessageContext)
   const [cleanHistoryMutation] = useMutation<CleanHistoryResponse>(CleanHistory)
   const cleanHistory = async () => {
@@ -66,3 +64,5 @@ export default () => {
     </Box>
   )
 }
+
+export default CleanHistoryBox

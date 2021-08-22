@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
-import LinkIcon from '../../../components/LinkIcon'
-import Loader from '../../../components/Loader'
+import { LinkIcon, Loader } from '../../../components'
 
 const formats = [
   { value: 'html', label: 'HTML file', icon: 'code' },

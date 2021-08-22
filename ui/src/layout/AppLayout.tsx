@@ -1,25 +1,15 @@
-import React, { ReactNode, useContext } from 'react'
+import React, { FC, useContext } from 'react'
 import CSSTransition from 'react-transition-group/CSSTransition'
 import { useModal } from 'react-modal-hook'
 
-import InfoDialog from '../components/InfoDialog'
-import Shortcuts from '../components/Shortcuts'
-import Snackbar from '../components/Snackbar'
+import { InfoDialog, Shortcuts, Snackbar, UpdateAvailableNotification } from '../components'
 import { NavbarContext } from '../contexts/NavbarContext'
 import { classNames, isMobileDevice } from '../helpers'
-import useKeyboard from '../hooks/useKeyboard'
+import { useKeyboard, useTheme } from '../hooks'
 import classes from './AppLayout.module.css'
-import Navbar from './Navbar'
-import UpdateAvailableNotification from '../components/UpdateAvailableNotification'
-import useTheme from '../hooks/useTheme'
+import { Navbar } from '.'
 
-interface Props {
-  children: ReactNode
-}
-
-export default (props: Props) => {
-  const { children } = props
-
+export const AppLayout: FC = ({ children }) => {
   // Activate theme
   useTheme()
 

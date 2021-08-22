@@ -1,11 +1,11 @@
 import React, { createRef } from 'react'
-import ButtonIcon from './ButtonIcon'
+import { ButtonIcon } from '.'
 
 interface Props {
   value: string
 }
 
-export default ({ value }: Props) => {
+export const Masked = ({ value }: Props) => {
   const ref = createRef<HTMLInputElement>()
 
   function copyToClipboard() {

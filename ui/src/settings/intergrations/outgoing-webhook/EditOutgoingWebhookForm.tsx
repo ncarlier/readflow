@@ -4,12 +4,8 @@ import { useMutation } from '@apollo/client'
 import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
-import Button from '../../../components/Button'
-import FormCheckboxField from '../../../components/FormCheckboxField'
-import FormInputField from '../../../components/FormInputField'
-import FormSelectField from '../../../components/FormSelectField'
 import { MessageContext } from '../../../contexts/MessageContext'
-import ErrorPanel from '../../../error/ErrorPanel'
+import { Button, ErrorPanel, FormCheckboxField, FormInputField, FormSelectField } from '../../../components'
 import { getGQLError, isValidForm } from '../../../helpers'
 import {
   OutgoingWebhook,
@@ -17,12 +13,8 @@ import {
   CreateOrUpdateOutgoingWebhookRequest,
   Provider,
 } from './models'
-import KeeperConfigForm from './providers/KeeperConfigForm'
+import { KeeperConfigForm, GenericConfigForm, PocketConfigForm, S3ConfigForm, WallabagConfigForm } from './providers'
 import { CreateOrUpdateOutgoingWebhook } from './queries'
-import WallabagConfigForm from './providers/WallabagConfigForm'
-import GenericConfigForm from './providers/GenericConfigForm'
-import PocketConfigForm from './providers/PocketConfigForm'
-import S3ConfigForm from './providers/S3ConfigForm'
 import OutgoingWebhookHelp from './OutgoingWebhookHelp'
 
 interface EditOutgoingWebhookFormFields {

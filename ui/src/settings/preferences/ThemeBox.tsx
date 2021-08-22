@@ -1,8 +1,7 @@
 import React, { useContext, useCallback, useEffect } from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import Box from '../../components/Box'
-import FormSelectField from '../../components/FormSelectField'
+import { Box, FormSelectField } from '../../components'
 import { LocalConfigurationContext, Theme } from '../../contexts/LocalConfigurationContext'
 
 interface SwitchThemeFormFields {
@@ -42,9 +41,11 @@ const ThemeSwitch = () => {
   )
 }
 
-export default () => (
+const ThemeBox = () => (
   <Box title="Theme">
     <p>Change the colors of the user interface according to your preferences.</p>
     <ThemeSwitch />
   </Box>
 )
+
+export default ThemeBox

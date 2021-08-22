@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { getOnlineStatus } from '../helpers'
 
-export default () => {
+export const useOnlineStatus = () => {
   const [onlineStatus, setOnlineStatus] = useState(getOnlineStatus())
 
   const goOnline = () => setOnlineStatus(true)

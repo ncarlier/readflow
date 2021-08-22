@@ -32,7 +32,7 @@ window.onload = function() {
 </html>
 `
 
-export default ({ article }: Props) => {
+export const ArticleContent = ({ article }: Props) => {
   const [alreadyRendered, setAlreadyRendered] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
   const { localConfiguration } = useContext(LocalConfigurationContext)

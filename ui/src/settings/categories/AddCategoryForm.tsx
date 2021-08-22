@@ -7,13 +7,8 @@ import { useFormState } from 'react-use-form-state'
 import { updateCacheAfterCreate } from '../../categories/cache'
 import { Category, CreateOrUpdateCategoryResponse } from '../../categories/models'
 import { CreateOrUpdateCategory } from '../../categories/queries'
-import Button from '../../components/Button'
-import FormInputField from '../../components/FormInputField'
-import FormTextareaField from '../../components/FormTextareaField'
-import HelpLink from '../../components/HelpLink'
-import Panel from '../../components/Panel'
 import { MessageContext } from '../../contexts/MessageContext'
-import ErrorPanel from '../../error/ErrorPanel'
+import { Button, ErrorPanel, FormInputField, FormTextareaField, HelpLink, Panel } from '../../components'
 import { getGQLError, isValidForm } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 
@@ -22,9 +17,7 @@ interface AddCategoryFormFields {
   rule: string
 }
 
-type AllProps = RouteComponentProps
-
-export default ({ history }: AllProps) => {
+const AddCategoryForm = ({ history }: RouteComponentProps) => {
   usePageTitle('Settings - Add new category')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -89,3 +82,5 @@ export default ({ history }: AllProps) => {
     </Panel>
   )
 }
+
+export default AddCategoryForm

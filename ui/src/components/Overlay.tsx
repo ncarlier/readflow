@@ -1,4 +1,4 @@
-import React, { CSSProperties, FunctionComponent } from 'react'
+import React, { CSSProperties, FC } from 'react'
 
 import { classNames } from '../helpers'
 import styles from './Overlay.module.css'
@@ -9,7 +9,7 @@ interface Props {
   visible: boolean
 }
 
-const Overlay: FunctionComponent<Props> = ({ children, className, visible, ...rest }) => {
+export const Overlay: FC<Props> = ({ children, className, visible, ...rest }) => {
   if (!visible) {
     return null
   }
@@ -19,5 +19,3 @@ const Overlay: FunctionComponent<Props> = ({ children, className, visible, ...re
     </section>
   )
 }
-
-export default Overlay

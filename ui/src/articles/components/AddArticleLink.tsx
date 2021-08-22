@@ -6,17 +6,17 @@ import { Link } from 'react-router-dom'
 
 import { Category } from '../../categories/models'
 import styles from '../../components/Dialog.module.css'
-import LinkIcon from '../../components/LinkIcon'
-import useKeyboard from '../../hooks/useKeyboard'
+import { LinkIcon } from '../../components'
+import { useKeyboard } from '../../hooks'
 import { Article } from '../models'
-import AddArticleForm from './AddArticleForm'
+import { AddArticleForm } from '.'
 
 interface Props {
   category?: Category
   onSuccess: (article: Article) => void
 }
 
-export default ({ category, onSuccess }: Props) => {
+export const AddArticleLink = ({ category, onSuccess }: Props) => {
   const [showAddModal, hideAddModal] = useModal(() => (
     <ReactModal
       isOpen

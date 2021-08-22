@@ -8,6 +8,7 @@ export const GetCategories = gql`
       entries {
         id
         title
+        rule
         unread
         created_at
         updated_at

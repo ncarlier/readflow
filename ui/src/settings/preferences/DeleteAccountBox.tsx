@@ -4,9 +4,7 @@ import { useMutation } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
 
 import auth from '../../auth'
-import Box from '../../components/Box'
-import Button from '../../components/Button'
-import ConfirmDialog from '../../components/ConfirmDialog'
+import { Box, Button, ConfirmDialog } from '../../components'
 import { MessageContext } from '../../contexts/MessageContext'
 import { getGQLError } from '../../helpers'
 
@@ -20,7 +18,7 @@ interface DeleteAccountResponse {
   deleteAccount: boolean
 }
 
-export default () => {
+const DeleteAccountBox = () => {
   const { showErrorMessage } = useContext(MessageContext)
   const [deleteAccountMutation] = useMutation<DeleteAccountResponse>(DeleteAccount)
   const deleteAccount = async () => {
@@ -57,3 +55,5 @@ export default () => {
     </Box>
   )
 }
+
+export default DeleteAccountBox

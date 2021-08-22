@@ -1,14 +1,13 @@
 import React, { useCallback, useContext } from 'react'
 import { useMutation } from '@apollo/client'
 
-import Icon from '../../components/Icon'
-import SwipeableListItem from '../../components/SwipeableListItem'
+import { Icon, SwipeableListItem } from '../../components'
 import { MessageContext } from '../../contexts/MessageContext'
 import { getGQLError } from '../../helpers'
 import { updateCacheAfterUpdate } from '../cache'
 import { Article, ArticleStatus, UpdateArticleRequest, UpdateArticleResponse } from '../models'
 import { UpdateArticle } from '../queries'
-import ArticleCard from './ArticleCard'
+import { ArticleCard } from '.'
 import styles from './SwipeableArticleCard.module.css'
 
 interface Props {
@@ -21,7 +20,7 @@ const Background = ({ icon }: { icon: string }) => (
   </div>
 )
 
-export default (props: Props) => {
+export const SwipeableArticleCard = (props: Props) => {
   const { article } = props
 
   const { showErrorMessage } = useContext(MessageContext)

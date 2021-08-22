@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 
 const ScrollMemoryContext = React.createContext(0)
 
@@ -6,15 +6,11 @@ const cache = new Map<string, number>()
 
 export const setScrollPosition = (key: string, pos: number) => cache.set(key, pos)
 
-interface Props {
-  children: ReactNode
-}
-
 if ('scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual'
 }
 
-const ScrollMemoryProvider = ({ children }: Props) => {
+const ScrollMemoryProvider: FC = ({ children }) => {
   const [state, setState] = useState(0)
 
   const onPopState = () => {

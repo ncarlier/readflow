@@ -2,7 +2,7 @@ import React from 'react'
 
 import styles from './Shortcuts.module.css'
 
-export default () => (
+export const Shortcuts = () => (
   <section className={styles.shortcuts}>
     <section>
       <h1>Article list</h1>

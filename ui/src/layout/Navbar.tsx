@@ -5,19 +5,15 @@ import { Link } from 'react-router-dom'
 
 import { GetCategoriesResponse } from '../categories/models'
 import { GetCategories } from '../categories/queries'
-import LinkIcon from '../components/LinkIcon'
-import Loader from '../components/Loader'
-import NetworkStatus from '../components/NetworkStatus'
-import Offline from '../components/Offline'
-import UserInfos from '../components/UserInfos'
+import { Loader, LinkIcon, NetworkStatus, Offline, UserInfos } from '../components'
 import { NavbarContext } from '../contexts/NavbarContext'
 import { matchResponse } from '../helpers'
 import logo from './logo_header.svg'
 import styles from './Navbar.module.css'
-import AddArticleLink from '../articles/components/AddArticleLink'
+import { AddArticleLink } from '../articles/components'
 import { Article } from '../articles/models'
 
-export default withRouter(({ location, history }: RouteComponentProps) => {
+export const Navbar = withRouter(({ location, history }: RouteComponentProps) => {
   const { pathname } = location
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
   const navbar = useContext(NavbarContext)

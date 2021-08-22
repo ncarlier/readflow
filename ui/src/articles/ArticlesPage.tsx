@@ -3,21 +3,14 @@ import { NetworkStatus, useQuery } from '@apollo/client'
 import { RouteComponentProps } from 'react-router'
 
 import { Category } from '../categories/models'
-import Loader from '../components/Loader'
-import Panel from '../components/Panel'
 import { LocalConfiguration, LocalConfigurationContext } from '../contexts/LocalConfigurationContext'
-import ErrorPanel from '../error/ErrorPanel'
+import { Center, ErrorPanel, Loader, Panel } from '../components'
 import { getURLParam, matchResponse } from '../helpers'
-import Appbar from '../layout/Appbar'
-import Page from '../layout/Page'
-import ArticleList from './components/ArticleList'
-import ArticlesPageMenu from './components/ArticlesPageMenu'
-import NewArticlesAvailable from './components/NewArticlesAvailable'
+import { Appbar, Page } from '../layout'
+import { ArticleList, ArticlesPageMenu, NewArticlesAvailable, Search } from './components'
 import { ArticleStatus, GetArticlesRequest, GetArticlesResponse } from './models'
 import { GetArticles } from './queries'
 import { useMedia } from '../hooks'
-import Search from './components/Search'
-import Center from '../components/Center'
 
 type Variant = 'unread' | 'history' | 'starred'
 
@@ -195,18 +188,18 @@ export default (props: AllProps) => {
     title = totalCount + plural + title
   } else title = ' '
 
-  const $actions = (
-    <>
+  const $header = (
+    <Appbar title={title}>
       <Search req={req} />
       <ArticlesPageMenu refresh={refresh} req={req} variant={variant} />
-    </>
+    </Appbar>
   )
 
   const loading = networkStatus === NetworkStatus.loading
   const refetching = networkStatus === NetworkStatus.refetch
 
   return (
-    <Page title={title} header={<Appbar title={title} actions={$actions} />} scrollToTop>
+    <Page title={title} header={$header} scrollToTop>
       {refetching && <Loader center />}
       {render(loading, data, error)}
     </Page>

@@ -11,7 +11,7 @@ import { MessageProvider } from './contexts/MessageContext'
 import { NavbarProvider } from './contexts/NavbarContext'
 import { ScrollMemoryProvider } from './contexts/ScrollMemoryContext'
 import { client } from './graphqlClient'
-import AppLayout from './layout/AppLayout'
+import { AppLayout } from './layout'
 import Routes from './routes'
 import { ApplicationState } from './store'
 

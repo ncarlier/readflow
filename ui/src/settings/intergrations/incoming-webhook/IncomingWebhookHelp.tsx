@@ -1,11 +1,9 @@
 import React from 'react'
 
 import { API_BASE_URL } from '../../../constants'
-import Masked from '../../../components/Masked'
 import { IncomingWebhook } from './models'
 import Bookmarklet from './Bookmarklet'
-import HelpLink from '../../../components/HelpLink'
-import Logo from '../../../logos/Logo'
+import { HelpLink, Logo, Masked } from '../../../components'
 import HelpSection from '../../HelpSection'
 import QRCodeIncomingWebhookButton from './QRCodeIncomingWebhookButton'
 

@@ -1,7 +1,7 @@
 import React, { FormEvent, ReactNode, useRef, useState } from 'react'
 
 import classes from './DataTable.module.css'
-import Empty from './Empty'
+import { Empty } from '.'
 
 export interface OnSelectedFn {
   (ids: number[]): void
@@ -24,7 +24,7 @@ interface Props {
   onSelected?: OnSelectedFn
 }
 
-export default ({ definition, data, emptyMessage = 'No record', onSelected }: Props) => {
+export const DataTable = ({ definition, data, emptyMessage = 'No record', onSelected }: Props) => {
   const selectAllRef = useRef<HTMLInputElement>(null)
   const [selection, setSelection] = useState<Map<number, boolean>>(() => {
     const state = new Map<number, boolean>()

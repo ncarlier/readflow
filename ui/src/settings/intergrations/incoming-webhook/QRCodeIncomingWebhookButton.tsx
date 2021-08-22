@@ -1,11 +1,9 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { useModal } from 'react-modal-hook'
 
-import ConfirmDialog from '../../../components/ConfirmDialog'
-import ButtonIcon from '../../../components/ButtonIcon'
-import fetchAPI from '../../../helpers/fetchAPI'
+import { ButtonIcon, ConfirmDialog, Loader } from '../../../components'
+import { fetchAPI } from '../../../helpers'
 import { MessageContext } from '../../../contexts/MessageContext'
-import Loader from '../../../components/Loader'
 
 interface Props {
   token: string

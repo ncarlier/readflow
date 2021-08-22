@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
 
-export default (ref: RefObject<HTMLElement>, options?: IntersectionObserverInit) => {
+export const useVisibility = (ref: RefObject<HTMLElement>, options?: IntersectionObserverInit) => {
   const [visible, setVisibilty] = useState<IntersectionObserverEntry | null>(null)
   const isIntersecting = useRef(false)
 

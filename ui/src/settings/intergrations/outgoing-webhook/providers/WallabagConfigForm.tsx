@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import FormInputField from '../../../../components/FormInputField'
+import { FormInputField } from '../../../../components'
 
 interface WallabagConfigFormFields {
   endpoint: string
@@ -20,7 +20,7 @@ const defaultConfig = {
   endpoint: 'https://app.wallabag.it',
 }
 
-export default ({ onChange, config }: Props) => {
+export const WallabagConfigForm = ({ onChange, config }: Props) => {
   const [formState, { url, text, password }] = useFormState<WallabagConfigFormFields>(
     { ...defaultConfig, ...config },
     {

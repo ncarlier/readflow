@@ -1,7 +1,7 @@
-import React, { createRef, CSSProperties, FunctionComponent, useCallback, useEffect, useState } from 'react'
+import React, { createRef, CSSProperties, FC, useCallback, useEffect, useState } from 'react'
 import Drawer from 'react-bottom-drawer'
 
-import ButtonIcon from './ButtonIcon'
+import { ButtonIcon } from '.'
 
 interface Props {
   style?: CSSProperties
@@ -9,7 +9,7 @@ interface Props {
   icon?: string
 }
 
-const DrawerMenu: FunctionComponent<Props> = (props) => {
+export const DrawerMenu: FC<Props> = (props) => {
   const { children, icon = 'more_vert', ...attrs } = props
   const [isVisible, setIsVisible] = useState(false)
   const ref = createRef<HTMLDivElement>()
@@ -44,5 +44,3 @@ const DrawerMenu: FunctionComponent<Props> = (props) => {
     </>
   )
 }
-
-export default DrawerMenu

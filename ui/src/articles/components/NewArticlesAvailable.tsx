@@ -2,11 +2,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 
 import { Category } from '../../categories/models'
-import Button from '../../components/Button'
-import Panel from '../../components/Panel'
+import { Button, Panel } from '../../components'
 import { GetArticlesResponse } from '../models'
 import { GetNbNewArticles } from '../queries'
-import usePageVisibility from '../../hooks/usePageVisibility'
+import { usePageVisibility } from '../../hooks'
 
 const NewArticlesLabel = ({ nb }: { nb: number }) => {
   switch (true) {
@@ -27,7 +26,7 @@ interface Props {
   refresh: () => Promise<any>
 }
 
-export default ({ current, category, refresh }: Props) => {
+export const NewArticlesAvailable = ({ current, category, refresh }: Props) => {
   const [nbItems, setNbItems] = useState(0)
   const visibility = usePageVisibility()
   const visibilityDetectionRef = useRef(false)

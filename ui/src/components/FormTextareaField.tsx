@@ -13,7 +13,7 @@ interface Props {
 
 type AllProps = Props & Omit<BaseInputProps<any>, 'type'>
 
-export default forwardRef((props: AllProps, ref: Ref<any>) => {
+export const FormTextareaField = forwardRef((props: AllProps, ref: Ref<any>) => {
   const { error, label, children, ...rest } = { ...props, ref }
 
   const className = classNames('form-group', error ? 'has-error' : null)

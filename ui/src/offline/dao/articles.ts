@@ -1,5 +1,5 @@
 import { Article, GetArticlesRequest, GetArticlesResponse } from '../../articles/models'
-import fetchAPI from '../../helpers/fetchAPI'
+import { fetchAPI } from '../../helpers'
 import { db } from '../db'
 
 export const getAsDataURL = async (src: string) => {

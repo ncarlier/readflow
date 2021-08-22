@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react'
 import { useModal } from 'react-modal-hook'
 
-import ConfirmDialog from '../components/ConfirmDialog'
+import { ConfirmDialog } from '../components'
 
-export default (title: string, body: ReactNode) => {
+export const useConfirmModal = (title: string, body: ReactNode) => {
   const [showConfirmModal, hideConfirmModal] = useModal(() => (
     <ConfirmDialog title={title} confirmLabel="Ok" onConfirm={hideConfirmModal}>
       {body}

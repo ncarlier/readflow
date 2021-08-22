@@ -3,10 +3,8 @@ import React from 'react'
 import ReactModal from 'react-modal'
 import { useModal } from 'react-modal-hook'
 
-import ButtonIcon from '../../components/ButtonIcon'
+import { ButtonIcon, Logo, Panel } from '../../components'
 import dialogStyles from '../../components/Dialog.module.css'
-import Panel from '../../components/Panel'
-import Logo from '../../logos/Logo'
 import { VERSION } from '../../constants'
 import styles from './AboutButton.module.css'
 
@@ -42,7 +40,7 @@ const AboutPanel = ({ closeHandler }: Props) => (
   </Panel>
 )
 
-export default () => {
+const AboutButton = () => {
   const [showAboutModal, hideAboutModal] = useModal(() => (
     <ReactModal
       isOpen
@@ -59,3 +57,5 @@ export default () => {
 
   return <ButtonIcon title="About" onClick={showAboutModal} icon="info" />
 }
+
+export default AboutButton

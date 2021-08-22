@@ -1,14 +1,13 @@
-import React, { ReactNode } from 'react'
+import React, { FC } from 'react'
 
 import styles from './Center.module.css'
 import { classNames } from '../helpers'
 
 interface Props {
-  children: ReactNode
   className?: string
 }
 
-export default ({ children, className }: Props) => (
+export const Center: FC<Props> = ({ children, className }) => (
   <section className={classNames(styles.center, className)}>
     <div>{children}</div>
   </section>

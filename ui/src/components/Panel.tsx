@@ -10,7 +10,7 @@ interface Props {
   className?: string
 }
 
-export default forwardRef(({ children, className, ...rest }: Props, ref: Ref<any>) => (
+export const Panel = forwardRef(({ children, className, ...rest }: Props, ref: Ref<any>) => (
   <section ref={ref} className={classNames(styles.panel, className)} {...rest}>
     {children}
   </section>

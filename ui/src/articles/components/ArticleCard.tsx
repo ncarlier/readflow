@@ -1,16 +1,12 @@
 import React from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 
-import Icon from '../../components/Icon'
-import TimeAgo from '../../components/TimeAgo'
+import { Icon, TimeAgo } from '../../components'
 import { classNames, getHostname } from '../../helpers'
-import useKeyboard from '../../hooks/useKeyboard'
+import { useKeyboard } from '../../hooks'
 import { Article } from '../models'
 import styles from './ArticleCard.module.css'
-import ArticleImage from './ArticleImage'
-import ArticleContextMenu from './context-menu/ArticleContextMenu'
-import MarkAsButton from './MarkAsButton'
-import StarsButton from './StarsButton'
+import { ArticleImage, MarkAsButton, StarsButton, ArticleContextMenu } from '.'
 
 interface Props {
   article: Article
@@ -20,7 +16,7 @@ interface Props {
 
 type AllProps = Props & RouteComponentProps
 
-export default withRouter((props: AllProps) => {
+export const ArticleCard = withRouter((props: AllProps) => {
   const { article, isActive, onRemove, history, match } = props
 
   const readMorePath = match.url + '/' + props.article.id

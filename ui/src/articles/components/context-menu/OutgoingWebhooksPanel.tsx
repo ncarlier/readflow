@@ -1,9 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
-import Loader from '../../../components/Loader'
 import { OutgoingWebhook } from '../../../settings/intergrations/outgoing-webhook/models'
-import Logo from '../../../logos/Logo'
-import LinkIcon from '../../../components/LinkIcon'
+import { Loader, Logo, LinkIcon } from '../../../components'
 
 interface Props {
   webhooks: OutgoingWebhook[]

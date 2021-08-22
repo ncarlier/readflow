@@ -2,24 +2,18 @@ import React, { useEffect } from 'react'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 
-import ArticleContent from '../articles/components/ArticleContent'
-import ArticleHeader from '../articles/components/ArticleHeader'
-import ArticleMenu from '../articles/components/context-menu/ArticleContextMenu'
+import { ArticleContent, ArticleHeader, ArticleContextMenu } from '../articles/components'
 import { Article } from '../articles/models'
-import ButtonIcon from '../components/ButtonIcon'
-import Center from '../components/Center'
-import Loader from '../components/Loader'
-import Panel from '../components/Panel'
+import { ButtonIcon, Center, ErrorPanel, Loader, Panel } from '../components'
 import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
-import ErrorPanel from '../error/ErrorPanel'
 import { matchResponse } from '../helpers'
-import Page from '../layout/Page'
+import { Page } from '../layout'
 
 type AllProps = RouteComponentProps<{ id: string }> & OfflineProps
 
 const Actions = () => <ButtonIcon as={Link} to="/offline" icon="arrow_back" title="back to the list" />
 
-export const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle }: AllProps) => {
+const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle }: AllProps) => {
   const { id } = match.params
 
   const { selected: data, error, loading } = offlineArticles
@@ -41,7 +35,7 @@ export const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle
         return (
           <>
             <ArticleHeader article={article}>
-              <ArticleMenu article={article} />
+              <ArticleContextMenu article={article} />
             </ArticleHeader>
             <ArticleContent article={article} />
           </>

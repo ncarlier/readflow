@@ -1,15 +1,14 @@
-import React, { ReactNode, useRef } from 'react'
-import ScrollToTop from '../components/ScrollToTop'
+import React, { FC, useRef } from 'react'
 
-import useScrollMemory from '../hooks/useScrollMemory'
+import { ScrollToTop } from '../components'
+import { useScrollMemory } from '../hooks'
 import styles from './Content.module.css'
 
 interface Props {
-  children: ReactNode
   scrollToTop?: boolean
 }
 
-export default ({ children, scrollToTop = false }: Props) => {
+export const Content: FC<Props> = ({ children, scrollToTop = false }) => {
   const ref = useRef<HTMLDivElement>(null)
   useScrollMemory(ref)
 

@@ -5,7 +5,7 @@ interface Props {
   dateTime?: string
 }
 
-export default ({ dateTime }: Props) => {
+export const TimeAgo = ({ dateTime }: Props) => {
   if (!dateTime) {
     return <span>-</span>
   }

@@ -1,12 +1,10 @@
 import React from 'react'
 import { Redirect, Route, RouteComponentProps, Switch } from 'react-router'
 
-import Appbar from '../layout/Appbar'
-import Page from '../layout/Page'
+import { Appbar, Page } from '../layout'
 import AboutButton from './about/AboutButton'
 import CategoriesRoutes from './categories/routes'
-import Header from './components/Header'
-import Tabs from './components/Tabs'
+import { Header, Tabs } from './components'
 import IntegrationsRoutes from './intergrations/routes'
 import PreferencesTab from './preferences/PreferencesTab'
 import classes from './SettingsPage.module.css'
@@ -25,7 +23,9 @@ const Actions = () => (
 
 const PageHeader = () => (
   <>
-    <Appbar actions={<Actions />} />
+    <Appbar>
+      <Actions />
+    </Appbar>
     <Header>
       <h1>Settings</h1>
       <AboutButton />
@@ -34,7 +34,7 @@ const PageHeader = () => (
   </>
 )
 
-export default ({ match }: RouteComponentProps) => (
+const SettingsPage = ({ match }: RouteComponentProps) => (
   <Page header={<PageHeader />} className={classes.settings}>
     <Switch>
       <Route path={match.path + '/categories'} component={CategoriesRoutes} />
@@ -44,3 +44,5 @@ export default ({ match }: RouteComponentProps) => (
     </Switch>
   </Page>
 )
+
+export default SettingsPage

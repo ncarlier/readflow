@@ -1,8 +1,6 @@
-import React, { ReactNode } from 'react'
+import React, { FC } from 'react'
 import classes from './HelpSection.module.css'
 
-interface Props {
-  children?: ReactNode
-}
+const HelpSection: FC = ({ children }) => <div className={classes.help}>{children}</div>
 
-export default ({ children }: Props) => <div className={classes.help}>{children}</div>
+export default HelpSection

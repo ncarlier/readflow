@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import FormInputField from '../../../../components/FormInputField'
-import AccountLinker from '../../components/AccountLinker'
+import { FormInputField } from '../../../../components'
+import { AccountLinker } from '../../components'
 
 interface PocketConfigFormFields {
   access_token: string
@@ -14,7 +14,7 @@ interface Props {
   config: PocketConfigFormFields
 }
 
-export default ({ onChange, config }: Props) => {
+export const PocketConfigForm = ({ onChange, config }: Props) => {
   const [formState, { text, password }] = useFormState<PocketConfigFormFields>(config, {
     onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
   })

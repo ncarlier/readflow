@@ -4,6 +4,7 @@ import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 
+import classes from './CategoriesTab.module.css'
 import { updateCacheAfterDelete } from '../../categories/cache'
 import {
   Category,
@@ -12,16 +13,38 @@ import {
   GetCategoriesResponse,
 } from '../../categories/models'
 import { DeleteCategories, GetCategories } from '../../categories/queries'
-import Button from '../../components/Button'
-import ConfirmDialog from '../../components/ConfirmDialog'
-import DataTable, { OnSelectedFn } from '../../components/DataTable'
-import Loader from '../../components/Loader'
-import Panel from '../../components/Panel'
-import TimeAgo from '../../components/TimeAgo'
+import {
+  Button,
+  ButtonIcon,
+  ConfirmDialog,
+  DataTable,
+  ErrorPanel,
+  Loader,
+  OnSelectedFn,
+  Panel,
+  TimeAgo,
+} from '../../components'
 import { MessageContext } from '../../contexts/MessageContext'
-import ErrorPanel from '../../error/ErrorPanel'
 import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
+
+const CategoryDates = ({ val }: { val: Category }) => (
+  <small>
+    Created <TimeAgo dateTime={val.created_at} />
+    {val.updated_at && (
+      <>
+        <br />
+        Updated <TimeAgo dateTime={val.updated_at} />
+      </>
+    )}
+  </small>
+)
+
+const CategoryRule = ({ val: { rule } }: { val: Category }) => (
+  <small className={classes.rule} title={rule || '-'}>
+    {rule || '-'}
+  </small>
+)
 
 const definition = [
   {
@@ -33,16 +56,22 @@ const definition = [
     ),
   },
   {
-    title: 'Created',
-    render: (val: Category) => <TimeAgo dateTime={val.created_at} />,
+    title: 'Rule',
+    render: (val: Category) => <CategoryRule val={val} />,
   },
   {
-    title: 'Updated',
-    render: (val: Category) => <TimeAgo dateTime={val.updated_at} />,
+    title: 'Date(s)',
+    render: (val: Category) => <CategoryDates val={val} />,
+  },
+  {
+    title: '',
+    render: (val: Category) => (
+      <ButtonIcon title="Edit category" as={Link} to={`/settings/categories/${val.id}`} icon="edit" />
+    ),
   },
 ]
 
-export default ({ match }: RouteComponentProps) => {
+const CategoriesTab = ({ match }: RouteComponentProps) => {
   usePageTitle('Settings - Categories')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -133,3 +162,5 @@ export default ({ match }: RouteComponentProps) => {
     </Panel>
   )
 }
+
+export default CategoriesTab

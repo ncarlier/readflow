@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Button from '../../components/Button'
+import { Button } from '../../components'
 import { User } from '../../components/UserInfos'
 import { REDIRECT_URL } from '../../constants'
 
@@ -20,7 +20,7 @@ const ManagePlanButton = () => (
   </Button>
 )
 
-export default ({ user }: Props) => {
+export const PlanManagement = ({ user }: Props) => {
   if (REDIRECT_URL === 'https://about.readflow.app') {
     return user.customer_id ? <ManagePlanButton /> : <UpgradePlanButton />
   }

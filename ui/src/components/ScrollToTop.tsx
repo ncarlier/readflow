@@ -1,5 +1,5 @@
 import React, { RefObject, useEffect, useState } from 'react'
-import ButtonIcon from './ButtonIcon'
+import { ButtonIcon } from '.'
 
 import styles from './ScrollToTop.module.css'
 
@@ -8,7 +8,7 @@ interface Props {
   parent: RefObject<HTMLElement>
 }
 
-export default ({ title = 'Scroll to top', parent }: Props) => {
+export const ScrollToTop = ({ title = 'Scroll to top', parent }: Props) => {
   const [isVisible, setIsVisible] = useState(false)
 
   const scrollToTop = () => {

@@ -1,18 +1,15 @@
 /* eslint-disable react/jsx-no-target-blank */
-import React, { ReactNode } from 'react'
+import React, { FC } from 'react'
 
 import styles from './HelpLink.module.css'
-import Icon from './Icon'
+import { Icon } from '.'
 
-interface IProps {
+interface Props {
   href: string
   title?: string
-  children: ReactNode
 }
 
-type Props = IProps
-
-export default ({ href, title, children }: Props) => (
+export const HelpLink: FC<Props> = ({ href, title, children }) => (
   <a className={styles.help} href={href} title={title} target="_blank" rel="noreferrer noopener">
     <Icon name="help" /> {children}
   </a>

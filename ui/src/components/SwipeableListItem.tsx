@@ -1,9 +1,8 @@
-import React, { ReactNode, useCallback, useEffect, useRef } from 'react'
+import React, { FC, ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import styles from './SwipeableListItem.module.css'
 
 interface Props {
-  children: ReactNode
   background?: ReactNode
   threshold?: number
   onSwipe: () => void
@@ -11,7 +10,7 @@ interface Props {
 
 const fpsInterval = 1000 / 60
 
-export default ({ children, background, onSwipe, threshold = 0.3 }: Props) => {
+export const SwipeableListItem: FC<Props> = ({ children, background, onSwipe, threshold = 0.3 }) => {
   // Drag & Drop
   const dragStartX = useRef(0)
   const left = useRef(0)

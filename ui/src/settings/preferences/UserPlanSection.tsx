@@ -2,12 +2,10 @@ import gql from 'graphql-tag'
 import React from 'react'
 import { useQuery } from '@apollo/client'
 
-import Box from '../../components/Box'
-import Loader from '../../components/Loader'
+import { Box, ErrorPanel, Loader } from '../../components'
 import { GetCurrentUser, GetCurrentUserResponse } from '../../components/UserInfos'
-import ErrorPanel from '../../error/ErrorPanel'
 import { matchResponse } from '../../helpers'
-import PlanManagement from '../components/PlanManagement'
+import { PlanManagement } from '../components'
 
 export const GetPlans = gql`
   query {
@@ -61,7 +59,7 @@ const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
   return <>{render(loading, data, error)}</>
 }
 
-export default () => {
+const UserPlanSection = () => {
   const { data, error, loading } = useQuery<GetPlansResponse>(GetPlans)
 
   const render = matchResponse<GetPlansResponse>({
@@ -85,3 +83,5 @@ export default () => {
 
   return <>{render(loading, data, error)}</>
 }
+
+export default UserPlanSection

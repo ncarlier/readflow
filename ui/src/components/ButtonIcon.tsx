@@ -3,7 +3,7 @@ import Ink from 'react-ink'
 
 import classes from './ButtonIcon.module.css'
 import { classNames } from '../helpers'
-import Icon from './Icon'
+import { Icon } from '.'
 import { PropsOf } from './PropsOf'
 
 interface ButtonIconProps {
@@ -13,7 +13,7 @@ interface ButtonIconProps {
   floating?: boolean
 }
 
-function ButtonIcon<Tag extends ElementType = 'button'>(props: { as?: Tag } & ButtonIconProps & PropsOf<Tag>) {
+export function ButtonIcon<Tag extends ElementType = 'button'>(props: { as?: Tag } & ButtonIconProps & PropsOf<Tag>) {
   const { as: Element = 'button', icon, variant, loading, floating, ...attrs } = props
   let className = classNames(classes.button, classes[variant], floating ? classes.floating : null)
 
@@ -33,5 +33,3 @@ function ButtonIcon<Tag extends ElementType = 'button'>(props: { as?: Tag } & Bu
     </Element>
   )
 }
-
-export default ButtonIcon

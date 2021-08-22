@@ -3,12 +3,11 @@ import { useMutation } from '@apollo/client'
 
 import { MessageContext } from '../../contexts/MessageContext'
 import { getGQLError } from '../../helpers'
-import useKeyboard from '../../hooks/useKeyboard'
+import { useKeyboard } from '../../hooks'
 import { updateCacheAfterUpdate } from '../cache'
 import { Article, UpdateArticleRequest, UpdateArticleResponse } from '../models'
 import { UpdateArticle } from '../queries'
-import DrawerMenu from '../../components/DrawerMenu'
-import Stars from '../../components/Stars'
+import { DrawerMenu, Stars } from '../../components'
 
 interface Props {
   article: Article
@@ -16,7 +15,7 @@ interface Props {
   onSuccess?: (article: Article) => void
 }
 
-export default (props: Props) => {
+export const StarsButton = (props: Props) => {
   const { article, keyboard = false, onSuccess } = props
 
   const { showErrorMessage } = useContext(MessageContext)

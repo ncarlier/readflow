@@ -14,7 +14,7 @@ interface Props {
 
 type AllProps = Props & BaseInputProps<any>
 
-export default forwardRef((props: AllProps, ref: Ref<any>) => {
+export const FormInputField = forwardRef((props: AllProps, ref: Ref<any>) => {
   const { error, label, children, ...rest } = { ...props, ref }
 
   if (rest.type === 'checkbox') {

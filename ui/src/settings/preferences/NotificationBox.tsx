@@ -1,22 +1,15 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import React, { FC, useCallback, useEffect, useState } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
 import Switch from 'react-switch'
 
-import Box from '../../components/Box'
-import Button from '../../components/Button'
-import Loader from '../../components/Loader'
-import ErrorPanel from '../../error/ErrorPanel'
+import { Box, Button, ErrorPanel, Loader } from '../../components'
 import { isNotificationGranted, isNotificationSupported, subscribePush, unSubscribePush } from '../../helpers'
-import { CreatePushSubscriptionResponse, DeletePushSubscriptionResponse, GetDeviceResponse } from '../components/models'
-import { CreatePushSubscription, DeletePushSubscription, GetDevice } from '../components/queries'
+import { CreatePushSubscriptionResponse, DeletePushSubscriptionResponse, GetDeviceResponse } from './models'
+import { CreatePushSubscription, DeletePushSubscription, GetDevice } from './queries'
 
 const deviceIdKey = 'readflow.deviceId'
 
-interface NotificationSupportProps {
-  children: ReactNode
-}
-
-const NotificationSupport = ({ children }: NotificationSupportProps) => {
+const NotificationSupport: FC = ({ children }) => {
   const supported = isNotificationSupported()
   const [allowed, setAllowed] = useState(isNotificationGranted())
 
@@ -144,7 +137,7 @@ const NotificationSwitch = () => {
   )
 }
 
-export default () => (
+const NotificationBox = () => (
   <Box title="Notifications">
     <p>Receive notifications on your device when new articles are available.</p>
     <NotificationSupport>
@@ -152,3 +145,5 @@ export default () => (
     </NotificationSupport>
   </Box>
 )
+
+export default NotificationBox

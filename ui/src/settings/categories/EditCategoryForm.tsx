@@ -6,12 +6,8 @@ import { useFormState } from 'react-use-form-state'
 
 import { Category, CreateOrUpdateCategoryResponse } from '../../categories/models'
 import { CreateOrUpdateCategory } from '../../categories/queries'
-import Button from '../../components/Button'
-import FormInputField from '../../components/FormInputField'
-import FormTextareaField from '../../components/FormTextareaField'
-import HelpLink from '../../components/HelpLink'
 import { MessageContext } from '../../contexts/MessageContext'
-import ErrorPanel from '../../error/ErrorPanel'
+import { Button, ErrorPanel, FormInputField, FormTextareaField, HelpLink } from '../../components'
 import { getGQLError, isValidForm } from '../../helpers'
 
 interface EditCategoryFormFields {
@@ -24,7 +20,7 @@ interface Props {
   history: History
 }
 
-export default ({ category, history }: Props) => {
+const EditCategoryForm = ({ category, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text, textarea }] = useFormState<EditCategoryFormFields>({
     title: category.title,
@@ -86,3 +82,5 @@ export default ({ category, history }: Props) => {
     </>
   )
 }
+
+export default EditCategoryForm

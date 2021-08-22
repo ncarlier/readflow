@@ -1,10 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import Button from '../../../components/Button'
-import Loader from '../../../components/Loader'
+import { Button, Loader } from '../../../components'
 import { MessageContext } from '../../../contexts/MessageContext'
-import fetchAPI from '../../../helpers/fetchAPI'
+import { fetchAPI } from '../../../helpers'
 
 const sessionStoragePrefix = 'readflow.accountLinker'
 
@@ -34,7 +33,7 @@ interface Props {
   provider: 'pocket'
 }
 
-export default ({ provider }: Props) => {
+export const AccountLinker = ({ provider }: Props) => {
   const [loading, setLoading] = useState(false)
   const { showErrorMessage } = useContext(MessageContext)
   const history = useHistory()

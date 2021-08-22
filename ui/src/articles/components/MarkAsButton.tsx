@@ -1,10 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
 
-import ButtonIcon from '../../components/ButtonIcon'
+import { ButtonIcon } from '../../components'
 import { MessageContext } from '../../contexts/MessageContext'
 import { getGQLError } from '../../helpers'
-import useKeyboard from '../../hooks/useKeyboard'
+import { useKeyboard } from '../../hooks'
 import { updateCacheAfterUpdate } from '../cache'
 import { Article, ArticleStatus, UpdateArticleRequest, UpdateArticleResponse } from '../models'
 import { UpdateArticle } from '../queries'
@@ -16,7 +16,7 @@ interface Props {
   onSuccess?: (article: Article) => void
 }
 
-export default (props: Props) => {
+export const MarkAsButton = (props: Props) => {
   const isMounted = React.useRef(true)
   const { article, floating = false, keyboard = false, onSuccess } = props
 

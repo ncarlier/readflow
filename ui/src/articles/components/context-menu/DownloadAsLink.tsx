@@ -1,11 +1,10 @@
 import React, { useCallback, useContext, useState } from 'react'
 
-import LinkIcon from '../../../components/LinkIcon'
+import { LinkIcon, Overlay } from '../../../components'
 import { MessageContext } from '../../../contexts/MessageContext'
-import fetchAPI from '../../../helpers/fetchAPI'
+import { fetchAPI } from '../../../helpers'
 import { Article } from '../../models'
 import DownloadPanel from './DownloadPanel'
-import Overlay from '../../../components/Overlay'
 import DownloadProgress from './DownloadProgress'
 
 interface Props {

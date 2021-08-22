@@ -1,14 +1,11 @@
 import React from 'react'
 import { useQuery } from '@apollo/client'
 
-import Button from '../../../components/Button'
-import Loader from '../../../components/Loader'
 import { GetCurrentUser, GetCurrentUserResponse } from '../../../components/UserInfos'
-import ErrorPanel from '../../../error/ErrorPanel'
+import { Button, ErrorPanel, Loader, Logo } from '../../../components'
 import { matchResponse } from '../../../helpers'
-import FeedpushrLogo from './FeedpushrLogo'
 
-export default () => {
+const FeedpushrSection = () => {
   const { data, error, loading } = useQuery<GetCurrentUserResponse>(GetCurrentUser)
 
   const render = matchResponse<GetCurrentUserResponse>({
@@ -22,7 +19,7 @@ export default () => {
         <section>
           <header>
             <h2>
-              <FeedpushrLogo />
+              <Logo name="feedpushr" style={{ maxWidth: '2em', verticalAlign: 'middle' }} />
               Feedpushr
             </h2>
             <Button as={'a'} href={`https://feedpushr.nunux.org/${me.hashid}`} target="_blank" title="Manage my feeds">
@@ -37,3 +34,5 @@ export default () => {
 
   return <>{render(loading, data, error)}</>
 }
+
+export default FeedpushrSection

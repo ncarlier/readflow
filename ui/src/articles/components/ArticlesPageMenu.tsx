@@ -4,10 +4,7 @@ import { useMutation } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 
-import ConfirmDialog from '../../components/ConfirmDialog'
-import DropdownMenu from '../../components/DropdownMenu'
-import Kbd from '../../components/Kbd'
-import LinkIcon from '../../components/LinkIcon'
+import { ConfirmDialog, DropDownMenu, Kbd, LinkIcon } from '../../components'
 import {
   DisplayMode,
   DisplayPreference,
@@ -79,7 +76,7 @@ function getLocationWithStatusParam(loc: Location, status: 'read' | 'unread') {
   return { ...loc, search: params.toString() }
 }
 
-export default (props: Props) => {
+export const ArticlesPageMenu = (props: Props) => {
   const { refresh, req, variant } = props
 
   const loc = useLocation()
@@ -174,7 +171,7 @@ export default (props: Props) => {
   ))
 
   return (
-    <DropdownMenu title="Page options...">
+    <DropDownMenu title="Page options...">
       <ul>
         <li>
           <LinkIcon onClick={refresh} icon="refresh">
@@ -229,6 +226,6 @@ export default (props: Props) => {
           </li>
         )}
       </ul>
-    </DropdownMenu>
+    </DropDownMenu>
   )
 }

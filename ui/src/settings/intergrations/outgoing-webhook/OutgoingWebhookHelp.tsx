@@ -1,7 +1,6 @@
 import React from 'react'
 
-import HelpLink from '../../../components/HelpLink'
-import Logo from '../../../logos/Logo'
+import { HelpLink, Logo } from '../../../components'
 import HelpSection from '../../HelpSection'
 
 export default () => (

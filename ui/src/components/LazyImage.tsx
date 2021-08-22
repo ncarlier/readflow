@@ -14,7 +14,7 @@ interface Props {
 const proxifyImageURL = (url: string, width: number) =>
   `${API_BASE_URL}/img?url=${encodeURIComponent(url)}&width=${width}`
 
-export default ({ src, alt = '' }: Props) => {
+export const LazyImage = ({ src, alt = '' }: Props) => {
   const mobileDisplay = useMedia('(max-width: 767px)')
   const [loaded, setLoaded] = useState(false)
   const imgRef = useRef<HTMLImageElement>(null)

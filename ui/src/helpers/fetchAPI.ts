@@ -1,7 +1,7 @@
 import authService from '../auth'
 import { API_BASE_URL } from '../constants'
 
-export default async (uri: string, params: any = {}, init: RequestInit) => {
+export const fetchAPI = async (uri: string, params: any = {}, init: RequestInit) => {
   let user = await authService.getUser()
   if (user === null) {
     throw new Error('user not logged in')

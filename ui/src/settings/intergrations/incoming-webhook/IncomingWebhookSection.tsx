@@ -1,10 +1,8 @@
 import React, { useContext, useState } from 'react'
 import { Link, useRouteMatch } from 'react-router-dom'
 
-import Button from '../../../components/Button'
 import { MessageContext } from '../../../contexts/MessageContext'
-import ErrorPanel from '../../../error/ErrorPanel'
-import Logo from '../../../logos/Logo'
+import { ErrorPanel, Button, Logo } from '../../../components'
 import DeleteIncomingWebhookButton from './DeleteIncomingWebhookButton'
 import IncomingWebhookList from './IncomingWebhookList'
 

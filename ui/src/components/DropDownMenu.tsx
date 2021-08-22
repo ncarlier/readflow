@@ -1,7 +1,7 @@
-import React, { createRef, CSSProperties, MouseEventHandler, ReactNode, useCallback, useEffect } from 'react'
+import React, { createRef, CSSProperties, FC, MouseEventHandler, useCallback, useEffect } from 'react'
 
-import ButtonIcon from './ButtonIcon'
-import styles from './DropdownMenu.module.css'
+import { ButtonIcon } from '.'
+import styles from './DropDownMenu.module.css'
 
 export interface DropDownOrigin {
   vertical: 'top' | 'bottom' | number
@@ -29,14 +29,13 @@ const getDropdownOriginStyle = (origin: DropDownOrigin = { horizontal: 'left', v
 }
 
 interface Props {
-  children: ReactNode
   style?: CSSProperties
   title?: string
   icon?: string
   origin?: DropDownOrigin
 }
 
-export default (props: Props) => {
+export const DropDownMenu: FC<Props> = (props) => {
   const { children, icon = 'more_vert', origin, ...attrs } = props
   const ref = createRef<HTMLDetailsElement>()
 

@@ -1,3 +1,1 @@
-export function classNames(...names: (string | undefined | null)[]) {
-  return names.filter((name) => name).join(' ')
-}
+export const classNames = (...names: (string | undefined | null)[]) => names.filter((name) => name).join(' ')
