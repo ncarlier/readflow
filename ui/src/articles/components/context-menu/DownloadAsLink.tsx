@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { LinkIcon, Overlay } from '../../../components'
-import { MessageContext } from '../../../contexts/MessageContext'
+import { useMessage } from '../../../contexts'
 import { fetchAPI } from '../../../helpers'
 import { Article } from '../../models'
 import DownloadPanel from './DownloadPanel'
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default ({ article }: Props) => {
-  const { showErrorMessage } = useContext(MessageContext)
+  const { showErrorMessage } = useMessage()
   const [isVisible, setIsVisible] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [contentLength, setContentLength] = useState(0)

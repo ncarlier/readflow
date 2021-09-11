@@ -3,9 +3,9 @@ import React from 'react'
 import { useQuery } from '@apollo/client'
 
 import { Box, ErrorPanel, Loader } from '../../components'
-import { GetCurrentUser, GetCurrentUserResponse } from '../../components/UserInfos'
 import { matchResponse } from '../../helpers'
 import { PlanManagement } from '../components'
+import { useCurrentUser } from '../../contexts'
 
 export const GetPlans = gql`
   query {
@@ -31,32 +31,29 @@ interface UserPlanBoxProps {
 }
 
 const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
-  const { data, error, loading } = useQuery<GetCurrentUserResponse>(GetCurrentUser)
+  const user = useCurrentUser()
 
-  const render = matchResponse<GetCurrentUserResponse>({
-    Loading: () => <Loader center />,
-    Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
-    Data: ({ me }) => {
-      let plan = plans.find((p) => p.name === me.plan)
-      if (!plan) {
-        plan = plans[0]
-      }
-      return (
-        <Box title={plan.name}>
-          <ul>
-            <li>
-              Max number of articles: <b>{plan.total_articles}</b>
-            </li>
-            <li>
-              Max number of categories: <b>{plan.total_categories}</b>
-            </li>
-          </ul>
-          <PlanManagement user={me} />
-        </Box>
-      )
-    },
-  })
-  return <>{render(loading, data, error)}</>
+  if (!user) {
+    return null
+  }
+
+  let plan = plans.find((p) => p.name === user.plan)
+  if (!plan) {
+    plan = plans[0]
+  }
+  return (
+    <Box title={plan.name}>
+      <ul>
+        <li>
+          Max number of articles: <b>{plan.total_articles}</b>
+        </li>
+        <li>
+          Max number of categories: <b>{plan.total_categories}</b>
+        </li>
+      </ul>
+      <PlanManagement user={user} />
+    </Box>
+  )
 }
 
 const UserPlanSection = () => {

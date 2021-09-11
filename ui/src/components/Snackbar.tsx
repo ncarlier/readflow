@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import CSSTransition from 'react-transition-group/CSSTransition'
 
-import { MessageContext } from '../contexts/MessageContext'
+import { useMessage } from '../contexts'
 import { Notification } from '.'
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const Snackbar = ({ ttl = 5000 }: Props) => {
-  const { message, showMessage } = useContext(MessageContext)
+  const { message, showMessage } = useMessage()
 
   useEffect(() => {
     if (ttl && message.text && message.variant === 'info') {

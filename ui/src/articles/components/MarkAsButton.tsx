@@ -1,8 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
 
 import { ButtonIcon } from '../../components'
-import { MessageContext } from '../../contexts/MessageContext'
+import { useMessage } from '../../contexts'
 import { getGQLError } from '../../helpers'
 import { useKeyboard } from '../../hooks'
 import { updateCacheAfterUpdate } from '../cache'
@@ -20,7 +20,7 @@ export const MarkAsButton = (props: Props) => {
   const isMounted = React.useRef(true)
   const { article, floating = false, keyboard = false, onSuccess } = props
 
-  const { showErrorMessage } = useContext(MessageContext)
+  const { showErrorMessage } = useMessage()
   const [loading, setLoading] = useState(false)
   const [updateArticleMutation] = useMutation<UpdateArticleResponse, UpdateArticleRequest>(UpdateArticle)
 

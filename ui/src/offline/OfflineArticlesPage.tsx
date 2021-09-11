@@ -1,10 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 
 import { ArticleList, ArticlesPageMenu } from '../articles/components'
 import { GetArticlesRequest, GetArticlesResponse } from '../articles/models'
 import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
-import { LocalConfiguration, LocalConfigurationContext, SortOrder } from '../contexts/LocalConfigurationContext'
+import { LocalConfiguration, SortOrder, useLocalConfiguration } from '../contexts/LocalConfigurationContext'
 import { Center, ErrorPanel, Loader, Panel } from '../components'
 import { getURLParam, matchState } from '../helpers'
 import { Page } from '../layout'
@@ -30,7 +30,7 @@ const buildQueryFromLocation = (qs: string, localConfiguration: LocalConfigurati
 }
 
 const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: OfflineProps) => {
-  const { localConfiguration } = useContext(LocalConfigurationContext)
+  const { localConfiguration } = useLocalConfiguration()
   const location = useLocation()
   const [req, setReq] = useState<GetArticlesRequest>(buildQueryFromLocation(location.search, localConfiguration))
   const { data, error, loading } = offlineArticles

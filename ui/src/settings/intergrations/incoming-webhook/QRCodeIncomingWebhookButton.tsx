@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useModal } from 'react-modal-hook'
 
 import { ButtonIcon, ConfirmDialog, Loader } from '../../../components'
 import { fetchAPI } from '../../../helpers'
-import { MessageContext } from '../../../contexts/MessageContext'
+import { useMessage } from '../../../contexts'
 
 interface Props {
   token: string
@@ -12,7 +12,7 @@ interface Props {
 export default ({ token }: Props) => {
   const [loading, setLoading] = useState(false)
   const [dataURI, setDataURI] = useState('')
-  const { showErrorMessage } = useContext(MessageContext)
+  const { showErrorMessage } = useMessage()
 
   const [showQRCodeModal, hideQRCodeModal] = useModal(
     () => (

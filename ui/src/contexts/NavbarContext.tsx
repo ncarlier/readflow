@@ -1,4 +1,4 @@
-import React, { createContext, FC, useState } from 'react'
+import React, { createContext, FC, useContext, useState } from 'react'
 
 interface NavbarContextType {
   opened: boolean
@@ -21,4 +21,6 @@ const NavbarProvider: FC = ({ children }) => {
   return <NavbarContext.Provider value={{ opened, open, close }}>{children}</NavbarContext.Provider>
 }
 
-export { NavbarContext, NavbarProvider }
+export { NavbarProvider }
+
+export const useNavbar = () => useContext(NavbarContext)

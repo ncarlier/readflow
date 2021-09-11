@@ -1,8 +1,8 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback } from 'react'
 import { useMutation } from '@apollo/client'
 
 import { Icon, SwipeableListItem } from '../../components'
-import { MessageContext } from '../../contexts/MessageContext'
+import { useMessage } from '../../contexts'
 import { getGQLError } from '../../helpers'
 import { updateCacheAfterUpdate } from '../cache'
 import { Article, ArticleStatus, UpdateArticleRequest, UpdateArticleResponse } from '../models'
@@ -23,7 +23,7 @@ const Background = ({ icon }: { icon: string }) => (
 export const SwipeableArticleCard = (props: Props) => {
   const { article } = props
 
-  const { showErrorMessage } = useContext(MessageContext)
+  const { showErrorMessage } = useMessage()
   const [updateArticleMutation] = useMutation<UpdateArticleResponse, UpdateArticleRequest>(UpdateArticle)
 
   const updateArticleStatus = useCallback(

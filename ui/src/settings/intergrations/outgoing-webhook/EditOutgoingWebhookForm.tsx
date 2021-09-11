@@ -1,10 +1,10 @@
 import { History } from 'history'
-import React, { FormEvent, useCallback, useContext, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
-import { MessageContext } from '../../../contexts/MessageContext'
+import { useMessage } from '../../../contexts'
 import { Button, ErrorPanel, FormCheckboxField, FormInputField, FormSelectField } from '../../../components'
 import { getGQLError, isValidForm } from '../../../helpers'
 import {
@@ -40,7 +40,7 @@ export default ({ data, history }: Props) => {
     CreateOrUpdateOutgoingWebhookResponse,
     CreateOrUpdateOutgoingWebhookRequest
   >(CreateOrUpdateOutgoingWebhook)
-  const { showMessage } = useContext(MessageContext)
+  const { showMessage } = useMessage()
 
   const editOutgoingWebhook = useCallback(
     async (webhook: CreateOrUpdateOutgoingWebhookRequest) => {

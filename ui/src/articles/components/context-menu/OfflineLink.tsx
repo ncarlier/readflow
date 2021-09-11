@@ -1,10 +1,10 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useApolloClient } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
 
 import { ConfirmDialog, Kbd, LinkIcon, Loader, Overlay } from '../../../components'
 import { connectOffline, OfflineProps } from '../../../containers/OfflineContainer'
-import { MessageContext } from '../../../contexts/MessageContext'
+import { useMessage } from '../../../contexts'
 import { Article, GetArticleResponse } from '../../models'
 import { GetFullArticle } from '../../queries'
 
@@ -17,7 +17,7 @@ type AllProps = Props & OfflineProps
 
 export const OfflineLink = (props: AllProps) => {
   const { article, keyboard = false, saveOfflineArticle, removeOfflineArticle, offlineArticles } = props
-  const { showMessage, showErrorMessage } = useContext(MessageContext)
+  const { showMessage, showErrorMessage } = useMessage()
   const { loading } = offlineArticles
 
   const client = useApolloClient()

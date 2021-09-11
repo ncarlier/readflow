@@ -1,4 +1,4 @@
-import React, { createContext, FC, useCallback, useEffect, useState } from 'react'
+import React, { createContext, FC, useCallback, useContext, useEffect, useState } from 'react'
 
 const key = 'readflow.localConfiguration'
 
@@ -92,4 +92,6 @@ const LocalConfigurationProvider: FC = ({ children }) => {
   )
 }
 
-export { LocalConfigurationContext, LocalConfigurationProvider }
+export { LocalConfigurationProvider }
+
+export const useLocalConfiguration = () => useContext(LocalConfigurationContext)

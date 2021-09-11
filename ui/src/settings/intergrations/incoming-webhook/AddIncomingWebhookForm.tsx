@@ -1,10 +1,10 @@
-import React, { FormEvent, useCallback, useContext, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
-import { MessageContext } from '../../../contexts/MessageContext'
+import { useMessage } from '../../../contexts'
 import { Button, ErrorPanel, FormInputField, Panel } from '../../../components'
 import { getGQLError, isValidForm } from '../../../helpers'
 import { usePageTitle } from '../../../hooks'
@@ -28,7 +28,7 @@ export default ({ history }: AllProps) => {
     CreateOrUpdateIncomingWebhookResponse,
     CreateOrUpdateIncomingWebhookRequest
   >(CreateOrUpdateIncomingWebhook)
-  const { showMessage } = useContext(MessageContext)
+  const { showMessage } = useMessage()
 
   const addIncomingWebhook = useCallback(
     async (incomingWebhook: CreateOrUpdateIncomingWebhookRequest) => {

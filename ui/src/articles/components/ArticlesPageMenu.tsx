@@ -1,5 +1,5 @@
+import React, { SyntheticEvent, useCallback } from 'react'
 import { Location } from 'history'
-import React, { SyntheticEvent, useCallback, useContext } from 'react'
 import { useMutation } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
 import { Link, useHistory, useLocation } from 'react-router-dom'
@@ -9,11 +9,11 @@ import {
   DisplayMode,
   DisplayPreference,
   DisplayPreferences,
-  LocalConfigurationContext,
   SortBy,
   SortOrder,
+  useLocalConfiguration,
 } from '../../contexts/LocalConfigurationContext'
-import { MessageContext } from '../../contexts/MessageContext'
+import { useMessage } from '../../contexts'
 import { getGQLError } from '../../helpers'
 import { GetArticlesRequest, MarkAllArticlesAsReadRequest, MarkAllArticlesAsReadResponse } from '../models'
 import { MarkAllArticlesAsRead } from '../queries'
@@ -82,8 +82,8 @@ export const ArticlesPageMenu = (props: Props) => {
   const loc = useLocation()
   const { push } = useHistory()
 
-  const { showErrorMessage } = useContext(MessageContext)
-  const { localConfiguration, updateLocalConfiguration } = useContext(LocalConfigurationContext)
+  const { showErrorMessage } = useMessage()
+  const { localConfiguration, updateLocalConfiguration } = useLocalConfiguration()
   const [markAllArticlesAsReadMutation] = useMutation<MarkAllArticlesAsReadResponse, MarkAllArticlesAsReadRequest>(
     MarkAllArticlesAsRead
   )

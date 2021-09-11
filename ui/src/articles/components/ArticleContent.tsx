@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import mousetrap from 'mousetrap'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-import { LocalConfigurationContext } from '../../contexts/LocalConfigurationContext'
+import { useLocalConfiguration } from '../../contexts/LocalConfigurationContext'
 import { Article } from '../models'
 import styles from './ArticleContent.module.css'
 import readable from './readable'
@@ -35,7 +35,7 @@ window.onload = function() {
 export const ArticleContent = ({ article }: Props) => {
   const [alreadyRendered, setAlreadyRendered] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
-  const { localConfiguration } = useContext(LocalConfigurationContext)
+  const { localConfiguration } = useLocalConfiguration()
   let { theme } = localConfiguration
   if (theme === 'auto') {
     const mql = getMql()

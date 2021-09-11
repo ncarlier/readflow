@@ -1,7 +1,7 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 
 import { ButtonIcon } from '../components'
-import { NavbarContext } from '../contexts/NavbarContext'
+import { useNavbar } from '../contexts/NavbarContext'
 import styles from './Appbar.module.css'
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const Appbar: FC<Props> = ({ title, children }) => {
-  const navbar = useContext(NavbarContext)
+  const navbar = useNavbar()
 
   return (
     <div className={styles.appBar}>

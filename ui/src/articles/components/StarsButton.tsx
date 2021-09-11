@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
 
-import { MessageContext } from '../../contexts/MessageContext'
+import { useMessage } from '../../contexts'
 import { getGQLError } from '../../helpers'
 import { useKeyboard } from '../../hooks'
 import { updateCacheAfterUpdate } from '../cache'
@@ -18,7 +18,7 @@ interface Props {
 export const StarsButton = (props: Props) => {
   const { article, keyboard = false, onSuccess } = props
 
-  const { showErrorMessage } = useContext(MessageContext)
+  const { showErrorMessage } = useMessage()
   const [loading, setLoading] = useState(false)
   const [updateArticleMutation] = useMutation<UpdateArticleResponse, UpdateArticleRequest>(UpdateArticle)
 

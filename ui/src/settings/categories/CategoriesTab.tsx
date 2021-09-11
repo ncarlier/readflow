@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
@@ -24,7 +24,7 @@ import {
   Panel,
   TimeAgo,
 } from '../../components'
-import { MessageContext } from '../../contexts/MessageContext'
+import { useMessage } from '../../contexts'
 import { getGQLError, matchResponse } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 
@@ -78,7 +78,7 @@ const CategoriesTab = ({ match }: RouteComponentProps) => {
   const [selection, setSelection] = useState<number[]>([])
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
   const [deleteCategoriesMutation] = useMutation<DeleteCategoriesResponse, DeleteCategoriesRequest>(DeleteCategories)
-  const { showMessage } = useContext(MessageContext)
+  const { showMessage } = useMessage()
 
   const onSelectedHandler: OnSelectedFn = (keys) => {
     setSelection(keys)

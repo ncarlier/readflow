@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useQuery } from '@apollo/client'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Link } from 'react-router-dom'
@@ -6,17 +6,17 @@ import { Link } from 'react-router-dom'
 import { GetCategoriesResponse } from '../categories/models'
 import { GetCategories } from '../categories/queries'
 import { Loader, LinkIcon, NetworkStatus, Offline, UserInfos } from '../components'
-import { NavbarContext } from '../contexts/NavbarContext'
 import { matchResponse } from '../helpers'
 import logo from './logo_header.svg'
 import styles from './Navbar.module.css'
 import { AddArticleLink } from '../articles/components'
 import { Article } from '../articles/models'
+import { useNavbar } from '../contexts'
 
 export const Navbar = withRouter(({ location, history }: RouteComponentProps) => {
   const { pathname } = location
   const { data, error, loading } = useQuery<GetCategoriesResponse>(GetCategories)
-  const navbar = useContext(NavbarContext)
+  const navbar = useNavbar()
 
   const isCategoryActive = (id?: number) => {
     const _path = `/categories/${id}`
@@ -65,9 +65,7 @@ export const Navbar = withRouter(({ location, history }: RouteComponentProps) =>
           <h1>
             <img src={logo} alt="readflow" />
           </h1>
-          <NetworkStatus status="online">
-            <UserInfos />
-          </NetworkStatus>
+          <UserInfos />
           <NetworkStatus status="offline">
             <Offline />
           </NetworkStatus>

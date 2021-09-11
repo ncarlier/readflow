@@ -1,4 +1,4 @@
-import React, { createContext, FC, useState } from 'react'
+import React, { createContext, FC, useContext, useState } from 'react'
 
 type MessageType = 'error' | 'warning' | 'info'
 
@@ -30,4 +30,6 @@ const MessageProvider: FC = ({ children }) => {
   )
 }
 
-export { MessageContext, MessageProvider }
+export { MessageProvider }
+
+export const useMessage = () => useContext(MessageContext)

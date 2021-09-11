@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { NetworkStatus, useQuery } from '@apollo/client'
 import { RouteComponentProps } from 'react-router'
 
 import { Category } from '../categories/models'
-import { LocalConfiguration, LocalConfigurationContext } from '../contexts/LocalConfigurationContext'
+import { LocalConfiguration, useLocalConfiguration } from '../contexts/LocalConfigurationContext'
 import { Center, ErrorPanel, Loader, Panel } from '../components'
 import { getURLParam, matchResponse } from '../helpers'
 import { Appbar, Page } from '../layout'
@@ -103,7 +103,7 @@ type AllProps = Props & RouteComponentProps
 export default (props: AllProps) => {
   const { variant, category } = props
 
-  const { localConfiguration } = useContext(LocalConfigurationContext)
+  const { localConfiguration } = useLocalConfiguration()
   const [req] = useState<GetArticlesRequest>(buildArticlesRequest(variant, props, localConfiguration))
   const { data, error, fetchMore, refetch, networkStatus } = useQuery<GetArticlesResponse>(GetArticles, {
     variables: req,

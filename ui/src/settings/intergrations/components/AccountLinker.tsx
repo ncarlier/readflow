@@ -1,8 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import { Button, Loader } from '../../../components'
-import { MessageContext } from '../../../contexts/MessageContext'
+import { useMessage } from '../../../contexts'
 import { fetchAPI } from '../../../helpers'
 
 const sessionStoragePrefix = 'readflow.accountLinker'
@@ -35,7 +35,7 @@ interface Props {
 
 export const AccountLinker = ({ provider }: Props) => {
   const [loading, setLoading] = useState(false)
-  const { showErrorMessage } = useContext(MessageContext)
+  const { showErrorMessage } = useMessage()
   const history = useHistory()
 
   const linkAuthorize = useCallback(

@@ -1,11 +1,11 @@
 import gql from 'graphql-tag'
-import React, { useContext } from 'react'
+import React from 'react'
 import { useMutation } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
 
 import { Category } from '../../categories/models'
 import { Box, Button, ConfirmDialog } from '../../components'
-import { MessageContext } from '../../contexts/MessageContext'
+import { useMessage } from '../../contexts'
 import { getGQLError } from '../../helpers'
 
 const CleanHistory = gql`
@@ -21,7 +21,7 @@ interface CleanHistoryResponse {
 }
 
 const CleanHistoryBox = () => {
-  const { showMessage, showErrorMessage } = useContext(MessageContext)
+  const { showMessage, showErrorMessage } = useMessage()
   const [cleanHistoryMutation] = useMutation<CleanHistoryResponse>(CleanHistory)
   const cleanHistory = async () => {
     try {

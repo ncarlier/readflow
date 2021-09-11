@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useContext, useState } from 'react'
+import React, { FormEvent, useCallback, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
@@ -7,7 +7,7 @@ import { useFormState } from 'react-use-form-state'
 import { updateCacheAfterCreate } from '../../categories/cache'
 import { Category, CreateOrUpdateCategoryResponse } from '../../categories/models'
 import { CreateOrUpdateCategory } from '../../categories/queries'
-import { MessageContext } from '../../contexts/MessageContext'
+import { useMessage } from '../../contexts'
 import { Button, ErrorPanel, FormInputField, FormTextareaField, HelpLink, Panel } from '../../components'
 import { getGQLError, isValidForm } from '../../helpers'
 import { usePageTitle } from '../../hooks'
@@ -26,7 +26,7 @@ const AddCategoryForm = ({ history }: RouteComponentProps) => {
     rule: '',
   })
   const [addCategoryMutation] = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
-  const { showMessage } = useContext(MessageContext)
+  const { showMessage } = useMessage()
 
   const addNewCategory = useCallback(
     async (category: Category) => {

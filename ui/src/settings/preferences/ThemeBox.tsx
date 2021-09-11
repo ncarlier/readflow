@@ -1,15 +1,15 @@
-import React, { useContext, useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useFormState } from 'react-use-form-state'
 
 import { Box, FormSelectField } from '../../components'
-import { LocalConfigurationContext, Theme } from '../../contexts/LocalConfigurationContext'
+import { Theme, useLocalConfiguration } from '../../contexts/LocalConfigurationContext'
 
 interface SwitchThemeFormFields {
   theme: Theme
 }
 
 const ThemeSwitch = () => {
-  const { localConfiguration, updateLocalConfiguration } = useContext(LocalConfigurationContext)
+  const { localConfiguration, updateLocalConfiguration } = useLocalConfiguration()
 
   const [formState, { select }] = useFormState<SwitchThemeFormFields>({
     theme: localConfiguration.theme,

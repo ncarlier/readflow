@@ -1,13 +1,13 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useRouteMatch } from 'react-router-dom'
 
-import { MessageContext } from '../../../contexts/MessageContext'
+import { useMessage } from '../../../contexts'
 import { ErrorPanel, Logo, Button } from '../../../components'
 import DeleteOutgoingWebhooksButton from './DeleteOutgoingWebhookButton'
 import OutgoingWebhooksList from './OutgoingWebhookList'
 
 export default () => {
-  const { showMessage } = useContext(MessageContext)
+  const { showMessage } = useMessage()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [selection, setSelection] = useState<number[]>([])
   const { path } = useRouteMatch()

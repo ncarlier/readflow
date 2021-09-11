@@ -34,8 +34,9 @@ const errorLink = onError((err) => {
   console.error(err)
   if (err.networkError) {
     const { name, message } = err.networkError
-    console.log('networkError:', name, message)
+    console.error('networkError:', name, message)
     if (message === 'login_required' || message === 'invalid_grant') {
+      console.warn('redirecting to login page...')
       authService.login()
     }
   }

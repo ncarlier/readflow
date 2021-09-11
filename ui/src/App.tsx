@@ -1,15 +1,18 @@
+import React from 'react'
 import { ApolloProvider } from '@apollo/client'
 import { ConnectedRouter } from 'connected-react-router'
 import { History } from 'history'
-import React from 'react'
 import { ModalProvider } from 'react-modal-hook'
 import { Provider } from 'react-redux'
 import { Store } from 'redux'
 
-import { LocalConfigurationProvider } from './contexts/LocalConfigurationContext'
-import { MessageProvider } from './contexts/MessageContext'
-import { NavbarProvider } from './contexts/NavbarContext'
-import { ScrollMemoryProvider } from './contexts/ScrollMemoryContext'
+import {
+  CurrentUserProvider,
+  LocalConfigurationProvider,
+  MessageProvider,
+  NavbarProvider,
+  ScrollMemoryProvider,
+} from './contexts'
 import { client } from './graphqlClient'
 import { AppLayout } from './layout'
 import Routes from './routes'
@@ -38,9 +41,11 @@ export default function App({ store, history /*, theme*/ }: Props) {
               <NavbarProvider>
                 <ScrollMemoryProvider>
                   <ConnectedRouter history={history}>
-                    <AppLayout>
-                      <Routes />
-                    </AppLayout>
+                    <CurrentUserProvider>
+                      <AppLayout>
+                        <Routes />
+                      </AppLayout>
+                    </CurrentUserProvider>
                   </ConnectedRouter>
                 </ScrollMemoryProvider>
               </NavbarProvider>

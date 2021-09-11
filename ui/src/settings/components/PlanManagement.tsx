@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { Button } from '../../components'
-import { User } from '../../components/UserInfos'
 import { REDIRECT_URL } from '../../constants'
+import { User } from '../../contexts'
 
 interface Props {
   user: User

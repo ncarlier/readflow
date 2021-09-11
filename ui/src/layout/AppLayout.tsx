@@ -1,9 +1,9 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import CSSTransition from 'react-transition-group/CSSTransition'
 import { useModal } from 'react-modal-hook'
 
 import { InfoDialog, Shortcuts, Snackbar, UpdateAvailableNotification } from '../components'
-import { NavbarContext } from '../contexts/NavbarContext'
+import { useNavbar } from '../contexts/NavbarContext'
 import { classNames, isMobileDevice } from '../helpers'
 import { useKeyboard, useTheme } from '../hooks'
 import classes from './AppLayout.module.css'
@@ -23,7 +23,7 @@ export const AppLayout: FC = ({ children }) => {
 
   // const small = useMedia('(max-width: 400px)')
   // const large = useMedia('(min-width: 767px)')
-  const navbar = useContext(NavbarContext)
+  const navbar = useNavbar()
 
   const deviceClassName = isMobileDevice() ? classes.mobile : null
 

@@ -1,10 +1,10 @@
-import React, { FormEvent, useCallback, useContext, useEffect, useState } from 'react'
+import React, { FormEvent, useCallback, useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
-import { MessageContext } from '../../../contexts/MessageContext'
+import { useMessage } from '../../../contexts/MessageContext'
 import { Button, ErrorPanel, FormCheckboxField, FormInputField, FormSelectField, Panel } from '../../../components'
 import { getGQLError, isValidForm } from '../../../helpers'
 import { usePageTitle } from '../../../hooks'
@@ -40,7 +40,7 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
   usePageTitle('Settings - Add new outgoing webhook')
   const [config, setConfig] = useState<any>(getConfigFromQueryParams(search))
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const { showMessage } = useContext(MessageContext)
+  const { showMessage } = useMessage()
   const [formState, { text, checkbox, select }] = useFormState<AddOutgoingWebhookFormFields>(
     getFormStateFromQueryParams(search)
   )

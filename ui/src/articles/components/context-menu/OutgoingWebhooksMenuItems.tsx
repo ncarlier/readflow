@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 
 import { Loader } from '../../../components'
@@ -9,7 +9,7 @@ import { Article } from '../../models'
 import { SendArticleToOutgoingWebhook } from '../../queries'
 import DefaultWebhookLink from './DefaultWebhookLink'
 import OtherWebhooksLink from './OtherWebhooksLink'
-import { MessageContext } from '../../../contexts/MessageContext'
+import { useMessage } from '../../../contexts'
 
 interface SendArticleFields {
   id: number
@@ -23,7 +23,7 @@ interface Props {
 }
 
 export default ({ article, keyboard }: Props) => {
-  const { showMessage, showErrorMessage } = useContext(MessageContext)
+  const { showMessage, showErrorMessage } = useMessage()
   const [SendArticleToOutgoingWebhookMutation] = useMutation<SendArticleFields>(SendArticleToOutgoingWebhook)
   const { data, error, loading } = useQuery<GetOutgoingWebhooksResponse>(GetOutgoingWebhooks)
 
