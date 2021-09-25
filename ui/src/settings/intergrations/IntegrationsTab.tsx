@@ -11,9 +11,9 @@ const IntegrationTab = () => {
 
   return (
     <Panel>
-      <FeedpushrSection />
       <IncomingWebhookSection />
       <OutgoingWebhookSection />
+      <FeedpushrSection />
     </Panel>
   )
 }

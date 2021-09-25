@@ -50,6 +50,15 @@ const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
         <li>
           Max number of categories: <b>{plan.total_categories}</b>
         </li>
+        {plan.name === 'premium' && (
+          <li>
+            RSS feeds with a dedicated&nbsp;
+            <a href={`https://feedpushr.nunux.org/${user.hashid}`} rel="noreferrer noopener" target="_blank">
+              Feedpushr instance
+            </a>
+            .
+          </li>
+        )}
       </ul>
       <PlanManagement user={user} />
     </Box>

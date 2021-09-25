@@ -22,7 +22,7 @@ const ManagePlanButton = () => (
 
 export const PlanManagement = ({ user }: Props) => {
   if (REDIRECT_URL === 'https://about.readflow.app') {
-    return user.customer_id ? <ManagePlanButton /> : <UpgradePlanButton />
+    return user.customer_id || user.plan === 'premium' ? <ManagePlanButton /> : <UpgradePlanButton />
   }
   return <p>Ask your administrator to update your plan if needed.</p>
 }

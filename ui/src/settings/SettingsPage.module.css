@@ -20,3 +20,8 @@
 .settings section > header > button {
   align-self: flex-start;
 }
+
+.settings section li a {
+  color: inherit;
+  font-weight: 500;
+}
