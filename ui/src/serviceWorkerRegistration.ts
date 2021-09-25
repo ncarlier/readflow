@@ -47,6 +47,14 @@ export function register(config?: Config) {
         registerValidSW(swUrl, config)
       }
     })
+
+    window.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        navigator.serviceWorker.controller?.postMessage({
+          type: 'CLOSE_NOTIFICATIONS',
+        })
+      }
+    })
   }
 }
 

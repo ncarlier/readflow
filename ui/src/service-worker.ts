@@ -69,11 +69,20 @@ registerRoute(
   })
 )
 
-// This allows the web app to trigger skipWaiting via
-// registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting()
+  if (!event.data) {
+    return
+  }
+  switch (event.data.type) {
+    // This allows the web app to trigger skipWaiting via
+    // registration.waiting.postMessage({type: 'SKIP_WAITING'})
+    case 'SkIP_WAITING':
+      self.skipWaiting()
+      break
+    case 'CLOSE_NOTIFICATIONS':
+      self.registration.getNotifications().then((notifications) => {
+        notifications.forEach((notification) => notification.close())
+      })
   }
 })
 
