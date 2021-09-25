@@ -5,6 +5,7 @@
   max-height: 100%;
   padding: 0 !important;
   background: var(--panel-body-color) !important;
+  overflow-y: auto;
 }
 
 .drawer__backdrop {

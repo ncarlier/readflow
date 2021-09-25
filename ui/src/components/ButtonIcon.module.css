@@ -1,11 +1,15 @@
 
+a.button {
+  line-height: 40px;
+}
+
 .button {
   display: inline-block;
   text-align: center;
   background: transparent;
   position: relative;
   border-radius: 20px;
-  line-height: 40px;
+  height: 40px;
   width: 40px;
   border: transparent;
   cursor: pointer;
