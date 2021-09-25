@@ -22,6 +22,6 @@ func TestOEmbedContentProvider(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, page)
 	assert.Equal(t, "YouTube", page.SiteName)
-	assert.Equal(t, "Deus Ex Silicium : Les Circuits Intégrés", page.Title)
+	assert.Equal(t, "Les Circuits Intégrés - Deus Ex Silicium", page.Title)
 	assert.Equal(t, "YouTube video from Deus Ex Silicium", page.Text)
 }
