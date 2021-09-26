@@ -1,18 +1,16 @@
 package scraper
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 
+	"github.com/go-shiori/dom"
 	read "github.com/go-shiori/go-readability"
 	"github.com/ncarlier/readflow/pkg/constant"
-	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/html"
 	"golang.org/x/net/html/charset"
 )
@@ -66,8 +64,14 @@ func (ws internalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage
 		return nil, err
 	}
 
+	// Parse DOM
+	doc, err := dom.Parse(body)
+	if err != nil {
+		return nil, err
+	}
+
 	// Extract meta
-	meta, err := html.ExtractMeta(body)
+	meta := html.ExtractMetaFromDOM(doc)
 	if err != nil {
 		return nil, err
 	}
@@ -82,16 +86,8 @@ func (ws internalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage
 	// Set canonical URL
 	result.URL = res.Request.URL.String()
 
-	var buffer bytes.Buffer
-	tee := io.TeeReader(body, &buffer)
-
-	// Test if the HTML page is readable by Shiori readability
-	if !read.IsReadable(tee) {
-		return result, fmt.Errorf("unable to extract content from HTML page")
-	}
-
 	// Extract content from the HTML page
-	article, err := read.FromReader(&buffer, result.URL)
+	article, err := read.FromDocument(doc, res.Request.URL)
 	if err != nil {
 		return result, err
 	}
@@ -102,7 +98,7 @@ func (ws internalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage
 	result.Length = article.Length
 	result.SiteName = article.SiteName
 	// FIXME: readability excerpt don't well support UTF8
-	result.Excerpt = helper.ToUTF8(article.Excerpt)
+	// result.Excerpt = helper.ToUTF8(article.Excerpt)
 
 	// Fill in empty Open Graph attributes
 	if result.Title == "" {

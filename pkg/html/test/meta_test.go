@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/go-shiori/dom"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/ncarlier/readflow/pkg/html"
@@ -20,8 +21,9 @@ var testCase = `<head>
 </head>`
 
 func TestExtract(t *testing.T) {
-	meta, err := html.ExtractMeta(strings.NewReader(testCase))
+	doc, err := dom.Parse(strings.NewReader(testCase))
 	assert.Nil(t, err)
+	meta := html.ExtractMetaFromDOM(doc)
 	assert.Equal(t, 7, len(meta))
 	assert.Equal(t, "title", meta["title"].Name)
 	assert.Equal(t, "Test Case", meta["title"].Content)
