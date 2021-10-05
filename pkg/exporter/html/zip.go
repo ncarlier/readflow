@@ -50,7 +50,7 @@ func (exp *ZIPExporter) Export(ctx context.Context, article *model.Article) (*mo
 	return &model.FileAsset{
 		Data:        buf.Bytes(),
 		ContentType: "aplication/zip",
-		Name:        strings.TrimRight(article.Title, ".") + ".zip",
+		Name:        strings.TrimRight(article.Title, ". ") + ".zip",
 	}, nil
 }
 

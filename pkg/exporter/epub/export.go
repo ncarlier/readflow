@@ -56,7 +56,7 @@ func (exp *EpubExporter) Export(ctx context.Context, article *model.Article) (*m
 	return &model.FileAsset{
 		Data:        buf.Bytes(),
 		ContentType: constant.ContentTypeEpub,
-		Name:        strings.TrimRight(article.Title, ".") + ".epub",
+		Name:        strings.TrimRight(article.Title, ". ") + ".epub",
 	}, nil
 }
 

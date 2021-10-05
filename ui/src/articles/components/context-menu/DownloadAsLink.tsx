@@ -45,7 +45,7 @@ export default ({ article }: Props) => {
           }
           const contentType = res.headers.get('Content-Type') || 'application/octet-stream'
           const contentDisposition = res.headers.get('Content-Disposition') || `filename="${article.title}"`
-          const filename = contentDisposition.split('filename=')[1]
+          const filename = contentDisposition.split('filename=')[1].replaceAll('"', '')
           let receivedLength = 0
           const chunks = []
           for (;;) {

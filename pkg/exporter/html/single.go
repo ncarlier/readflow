@@ -45,7 +45,7 @@ func (exp *SingleHTMLExporter) Export(ctx context.Context, article *model.Articl
 	return &model.FileAsset{
 		Data:        data,
 		ContentType: constant.ContentTypeHTML,
-		Name:        strings.TrimRight(article.Title, ".") + ".html",
+		Name:        strings.TrimRight(article.Title, ". ") + ".html",
 	}, nil
 }
 

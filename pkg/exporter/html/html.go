@@ -42,7 +42,7 @@ func (exp *HTMLExporter) Export(ctx context.Context, article *model.Article) (*m
 	return &model.FileAsset{
 		Data:        buffer.Bytes(),
 		ContentType: constant.ContentTypeHTML,
-		Name:        strings.TrimRight(article.Title, ".") + ".html",
+		Name:        strings.TrimRight(article.Title, ". ") + ".html",
 	}, nil
 }
 
