@@ -20,6 +20,9 @@ body {
 .loader{
   text-align: center;
 }
+a {
+  color: var(--button-primary-color);
+}
 .spinner {
   display: inline-block;
   position: relative;
@@ -48,6 +51,7 @@ body {
   <div class="loader">
     <div class="spinner"></div>
     <p id="message">authentification...</p>
+    <a id="reload" style="display: none;" href="/">reload</a>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/oidc-client/1.10.1/oidc-client.min.js"></script>
   <script>
@@ -62,6 +66,7 @@ body {
     }, function (err) {
       console.error(err);
       document.getElementById("message").textContent = err;
+      document.getElementById("reload").style.display = "block";
     });
   </script>
 </body>
