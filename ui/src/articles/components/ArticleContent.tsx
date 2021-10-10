@@ -16,6 +16,7 @@ interface Props {
 const getHTMLContent = (body: string, theme: string) => `
 <html lang="en">
   <head>
+    <base target="_blank">
     <meta charset="utf-8" />
     <style>
       ${readable.css}
@@ -23,11 +24,6 @@ const getHTMLContent = (body: string, theme: string) => `
   </head>
   <body data-theme="${theme}">
     ${body}
-    <script>
-window.onload = function() {
-  document.querySelectorAll('a').forEach(a => a.setAttribute('target', '_blank'))
-}
-    </script>
   </body>
 </html>
 `
