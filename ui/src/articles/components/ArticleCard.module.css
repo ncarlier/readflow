@@ -73,7 +73,7 @@
 }
 
 .active {
-  border: 2px solid var(--button-primary-color);
+  outline: 2px solid var(--button-primary-color);
 }
 
 .illustration {
