@@ -17,3 +17,11 @@
   bottom: auto;
   outline: none;
 }
+
+@media (max-width: 767px) {
+  .dialog {
+    transform: translate(4%, -50%);
+    left: 0;
+    width: 92%;
+  }
+}
