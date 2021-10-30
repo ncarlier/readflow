@@ -72,6 +72,7 @@ const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: OfflineP
           hasMore={d.articles.hasNext}
           refetch={refetch}
           fetchMoreArticles={fetchMoreArticles}
+          variant={localConfiguration.display.offline.mode}
         />
       )
     },
