@@ -5,7 +5,7 @@ services:
   # PostgreSQL
   ########################################
   db:
-    image: postgres:11
+    image: postgres:14
     restart: always
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-readflow}

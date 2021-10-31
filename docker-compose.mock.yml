@@ -5,7 +5,7 @@ services:
   # Postgres
   #######################################
   db:
-    image: "postgres:11"
+    image: "postgres:14"
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-readflow_test}
@@ -16,7 +16,7 @@ services:
   # API
   ########################################
   api:
-    image: "golang:1.13"
+    image: "golang:1.17"
     restart: always
     depends_on:
       - db
