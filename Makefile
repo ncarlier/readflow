@@ -157,7 +157,7 @@ backup:
 	archive=backup/db-`date -I`.dump
 	echo "Backuping PosgreSQL database ($$archive)..."
 	mkdir -p backup
-	docker exec -u postgres readflow_db_1 pg_dump -Fc reader > $$archive
+	docker exec -u postgres readflow_db_1 pg_dumpall > $$archive
 	gzip -f $$archive
 	echo "done."
 .ONESHELL:
@@ -170,7 +170,7 @@ restore:
 		read -r -p "Are you sure? [y/N]: " CONTINUE; \
 	done ; \
 	[ $$CONTINUE = "y" ] || [ $$CONTINUE = "Y" ] || (echo "Exiting."; exit 1;)
-	docker exec -i -u postgres readflow_db_1 pg_restore -C -d postgres < $(archive)
+	docker exec -i -u postgres readflow_db_1 psql -U postgres -d postgres < $(archive)
 .PHONY: restore
 
 ## Open database client
