@@ -42,8 +42,13 @@ func (pg *DB) CountArticlesByUser(uid uint, req model.ArticlesPageRequest) (uint
 	}
 
 	if req.Starred != nil {
-		counter = counter.Where(sq.Gt{"stars": 0})
+		if *req.Starred {
+			counter = counter.Where(sq.Gt{"stars": 0})
+		} else {
+			counter = counter.Where(sq.Eq{"stars": 0})
+		}
 	}
+
 	if req.Query != nil && strings.TrimSpace(*req.Query) != "" {
 		counter = counter.Where(sq.Expr("search_vectors @@ websearch_to_tsquery(?)", *req.Query))
 	}
@@ -94,7 +99,11 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 	}
 
 	if req.Starred != nil {
-		selectBuilder = selectBuilder.Where(sq.Gt{"stars": 0})
+		if *req.Starred {
+			selectBuilder = selectBuilder.Where(sq.Gt{"stars": 0})
+		} else {
+			selectBuilder = selectBuilder.Where(sq.Eq{"stars": 0})
+		}
 	}
 
 	var offset uint

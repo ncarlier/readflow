@@ -8,13 +8,15 @@ import HistoryRoutes from './history'
 import OfflineRoutes from './offline'
 import SettingsPage from '../settings/SettingsPage'
 import StarredRoutes from './starred'
-import UnreadRoutes from './unread'
+import InboxRoutes from './inbox'
+import ToReadRoutes from './to_read'
 
 const Routes = () => (
   <Switch>
-    <Redirect exact from="/" to="/unread" />
-    <Redirect exact from="/login" to="/unread" />
-    <Route path="/unread" component={UnreadRoutes} />
+    <Redirect exact from="/" to="/inbox" />
+    <Redirect exact from="/login" to="/inbox" />
+    <Route path="/inbox" component={InboxRoutes} />
+    <Route path="/to_read" component={ToReadRoutes} />
     <Route path="/history" component={HistoryRoutes} />
     <Route path="/starred" component={StarredRoutes} />
     <Route path="/offline" component={OfflineRoutes} />

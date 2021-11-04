@@ -11,14 +11,41 @@ import { UpdateArticle } from '../queries'
 
 interface Props {
   article: Article
+  status: ArticleStatus
   floating?: boolean
   keyboard?: boolean
   onSuccess?: (article: Article) => void
 }
 
+type VariantsType = {
+  [K in ArticleStatus]: {
+    title: string
+    icon: string
+    kbs: string
+  }
+}
+
+const variants: VariantsType = {
+  inbox: {
+    title: 'Put back to the inbox',
+    icon: 'undo',
+    kbs: 'm',
+  },
+  read: {
+    title: 'Mark as read',
+    icon: 'done',
+    kbs: 'm',
+  },
+  to_read: {
+    title: 'Read it later',
+    icon: 'book',
+    kbs: 'r',
+  },
+}
+
 export const MarkAsButton = (props: Props) => {
   const isMounted = React.useRef(true)
-  const { article, floating = false, keyboard = false, onSuccess } = props
+  const { article, status, floating = false, keyboard = false, onSuccess } = props
 
   const { showErrorMessage } = useMessage()
   const [loading, setLoading] = useState(false)
@@ -32,56 +59,37 @@ export const MarkAsButton = (props: Props) => {
     []
   )
 
-  const updateArticleStatus = useCallback(
-    async (status: ArticleStatus) => {
-      setLoading(true)
-      try {
-        await updateArticleMutation({
-          variables: { id: article.id, status },
-          update: updateCacheAfterUpdate,
-        })
-        if (onSuccess) onSuccess(article)
-      } catch (err) {
-        showErrorMessage(getGQLError(err))
-      } finally {
-        if (isMounted.current) {
-          setLoading(false)
-        }
+  const updateArticleStatus = useCallback(async () => {
+    setLoading(true)
+    try {
+      await updateArticleMutation({
+        variables: { id: article.id, status },
+        update: updateCacheAfterUpdate,
+      })
+      if (onSuccess) onSuccess(article)
+    } catch (err) {
+      showErrorMessage(getGQLError(err))
+    } finally {
+      if (isMounted.current) {
+        setLoading(false)
       }
-    },
-    [updateArticleMutation, article, onSuccess, showErrorMessage]
-  )
+    }
+  }, [updateArticleMutation, article, status, onSuccess, showErrorMessage])
 
-  const handleOnClick = useCallback(() => {
-    const status = article.status === 'read' ? 'unread' : 'read'
-    updateArticleStatus(status)
-  }, [article, updateArticleStatus])
+  const { title, icon, kbs } = variants[status]
 
   // Keyboard shortcut is only active for Floating Action Button
-  useKeyboard('m', handleOnClick, keyboard)
-  const kbs = keyboard ? ' [m]' : ''
-
-  if (article.status === 'read') {
-    return (
-      <ButtonIcon
-        title={'Mark as unread' + kbs}
-        onClick={handleOnClick}
-        loading={loading}
-        floating={floating}
-        icon="undo"
-        variant="primary"
-      />
-    )
-  }
+  useKeyboard(variants[status].kbs, updateArticleStatus, keyboard)
+  const kbsLabel = keyboard ? ` [${kbs}]` : ''
 
   return (
     <ButtonIcon
-      title={'Mark as read' + kbs}
-      onClick={handleOnClick}
+      title={title + kbsLabel}
+      onClick={updateArticleStatus}
       loading={loading}
       floating={floating}
-      icon="done"
-      variant="primary"
+      icon={icon}
+      variant={status === 'to_read' ? 'default' : 'primary'}
     />
   )
 }

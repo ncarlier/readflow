@@ -27,7 +27,7 @@ func TestSearchArticlesByUserID(t *testing.T) {
 	).Build()
 	assertNewArticle(t, uid, *create)
 
-	status := "unread"
+	status := "inbox"
 	query := "science and computer"
 	// Page request
 	req := model.ArticlesPageRequest{

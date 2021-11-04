@@ -63,5 +63,5 @@ func TestGetIncomingWebhooksByUserID(t *testing.T) {
 	webhooks, err := testDB.GetIncomingWebhooksByUser(uid)
 	assert.Nil(t, err)
 	assert.NotNil(t, webhooks)
-	assert.True(t, len(webhooks) >= 0)
+	assert.Positive(t, len(webhooks))
 }

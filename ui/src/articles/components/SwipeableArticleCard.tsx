@@ -40,15 +40,15 @@ export const SwipeableArticleCard = (props: Props) => {
     [updateArticleMutation, article, showErrorMessage]
   )
 
-  const handleOnDelete = useCallback(() => {
-    const status = article.status === 'read' ? 'unread' : 'read'
+  const handleOnSwipe = useCallback(() => {
+    const status = article.status === 'read' ? 'inbox' : 'read'
     updateArticleStatus(status)
   }, [article, updateArticleStatus])
 
   const bgIcon = article.status === 'read' ? 'undo' : 'done'
 
   return (
-    <SwipeableListItem background={<Background icon={bgIcon} />} onSwipe={handleOnDelete}>
+    <SwipeableListItem background={<Background icon={bgIcon} />} onSwipe={handleOnSwipe}>
       <ArticleCard article={article} isActive={false} />
     </SwipeableListItem>
   )

@@ -38,19 +38,15 @@ func newArticleMetricsCollector(_db db.DB) Collector {
 
 // Collect article's metrics
 func (c *articleMetricsCollector) Collect() error {
-	nb, err := c.db.CountArticles("read")
-	if err != nil {
-		return err
+	statuses := []string{"inbox", "to_read", "read"}
+	for _, status := range statuses {
+		nb, err := c.db.CountArticles(status)
+		if err != nil {
+			return err
+		}
+		totalArticles.With(
+			prometheus.Labels{"status": status},
+		).Set(float64(nb))
 	}
-	totalArticles.With(
-		prometheus.Labels{"status": "read"},
-	).Set(float64(nb))
-	nb, err = c.db.CountArticles("unread")
-	if err != nil {
-		return err
-	}
-	totalArticles.With(
-		prometheus.Labels{"status": "unread"},
-	).Set(float64(nb))
 	return nil
 }

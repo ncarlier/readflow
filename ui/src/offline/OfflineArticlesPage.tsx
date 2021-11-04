@@ -78,12 +78,9 @@ const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: OfflineP
     },
   })
 
-  let title = ' '
-  if (data) {
-    const { totalCount } = data.articles
-    const plural = totalCount > 1 ? ' articles' : ' article'
-    title = totalCount + ' offline ' + plural
-  }
+  const nb = data ? data.articles.totalCount : 0
+  const title = `${nb} offline article${nb > 0 ? 's' : ''}`
+
   return (
     <Page title={title} actions={<ArticlesPageMenu refresh={refetch} variant="offline" req={req} />}>
       {render(loading, data, error)}

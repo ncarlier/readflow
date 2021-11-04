@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	status := "unread"
+	status := "inbox"
 	event.Subscribe(event.CreateArticle, func(payload ...interface{}) {
 		if article, ok := payload[0].(model.Article); ok {
 			uid := article.UserID

@@ -41,10 +41,10 @@ export const OfflineLink = (props: AllProps) => {
     }
   }
 
-  const removeArticleOffline = async () => {
+  const deleteArticleOffline = async () => {
     try {
       await removeOfflineArticle(article)
-      showMessage(`Article removed from offline storage: ${article.title}`)
+      showMessage(`Article deleted from offline storage: ${article.title}`)
     } catch (err) {
       showErrorMessage(err.message)
     }
@@ -53,19 +53,19 @@ export const OfflineLink = (props: AllProps) => {
   const [showDeleteConfirmModal, hideDeleteConfirmModal] = useModal(() => (
     <ConfirmDialog
       title={article.title}
-      confirmLabel="Remove"
-      onConfirm={() => removeArticleOffline()}
+      confirmLabel="Delete"
+      onConfirm={() => deleteArticleOffline()}
       onCancel={hideDeleteConfirmModal}
     >
-      Removing an article from offline storage is irreversible. Please confirm!
+      Deleting an article from offline storage is irreversible. Please confirm!
     </ConfirmDialog>
   ))
 
   if (article.isOffline) {
     return (
-      <LinkIcon title="Remove" onClick={showDeleteConfirmModal} icon="delete">
-        <span>Remove offline</span>
-        {keyboard && <Kbd keys="r" onKeypress={showDeleteConfirmModal} />}
+      <LinkIcon title="Delete" onClick={showDeleteConfirmModal} icon="delete">
+        <span>Delete offline</span>
+        {keyboard && <Kbd keys="d" onKeypress={showDeleteConfirmModal} />}
       </LinkIcon>
     )
   }

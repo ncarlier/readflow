@@ -3,13 +3,14 @@ import gql from 'graphql-tag'
 export const GetCategories = gql`
   query {
     categories {
-      _all
+      _inbox
+      _to_read
       _starred
       entries {
         id
         title
         rule
-        unread
+        inbox
         created_at
         updated_at
       }

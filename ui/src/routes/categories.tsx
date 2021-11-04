@@ -36,7 +36,7 @@ export default () => {
               exact
               path={match.path + '/'}
               component={(props: RouteComponentProps) => (
-                <ArticlesPage variant="unread" category={category} {...props} />
+                <ArticlesPage variant="inbox" category={category} {...props} />
               )}
             />
             <Route

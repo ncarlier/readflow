@@ -21,7 +21,7 @@
     }
   ],
   "share_target": {
-    "action": "/unread/add",
+    "action": "/inbox/add",
     "params": {
       "title": "title",
       "text": "text",
@@ -31,7 +31,7 @@
   "shortcuts" : [
     {
       "name": "New article",
-      "url": "/unread/add"
+      "url": "/inbox/add"
     },
     {
       "name": "Offline articles",

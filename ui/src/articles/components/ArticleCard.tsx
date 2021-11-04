@@ -46,8 +46,20 @@ export const ArticleCard = withRouter((props: AllProps) => {
         )}
         <TimeAgo dateTime={article.created_at} />
         <ArticleContextMenu article={article} keyboard={isActive} />
-        {!article.isOffline && <StarsButton article={article} keyboard={isActive} />}
-        {!article.isOffline && <MarkAsButton article={article} onSuccess={onRemove} keyboard={isActive} />}
+        {!article.isOffline && (
+          <>
+            {article.status != 'inbox' && <StarsButton article={article} keyboard={isActive} />}
+            {article.status === 'inbox' && (
+              <MarkAsButton article={article} status="to_read" onSuccess={onRemove} keyboard={isActive} />
+            )}
+            {article.status != 'read' && (
+              <MarkAsButton article={article} status="read" onSuccess={onRemove} keyboard={isActive} />
+            )}
+            {article.status === 'read' && (
+              <MarkAsButton article={article} status="inbox" onSuccess={onRemove} keyboard={isActive} />
+            )}
+          </>
+        )}
       </footer>
     </article>
   )

@@ -16,7 +16,7 @@ export interface Article {
   updated_at: string
 }
 
-export type ArticleStatus = 'read' | 'unread'
+export type ArticleStatus = 'inbox' | 'read' | 'to_read'
 export type SortOrder = 'asc' | 'desc'
 export type SortBy = 'key' | 'stars'
 
@@ -53,7 +53,8 @@ export interface UpdateArticleRequest {
 export interface UpdateArticleResponse {
   updateArticle: {
     article: Article
-    _all: number
+    _inbox: number
+    _to_read: number
     _starred: number
   }
 }
@@ -64,7 +65,7 @@ export interface MarkAllArticlesAsReadRequest {
 
 export interface MarkAllArticlesAsReadResponse {
   markAllArticlesAsRead: {
-    _all: number
+    _inbox: number
     entries: Category[]
   }
 }

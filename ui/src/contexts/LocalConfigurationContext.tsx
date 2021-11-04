@@ -1,6 +1,6 @@
 import React, { createContext, FC, useCallback, useContext, useEffect, useState } from 'react'
 
-const key = 'readflow.localConfiguration'
+const key = 'readflow.config'
 
 export type Theme = 'light' | 'dark' | 'auto'
 
@@ -15,10 +15,11 @@ export interface DisplayPreference {
 }
 
 export interface DisplayPreferences {
-  unread: DisplayPreference
-  offline: DisplayPreference
+  inbox: DisplayPreference
+  to_read: DisplayPreference
   history: DisplayPreference
   starred: DisplayPreference
+  offline: DisplayPreference
   [key: string]: DisplayPreference
 }
 
@@ -30,7 +31,8 @@ export interface LocalConfiguration {
 
 const defaultLocalConfiguration: LocalConfiguration = {
   display: {
-    unread: { order: 'asc', by: 'key', mode: 'list' },
+    inbox: { order: 'asc', by: 'key', mode: 'list' },
+    to_read: { order: 'asc', by: 'key', mode: 'list' },
     offline: { order: 'asc', by: 'key', mode: 'list' },
     starred: { order: 'asc', by: 'stars', mode: 'grid' },
     history: { order: 'desc', by: 'key', mode: 'list' },

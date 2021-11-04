@@ -40,7 +40,7 @@ export default () => {
           Add
         </Button>
       </header>
-      <p>Outgoing webhooks allow external integration to receive articles.</p>
+      <p>Outgoing webhooks are used to send articles to external services.</p>
       {errorMessage != null && <ErrorPanel title="Unable to delete outgoing webhook(s)">{errorMessage}</ErrorPanel>}
       <OutgoingWebhooksList onSelected={setSelection} />
     </section>

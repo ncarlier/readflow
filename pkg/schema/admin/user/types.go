@@ -10,6 +10,19 @@ import (
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
+func statusResolver(status string) graphql.FieldResolveFn {
+	return func(p graphql.ResolveParams) (interface{}, error) {
+		user, ok := p.Source.(*model.User)
+		if !ok {
+			return nil, errors.New("no user received by read resolver")
+		}
+		req := model.ArticlesPageRequest{
+			Status: &status,
+		}
+		return service.Lookup().CountUserArticles(p.Context, *user.ID, req)
+	}
+}
+
 var userType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "User",
@@ -38,33 +51,17 @@ var userType = graphql.NewObject(
 			"updated_at": &graphql.Field{
 				Type: graphql.DateTime,
 			},
-			"read": &graphql.Field{
-				Type: graphql.Int,
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					user, ok := p.Source.(*model.User)
-					if !ok {
-						return nil, errors.New("no user received by unread resolver")
-					}
-					status := "read"
-					req := model.ArticlesPageRequest{
-						Status: &status,
-					}
-					return service.Lookup().CountUserArticles(p.Context, *user.ID, req)
-				},
+			"inbox": &graphql.Field{
+				Type:    graphql.Int,
+				Resolve: statusResolver("inbox"),
 			},
-			"unread": &graphql.Field{
-				Type: graphql.Int,
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					user, ok := p.Source.(*model.User)
-					if !ok {
-						return nil, errors.New("no user received by unread resolver")
-					}
-					status := "unread"
-					req := model.ArticlesPageRequest{
-						Status: &status,
-					}
-					return service.Lookup().CountUserArticles(p.Context, *user.ID, req)
-				},
+			"read": &graphql.Field{
+				Type:    graphql.Int,
+				Resolve: statusResolver("read"),
+			},
+			"to_read": &graphql.Field{
+				Type:    graphql.Int,
+				Resolve: statusResolver("to_read"),
 			},
 			"hash": &graphql.Field{
 				Type: graphql.String,

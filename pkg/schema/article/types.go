@@ -49,13 +49,17 @@ var articleStatus = graphql.NewEnum(
 		Name:        "status",
 		Description: "Article status",
 		Values: graphql.EnumValueConfigMap{
+			"inbox": &graphql.EnumValueConfig{
+				Value:       "inbox",
+				Description: "article is inbox",
+			},
 			"read": &graphql.EnumValueConfig{
 				Value:       "read",
 				Description: "article is read",
 			},
-			"unread": &graphql.EnumValueConfig{
-				Value:       "unread",
-				Description: "article is not read",
+			"to_read": &graphql.EnumValueConfig{
+				Value:       "to_read",
+				Description: "article is to read",
 			},
 		},
 	},
@@ -135,6 +139,15 @@ var articlesType = graphql.NewObject(
 	},
 )
 
+func statusResolver(status string) graphql.FieldResolveFn {
+	return func(p graphql.ResolveParams) (interface{}, error) {
+		req := model.ArticlesPageRequest{
+			Status: &status,
+		}
+		return service.Lookup().CountCurrentUserArticles(p.Context, req)
+	}
+}
+
 var articleUpdateResponseType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "ArticleUpdateResponseType",
@@ -142,15 +155,13 @@ var articleUpdateResponseType = graphql.NewObject(
 			"article": &graphql.Field{
 				Type: articleType,
 			},
-			"_all": &graphql.Field{
-				Type: graphql.Int,
-				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					status := "unread"
-					req := model.ArticlesPageRequest{
-						Status: &status,
-					}
-					return service.Lookup().CountCurrentUserArticles(p.Context, req)
-				},
+			"_inbox": &graphql.Field{
+				Type:    graphql.Int,
+				Resolve: statusResolver("inbox"),
+			},
+			"_to_read": &graphql.Field{
+				Type:    graphql.Int,
+				Resolve: statusResolver("to_read"),
 			},
 			"_starred": &graphql.Field{
 				Type: graphql.Int,

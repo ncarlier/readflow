@@ -49,16 +49,19 @@ export const Shortcuts = () => (
           Toggle read status<kbd>m</kbd>
         </li>
         <li>
-          Put article offline<kbd>o</kbd>
-        </li>
-        <li>
-          Remove article offline<kbd>r</kbd>
-        </li>
-        <li>
-          Save to default archive service<kbd>shift+s</kbd>
+          Read article later<kbd>r</kbd>
         </li>
         <li>
           Star an article<kbd>s</kbd>
+        </li>
+        <li>
+          Put article offline<kbd>o</kbd>
+        </li>
+        <li>
+          Delete article offline<kbd>d</kbd>
+        </li>
+        <li>
+          Save to default archive service<kbd>shift+s</kbd>
         </li>
         <li>
           Back to list<kbd>backspace</kbd>
