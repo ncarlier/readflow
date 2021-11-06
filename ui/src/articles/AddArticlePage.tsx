@@ -15,7 +15,7 @@ interface Props {
 
 type AllProps = Props & RouteComponentProps
 
-const Actions = () => <ButtonIcon as={Link} to="/unread" icon="arrow_back" title="back to the list" />
+const Actions = () => <ButtonIcon as={Link} to="/inbox" icon="arrow_back" title="back to the inbox" />
 
 const extractURLFromParams = (qs: string) => {
   const params = new URLSearchParams(qs)
@@ -38,8 +38,8 @@ const extractURLFromParams = (qs: string) => {
 export default ({ category, location, history }: AllProps) => {
   const url = extractURLFromParams(location.search)
 
-  const onSuccess = (article: Article) => history.replace(`/unread/${article.id}`)
-  const onCancel = () => history.replace('/unread')
+  const onSuccess = (article: Article) => history.replace(`/inbox/${article.id}`)
+  const onCancel = () => history.replace('/inbox')
 
   return (
     <Page title="Add new article" actions={<Actions />}>

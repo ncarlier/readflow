@@ -104,7 +104,7 @@ func (pg *DB) CreateArticleForUser(uid uint, form model.ArticleCreateForm) (*mod
 		form.URL,
 		form.Image,
 		form.Hash(),
-		"unread",
+		"inbox",
 		form.PublishedAt,
 		"NOW()",
 		sq.Expr(tsvectorExpression, form.Title, form.Payload()),

@@ -173,7 +173,7 @@ class ReadflowBookmarklet {
 
   private openResult() {
     if (this.article) {
-      document.location.href = `${this.origin}/unread/${this.article.id}`
+      document.location.href = `${this.origin}/inbox/${this.article.id}`
     }
   }
 

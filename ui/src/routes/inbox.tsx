@@ -10,12 +10,12 @@ export default ({ match }: RouteComponentProps) => (
     <Route
       exact
       path={match.path + '/'}
-      component={(props: RouteComponentProps) => <ArticlesPage variant="unread" {...props} />}
+      component={(props: RouteComponentProps) => <ArticlesPage variant="inbox" {...props} />}
     />
     <Route exact path={match.path + '/add'} component={AddArticlePage} />
     <Route
       path={match.path + '/:id'}
-      component={(props: RouteComponentProps<{ id: string }>) => <ArticlePage title="Articles to read" {...props} />}
+      component={(props: RouteComponentProps<{ id: string }>) => <ArticlePage title="Inbox" {...props} />}
     />
   </Switch>
 )

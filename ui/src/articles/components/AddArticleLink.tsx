@@ -50,8 +50,8 @@ export const AddArticleLink = ({ category, onSuccess }: Props) => {
   useKeyboard('+', showAddModal)
 
   return (
-    <LinkIcon icon="add" onClick={handleOnClick} as={Link} to={'/unread/add'}>
-      Add new article
+    <LinkIcon icon="add" onClick={handleOnClick} as={Link} to={'/inbox/add'}>
+      Add new...
     </LinkIcon>
   )
 }

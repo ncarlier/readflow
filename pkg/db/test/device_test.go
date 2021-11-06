@@ -54,7 +54,7 @@ func TestCreateDevice(t *testing.T) {
 
 	devices, err := testDB.GetDevicesByUser(uid)
 	assert.Nil(t, err)
-	assert.True(t, len(devices) > 0, "devices should not be empty")
+	assert.Positive(t, len(devices), "devices should not be empty")
 
 	// Cleanup
 	err = testDB.DeleteDevice(*newDevice.ID)

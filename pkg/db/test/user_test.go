@@ -11,7 +11,7 @@ func TestCreateOrUpdateUser(t *testing.T) {
 	defer teardownTestCase(t)
 
 	user := assertUserExists(t, "test-001")
-	assert.True(t, *user.ID > 0, "user ID should be a valid integer")
+	assert.Positive(t, *user.ID, "user ID should be a valid integer")
 	assert.True(t, !user.Enabled, "user should be disabled")
 
 	user.Enabled = true

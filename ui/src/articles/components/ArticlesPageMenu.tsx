@@ -15,7 +15,12 @@ import {
 } from '../../contexts/LocalConfigurationContext'
 import { useMessage } from '../../contexts'
 import { getGQLError } from '../../helpers'
-import { GetArticlesRequest, MarkAllArticlesAsReadRequest, MarkAllArticlesAsReadResponse } from '../models'
+import {
+  ArticleStatus,
+  GetArticlesRequest,
+  MarkAllArticlesAsReadRequest,
+  MarkAllArticlesAsReadResponse,
+} from '../models'
 import { MarkAllArticlesAsRead } from '../queries'
 import { updateCacheAfterMarkAllAsRead } from '../cache'
 
@@ -36,7 +41,7 @@ function revertSortBy(by: SortBy | null) {
 }
 
 function revertStatus(status: string | null) {
-  return status === 'unread' ? 'read' : 'unread'
+  return status === 'inbox' ? 'read' : 'inbox'
 }
 
 function revertDisplayMode(mode: DisplayMode | null) {
@@ -70,7 +75,7 @@ function getLocationWithSortOrderParam(loc: Location, order: SortOrder) {
   return { ...loc, search: params.toString() }
 }
 
-function getLocationWithStatusParam(loc: Location, status: 'read' | 'unread') {
+function getLocationWithStatusParam(loc: Location, status: ArticleStatus) {
   const params = new URLSearchParams(loc.search)
   params.set('status', status)
   return { ...loc, search: params.toString() }
@@ -209,7 +214,7 @@ export const ArticlesPageMenu = (props: Props) => {
             <Kbd keys="shift+d" onKeypress={toggleDisplayMode} />
           </LinkIcon>
         </li>
-        {req.status === 'unread' && (
+        {req.status === 'inbox' && (
           <li>
             <LinkIcon onClick={showMarkAllAsReadDialog} icon="done_all">
               <span>Mark all as read</span>
@@ -220,7 +225,7 @@ export const ArticlesPageMenu = (props: Props) => {
         {!!req.category && !!req.status && (
           <li>
             <LinkIcon as={Link} to={getLocationWithStatusParam(loc, revertStatus(req.status))} icon="history">
-              <span>{req.status === 'read' ? 'View unread articles' : 'View read articles'}</span>
+              <span>{req.status === 'read' ? 'View inbox articles' : 'View read articles'}</span>
               <Kbd keys="shift+h" onKeypress={toggleStatus} />
             </LinkIcon>
           </li>

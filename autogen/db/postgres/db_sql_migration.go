@@ -103,6 +103,9 @@ create table rules (
   foreign key (category_id) references categories(id) on delete set null
 )
 `,
+	"db_migration_10": `ALTER TYPE article_status RENAME VALUE 'unread' TO 'inbox';
+ALTER TYPE article_status ADD VALUE 'to_read' AFTER 'read';
+`,
 	"db_migration_2": `create table devices (
   id serial not null,
   user_id int not null,
@@ -155,13 +158,14 @@ alter table articles drop column starred;
 
 // DatabaseSQLMigrationChecksums is generated from a fileset and contains files checksums
 var DatabaseSQLMigrationChecksums = map[string]string{
-	"db_migration_1": "6b7ac5c1474bc400c1bbb642fcf3c161f51de7252350eaa261cb1ed796e72b67",
-	"db_migration_2": "0be0d1ef1e9481d61db425a7d54378f3667c091949525b9c285b18660b6e8a1d",
-	"db_migration_3": "5cd0d3628d990556c0b85739fd376c42244da7e98b66852b6411d27eda20c3fc",
-	"db_migration_4": "d5fb83c15b523f15291310ff27d36c099c4ba68de2fd901c5ef5b70a18fedf65",
-	"db_migration_5": "16657738407dc4a05c8e2814536078ff598647eb289dfb3aead73f0ac454793b",
-	"db_migration_6": "82606f963d687906ec932d2a6021a29b0d1480260c8a1f7fe7da8edfad8bfbf5",
-	"db_migration_7": "05329d34279e8787592c48e97164dd0be0a1f42835da3f4aa129819296828a8d",
-	"db_migration_8": "36dfebfaec092e686472a440a7d22e318a4f46567d18864ec3e53b94ac12e837",
-	"db_migration_9": "ecfa9532599414b3e79dad336e7069b22f888b981db90b067104026ecb0a56ac",
+	"db_migration_1":  "6b7ac5c1474bc400c1bbb642fcf3c161f51de7252350eaa261cb1ed796e72b67",
+	"db_migration_10": "935f7f7208d0230865d0915bf8f6b940331084d3aeb951536605f879a85a842f",
+	"db_migration_2":  "0be0d1ef1e9481d61db425a7d54378f3667c091949525b9c285b18660b6e8a1d",
+	"db_migration_3":  "5cd0d3628d990556c0b85739fd376c42244da7e98b66852b6411d27eda20c3fc",
+	"db_migration_4":  "d5fb83c15b523f15291310ff27d36c099c4ba68de2fd901c5ef5b70a18fedf65",
+	"db_migration_5":  "16657738407dc4a05c8e2814536078ff598647eb289dfb3aead73f0ac454793b",
+	"db_migration_6":  "82606f963d687906ec932d2a6021a29b0d1480260c8a1f7fe7da8edfad8bfbf5",
+	"db_migration_7":  "05329d34279e8787592c48e97164dd0be0a1f42835da3f4aa129819296828a8d",
+	"db_migration_8":  "36dfebfaec092e686472a440a7d22e318a4f46567d18864ec3e53b94ac12e837",
+	"db_migration_9":  "ecfa9532599414b3e79dad336e7069b22f888b981db90b067104026ecb0a56ac",
 }

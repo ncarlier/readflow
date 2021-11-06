@@ -42,10 +42,19 @@ export default ({ title, match, history }: AllProps) => {
           <>
             <ArticleHeader article={article}>
               <StarsButton article={article} keyboard />
+              {article.status === 'inbox' && (
+                <MarkAsButton article={article} onSuccess={goBack} status="to_read" keyboard />
+              )}
               <ArticleContextMenu article={article} keyboard />
             </ArticleHeader>
             <ArticleContent article={article} />
-            <MarkAsButton article={article} floating onSuccess={goBack} keyboard />
+            <MarkAsButton
+              article={article}
+              status={article.status === 'read' ? 'inbox' : 'read'}
+              floating
+              onSuccess={goBack}
+              keyboard
+            />
           </>
         )
       }

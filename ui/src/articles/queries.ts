@@ -90,11 +90,12 @@ export const UpdateArticle = gql`
         stars
         category {
           id
-          unread
+          inbox
         }
         updated_at
       }
-      _all
+      _inbox
+      _to_read
       _starred
     }
   }
@@ -109,10 +110,10 @@ export const SendArticleToOutgoingWebhook = gql`
 export const MarkAllArticlesAsRead = gql`
   mutation markAllArticlesAsRead($category: ID) {
     markAllArticlesAsRead(category: $category) {
-      _all
+      _inbox
       entries {
         id
-        unread
+        inbox
       }
     }
   }
@@ -130,7 +131,7 @@ export const AddNewArticle = gql`
       stars
       category {
         id
-        unread
+        inbox
       }
       created_at
     }
@@ -139,7 +140,7 @@ export const AddNewArticle = gql`
 
 export const GetNbNewArticles = gql`
   query articles($category: Int) {
-    articles(limit: 1, status: unread, category: $category) {
+    articles(limit: 1, status: inbox, category: $category) {
       totalCount
     }
   }

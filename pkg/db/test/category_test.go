@@ -65,7 +65,7 @@ func TestCreateAndUpdateCategory(t *testing.T) {
 	// Count categories of test user
 	nb, err := testDB.CountCategoriesByUser(uid)
 	assert.Nil(t, err)
-	assert.True(t, nb >= 0)
+	assert.Positive(t, nb)
 }
 
 func TestDeleteCategory(t *testing.T) {
@@ -79,7 +79,7 @@ func TestDeleteCategory(t *testing.T) {
 
 	categories, err := testDB.GetCategoriesByUser(uid)
 	assert.Nil(t, err)
-	assert.True(t, len(categories) > 0, "categories should not be empty")
+	assert.Positive(t, len(categories), "categories should not be empty")
 
 	err = testDB.DeleteCategoryByUser(uid, *category.ID)
 	assert.Nil(t, err)

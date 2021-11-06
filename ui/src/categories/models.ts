@@ -2,14 +2,15 @@ export interface Category {
   id?: number
   title: string
   rule: string | null
-  unread?: number
+  inbox?: number
   created_at?: string
   updated_at?: string
 }
 
 export interface GetCategoriesResponse {
   categories: {
-    _all: number
+    _inbox: number
+    _to_read: number
     _starred: number
     entries: Category[]
   }

@@ -30,7 +30,7 @@ export const Navbar = withRouter(({ location, history }: RouteComponentProps) =>
   }
 
   const redirectToNewArticle = (article: Article) => {
-    history.push(`/unread/${article.id}`)
+    history.push(`/inbox/${article.id}`)
     menuAutoClose()
   }
 
@@ -48,7 +48,7 @@ export const Navbar = withRouter(({ location, history }: RouteComponentProps) =>
                 active={isCategoryActive(category.id)}
                 icon="bookmark"
                 onClick={menuAutoClose}
-                badge={category.unread}
+                badge={category.inbox}
               >
                 {category.title}
               </LinkIcon>
@@ -77,13 +77,37 @@ export const Navbar = withRouter(({ location, history }: RouteComponentProps) =>
               <li>
                 <LinkIcon
                   as={Link}
-                  to="/unread"
-                  icon="menu_book"
-                  badge={data && data.categories && data.categories._all}
-                  active={pathname.startsWith('/unread')}
+                  to="/inbox"
+                  icon="inbox"
+                  badge={data && data.categories && data.categories._inbox}
+                  active={pathname.startsWith('/inbox')}
                   onClick={menuAutoClose}
                 >
-                  Articles to read
+                  Inbox
+                </LinkIcon>
+              </li>
+              <li>
+                <LinkIcon
+                  as={Link}
+                  to="/to_read"
+                  icon="book"
+                  badge={data && data.categories && data.categories._to_read}
+                  active={pathname.startsWith('/to_read')}
+                  onClick={menuAutoClose}
+                >
+                  To read
+                </LinkIcon>
+              </li>
+              <li>
+                <LinkIcon
+                  as={Link}
+                  to="/starred"
+                  icon="star"
+                  badge={data && data.categories && data.categories._starred}
+                  active={pathname.startsWith('/starred')}
+                  onClick={menuAutoClose}
+                >
+                  Starred
                 </LinkIcon>
               </li>
             </NetworkStatus>
@@ -95,22 +119,10 @@ export const Navbar = withRouter(({ location, history }: RouteComponentProps) =>
                 active={pathname.startsWith('/offline')}
                 onClick={menuAutoClose}
               >
-                Offline articles
+                Offline
               </LinkIcon>
             </li>
             <NetworkStatus status="online">
-              <li>
-                <LinkIcon
-                  as={Link}
-                  to="/starred"
-                  icon="star"
-                  badge={data && data.categories && data.categories._starred}
-                  active={pathname.startsWith('/starred')}
-                  onClick={menuAutoClose}
-                >
-                  Starred articles
-                </LinkIcon>
-              </li>
               <li>
                 <LinkIcon
                   as={Link}

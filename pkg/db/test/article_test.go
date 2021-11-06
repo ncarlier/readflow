@@ -14,7 +14,7 @@ func assertNewArticle(t *testing.T, uid uint, form model.ArticleCreateForm) *mod
 	assert.NotNil(t, article)
 	assert.NotNil(t, article.ID)
 	assert.Equal(t, form.Title, article.Title)
-	assert.Equal(t, "unread", article.Status, "article status should be unread")
+	assert.Equal(t, "inbox", article.Status, "article status should be inbox")
 	assert.Equal(t, uint(0), article.Stars)
 	return article
 }
@@ -68,9 +68,9 @@ func TestGetPaginatedArticlesByUserID(t *testing.T) {
 	res, err := testDB.GetPaginatedArticlesByUser(uid, req)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
-	assert.True(t, res.TotalCount >= 0, "total count should be a positive integer")
+	assert.GreaterOrEqual(t, res.TotalCount, uint(0), "total count should be a positive integer")
 	assert.False(t, res.HasNext, "we should only have one page")
-	assert.True(t, len(res.Entries) >= 0, "entries shouldn't be empty")
+	assert.GreaterOrEqual(t, len(res.Entries), 0, "entries shouldn't be empty")
 }
 
 func TestMarkAllArticlesAsRead(t *testing.T) {
@@ -84,7 +84,7 @@ func TestMarkAllArticlesAsRead(t *testing.T) {
 	assertNewArticle(t, uid, *form)
 
 	// Page request
-	status := "unread"
+	status := "inbox"
 	req := model.ArticlesPageRequest{
 		Status: &status,
 	}
@@ -92,7 +92,7 @@ func TestMarkAllArticlesAsRead(t *testing.T) {
 	res, err := testDB.GetPaginatedArticlesByUser(uid, req)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
-	assert.True(t, res.TotalCount >= 0, "total count should be a positive integer")
+	assert.Positive(t, res.TotalCount, "total count should be a positive integer")
 
 	nb, err := testDB.MarkAllArticlesAsReadByUser(uid, nil)
 	assert.Nil(t, err)
@@ -117,7 +117,7 @@ func TestDeleteAllReadArticles(t *testing.T) {
 	res, err := testDB.GetPaginatedArticlesByUser(uid, req)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
-	assert.True(t, res.TotalCount >= 0, "total count should be a positive integer")
+	assert.Greater(t, res.TotalCount, uint(0), "total count should be a positive integer")
 
 	nb, err := testDB.DeleteAllReadArticlesByUser(uid)
 	assert.Nil(t, err)

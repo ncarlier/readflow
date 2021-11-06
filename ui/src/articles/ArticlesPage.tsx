@@ -12,7 +12,26 @@ import { ArticleStatus, GetArticlesRequest, GetArticlesResponse } from './models
 import { GetArticles } from './queries'
 import { useMedia } from '../hooks'
 
-type Variant = 'unread' | 'history' | 'starred'
+type Variant = 'inbox' | 'to_read' | 'history' | 'starred'
+
+const variants = {
+  inbox: {
+    emptyLabel: 'no article received',
+    getTitle: (nb: number) => `${nb} article${nb > 1 ? 's' : ''} received`,
+  },
+  to_read: {
+    emptyLabel: 'no article to read',
+    getTitle: (nb: number) => `${nb} article${nb > 1 ? 's' : ''} to read`,
+  },
+  history: {
+    emptyLabel: 'history is empty',
+    getTitle: (nb: number) => `${nb} read article${nb > 1 ? 's' : ''}`,
+  },
+  starred: {
+    emptyLabel: 'no starred article',
+    getTitle: (nb: number) => `${nb} stared article${nb > 1 ? 's' : ''}`,
+  },
+}
 
 interface Props {
   variant: Variant
@@ -26,8 +45,8 @@ const buildArticlesRequest = (variant: Variant, props: AllProps, localConfig: Lo
   const req: GetArticlesRequest = {
     limit: getURLParam(params, 'limit', localConfig.limit),
     sortBy: null,
-    sortOrder: getURLParam(params, 'order', localConfig.display.unread.order),
-    status: 'unread',
+    sortOrder: getURLParam(params, 'order', localConfig.display[variant].order),
+    status: null,
     starred: null,
     category: null,
     afterCursor: null,
@@ -36,21 +55,19 @@ const buildArticlesRequest = (variant: Variant, props: AllProps, localConfig: Lo
   switch (variant) {
     case 'history':
       req.status = 'read'
-      req.sortOrder = getURLParam(params, 'order', localConfig.display.history.order)
+      req.starred = false
       break
     case 'starred':
-      req.status = null
       req.starred = true
-      req.sortOrder = getURLParam(params, 'order', localConfig.display.starred.order)
       req.sortBy = getURLParam(params, 'by', localConfig.display.starred.by)
       break
-    case 'unread':
+    default:
+      req.status = getURLParam<ArticleStatus>(params, 'status', variant)
       if (category && category.id) {
         req.category = category.id
-        req.status = getURLParam<ArticleStatus>(params, 'status', 'unread')
-        const sortKey = `cat_${category.id}`
-        if (Object.prototype.hasOwnProperty.call(localConfig.display, sortKey)) {
-          req.sortOrder = getURLParam(params, 'order', localConfig.display[sortKey].order)
+        const configKey = `cat_${category.id}`
+        if (Object.prototype.hasOwnProperty.call(localConfig.display, configKey)) {
+          req.sortOrder = getURLParam(params, 'order', localConfig.display[configKey].order)
         }
       }
   }
@@ -68,34 +85,12 @@ const getDisplayMode = (variant: Variant, localConfig: LocalConfiguration, categ
   return localConfig.display[variant].mode
 }
 
-const buildTitle = (status: string | null, category?: Category) => {
-  let title = ''
-  if (status) {
-    title = status === 'unread' ? 'to read' : 'read'
-  }
-  if (category) {
-    title = title + ' in "' + category.title + '"'
-  }
-  return title
-}
-
 const computeTotalArticles = (data: GetArticlesResponse, status: string | null) => {
   let delta = 0
   if (status) {
     delta = data.articles.entries.filter((a) => a.status !== status).length
   }
   return data.articles.totalCount - delta
-}
-
-const EmptyMessage = ({ variant }: { variant: Variant }) => {
-  switch (variant) {
-    case 'starred':
-      return 'no starred article'
-    case 'history':
-      return 'history is empty'
-    default:
-      return 'no article to read'
-  }
 }
 
 type AllProps = Props & RouteComponentProps
@@ -163,12 +158,12 @@ export default (props: AllProps) => {
       }
       return (
         <>
-          {variant === 'unread' && (
+          {variant === 'inbox' && (
             <NewArticlesAvailable current={computeTotalArticles(d, req.status)} category={category} refresh={refresh} />
           )}
           <ArticleList
             articles={entries}
-            emptyMessage={EmptyMessage({ variant })}
+            emptyMessage={variants[variant].emptyLabel}
             hasMore={d.articles.hasNext}
             refetch={refetch}
             swipeable={isMobileDisplay && variant !== 'starred'}
@@ -181,12 +176,9 @@ export default (props: AllProps) => {
   })
 
   // Build title
-  let title = buildTitle(req.status, category)
-  if (data && data.articles) {
-    const totalCount = computeTotalArticles(data, req.status)
-    const plural = totalCount > 1 ? ' articles ' : ' article '
-    title = totalCount + plural + title
-  } else title = ' '
+  const nbArticles = data && data.articles ? computeTotalArticles(data, req.status) : 0
+  const variantKey = category && req.status === 'read' ? 'history' : variant
+  const title = variants[variantKey].getTitle(nbArticles) + (category ? ` in "${category?.title}"` : '')
 
   const $header = (
     <Appbar title={title}>
