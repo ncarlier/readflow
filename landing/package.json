@@ -22,7 +22,7 @@
     "stripe": "^8.148.0"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^3.7.1",
+    "@netlify/plugin-nextjs": "^3.9.2",
     "eslint": "^7.30.0",
     "eslint-config-next": "^11.0.1"
   }
