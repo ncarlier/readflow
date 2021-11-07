@@ -11,12 +11,12 @@ Read your Internet article flow in one place with complete peace of mind and fre
 ## Features
 
 - Read articles from anywhere in one place.
-- Save articles for offline reading.
+- Save articles for offline reading or locally on you disk in the format you want (HTML, EPUB, ZIP, ...).
 - Create categories and classify new articles automatically thanks to a customizable rule engine.
-- External service integration thanks to incoming and outgoing webhooks ([Keeper][keeper], [Pocket][pocket], [Wallabag][wallabag], custom...).
-- Receive notifications when new articles are to be read.
-- Good user experience on mobile devices.
-- No tracking and no publicity.
+- Link with external services thanks to incoming and outgoing webhooks ([RSS][feedpushr], [Keeper][keeper], [Pocket][pocket], [Wallabag][wallabag], S3 bucket, and more...).
+- Receive notifications when new articles are available.
+- Enjoy the same user experience on mobile as on desktop thanks to [Progressive Web App][pwa] support.
+- And all this without ads and trackers.
 
 ## Installation
 
@@ -115,6 +115,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 ---
 
+[pwa]: https://web.dev/progressive-web-apps
+[feedpushr]: https://github.com/ncarlier/feedpushr
 [keeper]: https://keeper.nunux.org
 [wallabag]: https://www.wallabag.org
 [pocket]: https://getpocket.com/
