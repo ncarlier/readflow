@@ -1,7 +1,7 @@
 module github.com/ncarlier/readflow
 
 require (
-	github.com/Masterminds/squirrel v1.5.1
+	github.com/Masterminds/squirrel v1.5.2
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/SherClockHolmes/webpush-go v1.1.3
 	github.com/antonmedv/expr v1.9.0
@@ -11,19 +11,20 @@ require (
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-shiori/dom v0.0.0-20210627111528-4e4722cd0d65
 	github.com/go-shiori/go-readability v0.0.0-20210627123243-82cc33435520
+	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/google/uuid v1.3.0
 	github.com/graphql-go/graphql v0.8.0
 	github.com/graphql-go/handler v0.2.3
-	github.com/lib/pq v1.10.3
+	github.com/lib/pq v1.10.4
 	github.com/microcosm-cc/bluemonday v1.0.16
-	github.com/minio/minio-go/v7 v7.0.15
+	github.com/minio/minio-go/v7 v7.0.18
 	github.com/prometheus/client_golang v1.11.0
-	github.com/rs/zerolog v1.25.0
+	github.com/rs/zerolog v1.26.1
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/speps/go-hashids/v2 v2.0.1
 	github.com/stretchr/testify v1.7.0
 	go.etcd.io/bbolt v1.3.6
-	golang.org/x/net v0.0.0-20211029224645-99673261e6eb
+	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -58,8 +59,8 @@ require (
 	github.com/prometheus/procfs v0.6.0 // indirect
 	github.com/rs/xid v1.3.0 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
-	golang.org/x/crypto v0.0.0-20201216223049-8b5274cf687f // indirect
-	golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40 // indirect
+	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e // indirect
+	golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e // indirect
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/protobuf v1.26.0-rc.1 // indirect
 	gopkg.in/ini.v1 v1.57.0 // indirect

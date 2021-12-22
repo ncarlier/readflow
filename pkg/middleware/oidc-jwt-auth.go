@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
-	jwtRequest "github.com/dgrijalva/jwt-go/request"
+	"github.com/golang-jwt/jwt/v4"
+	jwtRequest "github.com/golang-jwt/jwt/v4/request"
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/oidc"
 	"github.com/ncarlier/readflow/pkg/service"

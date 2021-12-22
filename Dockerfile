@@ -21,7 +21,7 @@ RUN make
 #########################################
 # Distribution stage
 #########################################
-FROM gcr.io/distroless/base-debian10
+FROM gcr.io/distroless/base-debian11
 
 # Repository location
 ARG REPOSITORY=github.com/ncarlier
@@ -37,4 +37,3 @@ EXPOSE 8080 9090
 
 # Define entrypoint
 ENTRYPOINT [ "readflow" ]
-
