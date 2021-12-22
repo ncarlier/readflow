@@ -19,11 +19,14 @@ const getHTMLContent = (body: string, theme: string) => `
     <base target="_blank">
     <meta charset="utf-8" />
     <style>
-      ${readable.css}
+      ${readable.style}
     </style>
   </head>
   <body data-theme="${theme}">
     ${body}
+    <script>
+      ${readable.script}
+    </script>
   </body>
 </html>
 `

@@ -1,4 +1,4 @@
-const css = `
+const style = `
 :root {
   --text-color: #222;
   --bold-text-color: #111;
@@ -41,6 +41,13 @@ h1, h2, strong {
 }
 `
 
+const script = `
+window.onload = function() {
+  document.querySelectorAll('img').forEach(i => ['src', 'srcset'].forEach(attr => i[attr] = i[attr].replaceAll('http://', 'https://')))
+}
+`
+
 export default {
-  css,
+  style,
+  script
 }
