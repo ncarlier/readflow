@@ -9,7 +9,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-// DownloadArticle get artice as a binary file
+// DownloadArticle get article as a binary file
 func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format string) (*model.FileAsset, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 

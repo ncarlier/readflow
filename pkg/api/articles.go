@@ -32,7 +32,7 @@ func articles() http.Handler {
 		case byte('{'):
 			err = json.Unmarshal(body, &articleForm)
 		default: // ] or }
-			err = errors.New("Unexpected delimiter")
+			err = errors.New("unexpected delimiter")
 		}
 
 		if err != nil {

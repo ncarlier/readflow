@@ -69,7 +69,7 @@ func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleCreate
 
 	result, err := expr.Run(rp.program, env)
 	if err != nil {
-		return false, fmt.Errorf("Unable to eval expression on article %s: %s", *article.URL, err)
+		return false, fmt.Errorf("unable to eval expression on article %s: %s", *article.URL, err)
 	}
 	match := toBool(result)
 	if match {

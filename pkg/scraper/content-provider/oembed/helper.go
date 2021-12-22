@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	su2re1 = regexp.MustCompile("^(https?://[^/]*?)\\*(.+)$")
-	su2re2 = regexp.MustCompile("^(https?://[^/]*?/.*?)\\*(.+)$")
-	su2re3 = regexp.MustCompile("^(https?://.*?)\\*$")
+	su2re1 = regexp.MustCompile(`^(https?://[^/]*?)\*(.+)$`)
+	su2re2 = regexp.MustCompile(`^(https?://[^/]*?/.*?)\*(.+)$`)
+	su2re3 = regexp.MustCompile(`^(https?://.*?)\*$`)
 	su2re4 = regexp.MustCompile("^http://")
 )
 

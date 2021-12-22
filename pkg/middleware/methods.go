@@ -19,7 +19,6 @@ func Methods(methods ...string) Middleware {
 			}
 			w.WriteHeader(405)
 			w.Write([]byte("Method Not Allowed\n"))
-			return
 		})
 	}
 }

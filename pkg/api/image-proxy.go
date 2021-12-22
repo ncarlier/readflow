@@ -61,7 +61,7 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 
 		// Redirect if image proxy service not configured
 		if conf.ImageProxy == "" {
-			http.Redirect(w, r, img, 301)
+			http.Redirect(w, r, img, http.StatusMovedPermanently)
 			return
 		}
 

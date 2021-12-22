@@ -4,6 +4,7 @@ import (
 	"github.com/speps/go-hashids/v2"
 )
 
+// HashIDHandler is used to hash a string with hashid algorythm
 type HashIDHandler struct {
 	provider *hashids.HashID
 }

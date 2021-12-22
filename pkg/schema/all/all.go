@@ -3,8 +3,6 @@ package all
 import (
 	// activate article schema
 	_ "github.com/ncarlier/readflow/pkg/schema/article"
-	// activate article schema
-	_ "github.com/ncarlier/readflow/pkg/schema/article"
 	// activate category schema
 	_ "github.com/ncarlier/readflow/pkg/schema/category"
 	// activate device schema

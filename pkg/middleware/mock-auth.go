@@ -21,6 +21,5 @@ func MockAuth(inner http.Handler) http.Handler {
 		ctx = context.WithValue(ctx, constant.ContextUserID, *user.ID)
 		ctx = context.WithValue(ctx, constant.ContextIsAdmin, true)
 		inner.ServeHTTP(w, r.WithContext(ctx))
-		return
 	})
 }

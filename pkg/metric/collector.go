@@ -65,8 +65,8 @@ func (c *Collectors) collect() {
 func (c *Collectors) start() {
 	c.logger.Debug().Msg("starting...")
 	ticker := time.NewTicker(c.interval)
+	c.stopWait.Add(1)
 	go func() {
-		c.stopWait.Add(1)
 		c.collect()
 		for range ticker.C {
 			c.collect()

@@ -32,7 +32,7 @@ type pocketRequestResponse struct {
 
 func newPocketProvider(conf *config.Config) (account.Provider, error) {
 	if conf.PocketConsumerKey == "" {
-		return nil, errors.New("Pocket consumer key not set")
+		return nil, errors.New("pocket consumer key not set")
 	}
 	provider := &pocketProvider{
 		key: conf.PocketConsumerKey,
