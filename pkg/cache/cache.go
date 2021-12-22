@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"path/filepath"
 
 	boltcache "github.com/ncarlier/readflow/pkg/cache/bolt"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -44,7 +45,7 @@ func New(conn string, size int) (Cache, error) {
 
 // NewDefault return default cache
 func NewDefault() (Cache, error) {
-	cacheFileName := os.TempDir() + string(os.PathSeparator) + "readflow.cache"
+	cacheFileName := filepath.ToSlash(os.TempDir() + string(os.PathSeparator) + "readflow.cache")
 	os.Remove(cacheFileName)
 	conn := "boltdb://" + cacheFileName
 	return New(conn, DefaultCacheSize)
