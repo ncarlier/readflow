@@ -49,5 +49,5 @@ window.onload = function() {
 
 export default {
   style,
-  script
+  script,
 }
