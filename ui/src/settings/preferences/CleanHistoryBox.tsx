@@ -11,7 +11,7 @@ import { getGQLError } from '../../helpers'
 const CleanHistory = gql`
   mutation {
     cleanHistory {
-      _all
+      _inbox
     }
   }
 `
