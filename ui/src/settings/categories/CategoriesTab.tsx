@@ -60,6 +60,10 @@ const definition = [
     render: (val: Category) => <CategoryRule val={val} />,
   },
   {
+    title: 'Notification strategy',
+    render: (val: Category) => val.notification_strategy,
+  },
+  {
     title: 'Date(s)',
     render: (val: Category) => <CategoryDates val={val} />,
   },

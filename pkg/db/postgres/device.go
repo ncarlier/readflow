@@ -131,6 +131,20 @@ func (pg *DB) GetDevicesByUser(uid uint) ([]model.Device, error) {
 	return result, nil
 }
 
+// CountDevicesByUser returns total nb of devices of an user from the DB
+func (pg *DB) CountDevicesByUser(uid uint) (uint, error) {
+	counter := pg.psql.Select("count(*)").From(
+		"devices",
+	).Where(sq.Eq{"user_id": uid})
+	query, args, _ := counter.ToSql()
+
+	var count uint
+	if err := pg.db.QueryRow(query, args...).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 // DeleteDevice removes an device from the DB
 func (pg *DB) DeleteDevice(id uint) error {
 	query, args, _ := pg.psql.Delete("devices").Where(

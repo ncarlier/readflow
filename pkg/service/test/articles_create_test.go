@@ -68,7 +68,8 @@ func TestCreateArticleWithRuleEngine(t *testing.T) {
 	// Create category
 	uid := *testUser.ID
 	formBuilder := model.NewCategoryCreateFormBuilder()
-	form := formBuilder.Random().Rule("title matches \"^Test\"").Build()
+	rule := "title matches \"^Test\""
+	form := formBuilder.Random().Rule(&rule).Build()
 	cat, err := service.Lookup().CreateCategory(testContext, *form)
 	assert.Nil(t, err)
 	assert.Equal(t, form.Title, cat.Title)

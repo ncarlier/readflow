@@ -8,7 +8,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-func assertCategoryExists(t *testing.T, uid uint, title string) *model.Category {
+func assertCategoryExists(t *testing.T, uid uint, title string, notif string) *model.Category {
 	category, err := testDB.GetCategoryByUserAndTitle(uid, title)
 	assert.Nil(t, err)
 	if category != nil {
@@ -16,7 +16,8 @@ func assertCategoryExists(t *testing.T, uid uint, title string) *model.Category 
 	}
 
 	createForm := model.CategoryCreateForm{
-		Title: title,
+		Title:                title,
+		NotificationStrategy: notif,
 	}
 
 	category, err = testDB.CreateCategoryForUser(uid, createForm)
@@ -24,6 +25,7 @@ func assertCategoryExists(t *testing.T, uid uint, title string) *model.Category 
 	assert.NotNil(t, category)
 	assert.NotNil(t, category.ID)
 	assert.Equal(t, title, category.Title)
+	assert.Equal(t, notif, category.NotificationStrategy)
 	assert.Nil(t, category.Rule)
 	return category
 }
@@ -34,13 +36,15 @@ func TestCreateAndUpdateCategory(t *testing.T) {
 	// Create category
 	uid := *testUser.ID
 	title := "My test category"
-	category := assertCategoryExists(t, uid, title)
+	category := assertCategoryExists(t, uid, title, "none")
 
 	// Update category title
 	title = "My updated category"
+	notif := "global"
 	update := model.CategoryUpdateForm{
-		ID:    *category.ID,
-		Title: &title,
+		ID:                   *category.ID,
+		Title:                &title,
+		NotificationStrategy: &notif,
 	}
 	category, err := testDB.UpdateCategoryForUser(uid, update)
 	assert.Nil(t, err)
@@ -48,6 +52,7 @@ func TestCreateAndUpdateCategory(t *testing.T) {
 	assert.NotNil(t, category.ID)
 	assert.Equal(t, title, category.Title)
 	assert.Nil(t, category.Rule)
+	assert.Equal(t, notif, category.NotificationStrategy)
 
 	// Update category title
 	rule := "title matches \"test\""
@@ -61,6 +66,7 @@ func TestCreateAndUpdateCategory(t *testing.T) {
 	assert.NotNil(t, category.ID)
 	assert.Equal(t, title, category.Title)
 	assert.Equal(t, rule, *category.Rule)
+	assert.Equal(t, notif, category.NotificationStrategy)
 
 	// Count categories of test user
 	nb, err := testDB.CountCategoriesByUser(uid)
@@ -75,7 +81,7 @@ func TestDeleteCategory(t *testing.T) {
 	// Assert category exists
 	uid := *testUser.ID
 	title := "My updated category"
-	category := assertCategoryExists(t, uid, title)
+	category := assertCategoryExists(t, uid, title, "none")
 
 	categories, err := testDB.GetCategoriesByUser(uid)
 	assert.Nil(t, err)

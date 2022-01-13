@@ -12,16 +12,23 @@ import (
 
 var createOrUpdateCategoryMutationField = &graphql.Field{
 	Type:        Type,
-	Description: "create or update a category (use the ID parameter to update)",
+	Description: "create or update a category",
 	Args: graphql.FieldConfigArgument{
 		"id": &graphql.ArgumentConfig{
-			Type: graphql.ID,
+			Type:        graphql.ID,
+			Description: "category to update if provided",
 		},
 		"title": &graphql.ArgumentConfig{
-			Type: graphql.String,
+			Type:        graphql.String,
+			Description: "title of the category",
 		},
 		"rule": &graphql.ArgumentConfig{
-			Type: graphql.String,
+			Type:        graphql.String,
+			Description: "rule definition to put articles into this category",
+		},
+		"notification_strategy": &graphql.ArgumentConfig{
+			Type:        notificationStrategy,
+			Description: "notification strategy for this category (by default: none)",
 		},
 	},
 	Resolve: createOrUpdateCategoryResolver,
@@ -30,17 +37,27 @@ var createOrUpdateCategoryMutationField = &graphql.Field{
 func createOrUpdateCategoryResolver(p graphql.ResolveParams) (interface{}, error) {
 	title := helper.GetGQLStringParameter("title", p.Args)
 	rule := helper.GetGQLStringParameter("rule", p.Args)
+	notif := helper.GetGQLStringParameter("notification_strategy", p.Args)
 	if id, ok := helper.ConvGQLStringToUint(p.Args["id"]); ok {
 		form := model.CategoryUpdateForm{
-			ID:    id,
-			Title: title,
-			Rule:  rule,
+			ID:                   id,
+			Title:                title,
+			Rule:                 rule,
+			NotificationStrategy: notif,
 		}
 		return service.Lookup().UpdateCategory(p.Context, form)
 	}
+	if title == nil {
+		return nil, errors.New("title is required when creating a new category")
+	}
+	if notif == nil {
+		defaultNotificationStrategy := "none"
+		notif = &defaultNotificationStrategy
+	}
 	form := model.CategoryCreateForm{
-		Title: *title,
-		Rule:  rule,
+		Title:                *title,
+		Rule:                 rule,
+		NotificationStrategy: *notif,
 	}
 	return service.Lookup().CreateCategory(p.Context, form)
 }
