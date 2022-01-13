@@ -14,6 +14,7 @@ var categoryColumns = []string{
 	"user_id",
 	"title",
 	"rule",
+	"notification_strategy",
 	"created_at",
 	"updated_at",
 }
@@ -26,6 +27,7 @@ func mapRowToCategory(row *sql.Row) (*model.Category, error) {
 		&cat.UserID,
 		&cat.Title,
 		&cat.Rule,
+		&cat.NotificationStrategy,
 		&cat.CreatedAt,
 		&cat.UpdatedAt,
 	)
@@ -42,11 +44,12 @@ func (pg *DB) CreateCategoryForUser(uid uint, form model.CategoryCreateForm) (*m
 	query, args, _ := pg.psql.Insert(
 		"categories",
 	).Columns(
-		"user_id", "title", "rule",
+		"user_id", "title", "rule", "notification_strategy",
 	).Values(
 		uid,
 		form.Title,
 		form.Rule,
+		form.NotificationStrategy,
 	).Suffix(
 		"RETURNING " + strings.Join(categoryColumns, ","),
 	).ToSql()
@@ -68,6 +71,9 @@ func (pg *DB) UpdateCategoryForUser(uid uint, form model.CategoryUpdateForm) (*m
 		} else {
 			update["rule"] = *form.Rule
 		}
+	}
+	if form.NotificationStrategy != nil {
+		update["notification_strategy"] = *form.NotificationStrategy
 	}
 	query, args, _ := pg.psql.Update(
 		"categories",
@@ -130,6 +136,7 @@ func (pg *DB) GetCategoriesByUser(uid uint) ([]model.Category, error) {
 			&cat.UserID,
 			&cat.Title,
 			&cat.Rule,
+			&cat.NotificationStrategy,
 			&cat.CreatedAt,
 			&cat.UpdatedAt,
 		)

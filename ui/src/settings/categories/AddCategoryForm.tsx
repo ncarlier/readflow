@@ -8,22 +8,32 @@ import { updateCacheAfterCreate } from '../../categories/cache'
 import { Category, CreateOrUpdateCategoryResponse } from '../../categories/models'
 import { CreateOrUpdateCategory } from '../../categories/queries'
 import { useMessage } from '../../contexts'
-import { Button, ErrorPanel, FormInputField, FormTextareaField, HelpLink, Panel } from '../../components'
+import {
+  Button,
+  ErrorPanel,
+  FormInputField,
+  FormSelectField,
+  FormTextareaField,
+  HelpLink,
+  Panel,
+} from '../../components'
 import { getGQLError, isValidForm } from '../../helpers'
 import { usePageTitle } from '../../hooks'
 
 interface AddCategoryFormFields {
   title: string
   rule: string
+  notification_strategy: 'none' | 'global' | 'individual'
 }
 
 const AddCategoryForm = ({ history }: RouteComponentProps) => {
   usePageTitle('Settings - Add new category')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [formState, { text, textarea }] = useFormState<AddCategoryFormFields>({
+  const [formState, { text, textarea, select }] = useFormState<AddCategoryFormFields>({
     title: '',
     rule: '',
+    notification_strategy: 'none',
   })
   const [addCategoryMutation] = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useMessage()
@@ -69,6 +79,16 @@ const AddCategoryForm = ({ history }: RouteComponentProps) => {
           <FormTextareaField label="Rule" {...textarea('rule')} error={formState.errors.rule}>
             <HelpLink href="https://docs.readflow.app/en/read-flow/categories/#rule">View rule syntax</HelpLink>
           </FormTextareaField>
+          <FormSelectField
+            label="Notification strategy"
+            {...select('notification_strategy')}
+            error={formState.errors.notification_strategy}
+            required
+          >
+            <option value="none">Don&apos;t send any notification</option>
+            <option value="individual">Send a notification as soon as an article is received</option>
+            <option value="global">Use global notification strategy</option>
+          </FormSelectField>
         </form>
       </section>
       <footer>

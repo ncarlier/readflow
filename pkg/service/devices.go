@@ -26,6 +26,12 @@ func (reg *Registry) GetDevices(ctx context.Context) (*[]model.Device, error) {
 	return &devices, err
 }
 
+// CountCurrentUserDevices get total categories of current user
+func (reg *Registry) CountCurrentUserDevices(ctx context.Context) (uint, error) {
+	uid := getCurrentUserIDFromContext(ctx)
+	return reg.db.CountDevicesByUser(uid)
+}
+
 // GetDevice get a device of the current user
 func (reg *Registry) GetDevice(ctx context.Context, id uint) (*model.Device, error) {
 	uid := getCurrentUserIDFromContext(ctx)

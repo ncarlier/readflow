@@ -15,8 +15,11 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const errorMessage = "unable to send notification"
+
+var status string = "inbox"
+
 func init() {
-	status := "inbox"
 	event.Subscribe(event.CreateArticle, func(payload ...interface{}) {
 		if article, ok := payload[0].(model.Article); ok {
 			uid := article.UserID
@@ -25,29 +28,57 @@ func init() {
 
 			user, err := service.Lookup().GetCurrentUser(ctx)
 			if err != nil {
-				log.Info().Err(err).Uint("id", uid).Msg("unable to send notification")
+				log.Info().Err(err).Uint("id", uid).Msg(errorMessage)
 				return
 			}
 
-			// Send notification only if user logged in more than 5 minutes ago
-			lastLoginDelay := time.Now().Add(-5 * time.Minute)
-			if user.Enabled && user.LastLoginAt != nil && user.LastLoginAt.After(lastLoginDelay) {
-				return
-			}
-
-			nb, err := service.Lookup().CountCurrentUserArticles(ctx, req)
+			nb, err := service.Lookup().CountCurrentUserDevices(ctx)
 			if err != nil {
-				log.Info().Err(err).Uint("id", uid).Msg("unable to send notification")
+				log.Info().Err(err).Uint("id", uid).Msg(errorMessage)
+				return
+			}
+			if nb == 0 {
+				// no devices, therefore no need to send a notification
 				return
 			}
 
-			// Send notification only every 10 articles
-			if !(nb > 0 && math.Mod(float64(nb), 10) == 0) {
-				return
+			globalStrategy := true
+			text := "You have a new article to read."
+			if article.CategoryID != nil {
+				category, err := service.Lookup().GetCategory(ctx, *article.CategoryID)
+				if err != nil {
+					log.Info().Err(err).Uint("id", uid).Msg(errorMessage)
+					return
+				}
+				if category.NotificationStrategy == "none" {
+					return
+				}
+				globalStrategy = category.NotificationStrategy == "global"
+				text = fmt.Sprintf("You have a new article to read in %s", category.Title)
+			}
+
+			if globalStrategy {
+				// Send notification only if user logged in more than 5 minutes ago
+				// TODO use rate limiter instead of this
+				lastLoginDelay := time.Now().Add(-5 * time.Minute)
+				if user.Enabled && user.LastLoginAt != nil && user.LastLoginAt.After(lastLoginDelay) {
+					return
+				}
+				// Retrieve number of articles
+				nb, err := service.Lookup().CountCurrentUserArticles(ctx, req)
+				if err != nil {
+					log.Info().Err(err).Uint("id", uid).Msg(errorMessage)
+					return
+				}
+				// Send notification only every 10 articles
+				if !(nb > 0 && math.Mod(float64(nb), 10) == 0) {
+					return
+				}
+				// Format text message
+				text = fmt.Sprintf("You have %d articles to read.", nb)
 			}
 
 			// Build notification
-			text := fmt.Sprintf("You have %d articles to read.", nb)
 			notif := &model.DeviceNotification{
 				Title: "New articles to read",
 				Body:  text,

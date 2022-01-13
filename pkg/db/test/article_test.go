@@ -25,7 +25,7 @@ func TestCreateAndUpdateArticle(t *testing.T) {
 
 	// Assert category exists
 	uid := *testUser.ID
-	category := assertCategoryExists(t, uid, "My test category")
+	category := assertCategoryExists(t, uid, "My test category", "none")
 
 	// Create article test case
 	builder := model.NewArticleCreateFormBuilder()
