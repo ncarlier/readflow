@@ -17,7 +17,27 @@ You can add a category by clicking on `Add category` button.
 
 ![](images/add.png)
 
-A category is a simple title and assignment rule.
+A category is defined by :
+
+- a title
+- an assignment rule
+- a notification strategy
+
+## Notification strategy
+
+It is possible to specify the notification strategy for a given category. It is possible to:
+
+- Not to send a notification.
+- Send a notification as soon as an article is received (but with a frequency limit).
+- Send a notification following the global rules.
+
+The global rules depend on the readflow configuration but follow the following principles:
+
+A notification is sent if:
+
+- An article group has been created;
+- The user has not used the application for a while;
+- And within a given frequency limit.
 
 ## Rule
 

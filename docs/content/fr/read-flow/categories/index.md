@@ -17,7 +17,27 @@ Vous pouvez ajouter une catégorie en cliquant sur le bouton `Add category`.
 
 ![](images/add.png)
 
-Une catégorie est un simple titre et une règle d'affectation.
+Une catégorie est définie par :
+
+- un titre
+- une règle d'affectation
+- une stratégie de notification
+
+## Stratégie de notification
+
+Il est possible de spécifier la stratégie d'envoi de notification pour une catégorie donnée. Il est possible:
+
+- De ne pas envoyer de notification.
+- D'envoyer une notification dés qu'un article est reçu (avec toutefois une limite de fréquence).
+- D'envoyer une notification en suivant les règles globales.
+
+Les règles globales dépendent de la configuration de readflow mais suivent les principes suivants:
+
+Une notification est envoyée si:
+
+- Un groupe d'article a été constitué ;
+- L'utilisateur n'a pas utilisé l'application depuis un certains temps ;
+- Et enfin dans une limite de fréquence donnée.
 
 ## Règle
 
@@ -52,7 +72,7 @@ Au sein de la règle il est possible de faire référence à certains attributs:
 
 #### Les autres opérateurs
 
-- `~` (concatenation)
+- `~` (concaténation)
   *Exemple:* `'Harry' ~ ' ' ~ 'Potter'` donnera `Harry Potter`
 - `in` (contient)
 - `not in` (ne contient pas)
