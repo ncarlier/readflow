@@ -14,6 +14,9 @@ var deviceType = graphql.NewObject(
 			"key": &graphql.Field{
 				Type: graphql.String,
 			},
+			"last_seen_at": &graphql.Field{
+				Type: graphql.DateTime,
+			},
 			"created_at": &graphql.Field{
 				Type: graphql.DateTime,
 			},

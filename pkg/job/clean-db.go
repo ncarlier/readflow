@@ -9,6 +9,11 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const (
+	maximumArticleRetentionDuration = 48 * time.Hour
+	maximumDeviceInactivityDuration = 30 * 24 * time.Hour
+)
+
 // CleanDatabaseJob is a job to clean the database
 type CleanDatabaseJob struct {
 	db     db.DB
@@ -31,12 +36,18 @@ func (cdj *CleanDatabaseJob) start() {
 	cdj.logger.Debug().Msg("job started")
 	for range cdj.ticker.C {
 		cdj.logger.Debug().Msg("running job...")
-		nb, err := cdj.db.DeleteReadArticlesOlderThan(48 * time.Hour)
+		nb, err := cdj.db.DeleteReadArticlesOlderThan(maximumArticleRetentionDuration)
 		if err != nil {
-			cdj.logger.Error().Err(err).Msg("unable to clean the database")
+			cdj.logger.Error().Err(err).Msg("unable to clean old articles from the database")
 			break
 		}
 		cdj.logger.Info().Int64("removed_articles", nb).Msg("cleanup done")
+		nb, err = cdj.db.DeleteInactiveDevicesOlderThan(maximumDeviceInactivityDuration)
+		if err != nil {
+			cdj.logger.Error().Err(err).Msg("unable to clean old devices from the database")
+			break
+		}
+		cdj.logger.Info().Int64("removed_devices", nb).Msg("cleanup done")
 	}
 }
 

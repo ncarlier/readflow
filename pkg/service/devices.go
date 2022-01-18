@@ -140,7 +140,7 @@ func (reg *Registry) NotifyDevices(ctx context.Context, msg string) (int, error)
 		}
 		if res.StatusCode == 410 {
 			// Registration is gone... we should remove the device
-			_, err = reg.DeleteDevice(ctx, *device.ID)
+			err = reg.db.DeleteDevice(*device.ID)
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
 			).Uint("device", *device.ID).Msg("registration gone: device deleted")

@@ -16,11 +16,13 @@ type DeviceNotification struct {
 }
 
 // Device structure definition
+// Device key is a hash of the subscription payload and is used to prevent subscription duplication
 type Device struct {
 	ID           *uint                 `json:"id,omitempty"`
 	UserID       *uint                 `json:"user_id,omitempty"`
 	Key          string                `json:"key,omitempty"`
 	Subscription *webpush.Subscription `json:"_"`
+	LastSeenAt   *time.Time            `json:"last_seen_at,omitempty"`
 	CreatedAt    *time.Time            `json:"created_at,omitempty"`
 }
 

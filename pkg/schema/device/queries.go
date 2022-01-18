@@ -9,6 +9,16 @@ import (
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
+var devicesQueryField = &graphql.Field{
+	Type:    graphql.NewList(deviceType),
+	Resolve: DevicesResolver,
+}
+
+// DevicesResolver is the resolver for retrieve devices
+func DevicesResolver(p graphql.ResolveParams) (interface{}, error) {
+	return service.Lookup().GetDevices(p.Context)
+}
+
 var deviceQueryField = &graphql.Field{
 	Type: deviceType,
 	Args: graphql.FieldConfigArgument{
@@ -28,5 +38,6 @@ func deviceResolver(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func init() {
+	schema.AddQueryField("devices", devicesQueryField)
 	schema.AddQueryField("device", deviceQueryField)
 }

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"strings"
+	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -14,6 +15,7 @@ var deviceColumns = []string{
 	"user_id",
 	"key",
 	"subscription",
+	"last_seen_at",
 	"created_at",
 }
 
@@ -27,6 +29,7 @@ func mapRowToDevice(row *sql.Row) (*model.Device, error) {
 		&device.UserID,
 		&device.Key,
 		&sub,
+		&device.LastSeenAt,
 		&device.CreatedAt,
 	)
 	if err == sql.ErrNoRows {
@@ -53,11 +56,12 @@ func (pg *DB) CreateDevice(device model.Device) (*model.Device, error) {
 	query, args, _ := pg.psql.Insert(
 		"devices",
 	).Columns(
-		"user_id", "key", "subscription",
+		"user_id", "key", "subscription", "last_seen_at",
 	).Values(
 		device.UserID,
 		device.Key,
 		sub,
+		"NOW()",
 	).Suffix(
 		"RETURNING " + strings.Join(deviceColumns, ","),
 	).ToSql()
@@ -68,16 +72,22 @@ func (pg *DB) CreateDevice(device model.Device) (*model.Device, error) {
 
 // GetDeviceByID get a device from the DB
 func (pg *DB) GetDeviceByID(id uint) (*model.Device, error) {
-	query, args, _ := pg.psql.Select(deviceColumns...).From(
+	// Update last seen attribute then return the device
+	query, args, _ := pg.psql.Update(
 		"devices",
+	).Set(
+		"last_seen_at", "now()",
 	).Where(
 		sq.Eq{"id": id},
+	).Suffix(
+		"RETURNING " + strings.Join(deviceColumns, ","),
 	).ToSql()
 	row := pg.db.QueryRow(query, args...)
 	return mapRowToDevice(row)
 }
 
 // GetDeviceByUserAndKey get an device from the DB
+// Only exposed for testing purpose!
 func (pg *DB) GetDeviceByUserAndKey(uid uint, key string) (*model.Device, error) {
 	query, args, _ := pg.psql.Select(deviceColumns...).From(
 		"devices",
@@ -114,6 +124,7 @@ func (pg *DB) GetDevicesByUser(uid uint) ([]model.Device, error) {
 			&device.UserID,
 			&device.Key,
 			&sub,
+			&device.LastSeenAt,
 			&device.CreatedAt,
 		)
 		if err != nil {
@@ -179,5 +190,21 @@ func (pg *DB) DeleteDevicesByUser(uid uint, ids []uint) (int64, error) {
 		return 0, err
 	}
 
+	return result.RowsAffected()
+}
+
+// DeleteInactiveDevicesOlderThan remove inactive devices from the DB
+func (pg *DB) DeleteInactiveDevicesOlderThan(delay time.Duration) (int64, error) {
+	maxAge := time.Now().Add(-delay)
+	query, args, _ := pg.psql.Delete(
+		"devices",
+	).Where(
+		sq.Lt{"last_seen_at": maxAge},
+	).ToSql()
+
+	result, err := pg.db.Exec(query, args...)
+	if err != nil {
+		return 0, err
+	}
 	return result.RowsAffected()
 }

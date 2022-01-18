@@ -1,6 +1,10 @@
 package db
 
-import "github.com/ncarlier/readflow/pkg/model"
+import (
+	"time"
+
+	"github.com/ncarlier/readflow/pkg/model"
+)
 
 // DeviceRepository is the repository interface to manage Devices
 type DeviceRepository interface {
@@ -11,4 +15,5 @@ type DeviceRepository interface {
 	CreateDevice(device model.Device) (*model.Device, error)
 	DeleteDevice(id uint) error
 	DeleteDevicesByUser(uid uint, ids []uint) (int64, error)
+	DeleteInactiveDevicesOlderThan(delay time.Duration) (int64, error)
 }
