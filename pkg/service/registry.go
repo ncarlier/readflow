@@ -9,6 +9,7 @@ import (
 	_ "github.com/ncarlier/readflow/pkg/exporter/all"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
+	ratelimiter "github.com/ncarlier/readflow/pkg/rate-limiter"
 	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
 	"github.com/ncarlier/readflow/pkg/scraper"
 	userplan "github.com/ncarlier/readflow/pkg/user-plan"
@@ -20,16 +21,17 @@ var instance *Registry
 
 // Registry is the structure definition of the service registry
 type Registry struct {
-	conf            config.Config
-	db              db.DB
-	UserPlans       userplan.UserPlans
-	logger          zerolog.Logger
-	ruleEngineCache *ruleengine.Cache
-	downloadCache   cache.Cache
-	properties      *model.Properties
-	webScraper      scraper.WebScraper
-	downloader      exporter.Downloader
-	hashid          *helper.HashIDHandler
+	conf                    config.Config
+	db                      db.DB
+	UserPlans               userplan.UserPlans
+	logger                  zerolog.Logger
+	ruleEngineCache         *ruleengine.Cache
+	downloadCache           cache.Cache
+	properties              *model.Properties
+	webScraper              scraper.WebScraper
+	downloader              exporter.Downloader
+	hashid                  *helper.HashIDHandler
+	notificationRateLimiter ratelimiter.RateLimiter
 }
 
 // Configure the global service registry
@@ -43,16 +45,21 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache, pl
 	if err != nil {
 		return err
 	}
+	notificationRateLimiter, err := ratelimiter.NewRateLimiter(conf.NotificationRateLimiting)
+	if err != nil {
+		return err
+	}
 	instance = &Registry{
-		conf:            conf,
-		db:              database,
-		UserPlans:       plans,
-		logger:          log.With().Str("component", "service").Logger(),
-		ruleEngineCache: ruleengine.NewRuleEngineCache(1024),
-		downloadCache:   downloadCache,
-		webScraper:      webScraper,
-		downloader:      downloader,
-		hashid:          hashid,
+		conf:                    conf,
+		db:                      database,
+		UserPlans:               plans,
+		logger:                  log.With().Str("component", "service").Logger(),
+		ruleEngineCache:         ruleengine.NewRuleEngineCache(1024),
+		downloadCache:           downloadCache,
+		webScraper:              webScraper,
+		downloader:              downloader,
+		hashid:                  hashid,
+		notificationRateLimiter: notificationRateLimiter,
 	}
 	return instance.initProperties()
 }
