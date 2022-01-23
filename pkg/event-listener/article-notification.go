@@ -15,7 +15,10 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const errorMessage = "unable to send notification"
+const (
+	errorMessage                        = "unable to send notification"
+	maxUserInactivityBeforeNotification = 6 * time.Hour
+)
 
 var status string = "inbox"
 
@@ -58,9 +61,8 @@ func init() {
 			}
 
 			if globalStrategy {
-				// Send notification only if user logged in more than 5 minutes ago
-				// TODO use rate limiter instead of this
-				lastLoginDelay := time.Now().Add(-5 * time.Minute)
+				// Send notification only if user is inactive for a while
+				lastLoginDelay := time.Now().Add(-maxUserInactivityBeforeNotification)
 				if user.Enabled && user.LastLoginAt != nil && user.LastLoginAt.After(lastLoginDelay) {
 					return
 				}

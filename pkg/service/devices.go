@@ -11,6 +11,8 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
+const errNotification = "unable to notify user's devices"
+
 // GetDevices get devices from current user
 func (reg *Registry) GetDevices(ctx context.Context) (*[]model.Device, error) {
 	uid := getCurrentUserIDFromContext(ctx)
@@ -99,7 +101,7 @@ func (reg *Registry) DeleteDevices(ctx context.Context, ids []uint) (int64, erro
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
-		).Str("ids", idsStr).Msg("unable to delete devices")
+		).Str("ids", idsStr).Msg(errNotification)
 		return 0, err
 	}
 	reg.logger.Debug().Err(err).Uint(
@@ -112,7 +114,7 @@ func (reg *Registry) DeleteDevices(ctx context.Context, ids []uint) (int64, erro
 func (reg *Registry) NotifyDevices(ctx context.Context, msg string) (int, error) {
 	user, err := reg.GetCurrentUser(ctx)
 	if err != nil {
-		reg.logger.Info().Err(err).Msg("unable to notify devices")
+		reg.logger.Info().Err(err).Msg(errNotification)
 		return 0, err
 	}
 	uid := *user.ID
@@ -121,11 +123,22 @@ func (reg *Registry) NotifyDevices(ctx context.Context, msg string) (int, error)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
-		).Msg("unable to notify devices")
+		).Msg(errNotification)
 		return 0, err
 	}
 	counter := 0
 	for _, device := range *devices {
+		// Rate limiting
+		if _, _, _, ok, err := reg.notificationRateLimiter.Take(ctx, user.Username); err != nil || !ok {
+			if !ok {
+				err = errors.New("rate limiting activated")
+			}
+			reg.logger.Info().Err(err).Uint(
+				"uid", uid,
+			).Uint("device", *device.ID).Msg(errNotification)
+			continue
+		}
+		// Send notification
 		res, err := webpush.SendNotification([]byte(msg), device.Subscription, &webpush.Options{
 			Subscriber:      user.Username,
 			VAPIDPublicKey:  reg.properties.VAPIDPublicKey,
@@ -135,7 +148,7 @@ func (reg *Registry) NotifyDevices(ctx context.Context, msg string) (int, error)
 		if err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
-			).Uint("device", *device.ID).Msg("unable to notify user device")
+			).Uint("device", *device.ID).Msg(errNotification)
 			continue
 		}
 		if res.StatusCode == 410 {
@@ -149,7 +162,9 @@ func (reg *Registry) NotifyDevices(ctx context.Context, msg string) (int, error)
 		if res.StatusCode >= 400 {
 			reg.logger.Info().Err(errors.New(res.Status)).Uint(
 				"uid", uid,
-			).Uint("device", *device.ID).Msg("unable to send notification to user device")
+			).Uint(
+				"device", *device.ID,
+			).Int("status", res.StatusCode).Msg(errNotification)
 			continue
 		}
 		counter++
