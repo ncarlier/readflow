@@ -50,6 +50,14 @@ func main() {
 		os.Exit(0)
 	}
 
+	// Init config file
+	if config.InitConfigFile != nil && *config.InitConfigFile != "" {
+		if err := config.WriteConfigFile(*config.InitConfigFile); err != nil {
+			log.Fatal().Err(err).Msg("unable to init configuration file")
+		}
+		os.Exit(0)
+	}
+
 	conf := config.NewConfig()
 	if flags.Config != "" {
 		if err := conf.LoadFile(flags.Config); err != nil {
