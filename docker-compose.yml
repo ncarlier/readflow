@@ -1,6 +1,26 @@
 version: "3"
 
 services:
+  #######################################
+  # Reverse proxy (Traefik)
+  #######################################
+  traefik:
+    image: traefik:2.1
+    command: >
+      --providers.docker=true
+      --api.dashboard=true
+      --api.insecure=true
+      --log.level=INFO
+      --entryPoints.web.address=:80
+    restart: always
+    ports:
+      - "${PORT:-3000}:80"
+      - "${RPROXY_PORT:-8080}:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - traefik.enable=false
+
   ########################################
   # PostgreSQL
   ########################################
@@ -10,9 +30,7 @@ services:
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-readflow}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    networks:
-      - internal
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-secret}
     volumes:
       - db-data:/var/lib/postgresql/data
     labels:
@@ -31,8 +49,6 @@ services:
       options:
         max-size: "1m"
     restart: always
-    networks:
-      - internal
     labels:
       - "traefik.enable=false"
 
@@ -45,39 +61,31 @@ services:
     restart: always
     depends_on:
       - db
-    networks:
-      - web
-      - internal
     environment:
-      - READFLOW_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB:-readflow}?sslmode=disable
+      - READFLOW_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-secret}@db/${POSTGRES_DB:-readflow}?sslmode=disable
       - READFLOW_LISTEN_METRICS=:9090
       - READFLOW_IMAGE_PROXY_URL=http://imaginary:9000
     labels:
-      - "traefik.port=8080"
-      - "traefik.frontend.rule=Host:api.${FQDN}"
-      - "traefik.docker.network=${GW_NETWORK_NAME}"
+      - "traefik.http.services.api.loadbalancer.server.port=8080"
+      - "traefik.http.routers.api.priority=2"
+      - "traefik.http.routers.api.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.api.middlewares=api-stripprefix@docker"
+      - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
 
-#  ########################################
-#  # Webapp
-#  ########################################
-#  app:
-#    build: ./ui/
-#    image: "ncarlier/readflow-app:latest"
-#    restart: always
-#    networks:
-#      - web
-#      - internal
-#    labels:
-#      - "traefik.port=80"
-#      - "traefik.frontend.rule=Host:${FQDN}"
-#      - "traefik.docker.network=${GW_NETWORK_NAME}"
+  ########################################
+  # Webapp
+  ########################################
+  app:
+    build: ./ui/
+    image: "ncarlier/readflow-app:latest"
+    restart: always
+    labels:
+      - "traefik.http.services.webapp.loadbalancer.server.port=80"
+      - "traefik.http.routers.webapp.priority=1"
+      - "traefik.http.routers.webapp.rule=PathPrefix(`/`)"
 
 networks:
-  web:
-    external:
-      name: "${GW_NETWORK_NAME}"
-  internal:
-    external: false
+  default:
 
 volumes:
   db-data:
