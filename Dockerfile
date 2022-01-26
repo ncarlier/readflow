@@ -33,7 +33,7 @@ ARG ARTIFACT=readflow
 COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/release/$ARTIFACT /usr/local/bin/$ARTIFACT
 
 # Add configuration file
-ADD ./etc/default/readflow.toml /etc/readflow.toml
+ADD ./pkg/config/readflow.toml /etc/readflow.toml
 
 # Set configuration file
 ENV READFLOW_CONFIG /etc/readflow.toml
