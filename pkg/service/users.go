@@ -5,10 +5,10 @@ import (
 	"errors"
 	"time"
 
+	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/model"
-	userplan "github.com/ncarlier/readflow/pkg/user-plan"
 )
 
 func getCurrentUserIDFromContext(ctx context.Context) uint {
@@ -90,12 +90,12 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 }
 
 // GetCurrentUserPlan get current user plan
-func (reg *Registry) GetCurrentUserPlan(ctx context.Context) (*userplan.UserPlan, error) {
+func (reg *Registry) GetCurrentUserPlan(ctx context.Context) (*config.UserPlan, error) {
 	user, err := reg.GetCurrentUser(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return reg.UserPlans.GetPlan(user.Plan), nil
+	return reg.conf.GetUserPlan(user.Plan), nil
 }
 
 // DeleteAccount delete current user account
@@ -204,4 +204,9 @@ func (reg *Registry) GetUserHashID(user *model.User) string {
 		return reg.hashid.Encode([]int{int(*user.ID)})
 	}
 	return ""
+}
+
+// GetUserPlans returns user plans
+func (reg *Registry) GetUserPlans() []config.UserPlan {
+	return reg.conf.UserPlans
 }

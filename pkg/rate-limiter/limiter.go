@@ -2,13 +2,11 @@ package ratelimiter
 
 import (
 	"context"
-	"fmt"
-	"net/url"
-	"strconv"
-	"time"
 
+	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/rs/zerolog/log"
 	"github.com/sethvargo/go-limiter/memorystore"
+	"github.com/sethvargo/go-limiter/noopstore"
 )
 
 // RateLimiter is an interface use to apply rate limiting
@@ -18,38 +16,23 @@ type RateLimiter interface {
 }
 
 // NewWebScraper create new Web Scraping service
-func NewRateLimiter(uri string) (RateLimiter, error) {
-	if uri == "" {
-		return nil, nil
-	}
-	u, err := url.ParseRequestURI(uri)
-	if err != nil {
-		return nil, fmt.Errorf("invalid configuration URI: %s", uri)
-	}
-
-	tokens := uint64(1)
-	if val := u.Query().Get("tokens"); val != "" {
-		tokens, _ = strconv.ParseUint(string(val), 10, 64)
-	}
-	interval := time.Hour
-	if val := u.Query().Get("interval"); val != "" {
-		interval, _ = time.ParseDuration(val)
-	}
-
-	switch u.Scheme {
+func NewRateLimiter(conf config.RateLimiting) (RateLimiter, error) {
+	switch conf.Provider {
 	case "memory":
 		store, err := memorystore.New(&memorystore.Config{
-			// Number of tokens allowed per interval.
-			Tokens: tokens,
-			// Interval until tokens reset.
-			Interval: interval,
+			Tokens:   uint64(conf.Tokens),
+			Interval: conf.Interval.Duration,
 		})
 		if err != nil {
 			return nil, err
 		}
-		log.Info().Str("component", "rate-limiter").Str("uri", u.Redacted()).Msg("using in memory rate limiter")
+		log.Info().Str("component", "rate-limiter").Msg("using in memory rate limiter")
 		return store, nil
 	default:
-		return nil, fmt.Errorf("unsupported rate limiter: %s", u.Scheme)
+		store, err := noopstore.New()
+		if err != nil {
+			return nil, err
+		}
+		return store, nil
 	}
 }

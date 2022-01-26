@@ -24,7 +24,7 @@ func qrcodeHandler(conf *config.Config) http.Handler {
 		}
 
 		// Build outgoing webhook endpoint
-		u, err := url.Parse(conf.PublicURL)
+		u, err := url.Parse(conf.Global.PublicURL)
 		if err != nil {
 			http.Error(w, "invalid public URL", http.StatusInternalServerError)
 			return
@@ -33,7 +33,7 @@ func qrcodeHandler(conf *config.Config) http.Handler {
 		u.User = url.UserPassword("api", token)
 
 		// Build UI outgoing webhook configuration URL
-		payload := strings.Replace(conf.PublicURL, "api.", "", 1)
+		payload := strings.Replace(conf.Global.PublicURL, "api.", "", 1)
 		payload = fmt.Sprintf("%s/settings/integrations/outgoing-webhooks/add?provider=generic&endpoint=%s", payload, url.QueryEscape(u.String()))
 
 		// Build QR code

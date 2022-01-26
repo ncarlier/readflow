@@ -1,0 +1,20 @@
+# readflow testing configuration file
+
+[global]
+listen_addr = "localhost:8081"
+secret_salt = "${USER}"
+public_url = "${AN_EMPTY_VARIABLE}"
+
+[integration.sentry]
+dsn_url = "https://1..9:1..9@sentry.io/1..9"
+
+## User Plans
+[[user_plans]]
+name = "starter"
+total_articles = 200
+total_categories = 10
+
+[[user_plans]]
+name = "premium"
+total_articles = 2000
+total_categories = 50

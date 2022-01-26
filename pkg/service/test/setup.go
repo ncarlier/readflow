@@ -14,7 +14,6 @@ import (
 	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/service"
-	userplan "github.com/ncarlier/readflow/pkg/user-plan"
 )
 
 var testDB db.DB
@@ -47,19 +46,25 @@ func assertUserExists(t *testing.T, username string) *model.User {
 
 func setupTestCase(t *testing.T) func(t *testing.T) {
 	t.Log("setup test case")
+	conf := config.NewConfig()
+	if err := conf.LoadFile("test.toml"); err != nil {
+		t.Fatalf("unable to setup database: %v", err)
+	}
+	if conf.Global.DatabaseURI == "" {
+		conf.Global.DatabaseURI = defaultDBConnString
+	}
+
 	var err error
-	testDB, err = db.NewDB(getEnv("DB", defaultDBConnString))
+	testDB, err = db.NewDB(conf.Global.DatabaseURI)
 	if err != nil {
 		t.Fatalf("unable to setup database: %v", err)
 	}
 	testUser = assertUserExists(t, defaultUsername)
 	testContext = context.Background()
 	testContext = context.WithValue(testContext, constant.ContextUserID, *testUser.ID)
-	userPlans, _ := userplan.NewUserPlans("user-plans.yml")
 	downloadCache, _ := cache.NewDefault()
-	conf := config.Config{}
 
-	service.Configure(conf, testDB, downloadCache, userPlans)
+	service.Configure(*conf, testDB, downloadCache)
 	if err != nil {
 		t.Fatalf("unable to setup service registry: %v", err)
 	}

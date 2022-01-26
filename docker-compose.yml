@@ -50,10 +50,8 @@ services:
       - internal
     environment:
       - READFLOW_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB:-readflow}?sslmode=disable
-      - READFLOW_BROKER=${EVENT_BROKER}
-      - READFLOW_SENTRY_DSN=${SENTRY_DSN}
       - READFLOW_LISTEN_METRICS=:9090
-      - READFLOW_IMAGE_PROXY=http://imaginary:9000
+      - READFLOW_IMAGE_PROXY_URL=http://imaginary:9000
     labels:
       - "traefik.port=8080"
       - "traefik.frontend.rule=Host:api.${FQDN}"

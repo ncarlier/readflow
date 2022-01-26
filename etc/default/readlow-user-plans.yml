@@ -1,9 +1,0 @@
-user_plans:
-  -
-    name: free to play
-    total_articles: 200
-    total_categories: 10
-  -
-    name: friends and family
-    total_articles: 2000
-    total_categories: 50

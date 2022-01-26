@@ -31,11 +31,11 @@ type pocketRequestResponse struct {
 }
 
 func newPocketProvider(conf *config.Config) (account.Provider, error) {
-	if conf.PocketConsumerKey == "" {
+	if conf.Integration.Pocket.ConsumerKey == "" {
 		return nil, errors.New("pocket consumer key not set")
 	}
 	provider := &pocketProvider{
-		key: conf.PocketConsumerKey,
+		key: conf.Integration.Pocket.ConsumerKey,
 	}
 	return provider, nil
 }

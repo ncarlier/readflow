@@ -1,0 +1,84 @@
+# readflow configuration file
+#
+# If an attribute has a default value, this value is used if the attribute is not
+# set or empty.
+#
+# Environment variables can be used anywhere in this config file, simply surround
+# them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+# for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+
+[global]
+## Database connection string
+# Default: "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable"
+db = "${READFLOW_DB}"
+
+## HTTP listen address
+## Default: ":8080"
+## Examples: "localhost:8080" or ":8080" for all interfaces 
+listen_addr = "${READFLOW_LISTEN_ADDR}"
+
+## Metrics listen address (aka: Prometheus metrics endpoint), deactivated if empty
+## Example: ":9090"
+metrics_listen_addr = "${READFLOW_LISTEN_METRICS}"
+
+## Authentication method
+## - `mock`: Generic user use for testing
+## - `proxy`: For proxied authentication that use "X-WEBAUTH-USER", "X-Auth-Username", "Remote-User" or "Remote-Name" HTTP header as username
+##            Note: Set 'REACT_APP_AUTHORITY=mock' when bulding UI
+## - `https://...`: Use OpenID Connect provider
+## Default: "https://login.nunux.org/auth/realms/readflow"
+authn = "${READFLOW_AUTHN}"
+
+## Public URL
+# Default: "https://api.readflow.app"
+public_url = "${READFLOW_PUBLIC_URL}"
+
+## Secret salt used by hash algorythms
+# Default: "pepper"
+secret_salt = "${READFLOW_SECRET_SALT}"
+
+[integration]
+## External event broker URI for outgoing events, deactivated if empty
+## Example: "https://example.com/event"
+external_event_broker_uri = "${READFLOW_BROKER_URI}"
+
+## External Web Scraper URL, using internal if empty
+## Example: "https://example.org/scrap"
+external_web_scraper_url = "${READFLOW_WEB_SCRAPER_URL}"
+
+## Image proxy URL, deactivated if empty
+## Example: "http://imaginary:9000"
+image_proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
+
+## Sentry integration
+[integration.sentry]
+## DSN URL, deactivated if empty
+dsn_url = "${READFLOW_SENTRY_DSN}"
+
+## Pocker integration
+[integration.pocket]
+## Consumer key, deactivated if empty
+consumer_key = "${READFLOW_POCKET_CONSUMER_KEY}"
+
+## Rate limiting for notifications, none by default
+#[rate_limiting.notification]
+#provider = "memory"
+#tokens = 5
+#interval = "24h"
+
+## Rate limiting for incoming webhooks, none by default
+#[rate_limiting.webhook]
+#provider = "memory"
+#tokens = 30
+#interval = "1m"
+
+## User Plans, none by default
+#[[user_plans]]
+#name = "free to play"
+#total_articles = 200
+#total_categories = 10
+
+#[[user_plans]]
+#name = "friends and family"
+#total_articles = 2000
+#total_categories = 50

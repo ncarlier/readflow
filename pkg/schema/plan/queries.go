@@ -12,7 +12,7 @@ var plansQueryField = &graphql.Field{
 }
 
 func plansResolver(p graphql.ResolveParams) (interface{}, error) {
-	return service.Lookup().UserPlans.Plans, nil
+	return service.Lookup().GetUserPlans(), nil
 }
 
 func init() {
