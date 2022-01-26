@@ -46,7 +46,7 @@ func newPocketProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.P
 
 	provider := &pocketProvider{
 		config:      config,
-		ConsumerKey: conf.PocketConsumerKey,
+		ConsumerKey: conf.Integration.Pocket.ConsumerKey,
 	}
 
 	return provider, nil

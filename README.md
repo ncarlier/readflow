@@ -42,11 +42,11 @@ $ docker run -d --name=readflow ncarlier/readflow
 
 ## Configuration
 
-Readflow can be configured by using command line parameters or by setting environment variables.
+Readflow configuration is a TOML file that you can specify using the `--config` command line parameter or by setting the `READFLOW_CONFIG` environment variable.
 
 Type `readflow -h` to display all parameters and related environment variables.
 
-All configuration variables are described in [etc/default/readflow.env](./etc/default/readflow.env) file.
+A configuration file example can be found [here](./etc/default/readflow.toml).
 
 ## UI
 

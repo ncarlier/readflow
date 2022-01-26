@@ -1,0 +1,10 @@
+# readflow testing configuration file
+
+[global]
+db = "${READFLOW_DB}"
+
+## User Plans
+[[user_plans]]
+name = "test"
+total_articles = 5
+total_categories = 2

@@ -12,7 +12,6 @@ import (
 	ratelimiter "github.com/ncarlier/readflow/pkg/rate-limiter"
 	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
 	"github.com/ncarlier/readflow/pkg/scraper"
-	userplan "github.com/ncarlier/readflow/pkg/user-plan"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -23,7 +22,6 @@ var instance *Registry
 type Registry struct {
 	conf                    config.Config
 	db                      db.DB
-	UserPlans               userplan.UserPlans
 	logger                  zerolog.Logger
 	ruleEngineCache         *ruleengine.Cache
 	downloadCache           cache.Cache
@@ -35,24 +33,23 @@ type Registry struct {
 }
 
 // Configure the global service registry
-func Configure(conf config.Config, database db.DB, downloadCache cache.Cache, plans userplan.UserPlans) error {
+func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) error {
 	downloader := exporter.NewInternalDownloader(downloadCache, 10, constant.DefaultTimeout)
-	webScraper, err := scraper.NewWebScraper(conf.WebScraping)
+	webScraper, err := scraper.NewWebScraper(conf.Integration.ExternalWebScraperURL)
 	if err != nil {
 		return err
 	}
-	hashid, err := helper.NewHashIDHandler(conf.SecretSalt)
+	hashid, err := helper.NewHashIDHandler(conf.Global.SecretSalt)
 	if err != nil {
 		return err
 	}
-	notificationRateLimiter, err := ratelimiter.NewRateLimiter(conf.NotificationRateLimiting)
+	notificationRateLimiter, err := ratelimiter.NewRateLimiter(conf.RateLimiting.Notification)
 	if err != nil {
 		return err
 	}
 	instance = &Registry{
 		conf:                    conf,
 		db:                      database,
-		UserPlans:               plans,
 		logger:                  log.With().Str("component", "service").Logger(),
 		ruleEngineCache:         ruleengine.NewRuleEngineCache(1024),
 		downloadCache:           downloadCache,

@@ -1,9 +1,0 @@
-user_plans:
-  -
-    name: starter
-    total_articles: 200
-    total_categories: 20
-  -
-    name: premium
-    total_articles: 2000
-    total_categories: 50

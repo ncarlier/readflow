@@ -17,7 +17,7 @@ import (
 
 const (
 	errorMessage                        = "unable to send notification"
-	maxUserInactivityBeforeNotification = 6 * time.Hour
+	maxUserInactivityBeforeNotification = 8 * time.Hour
 )
 
 var status string = "inbox"

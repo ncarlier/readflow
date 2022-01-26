@@ -20,7 +20,7 @@ type Info struct {
 func index(conf *config.Config) http.Handler {
 	v := Info{
 		Version:   version.Version,
-		Authority: conf.AuthN,
+		Authority: conf.Global.AuthN,
 		VAPID:     service.Lookup().GetProperties().VAPIDPublicKey,
 	}
 

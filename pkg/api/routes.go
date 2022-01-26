@@ -26,8 +26,8 @@ func route(path string, handler http.Handler, middlewares ...middleware.Middlewa
 type Routes []Route
 
 func routes(conf *config.Config) Routes {
-	origin := buildOriginFromPublicURL(conf.PublicURL)
-	authnMiddleware := middleware.Auth(conf.AuthN)
+	origin := buildOriginFromPublicURL(conf.Global.PublicURL)
+	authnMiddleware := middleware.Auth(conf.Global.AuthN)
 	return Routes{
 		route(
 			"/",

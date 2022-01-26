@@ -81,10 +81,10 @@ func TestCreateArticleWithRuleEngine(t *testing.T) {
 	}
 	opts := service.ArticleCreationOptions{}
 	art, err := service.Lookup().CreateArticle(testContext, req, opts)
-	assert.Nil(t, err, "")
-	assert.Equal(t, req.Title, art.Title, "")
-	assert.True(t, art.CategoryID != nil, "")
-	assert.Equal(t, *cat.ID, *art.CategoryID, "")
+	assert.Nil(t, err)
+	assert.Equal(t, req.Title, art.Title)
+	assert.NotNil(t, art.CategoryID)
+	assert.Equal(t, *cat.ID, *art.CategoryID)
 }
 
 func TestCreateArticlesExceedingQuota(t *testing.T) {
@@ -99,9 +99,10 @@ func TestCreateArticlesExceedingQuota(t *testing.T) {
 		opts := service.ArticleCreationOptions{}
 		_, err := service.Lookup().CreateArticle(testContext, req, opts)
 		if i <= 5 {
-			assert.Nil(t, err, "")
+			assert.Nil(t, err)
 		} else {
-			assert.Equal(t, service.ErrUserQuotaReached.Error(), err.Error(), "")
+			assert.NotNil(t, err)
+			assert.Equal(t, service.ErrUserQuotaReached.Error(), err.Error())
 		}
 	}
 }

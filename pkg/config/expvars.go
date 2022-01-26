@@ -12,9 +12,9 @@ func exportConfigVar(key, value string) {
 }
 
 // ExportVars export some configuration variables to expvar
-func ExportVars(conf Config) {
-	exportConfigVar("addr", conf.ListenAddr)
-	exportConfigVar("authn", conf.ListenAddr)
-	exportConfigVar("public-url", conf.PublicURL)
-	exportConfigVar("image-proxy", conf.ImageProxy)
+func ExportVars(conf *Config) {
+	exportConfigVar("addr", conf.Global.ListenAddr)
+	exportConfigVar("authn", conf.Global.AuthN)
+	exportConfigVar("public-url", conf.Global.PublicURL)
+	exportConfigVar("image-proxy-url", conf.Integration.ImageProxyURL)
 }

@@ -31,6 +31,7 @@ require (
 )
 
 require (
+	github.com/BurntSushi/toml v1.0.0
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -42,6 +43,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
+	github.com/imdario/mergo v0.3.12
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/klauspost/compress v1.13.5 // indirect
 	github.com/klauspost/cpuid v1.3.1 // indirect
