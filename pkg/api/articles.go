@@ -11,6 +11,27 @@ import (
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
+const (
+	maxArticlesToCreatePerRequest = 100
+	maxArticlesToScrapePerRequest = 10
+)
+
+func assertLimitations(articles []model.ArticleCreateForm) error {
+	if len(articles) > maxArticlesToCreatePerRequest {
+		return errors.New("too many articles")
+	}
+	articlesToScrape := 0
+	for _, article := range articles {
+		if article.URL != nil && !article.IsComplete() {
+			articlesToScrape++
+		}
+	}
+	if (articlesToScrape) > maxArticlesToScrapePerRequest {
+		return errors.New("too many articles to scrape")
+	}
+	return nil
+}
+
 // articles is the handler to post articles using API keys.
 func articles() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -18,6 +39,7 @@ func articles() http.Handler {
 		articlesForm := []model.ArticleCreateForm{}
 		articleForm := model.ArticleCreateForm{}
 
+		// Decode body payload
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -44,10 +66,18 @@ func articles() http.Handler {
 			articlesForm = append(articlesForm, articleForm)
 		}
 
+		// Apply limitations
+		if err := assertLimitations(articlesForm); err != nil {
+			http.Error(w, err.Error(), http.StatusRequestEntityTooLarge)
+			return
+		}
+
+		// Create articles(s)
 		articles := service.Lookup().CreateArticles(ctx, articlesForm)
 
 		// TODO filters some attributes
 
+		// Build response
 		data, err := json.Marshal(articles)
 		if err != nil && data == nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
