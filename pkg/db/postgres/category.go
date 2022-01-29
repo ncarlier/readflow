@@ -34,7 +34,7 @@ func mapRowToCategory(row *sql.Row) (*model.Category, error) {
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
-		return nil, err
+		return nil, mapError(err)
 	}
 	return cat, nil
 }

@@ -17,6 +17,9 @@ var planType = graphql.NewObject(
 			"total_categories": &graphql.Field{
 				Type: graphql.Int,
 			},
+			"total_webhooks": &graphql.Field{
+				Type: graphql.Int,
+			},
 		},
 	},
 )

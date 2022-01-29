@@ -36,7 +36,7 @@ func mapRowToOutgoingWebhook(row *sql.Row) (*model.OutgoingWebhook, error) {
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
-		return nil, err
+		return nil, mapError(err)
 	}
 	return result, nil
 }

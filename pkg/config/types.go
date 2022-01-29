@@ -58,6 +58,7 @@ type UserPlan struct {
 	Name            string `toml:"name" json:"name"`
 	TotalArticles   uint   `toml:"total_articles" json:"total_articles"`
 	TotalCategories uint   `toml:"total_categories" json:"total_categories"`
+	TotalWebhooks   uint   `toml:"total_webhooks" json:"total_webhooks"`
 }
 
 // GetUserPlan return an user plan by its name and fallback to first plan if missing

@@ -35,7 +35,7 @@ func mapRowToIncomingWebhook(row *sql.Row) (*model.IncomingWebhook, error) {
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
-		return nil, err
+		return nil, mapError(err)
 	}
 	return &result, nil
 }
@@ -154,6 +154,20 @@ func (pg *DB) GetIncomingWebhooksByUser(uid uint) ([]model.IncomingWebhook, erro
 		return nil, err
 	}
 	return result, nil
+}
+
+// CountIncomingWebhooksByUser returns total nb of incoming webhooks of an user from the DB
+func (pg *DB) CountIncomingWebhooksByUser(uid uint) (uint, error) {
+	counter := pg.psql.Select("count(*)").From(
+		"incoming_webhooks",
+	).Where(sq.Eq{"user_id": uid})
+	query, args, _ := counter.ToSql()
+
+	var count uint
+	if err := pg.db.QueryRow(query, args...).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
 }
 
 // DeleteIncomingWebhookByUser removes an inboundService from the DB
