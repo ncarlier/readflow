@@ -38,6 +38,7 @@ func routes(conf *config.Config) Routes {
 		route(
 			"/articles",
 			articles(),
+			middleware.RateLimiting("webhook", conf.RateLimiting.Webhook),
 			middleware.APIKeyAuth,
 			middleware.Methods("POST"),
 			middleware.Cors("*"),

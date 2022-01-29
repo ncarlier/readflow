@@ -43,7 +43,7 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	if err != nil {
 		return err
 	}
-	notificationRateLimiter, err := ratelimiter.NewRateLimiter(conf.RateLimiting.Notification)
+	notificationRateLimiter, err := ratelimiter.NewRateLimiter("notification", conf.RateLimiting.Notification)
 	if err != nil {
 		return err
 	}
