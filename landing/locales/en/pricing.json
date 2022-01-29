@@ -6,6 +6,7 @@
   "premium-desc": "Battery included.",
   "up-to-art": "up to {{count}} articles",
   "up-to-cat": "up to {{count}} categories",
+  "up-to-hook": "up to {{count}} incoming webhooks",
   "subscribe": "Subscribe",
   "get-started": "Get started",
   "month": "month"

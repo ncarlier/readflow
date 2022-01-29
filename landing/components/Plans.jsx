@@ -21,6 +21,7 @@ const Plans = ({ onChoosePlan }) => {
             <ul>
               <li>{t('up-to-art', { count: 200 })}</li>
               <li>{t('up-to-cat', { count: 5 })}</li>
+              <li>{t('up-to-hook', { count: 1 })}</li>
             </ul>
             <footer>
               <h2>
@@ -39,6 +40,7 @@ const Plans = ({ onChoosePlan }) => {
             <ul>
               <li>{t('up-to-art', { count: 2000 })}</li>
               <li>{t('up-to-cat', { count: 20 })}</li>
+              <li>{t('up-to-hook', { count: 3 })}</li>
             </ul>
             <footer>
               <h2>
@@ -57,6 +59,7 @@ const Plans = ({ onChoosePlan }) => {
             <ul>
               <li>{t('up-to-art', { count: 10000 })}</li>
               <li>{t('up-to-cat', { count: 50 })}</li>
+              <li>{t('up-to-hook', { count: 5 })}</li>
               <li>
                 RSS feeds<span>with a dedicated Feedpushr instance</span>
               </li>

@@ -13,6 +13,7 @@ export const GetPlans = gql`
       name
       total_articles
       total_categories
+      total_webhooks
     }
   }
 `
@@ -20,6 +21,7 @@ interface Plan {
   name: string
   total_articles: number
   total_categories: number
+  total_webhooks: number
 }
 
 export interface GetPlansResponse {
@@ -49,6 +51,9 @@ const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
         </li>
         <li>
           Max number of categories: <b>{plan.total_categories}</b>
+        </li>
+        <li>
+          Max number of incoming webhooks: <b>{plan.total_webhooks}</b>
         </li>
         {plan.name === 'premium' && (
           <li>

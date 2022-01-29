@@ -46,6 +46,30 @@ func (reg *Registry) GetIncomingWebhook(ctx context.Context, id uint) (*model.In
 func (reg *Registry) CreateIncomingWebhook(ctx context.Context, form model.IncomingWebhookCreateForm) (*model.IncomingWebhook, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
+	// Validate user quota
+	plan, err := reg.GetCurrentUserPlan(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if plan != nil {
+		totalWebhooks, err := reg.db.CountIncomingWebhooksByUser(uid)
+		if err != nil {
+			reg.logger.Info().Err(err).Uint(
+				"uid", uid,
+			).Msg("unable to create incoming webhook")
+			return nil, err
+		}
+		if totalWebhooks >= plan.TotalWebhooks {
+			err = ErrUserQuotaReached
+			reg.logger.Info().Err(err).Uint(
+				"uid", uid,
+			).Uint(
+				"total", plan.TotalCategories,
+			).Msg("unable to create incoming webhook")
+			return nil, err
+		}
+	}
+
 	result, err := reg.db.CreateIncomingWebhookForUser(uid, form)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(

@@ -77,8 +77,10 @@ consumer_key = "${READFLOW_POCKET_CONSUMER_KEY}"
 #name = "free to play"
 #total_articles = 200
 #total_categories = 10
+#total_webhooks = 1
 
 #[[user_plans]]
 #name = "friends and family"
 #total_articles = 2000
 #total_categories = 50
+#total_webhooks = 5

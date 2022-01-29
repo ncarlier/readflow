@@ -8,6 +8,7 @@ type IncomingWebhookRepository interface {
 	GetIncomingWebhookByToken(token string) (*model.IncomingWebhook, error)
 	GetIncomingWebhookByUserAndAlias(uid uint, alias string) (*model.IncomingWebhook, error)
 	GetIncomingWebhooksByUser(uid uint) ([]model.IncomingWebhook, error)
+	CountIncomingWebhooksByUser(uid uint) (uint, error)
 	CreateIncomingWebhookForUser(uid uint, form model.IncomingWebhookCreateForm) (*model.IncomingWebhook, error)
 	UpdateIncomingWebhookForUser(uid uint, form model.IncomingWebhookUpdateForm) (*model.IncomingWebhook, error)
 	DeleteIncomingWebhookByUser(uid uint, id uint) error

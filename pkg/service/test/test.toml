@@ -8,3 +8,4 @@ db = "${READFLOW_DB}"
 name = "test"
 total_articles = 5
 total_categories = 2
+total_webhooks = 2
