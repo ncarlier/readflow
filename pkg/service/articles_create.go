@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/ncarlier/readflow/pkg/event"
-	"github.com/ncarlier/readflow/pkg/html"
 	"github.com/ncarlier/readflow/pkg/model"
 
 	// activate all content providers
@@ -73,7 +72,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 
 	if form.URL != nil && !form.IsComplete() {
 		// Fetch original article in order to extract missing attributes
-		if err := reg.hydrateArticle(ctx, &form); err != nil {
+		if err := reg.scrapOriginalArticle(ctx, &form); err != nil {
 			reg.logger.Info().Err(err).Uint(
 				"uid", uid,
 			).Str("title", form.TruncatedTitle()).Msg("unable to fetch original article")
@@ -86,7 +85,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 
 	// Sanitize HTML content
 	if form.HTML != nil {
-		content := html.Sanitize(*form.HTML)
+		content := reg.sanitizer.Sanitize(*form.HTML)
 		form.HTML = &content
 	}
 
@@ -124,8 +123,8 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleCre
 	return &result
 }
 
-// hydrateArticle add missing attributes form original article
-func (reg *Registry) hydrateArticle(ctx context.Context, article *model.ArticleCreateForm) error {
+// scrapOriginalArticle add missing attributes form original article
+func (reg *Registry) scrapOriginalArticle(ctx context.Context, article *model.ArticleCreateForm) error {
 	page, err := reg.webScraper.Scrap(ctx, *article.URL)
 	if page == nil {
 		return err

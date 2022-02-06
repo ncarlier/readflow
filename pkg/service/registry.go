@@ -11,6 +11,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 	ratelimiter "github.com/ncarlier/readflow/pkg/rate-limiter"
 	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
+	"github.com/ncarlier/readflow/pkg/sanitizer"
 	"github.com/ncarlier/readflow/pkg/scraper"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -30,11 +31,11 @@ type Registry struct {
 	downloader              exporter.Downloader
 	hashid                  *helper.HashIDHandler
 	notificationRateLimiter ratelimiter.RateLimiter
+	sanitizer               *sanitizer.Sanitizer
 }
 
 // Configure the global service registry
 func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) error {
-	downloader := exporter.NewInternalDownloader(downloadCache, 10, constant.DefaultTimeout)
 	webScraper, err := scraper.NewWebScraper(conf.Integration.ExternalWebScraperURL)
 	if err != nil {
 		return err
@@ -47,6 +48,11 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	if err != nil {
 		return err
 	}
+	blockList, err := sanitizer.NewBlockList(conf.Global.BlockList)
+	if err != nil {
+		return err
+	}
+
 	instance = &Registry{
 		conf:                    conf,
 		db:                      database,
@@ -54,9 +60,10 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 		ruleEngineCache:         ruleengine.NewRuleEngineCache(1024),
 		downloadCache:           downloadCache,
 		webScraper:              webScraper,
-		downloader:              downloader,
+		downloader:              exporter.NewInternalDownloader(downloadCache, 10, constant.DefaultTimeout),
 		hashid:                  hashid,
 		notificationRateLimiter: notificationRateLimiter,
+		sanitizer:               sanitizer.NewSanitizer(blockList),
 	}
 	return instance.initProperties()
 }

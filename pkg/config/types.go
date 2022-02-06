@@ -16,6 +16,7 @@ type GlobalConfig struct {
 	MetricsListenAddr string `toml:"metrics_listen_addr"`
 	PublicURL         string `toml:"public_url"`
 	SecretSalt        string `toml:"secret_salt"`
+	BlockList         string `toml:"block_list"`
 }
 
 // IntegrationConfig is the integration configuration section

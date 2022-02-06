@@ -6,6 +6,7 @@ require (
 	github.com/SherClockHolmes/webpush-go v1.1.3
 	github.com/antonmedv/expr v1.9.0
 	github.com/asaskevich/EventBus v0.0.0-20200907212545-49d423059eef
+	github.com/bits-and-blooms/bloom/v3 v3.1.0
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/getsentry/raven-go v0.2.0
@@ -27,7 +28,6 @@ require (
 	go.etcd.io/bbolt v1.3.6
 	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
@@ -35,6 +35,7 @@ require (
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/certifi/gocertifi v0.0.0-20210507211836-431795d63e8d // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -67,6 +68,7 @@ require (
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/protobuf v1.26.0-rc.1 // indirect
 	gopkg.in/ini.v1 v1.57.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
 

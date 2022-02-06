@@ -171,3 +171,8 @@ restore:
 db-client:
 	docker exec -it -u postgres readflow_db_1 psql -U postgres
 .PHONY: db-client
+
+var/block-list.txt:
+	echo ">>> Downloading blocklist file..."
+	mkdir -p var
+	wget -O var/block-list.txt https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt
