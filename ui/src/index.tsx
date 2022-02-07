@@ -1,18 +1,17 @@
 import './index.css'
 
-import { createBrowserHistory } from 'history'
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { createBrowserHistory } from 'history'
+import ReactModal from 'react-modal'
 
 import App from './App'
 import { updateAvailable } from './appStore'
-import authService from './auth'
 import configureStore from './configureStore'
-import { getOnlineStatus, isTrustedWebActivity } from './helpers'
+import { isTrustedWebActivity } from './helpers'
 import * as serviceWorker from './serviceWorkerRegistration'
 import { REDIRECT_URL } from './constants'
 import { ApplicationState } from './store'
-import ReactModal from 'react-modal'
 
 const lastRunKey = 'readflow.lastRun'
 
@@ -30,29 +29,9 @@ const shouldRedirect = () => {
   return !isTrustedWebActivity() && localStorage.getItem(lastRunKey) === null && document.location.pathname !== '/login'
 }
 
-const login = async () => {
-  const user = await authService.getUser()
-  if (user === null) {
-    if (shouldRedirect()) {
-      // No previous usage, then redirect to about page.
-      document.location.replace(REDIRECT_URL)
-    } else {
-      throw new Error('login forced')
-    }
-  } else if (user.expired) {
-    return await authService.renewToken()
-  } else {
-    return Promise.resolve(user)
-  }
-}
-
-if (getOnlineStatus()) {
-  login().then(
-    (user) => user && run(),
-    () => authService.login()
-  )
+if (shouldRedirect()) {
+  // No previous usage, then redirect to about page.
+  document.location.replace(REDIRECT_URL)
 } else {
   run()
 }
-
-window.addEventListener('online', login)

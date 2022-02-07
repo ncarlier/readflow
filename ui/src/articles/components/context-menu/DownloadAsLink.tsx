@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
+import { AuthContext } from 'react-oidc-context'
 
 import { LinkIcon, Overlay } from '../../../components'
 import { useMessage } from '../../../contexts'
-import { fetchAPI } from '../../../helpers'
+import { fetchAPI, withCredentials } from '../../../helpers'
 import { Article } from '../../models'
 import DownloadPanel from './DownloadPanel'
 import DownloadProgress from './DownloadProgress'
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default ({ article }: Props) => {
+  const auth = useContext(AuthContext)
   const { showErrorMessage } = useMessage()
   const [isVisible, setIsVisible] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
@@ -35,7 +37,8 @@ export default ({ article }: Props) => {
   const download = useCallback(
     async (format: string) => {
       try {
-        const res = await fetchAPI(`/articles/${article.id}`, { f: format }, { method: 'GET' })
+        const headers = withCredentials(auth?.user)
+        const res = await fetchAPI(`/articles/${article.id}`, { f: format }, { method: 'GET', headers })
         if (res.ok && res.body) {
           const reader = res.body.getReader()
           const contentLength = parseInt(res.headers.get('X-Content-Length') || '0')
@@ -83,7 +86,7 @@ export default ({ article }: Props) => {
         setIsDownloading(false)
       }
     },
-    [article, showErrorMessage]
+    [auth, article, showErrorMessage]
   )
 
   const attrs: any = {

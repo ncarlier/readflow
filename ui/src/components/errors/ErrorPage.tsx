@@ -15,8 +15,8 @@ export const ErrorPage: FC<Props> = ({ title = 'Error', children }) => (
       <ErrorPanel
         title={title}
         actions={
-          <Button title="Back to home page" as={Link} to="/" variant="danger">
-            Dismiss
+          <Button title="Back to home page" as={Link} replace to="/" variant="danger">
+            Back
           </Button>
         }
       >
