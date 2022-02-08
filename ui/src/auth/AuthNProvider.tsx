@@ -1,16 +1,20 @@
 import React, { FC, useEffect } from 'react'
 import { AuthProvider, useAuth } from 'react-oidc-context'
+import { Log } from 'oidc-client-ts'
 
 import { AUTHORITY } from '../constants'
 import { Center, ErrorPage, Loader } from '../components'
 import { useOnlineStatus } from '../hooks'
-import { buildConfig } from './oidc-configuration'
+import { config } from './oidc-configuration'
+
+Log.setLogger(console)
+Log.setLevel(Log.WARN)
 
 const AuthNState: FC = ({ children }) => {
   const { isLoading, isAuthenticated, error, ...auth } = useAuth()
 
   useEffect(() => {
-    // console.debug(`authn active navigator: ${auth.activeNavigator}`)
+    // console.info(`AuthN ACTIVE NAVIGATOR: ${auth.activeNavigator}`)
     if (!isLoading && !isAuthenticated && !error) {
       auth.clearStaleState()
       auth.signinRedirect()
@@ -39,9 +43,8 @@ const AuthNProvider: FC = ({ children }) => {
   if (disabled || offline) {
     return <>{children}</>
   }
-  const redirect = encodeURIComponent(document.location.href)
   return (
-    <AuthProvider {...buildConfig(redirect)}>
+    <AuthProvider {...config}>
       <AuthNState>{children}</AuthNState>
     </AuthProvider>
   )

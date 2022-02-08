@@ -25,12 +25,10 @@ const run = () => {
   localStorage.setItem(lastRunKey, new Date().toISOString())
 }
 
-const shouldRedirect = () => {
-  return !isTrustedWebActivity() && localStorage.getItem(lastRunKey) === null && document.location.pathname !== '/login'
-}
+const shouldRedirectToPortal = () =>
+  !isTrustedWebActivity() && localStorage.getItem(lastRunKey) === null && document.location.pathname !== '/login'
 
-if (shouldRedirect()) {
-  // No previous usage, then redirect to about page.
+if (shouldRedirectToPortal()) {
   document.location.replace(REDIRECT_URL)
 } else {
   run()
