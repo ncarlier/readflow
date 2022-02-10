@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from 'react'
-import { AuthContext } from 'react-oidc-context'
+import { useEffect, useState } from 'react'
+import { useAuth } from '../auth/AuthProvider'
 import { fetchAPI, withCredentials } from '../helpers'
 
 const defaultHeaders = new Headers({
@@ -11,7 +11,7 @@ export const useAPI = <T>(
   params: any = {},
   init: RequestInit = { headers: defaultHeaders }
 ): [boolean, T?, Error?] => {
-  const auth = useContext(AuthContext)
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error>()
   const [data, setData] = useState<T>()
@@ -19,7 +19,7 @@ export const useAPI = <T>(
   const stringifiedParams = JSON.stringify(params)
   useEffect(() => {
     const abortController = new AbortController()
-    const headers = withCredentials(auth?.user, init.headers)
+    const headers = withCredentials(user, init.headers)
     const doFetchAPI = async () => {
       try {
         const res = await fetchAPI(uri, params, { ...init, signal: abortController.signal, headers })
@@ -39,7 +39,7 @@ export const useAPI = <T>(
     doFetchAPI()
     return () => abortController.abort()
     // eslint-disable-next-line
-  }, [uri, stringifiedParams])
+  }, [user, uri, stringifiedParams])
 
   return [loading, data, error]
 }

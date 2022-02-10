@@ -16,7 +16,7 @@ import {
 import { AppLayout } from './layout'
 import Routes from './routes'
 import { ApplicationState } from './store'
-import { AuthNProvider } from './auth'
+import { AuthenticationProvider } from './auth'
 
 interface PropsFromDispatch {
   [key: string]: any
@@ -35,7 +35,7 @@ export default function App({ store, history /*, theme*/ }: Props) {
   return (
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <AuthNProvider>
+        <AuthenticationProvider>
           <GraphQLProvider>
             <LocalConfigurationProvider>
               <ModalProvider>
@@ -53,7 +53,7 @@ export default function App({ store, history /*, theme*/ }: Props) {
               </ModalProvider>
             </LocalConfigurationProvider>
           </GraphQLProvider>
-        </AuthNProvider>
+        </AuthenticationProvider>
       </ConnectedRouter>
     </Provider>
   )

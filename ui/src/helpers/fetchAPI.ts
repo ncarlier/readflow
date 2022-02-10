@@ -1,6 +1,7 @@
+import { User } from 'oidc-client-ts'
 import { API_BASE_URL } from '../constants'
 
-export const withCredentials = (user?: any, init?: HeadersInit): HeadersInit | undefined => {
+export const withCredentials = (user: User | null, init?: HeadersInit): HeadersInit | undefined => {
   if (user && user.access_token) {
     const headers = new Headers({ Authorization: 'Bearer ' + user.access_token })
     if (init !== undefined) {

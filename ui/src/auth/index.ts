@@ -1,1 +1,2 @@
-export * from './AuthNProvider'
+export * from './AuthenticatedPage'
+export * from './AuthenticationProvider'

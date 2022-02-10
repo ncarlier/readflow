@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useState } from 'react'
-import { AuthContext } from 'react-oidc-context'
+import React, { useCallback, useState } from 'react'
+import { useAuth } from '../../../auth/AuthProvider'
 
 import { LinkIcon, Overlay } from '../../../components'
 import { useMessage } from '../../../contexts'
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default ({ article }: Props) => {
-  const auth = useContext(AuthContext)
+  const { user } = useAuth()
   const { showErrorMessage } = useMessage()
   const [isVisible, setIsVisible] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
@@ -37,7 +37,7 @@ export default ({ article }: Props) => {
   const download = useCallback(
     async (format: string) => {
       try {
-        const headers = withCredentials(auth?.user)
+        const headers = withCredentials(user)
         const res = await fetchAPI(`/articles/${article.id}`, { f: format }, { method: 'GET', headers })
         if (res.ok && res.body) {
           const reader = res.body.getReader()
@@ -86,7 +86,7 @@ export default ({ article }: Props) => {
         setIsDownloading(false)
       }
     },
-    [auth, article, showErrorMessage]
+    [user, article, showErrorMessage]
   )
 
   const attrs: any = {

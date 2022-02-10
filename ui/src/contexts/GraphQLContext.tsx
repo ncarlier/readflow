@@ -1,10 +1,10 @@
-import React, { FC, useContext } from 'react'
-import { AuthContext } from 'react-oidc-context'
+import React, { FC } from 'react'
 import { ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache } from '@apollo/client'
 
 import { API_BASE_URL } from '../constants'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
+import { useAuth } from '../auth/AuthProvider'
 
 // HTTP client
 const httpLink = new HttpLink({
@@ -12,11 +12,10 @@ const httpLink = new HttpLink({
 })
 
 const GraphQLProvider: FC = ({ children }) => {
-  const auth = useContext(AuthContext)
+  const { user, login } = useAuth()
 
   // Authentication interceptor
   const authenticationLink = setContext(async (_, { headers }) => {
-    const user = auth?.user
     if (user && user.access_token) {
       return {
         headers: {
@@ -34,7 +33,7 @@ const GraphQLProvider: FC = ({ children }) => {
       console.error('networkError:', name, message)
       if (message === 'login_required' || message === 'invalid_grant') {
         console.warn('redirecting to login page...')
-        auth?.signinRedirect()
+        login()
       }
     }
   })
