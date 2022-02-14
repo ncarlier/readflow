@@ -1,8 +1,8 @@
 import 'graphiql/graphiql.css'
 
-import React, { Suspense, useCallback, useContext, useState } from 'react'
-import { AuthContext } from 'react-oidc-context'
+import React, { Suspense, useCallback, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
+import { useAuth } from '../auth/AuthProvider'
 
 import { API_BASE_URL } from '../constants'
 
@@ -12,12 +12,12 @@ type AllProps = RouteComponentProps
 
 export default ({ location }: AllProps) => {
   const query = new URLSearchParams(location.search)
-  const auth = useContext(AuthContext)
+  const auth = useAuth()
   const [basePath] = useState(query.has('admin') ? '/admin' : '/graphql')
 
   const fetcher = useCallback(
     async (graphQLParams: any) => {
-      const user = auth?.user
+      const { user } = auth
       const headers: HeadersInit = new Headers()
       headers.set('Content-Type', 'application/json')
       if (user && user.access_token) {

@@ -1,6 +1,6 @@
 import React, { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import { Log, SigninRedirectArgs, User, UserManager } from 'oidc-client-ts'
+import { Log, SigninRedirectArgs, SignoutRedirectArgs, User, UserManager } from 'oidc-client-ts'
 
 import { config } from './oidc-configuration'
 import { useLocation } from 'react-router-dom'
@@ -23,6 +23,7 @@ interface AuthContextType {
   isLoading: boolean
   error?: any
   login: (args?: SigninRedirectArgs | undefined) => Promise<void>
+  logout: (args?: SignoutRedirectArgs) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
@@ -110,6 +111,7 @@ export const AuthProvider: FC = ({ children }) => {
   }, [userManager])
 
   const login = useCallback(userManager.signinRedirect.bind(userManager), [userManager])
+  const logout = useCallback(userManager.signoutRedirect.bind(userManager), [userManager])
 
   const memoedValue = useMemo(
     () => ({
@@ -117,6 +119,7 @@ export const AuthProvider: FC = ({ children }) => {
       isLoading,
       error,
       login,
+      logout,
     }),
     [user, isLoading, error, login]
   )
