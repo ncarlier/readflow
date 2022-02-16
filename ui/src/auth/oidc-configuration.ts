@@ -14,8 +14,7 @@ export const config: UserManagerSettings = {
   authority: AUTHORITY,
   client_id: CLIENT_ID,
   redirect_uri: getRedirectURL(),
-  // post_logout_redirect_uri: document.location.origin + '/logout',
   monitorSession: true,
   response_type: 'code',
-  scope: 'openid profile email',
+  scope: 'openid',
 }

@@ -20,6 +20,7 @@ const getErrorParam = (search: string): string | null => {
 
 interface AuthContextType {
   user: User | null
+  isAuthenticated: boolean
   isLoading: boolean
   error?: any
   login: (args?: SigninRedirectArgs | undefined) => Promise<void>
@@ -33,14 +34,15 @@ export const AuthProvider: FC = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [error, setError] = useState<any>()
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
   const { search } = useLocation()
 
   useEffect(() => {
     if (!userManager) return
-    if (user) return
+    if (isAuthenticated) return
     ;(async () => {
       setIsLoading(true)
-      //console.debug('auth porvider logic...')
+      //console.debug('auth provider logic...')
       try {
         const error = getErrorParam(search)
         if (error) {
@@ -50,18 +52,19 @@ export const AuthProvider: FC = ({ children }) => {
         }
         if (hasAuthParams(search)) {
           console.info('callback from Authority server: sign in...')
-          const _user = await userManager.signinCallback()
-          if (_user) {
+          const user = await userManager.signinCallback()
+          if (user) {
             // clear query params
             window.history.replaceState(null, '', window.location.pathname)
-            console.debug('logged user:', _user.profile?.preferred_username)
+            console.debug('logged user:', user.profile?.preferred_username)
           }
           return
         }
-        const _user = await userManager.getUser()
-        if (_user) {
-          console.debug('current user:', _user?.profile.preferred_username)
-          setUser(_user)
+        const user = await userManager.getUser()
+        if (user) {
+          console.debug('current user:', user?.profile.preferred_username)
+          setIsAuthenticated(true)
+          setUser(user)
           return
         }
       } catch (err) {
@@ -70,7 +73,7 @@ export const AuthProvider: FC = ({ children }) => {
         setIsLoading(false)
       }
     })()
-  }, [userManager, user, search])
+  }, [userManager, isAuthenticated, search])
 
   useEffect(() => {
     if (!userManager) return
@@ -82,13 +85,15 @@ export const AuthProvider: FC = ({ children }) => {
     userManager.events.addUserSignedOut(handleUserSignedOut)
     // event UserLoaded (e.g. initial load, silent renew success)
     const handleUserLoaded = (user: User) => {
-      //console.debug('UserLoaded', user)
+      //console.debug('UserLoaded', user, user.expired)
+      setIsAuthenticated(!user.expired)
       setUser(user)
     }
     userManager.events.addUserLoaded(handleUserLoaded)
     // event UserUnloaded (e.g. userManager.removeUser)
     const handleUserUnloaded = () => {
       //console.debug('UserUnLoaded')
+      setIsAuthenticated(false)
       setUser(null)
     }
     userManager.events.addUserUnloaded(handleUserUnloaded)
@@ -113,18 +118,19 @@ export const AuthProvider: FC = ({ children }) => {
   const login = useCallback(userManager.signinRedirect.bind(userManager), [userManager])
   const logout = useCallback(userManager.signoutRedirect.bind(userManager), [userManager])
 
-  const memoedValue = useMemo(
+  const value = useMemo(
     () => ({
       user,
       isLoading,
+      isAuthenticated,
       error,
       login,
       logout,
     }),
-    [user, isLoading, error, login]
+    [user, isLoading, isAuthenticated, error, login, logout]
   )
 
-  return <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => useContext(AuthContext)
