@@ -63,7 +63,7 @@ export const AuthProvider: FC = ({ children }) => {
         const user = await userManager.getUser()
         if (user) {
           console.debug('current user:', user?.profile.preferred_username)
-          setIsAuthenticated(true)
+          setIsAuthenticated(!user.expired)
           setUser(user)
           return
         }
