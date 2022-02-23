@@ -1,34 +1,7 @@
 import { Article, GetArticlesRequest, GetArticlesResponse } from '../../articles/models'
-import { fetchAPI } from '../../helpers'
 import { db } from '../db'
 
-export const getAsDataURL = async (src: string) => {
-  const res = await fetchAPI('/img', { url: encodeURIComponent(src), width: '767w' }, { method: 'GET' })
-  console.log(res)
-  if (res.ok && res.body) {
-    const blob = await res.blob()
-    return window.URL.createObjectURL(blob)
-  }
-  return src
-}
-
 export const saveArticle = async (article: Article) => {
-  // download article content with embendded images
-  const res = await fetchAPI(`/articles/${article.id}`, { f: 'html-single' }, { method: 'GET' })
-  if (res.ok && res.body) {
-    article.html = await res.text()
-  } else {
-    const err = await res.json()
-    throw new Error(err.detail || res.statusText)
-  }
-  // convert illustration to data URL
-  if (article.image) {
-    try {
-      article.image = await getAsDataURL(article.image)
-    } catch (err) {
-      console.error('unable to get illustration', err)
-    }
-  }
   const id = await db.articles.put(article)
   console.log('Article put into offline storage:', id)
   return article

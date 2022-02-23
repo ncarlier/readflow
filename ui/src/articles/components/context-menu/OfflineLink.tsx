@@ -1,12 +1,11 @@
-import React from 'react'
-import { useApolloClient } from '@apollo/client'
+import React, { useCallback, useState } from 'react'
 import { useModal } from 'react-modal-hook'
 
 import { ConfirmDialog, Kbd, LinkIcon, Loader, Overlay } from '../../../components'
 import { connectOffline, OfflineProps } from '../../../containers/OfflineContainer'
 import { useMessage } from '../../../contexts'
-import { Article, GetArticleResponse } from '../../models'
-import { GetFullArticle } from '../../queries'
+import { Article } from '../../models'
+import { useAPI } from '../../../hooks'
 
 interface Props {
   article: Article
@@ -17,38 +16,50 @@ type AllProps = Props & OfflineProps
 
 export const OfflineLink = (props: AllProps) => {
   const { article, keyboard = false, saveOfflineArticle, removeOfflineArticle, offlineArticles } = props
+  const fetchArticleContent = useAPI(`/articles/${article.id}`, { method: 'GET' })
+  const fetchArticleImage = useAPI('/img', { method: 'GET' })
   const { showMessage, showErrorMessage } = useMessage()
-  const { loading } = offlineArticles
+  const [loading, setLoading] = useState(false)
 
-  const client = useApolloClient()
-
-  const putArticleOffline = async () => {
+  const putArticleOffline = useCallback(async () => {
+    setLoading(true)
+    const offlineArticle = { ...article }
     try {
-      const { errors, data } = await client.query<GetArticleResponse>({
-        query: GetFullArticle,
-        variables: { id: article.id },
-      })
-      if (data) {
-        const fullArticle = { ...article, ...data.article }
-        await saveOfflineArticle(fullArticle)
-        showMessage(`Article put offline: ${article.title}`)
-      }
-      if (errors) {
-        throw new Error(errors[0].message)
+      // download article content with embedded images
+      const res = await fetchArticleContent({ f: 'html-single' })
+      if (res) {
+        if (res.ok && res.body) {
+          offlineArticle.html = await res.text()
+          if (article.image) {
+            // download article image
+            const img = await fetchArticleImage({ url: article.image, width: '720' })
+            if (img && img.ok && img.body) {
+              const blob = await img.blob()
+              offlineArticle.image = window.URL.createObjectURL(blob)
+            }
+          }
+          await saveOfflineArticle(offlineArticle)
+          showMessage(`Article put offline: ${article.title}`)
+        } else {
+          const err = await res.json()
+          throw new Error(err.detail || res.statusText)
+        }
       }
     } catch (err) {
       showErrorMessage(err.message)
+    } finally {
+      setLoading(false)
     }
-  }
+  }, [article, fetchArticleContent, saveOfflineArticle, showMessage])
 
-  const deleteArticleOffline = async () => {
+  const deleteArticleOffline = useCallback(async () => {
     try {
       await removeOfflineArticle(article)
       showMessage(`Article deleted from offline storage: ${article.title}`)
     } catch (err) {
       showErrorMessage(err.message)
     }
-  }
+  }, [article, removeOfflineArticle, showMessage, showErrorMessage])
 
   const [showDeleteConfirmModal, hideDeleteConfirmModal] = useModal(() => (
     <ConfirmDialog
@@ -76,7 +87,7 @@ export const OfflineLink = (props: AllProps) => {
         <span>Put offline</span>
         {keyboard && <Kbd keys="o" onKeypress={putArticleOffline} />}
       </LinkIcon>
-      <Overlay visible={loading}>
+      <Overlay visible={loading || offlineArticles.loading}>
         <Loader center />
       </Overlay>
     </>

@@ -7,7 +7,7 @@ export const AuthenticatedPage: FC = ({ children }) => {
   const { isLoading, isAuthenticated, error, login } = useAuth()
 
   useEffect(() => {
-    console.debug({ isLoading, isAuthenticated, error })
+    //console.debug({ isLoading, isAuthenticated, error })
     if (!isLoading && !error && !isAuthenticated) {
       console.info('user not authenticated, redirecting to sign-in page...')
       login()

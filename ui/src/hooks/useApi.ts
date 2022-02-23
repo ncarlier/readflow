@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useAuth } from '../auth/AuthProvider'
 import { fetchAPI, withCredentials } from '../helpers'
 
@@ -6,40 +6,31 @@ const defaultHeaders = new Headers({
   'Content-Type': 'application/json',
 })
 
-export const useAPI = <T>(
-  uri = '/',
-  params: any = {},
-  init: RequestInit = { headers: defaultHeaders }
-): [boolean, T?, Error?] => {
-  const { user } = useAuth()
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error>()
-  const [data, setData] = useState<T>()
+type doRequestFn = (params?: any) => Promise<Response | undefined>
 
-  const stringifiedParams = JSON.stringify(params)
+export const useAPI = (uri = '/', init: RequestInit = { headers: defaultHeaders }): doRequestFn => {
+  const { user } = useAuth()
+  const [abortController] = useState(() => new AbortController())
+
   useEffect(() => {
-    const abortController = new AbortController()
-    const headers = withCredentials(user, init.headers)
-    const doFetchAPI = async () => {
+    return () => abortController.abort()
+  }, [abortController])
+
+  const doRequest = useCallback(
+    async (params: any = {}) => {
+      const headers = withCredentials(user, init.headers)
       try {
         const res = await fetchAPI(uri, params, { ...init, signal: abortController.signal, headers })
-
         if (res.status >= 300) {
           throw new Error(res.statusText)
         }
-
-        const data = await res.json()
-        setData(data)
+        return res
       } catch (e) {
-        if (e.name !== 'AbortError') setError(e)
-      } finally {
-        setLoading(false)
+        if (e.name !== 'AbortError') throw e
       }
-    }
-    doFetchAPI()
-    return () => abortController.abort()
-    // eslint-disable-next-line
-  }, [user, uri, stringifiedParams])
+    },
+    [user, uri, init, abortController]
+  )
 
-  return [loading, data, error]
+  return doRequest
 }
