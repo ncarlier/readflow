@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react'
-import { ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache } from '@apollo/client'
+import { ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache, ServerError } from '@apollo/client'
 
 import { API_BASE_URL } from '../constants'
 import { setContext } from '@apollo/client/link/context'
@@ -35,9 +35,8 @@ const GraphQLProvider: FC = ({ children }) => {
     return onError((err) => {
       console.error(err)
       if (err.networkError) {
-        const { name, message } = err.networkError
-        console.error('networkError:', name, message)
-        if (message === 'login_required' || message === 'invalid_grant') {
+        const { message } = err.networkError
+        if ((err.networkError as ServerError).statusCode === 401 || message === 'login_required' || message === 'invalid_grant') {
           console.warn('redirecting to login page...')
           login()
         }
