@@ -36,7 +36,11 @@ const GraphQLProvider: FC = ({ children }) => {
       console.error(err)
       if (err.networkError) {
         const { message } = err.networkError
-        if ((err.networkError as ServerError).statusCode === 401 || message === 'login_required' || message === 'invalid_grant') {
+        if (
+          (err.networkError as ServerError).statusCode === 401 ||
+          message === 'login_required' ||
+          message === 'invalid_grant'
+        ) {
           console.warn('redirecting to login page...')
           login()
         }
