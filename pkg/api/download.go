@@ -9,7 +9,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
-// download is the handler for downloaging articles.
+// download is the handler for downloading articles.
 func download() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := strings.TrimPrefix(r.URL.Path, "/articles/")
