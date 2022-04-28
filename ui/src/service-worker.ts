@@ -95,6 +95,7 @@ self.addEventListener('push', function (event) {
   let data = {
     title: 'Something has happened',
     body: "Here's something you might want to check out.",
+    href: '/',
   }
   if (event.data) {
     try {
@@ -103,16 +104,17 @@ self.addEventListener('push', function (event) {
       data.body = event.data.text()
     }
   }
-  const { title, body } = data
+  const { title, body, href } = data
   const icon = 'logo.png'
   const badge = 'favicon-96x96.png'
   const tag = 'readflow-notification'
 
-  event.waitUntil(self.registration.showNotification(title, { body, icon, tag, badge }))
+  event.waitUntil(self.registration.showNotification(title, { body, icon, tag, badge, data: { href } }))
 })
 
 self.addEventListener('notificationclick', function (event) {
   console.log('On notification click: ', event.notification.tag)
+  const { href = '/' } = event.notification.data
   event.notification.close()
   event.waitUntil(
     self.clients
@@ -122,10 +124,10 @@ self.addEventListener('notificationclick', function (event) {
       .then(function (clientList) {
         for (let i = 0; i < clientList.length; i++) {
           const client = clientList[i]
-          if (client.url == '/' && 'focus' in client) return client.focus()
+          if (client.url == href && 'focus' in client) return client.focus()
         }
         if ('openWindow' in self.clients) {
-          return self.clients.openWindow('/')
+          return self.clients.openWindow(href)
         }
       })
   )

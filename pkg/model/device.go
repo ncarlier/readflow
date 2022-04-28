@@ -13,6 +13,7 @@ import (
 type DeviceNotification struct {
 	Title string `json:"title,omitempty"`
 	Body  string `json:"body,omitempty"`
+	Href  string `json:"href,omitempty"`
 }
 
 // Device structure definition

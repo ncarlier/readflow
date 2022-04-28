@@ -47,6 +47,7 @@ func init() {
 
 			globalStrategy := true
 			text := "You have a new article to read."
+			href := "/"
 			if article.CategoryID != nil {
 				category, err := service.Lookup().GetCategory(ctx, *article.CategoryID)
 				if err != nil {
@@ -58,6 +59,7 @@ func init() {
 				}
 				globalStrategy = category.NotificationStrategy == "global"
 				text = fmt.Sprintf("You have a new article to read in %s", category.Title)
+				href = fmt.Sprintf("/categories/%d/%d", *category.ID, article.ID)
 			}
 
 			if globalStrategy {
@@ -78,12 +80,14 @@ func init() {
 				}
 				// Format text message
 				text = fmt.Sprintf("You have %d articles to read.", nb)
+				href = "/"
 			}
 
 			// Build notification
 			notif := &model.DeviceNotification{
 				Title: "New articles to read",
 				Body:  text,
+				Href:  href,
 			}
 			b, err := json.Marshal(notif)
 			if err == nil {
