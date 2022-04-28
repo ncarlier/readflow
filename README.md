@@ -37,7 +37,7 @@ $ curl -s https://raw.githubusercontent.com/ncarlier/readflow/master/install.sh 
 **Or** use Docker:
 
 ```bash
-$ docker run -d --name=readflow ncarlier/readflow
+$ docker run -d --name=readflow ncarlier/readflow:edge
 ```
 
 ## Configuration
