@@ -18,6 +18,9 @@ func NewConfig() *Config {
 			PublicURL:   "https://api.readflow.app",
 			SecretSalt:  "pepper",
 		},
+		Integration: IntegrationConfig{
+			AvatarProvider: "https://robohash.org/{seed}?set=set4&size=48x48",
+		},
 		RateLimiting: RateLimitingConfig{
 			Notification: RateLimiting{
 				Provider: "none",

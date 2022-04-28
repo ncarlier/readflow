@@ -8,7 +8,7 @@ import (
 )
 
 func TestLocalBlockList(t *testing.T) {
-	location := "./block-list.txt"
+	location := "file://block-list.txt"
 	bl, err := sanitizer.NewBlockList(location)
 	assert.Nil(t, err)
 	assert.Equal(t, location, bl.Location())

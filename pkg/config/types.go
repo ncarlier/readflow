@@ -24,6 +24,7 @@ type IntegrationConfig struct {
 	ExternalEventBrokerURI string `toml:"external_event_broker_uri"`
 	ExternalWebScraperURL  string `toml:"external_web_scraper_url"`
 	ImageProxyURL          string `toml:"image_proxy_url"`
+	AvatarProvider         string `toml:"avatar_provider"`
 	Sentry                 SentryConfiguration
 	Pocket                 PocketConfiguration
 }

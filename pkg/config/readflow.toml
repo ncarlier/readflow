@@ -13,20 +13,20 @@
 db = "${READFLOW_DB}"
 
 ## HTTP listen address
-## Default: ":8080"
-## Examples: "localhost:8080" or ":8080" for all interfaces 
+# Default: ":8080"
+# Examples: "localhost:8080" or ":8080" for all interfaces 
 listen_addr = "${READFLOW_LISTEN_ADDR}"
 
 ## Metrics listen address (aka: Prometheus metrics endpoint), deactivated if empty
-## Example: ":9090"
+# Example: ":9090"
 metrics_listen_addr = "${READFLOW_LISTEN_METRICS}"
 
 ## Authentication method
-## - `mock`: Generic user use for testing
-## - `proxy`: For proxied authentication that use "X-WEBAUTH-USER", "X-Auth-Username", "Remote-User" or "Remote-Name" HTTP header as username
-##            Note: Set 'REACT_APP_AUTHORITY=mock' when bulding UI
-## - `https://...`: Use OpenID Connect provider
-## Default: "https://login.nunux.org/auth/realms/readflow"
+# - `mock`: Generic user use for testing
+# - `proxy`: For proxied authentication that use "X-WEBAUTH-USER", "X-Auth-Username", "Remote-User" or "Remote-Name" HTTP header as username
+#            Note: Set 'REACT_APP_AUTHORITY=mock' when bulding UI
+# - `https://...`: Use OpenID Connect provider
+# Default: "https://login.nunux.org/auth/realms/readflow"
 authn = "${READFLOW_AUTHN}"
 
 ## Public URL
@@ -39,23 +39,31 @@ secret_salt = "${READFLOW_SECRET_SALT}"
 
 ## Block-list local or remote location, deactivated if empty
 # Examples:
-# - /var/opt/block-list-txt
+# - file:///var/opt/block-list-txt
 # - https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt
 # - https://raw.githubusercontent.com/notracking/hosts-blocklists/master/dnscrypt-proxy/dnscrypt-proxy.blacklist.txt
 block_list = "${READFLOW_BLOCK_LIST}"
 
 [integration]
 ## External event broker URI for outgoing events, deactivated if empty
-## Example: "https://example.com/event"
+# Example: "https://example.com/event"
 external_event_broker_uri = "${READFLOW_BROKER_URI}"
 
 ## External Web Scraper URL, using internal if empty
-## Example: "https://example.org/scrap"
+# Example: "https://example.org/scrap"
 external_web_scraper_url = "${READFLOW_WEB_SCRAPER_URL}"
 
 ## Image proxy URL, deactivated if empty
-## Example: "http://imaginary:9000"
+# Example: "http://imaginary:9000"
 image_proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
+
+## Avatar local or remote provider
+# If using a remote provider, {seed} is a placehoder for the avatar seed.
+# Default: "https://robohash.org/{seed}?set=set4&size=48x48"
+# Examples:
+# - file:///var/opt/avatars
+# - https://seccdn.libravatar.org/avatar/{seed}?d=mp&s=48
+avatar_provider = "${READFLOW_AVATAR_PROVIDER}"
 
 ## Sentry integration
 [integration.sentry]

@@ -2,10 +2,9 @@
 import React from 'react'
 
 import { TimeAgo } from '.'
-import { getRoboHash } from '../helpers'
 import styles from './UserInfos.module.css'
 import { useCurrentUser } from '../contexts'
-import { AUTHORITY, CLIENT_ID } from '../constants'
+import { API_BASE_URL, AUTHORITY, CLIENT_ID } from '../constants'
 
 const getAccountURL = () =>
   AUTHORITY !== 'mock'
@@ -26,7 +25,7 @@ export const UserInfos = () => {
         </small>
       </span>
       <a href={getAccountURL()} target="_blank" title="Go to my profile page">
-        <img src={getRoboHash(user.hash, '48')} alt={user.username} />
+        <img src={`${API_BASE_URL}/avatar/${user.hash}`} alt={user.username} />
       </a>
     </div>
   )
