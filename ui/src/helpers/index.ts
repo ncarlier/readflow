@@ -1,4 +1,3 @@
-export * from './avatar'
 export * from './classNames'
 export * from './device'
 export * from './fetchAPI'

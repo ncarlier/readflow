@@ -2,10 +2,11 @@ package sanitizer
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
-	"strings"
 )
 
 // countLines count file lines
@@ -29,12 +30,19 @@ func countLines(r io.Reader) (uint, error) {
 }
 
 func open(location string) (io.ReadCloser, error) {
-	if strings.HasPrefix(location, "http://") || strings.HasPrefix(location, "https://") {
+	u, err := url.Parse(location)
+	if err != nil {
+		return nil, fmt.Errorf("invalid location: %s", location)
+	}
+	switch u.Scheme {
+	case "http", "https":
 		resp, err := http.DefaultClient.Get(location)
 		if err != nil {
 			return nil, err
 		}
 		return resp.Body, nil
+	case "file":
+		return os.Open(u.Host + u.Path)
 	}
-	return os.Open(location)
+	return nil, fmt.Errorf("unable to open file, scheme not supported: %s", location)
 }

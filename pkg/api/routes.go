@@ -86,6 +86,12 @@ func routes(conf *config.Config) Routes {
 			middleware.Cors(origin),
 		),
 		route(
+			"/avatar/",
+			avatarHandler(conf),
+			middleware.Methods("GET"),
+			middleware.Cors(origin),
+		),
+		route(
 			"/healthz",
 			healthz(),
 			middleware.Methods("GET"),
