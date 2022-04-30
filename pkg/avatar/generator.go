@@ -30,16 +30,22 @@ type Avatars map[string]*Avatar
 
 // Generator instance
 type Generator struct {
-	avatars   Avatars
-	directory string
+	avatars    Avatars
+	directory  string
+	defaultSet string
 }
 
 // Generate avatar
-func (g *Generator) Generate(name, seed string) (*bytes.Buffer, error) {
-	// get avatar
-	avatar, ok := g.avatars[name]
+func (g *Generator) Generate(seed, set string) (*bytes.Buffer, error) {
+	if set == "" {
+		set = g.defaultSet
+	}
+	// get avatar set
+	avatar, ok := g.avatars[set]
 	if !ok {
-		return nil, fmt.Errorf("avatar %s doesn't exists", name)
+		// avatar set doesn't exists, using default
+		set = g.defaultSet
+		avatar = g.avatars[set]
 	}
 
 	// init random seed
@@ -66,7 +72,7 @@ func (g *Generator) Generate(name, seed string) (*bytes.Buffer, error) {
 
 	// build avatar image
 	for _, part := range specs {
-		imgSrc := filepath.Join(g.directory, name, fmt.Sprintf("%s_%d.png", part.Name, part.Nb))
+		imgSrc := filepath.Join(g.directory, set, fmt.Sprintf("%s_%d.png", part.Name, part.Nb))
 		if _, err := os.Stat(imgSrc); err == nil {
 			img, _ = blendWithImageFile(img, imgSrc)
 		}
@@ -80,7 +86,7 @@ func (g *Generator) Generate(name, seed string) (*bytes.Buffer, error) {
 }
 
 // NewServer creates new server instance
-func NewGenerator(dir string) (*Generator, error) {
+func NewGenerator(dir string, defaultSet string) (*Generator, error) {
 	if _, err := os.Stat(dir); err != nil {
 		return nil, err
 	}
@@ -90,19 +96,30 @@ func NewGenerator(dir string) (*Generator, error) {
 		return nil, err
 	}
 
+	defaultSetExists := false
 	for _, file := range files {
 		if file.IsDir() {
 			avatar, e := readAvatarDir(filepath.Join(dir, file.Name()))
 			if e != nil {
 				return nil, err
 			}
+			if defaultSet == "" {
+				defaultSet = file.Name()
+			}
+			if file.Name() == defaultSet {
+				defaultSetExists = true
+			}
 			avatars[file.Name()] = avatar
 		}
 	}
+	if !defaultSetExists {
+		return nil, fmt.Errorf("avatar default set not found: %s", defaultSet)
+	}
 
 	return &Generator{
-		avatars:   avatars,
-		directory: dir,
+		avatars:    avatars,
+		directory:  dir,
+		defaultSet: defaultSet,
 	}, nil
 }
 
