@@ -61,7 +61,7 @@ image_proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
 # If using a remote provider, {seed} is a placehoder for the avatar seed.
 # Default: "https://robohash.org/{seed}?set=set4&size=48x48"
 # Examples:
-# - file:///var/opt/avatars
+# - file:///var/opt/avatars?default=cat
 # - https://seccdn.libravatar.org/avatar/{seed}?d=mp&s=48
 avatar_provider = "${READFLOW_AVATAR_PROVIDER}"
 

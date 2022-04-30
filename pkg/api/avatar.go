@@ -13,8 +13,7 @@ import (
 )
 
 const (
-	DefaultAvatarSet = "cat"
-	MaxAge           = 864000
+	MaxAge = 864000
 )
 
 func newAvatarGenerator(provider string) (*avatar.Generator, error) {
@@ -22,25 +21,14 @@ func newAvatarGenerator(provider string) (*avatar.Generator, error) {
 	if err != nil {
 		return nil, err
 	}
+	defaultSet := u.Query().Get("default")
 	switch u.Scheme {
 	case "file":
-		return avatar.NewGenerator(u.Host + u.Path)
+		return avatar.NewGenerator(u.Host+u.Path, defaultSet)
 	case "https":
 		return nil, nil
 	}
 	return nil, fmt.Errorf("invalid avatar provider: %s", provider)
-}
-
-func getAvatarSet(provider string) string {
-	u, err := url.Parse(provider)
-	if err != nil {
-		return DefaultAvatarSet
-	}
-	set := u.Query().Get("set")
-	if set == "" {
-		return DefaultAvatarSet
-	}
-	return set
 }
 
 func avatarHandler(conf *config.Config) http.Handler {
@@ -49,7 +37,6 @@ func avatarHandler(conf *config.Config) http.Handler {
 		log.Fatal().Err(err).Msg("unable to create avatar generator")
 	}
 	log.Info().Str("component", "api").Str("provider", conf.Integration.AvatarProvider).Msg("using Avatar provider")
-	avatarSet := getAvatarSet(conf.Integration.AvatarProvider)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		seed := strings.TrimPrefix(r.URL.Path, "/avatar/")
 		if seed == "" {
@@ -61,8 +48,9 @@ func avatarHandler(conf *config.Config) http.Handler {
 			http.Redirect(w, r, redirect, http.StatusTemporaryRedirect)
 			return
 		}
-		log.Debug().Str("seed", seed).Msg("generating avatar image")
-		img, err := generator.Generate(avatarSet, seed)
+		set := r.URL.Query().Get("set")
+		log.Debug().Str("seed", seed).Str("set", set).Msg("generating avatar image")
+		img, err := generator.Generate(seed, set)
 		if err != nil {
 			log.Error().Err(err).Str("seed", seed).Msg("unable to generate avatar image")
 			http.Error(w, "unable to generate avatar image", http.StatusInternalServerError)
