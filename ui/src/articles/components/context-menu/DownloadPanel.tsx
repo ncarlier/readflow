@@ -7,6 +7,8 @@ const formats = [
   { value: 'html-single', label: 'HTML file with images', icon: 'image' },
   { value: 'zip', label: 'ZIP file', icon: 'archive' },
   { value: 'epub', label: 'EPUB file', icon: 'menu_book' },
+  { value: 'pdf', label: 'PDF file', icon: 'picture_as_pdf' },
+  { value: 'md', label: 'Markdown file', icon: 'tag' },
 ]
 
 interface Props {

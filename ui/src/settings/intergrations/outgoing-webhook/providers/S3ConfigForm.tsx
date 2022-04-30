@@ -27,6 +27,8 @@ const formats: Map<string, string> = new Map([
   ['Single HTML file with images', 'html-single'],
   ['ZIP file with HTML and images', 'zip'],
   ['EPUB file', 'epub'],
+  ['PDF file', 'pdf'],
+  ['Markdown file', 'md'],
 ])
 
 const Formats = () => (
