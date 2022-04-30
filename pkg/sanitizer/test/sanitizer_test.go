@@ -17,7 +17,7 @@ var tests = []struct {
 }
 
 func TestSanitizer(t *testing.T) {
-	bl, err := sanitizer.NewBlockList("./block-list.txt")
+	bl, err := sanitizer.NewBlockList("file://block-list.txt")
 	assert.Nil(t, err)
 	sanitizer := sanitizer.NewSanitizer(bl)
 
