@@ -1,5 +1,5 @@
 
-import readflow from '@/config/readflow'
+import api from '@/config/api'
 import oidcConfig from '@/config/oidc'
 
 const getRegisterUserMutation = (username) => `
@@ -40,8 +40,8 @@ const getAccessToken = async () => {
     },
     body: new URLSearchParams({
       'grant_type': 'client_credentials',
-      'client_id': readflow.clientID,
-      'client_secret': readflow.clientSecret
+      'client_id': api.clientID,
+      'client_secret': api.clientSecret
     })
   })
   if (res.error) {
@@ -68,7 +68,7 @@ export const updateUser = async (id, payload) => {
     query: getUpdateUserMutation(id, payload),
     variables: null
   }
-  const res = await fetch(`${readflow.endpoint}/admin`, {
+  const res = await fetch(`${api.endpoint}/admin`, {
     method: 'POST',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ export const updateUser = async (id, payload) => {
 }
 
 /**
- * Get or register readfloe user.
+ * Get or register readflow user.
  * @param {string} username 
  */
 export const getOrRegisterUser = async (username) => {
@@ -99,7 +99,7 @@ export const getOrRegisterUser = async (username) => {
     query: getRegisterUserMutation(username),
     variables: null
   }
-  const res = await fetch(`${readflow.endpoint}/admin`, {
+  const res = await fetch(`${api.endpoint}/admin`, {
     method: 'POST',
     headers: new Headers({
       'Content-Type': 'application/json',

@@ -1,4 +1,4 @@
-import { base_url } from '@/config/url'
+import { baseURL } from '@/config/site'
 import { pricing } from '@/config/stripe'
 import { stripe } from '@/helpers/stripe-server'
 import { decodeToken } from '@/helpers/token'
@@ -53,8 +53,8 @@ const createCheckoutSession = async (req, res) => {
           quantity: 1
         }
       ],
-      success_url: `${base_url}/result?variant=subscription-success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${base_url}/pricing`
+      success_url: `${baseURL}/result?variant=subscription-success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseURL}/pricing`
     })
     return res.status(200).json({ sessionId: session.id })
   } catch (err) {

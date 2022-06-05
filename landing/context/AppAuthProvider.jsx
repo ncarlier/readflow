@@ -1,5 +1,5 @@
 import React from 'react'
-import { AuthProvider, AuthContext } from 'oidc-react'
+import { AuthProvider } from 'oidc-react'
 
 import oidcConfig from '@/config/oidc'
 

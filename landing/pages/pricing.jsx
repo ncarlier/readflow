@@ -11,7 +11,7 @@ const PricingSection = () => {
   const auth = useAuth()
 
   const handlePlanCheckout = async (plan) => {
-    console.log(`choosed plan: ${plan}`)
+    console.log(`chosen plan: ${plan}`)
     if (plan === 'free') {
       return document.location = 'https://readflow.app/login'
     }

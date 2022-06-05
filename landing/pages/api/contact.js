@@ -1,6 +1,6 @@
 import validate from 'deep-email-validator'
 
-import { sendmail_url } from '@/config/url'
+import { serviceURL, contactMail } from '@/config/mail'
 
 /**
  * Post contact form to HTTP endpoint.
@@ -32,15 +32,17 @@ const contactForm = async (req, res) => {
     return res.redirect(302, `/result?variant=contact-error&reason=${message}`)
   }
 
-  const url = new URL(sendmail_url)
-  url.searchParams.set('subject', '[readflow-contact] ' + subject)
-  url.searchParams.set('from', from)
-  const resp = await fetch(url, {
+  const formData = new FormData()
+  formData.append('subject', '[readflow-contact] ' + subject)
+  formData.append('to', contactMail)
+  formData.append('from', from)
+  formData.append('text', body)
+  const resp = await fetch(serviceURL, {
     method: 'POST',
     headers: new Headers({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/x-www-form-urlencoded',
     }),
-    body
+    body: formData
   })
 
   if (resp.error) {

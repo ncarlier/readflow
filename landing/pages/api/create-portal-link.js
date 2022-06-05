@@ -1,5 +1,5 @@
 import { decodeToken } from '@/helpers/token'
-import { base_url } from '@/config/url'
+import { baseURL } from '@/config/site'
 import { getOrRegisterUser } from '@/helpers/readflow'
 import { stripe } from '@/helpers/stripe-server'
 
@@ -28,7 +28,7 @@ const createPortalLink = async (req, res) => {
     }
     const { url } = await stripe.billingPortal.sessions.create({
       customer,
-      return_url: `${base_url}/account`
+      return_url: `${baseURL}/account`
     })
     return res.status(200).json({ url })
   } catch (err) {
