@@ -32,17 +32,17 @@ const contactForm = async (req, res) => {
     return res.redirect(302, `/result?variant=contact-error&reason=${message}`)
   }
 
-  const formData = new FormData()
-  formData.append('subject', '[readflow-contact] ' + subject)
-  formData.append('to', contactMail)
-  formData.append('from', from)
-  formData.append('text', body)
+  const form = new URLSearchParams()
+  form.append('subject', '[readflow-contact] ' + subject)
+  form.append('to', contactMail)
+  form.append('from', from)
+  form.append('text', body)
   const resp = await fetch(serviceURL, {
     method: 'POST',
     headers: new Headers({
       'Content-Type': 'application/x-www-form-urlencoded',
     }),
-    body: formData
+    body: form
   })
 
   if (resp.error) {
