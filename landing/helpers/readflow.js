@@ -1,5 +1,5 @@
 
-import api from '@/config/api'
+import * as api from '@/config/api'
 import oidcConfig from '@/config/oidc'
 
 const getRegisterUserMutation = (username) => `
