@@ -1,6 +1,6 @@
 import validate from 'deep-email-validator'
 
-import { serviceURL, contactMail } from '@/config/mail'
+import { serviceURL, contactMail } from '@/config/sendmail'
 
 /**
  * Post contact form to HTTP endpoint.
