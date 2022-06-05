@@ -88,6 +88,12 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 		}
 		defer resp.Body.Close()
 
+		// Redirect if image proxy failed
+		if resp.StatusCode >= 400 {
+			http.Redirect(w, r, img, http.StatusTemporaryRedirect)
+			return
+		}
+
 		// Create proxy response
 		delHopHeaders(resp.Header)
 		copyHeader(w.Header(), resp.Header)
