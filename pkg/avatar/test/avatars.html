@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Avatars</title>
+</head>
+<body>
+  <div id="avatars"></div>
+  <script>
+    (function () {
+      const $avatars = document.getElementById('avatars')
+      for (let idx = 0; idx < 100; idx++) {
+        const img = document.createElement('img')
+        img.src = `https://api.readflow.app/avatar/${idx}?set=cat`
+        $avatars.appendChild(img)
+      }
+    })()
+  </script>
+</body>
+
+</html>
