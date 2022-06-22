@@ -82,7 +82,7 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 		).Msg("unable to register user")
 		return nil, err
 	}
-	reg.logger.Debug().Uint(
+	reg.logger.Info().Uint(
 		"uid", *user.ID,
 	).Str("username", username).Msg("user registered")
 	event.Emit(event.CreateUser, *user)
@@ -193,9 +193,20 @@ func (reg *Registry) UpdateUser(ctx context.Context, form model.UserForm) (*mode
 		return nil, err
 	}
 
+	user, err = reg.db.CreateOrUpdateUser(*user)
+	if err != nil {
+		reg.logger.Info().Err(err).Str(
+			"username", user.Username,
+		).Msg("unable to update user")
+		return nil, err
+	}
+	reg.logger.Info().Uint(
+		"uid", *user.ID,
+	).Str("username", user.Username).Msg("user updated")
+
 	event.Emit(event.UpdateUser, *user)
 
-	return reg.db.CreateOrUpdateUser(*user)
+	return user, nil
 }
 
 // GetUserHashID returns user hashid
