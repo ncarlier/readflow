@@ -64,6 +64,11 @@ func init() {
 		category:      newTestCategory(42, "\"test\" not in tags"),
 		expectedValue: &expectedCategoryID,
 		expectedError: nil,
+	}, testCase{
+		article:       builder.Random().Title("Foo or Bar").Build(),
+		category:      newTestCategory(42, "toLower(title) contains \"bar\""),
+		expectedValue: &expectedCategoryID,
+		expectedError: nil,
 	})
 }
 

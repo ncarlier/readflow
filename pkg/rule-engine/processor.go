@@ -29,6 +29,8 @@ func NewRuleProcessor(category model.Category) (*RuleProcessor, error) {
 		"url":     "",
 		"webhook": "",
 		"tags":    []string{},
+		"toLower": strings.ToLower,
+		"toUpper": strings.ToUpper,
 	}
 	p, err := expr.Compile(*category.Rule, expr.Env(env))
 	if err != nil {
@@ -65,6 +67,8 @@ func (rp *RuleProcessor) Apply(ctx context.Context, article *model.ArticleCreate
 		"url":     url,
 		"webhook": incomingWebhookAlias,
 		"tags":    tags,
+		"toLower": strings.ToLower,
+		"toUpper": strings.ToUpper,
 	}
 
 	result, err := expr.Run(rp.program, env)
