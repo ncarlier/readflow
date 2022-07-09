@@ -26,7 +26,7 @@ func NewCleanDatabaseJob(_db db.DB) *CleanDatabaseJob {
 	job := &CleanDatabaseJob{
 		db:     _db,
 		ticker: time.NewTicker(time.Hour),
-		logger: log.With().Str("job", "clean-db").Logger(),
+		logger: log.With().Str("component", "scheduler").Str("job", "clean-db").Logger(),
 	}
 	go job.start()
 	return job
@@ -40,14 +40,25 @@ func (cdj *CleanDatabaseJob) start() {
 		if err != nil {
 			cdj.logger.Error().Err(err).Msg("unable to clean old articles from the database")
 			break
+
 		}
-		cdj.logger.Info().Int64("removed_articles", nb).Msg("cleanup done")
+		// Using info level only for effective cleanup
+		evt := cdj.logger.Debug()
+		if nb > 0 {
+			evt = cdj.logger.Info()
+		}
+		evt.Int64("removed_articles", nb).Msg("cleanup done")
 		nb, err = cdj.db.DeleteInactiveDevicesOlderThan(maximumDeviceInactivityDuration)
 		if err != nil {
 			cdj.logger.Error().Err(err).Msg("unable to clean old devices from the database")
 			break
 		}
-		cdj.logger.Info().Int64("removed_devices", nb).Msg("cleanup done")
+		// Using info level only for effective cleanup
+		evt = cdj.logger.Debug()
+		if nb > 0 {
+			evt = cdj.logger.Info()
+		}
+		evt.Int64("removed_devices", nb).Msg("cleanup done")
 	}
 }
 
