@@ -48,7 +48,7 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	if err != nil {
 		return err
 	}
-	blockList, err := sanitizer.NewBlockList(conf.Global.BlockList)
+	blockList, err := sanitizer.NewBlockList(conf.Global.BlockList, sanitizer.DefaultBlockList)
 	if err != nil {
 		return err
 	}

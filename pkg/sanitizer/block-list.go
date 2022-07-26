@@ -9,6 +9,12 @@ import (
 	"github.com/bits-and-blooms/bloom/v3"
 )
 
+var DefaultBlockList = []string{
+	"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+	"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=",
+	"feedburner.google.com",
+}
+
 // BlockList is a block-list structure
 type BlockList struct {
 	location string
@@ -16,7 +22,7 @@ type BlockList struct {
 }
 
 // NewBlockList create new block-list form a text file
-func NewBlockList(location string) (*BlockList, error) {
+func NewBlockList(location string, init []string) (*BlockList, error) {
 	if location == "" {
 		return nil, nil
 	}
@@ -36,7 +42,10 @@ func NewBlockList(location string) (*BlockList, error) {
 	}
 
 	// initialize bloom filter
-	filter := bloom.NewWithEstimates(size, 0.01)
+	filter := bloom.NewWithEstimates(size+uint(len(init)), 0.01)
+	for _, v := range init {
+		filter.AddString(v)
+	}
 
 	// read block-list file
 	scanner := bufio.NewScanner(&buf)

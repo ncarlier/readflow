@@ -50,13 +50,18 @@ func (s *Sanitizer) cleanURLs(doc *html.Node) {
 				var attrs []html.Attribute
 				for _, a := range node.Attr {
 					switch a.Key {
-					case "src", "href":
-						u, err := url.Parse(a.Val)
+					case "src", "href", "srcset":
+						// get raw URL (split if srcset)
+						value := strings.Split(a.Val, " ")[0]
+						u, err := url.Parse(value)
 						if err != nil {
 							attrs = append(attrs, a)
 							continue
 						}
-						if !s.blockList.Contains(u.Hostname()) {
+						if u.Scheme != "data" {
+							value = u.Hostname()
+						}
+						if !s.blockList.Contains(value) {
 							attrs = append(attrs, a)
 						}
 					default:
