@@ -1,5 +1,6 @@
 export * from './useApi'
 export * from './useConfirmModal'
+export * from './useDeviceSubcriptionStatus'
 export * from './useField'
 export * from './useInfiniteScroll'
 export * from './useKeyboard'

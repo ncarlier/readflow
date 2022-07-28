@@ -5,13 +5,16 @@ import { useModal } from 'react-modal-hook'
 import { InfoDialog, Shortcuts, Snackbar, UpdateAvailableNotification } from '../components'
 import { useNavbar } from '../contexts/NavbarContext'
 import { classNames, isMobileDevice } from '../helpers'
-import { useKeyboard, useTheme } from '../hooks'
+import { useDeviceSubscriptionStatus, useKeyboard, useTheme } from '../hooks'
 import classes from './AppLayout.module.css'
 import { Navbar } from '.'
 
 export const AppLayout: FC = ({ children }) => {
   // Activate theme
   useTheme()
+
+  // Keep device subscription alive
+  useDeviceSubscriptionStatus()
 
   // Shortcuts global modal
   const [showShortcutsModal, hideShortcutsModal] = useModal(() => (
