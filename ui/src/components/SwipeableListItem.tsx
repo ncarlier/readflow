@@ -1,19 +1,27 @@
 import React, { FC, ReactNode, useCallback, useEffect, useRef } from 'react'
+import { classNames } from '../helpers'
 
 import styles from './SwipeableListItem.module.css'
 
 interface Props {
   background?: ReactNode
   threshold?: number
+  direction?: 'left' | 'right'
   onSwipe: () => void
 }
 
 const fpsInterval = 1000 / 60
 
-export const SwipeableListItem: FC<Props> = ({ children, background, onSwipe, threshold = 0.3 }) => {
+export const SwipeableListItem: FC<Props> = ({
+  children,
+  background,
+  onSwipe,
+  direction = 'left',
+  threshold = 0.3,
+}) => {
   // Drag & Drop
   const dragStartX = useRef(0)
-  const left = useRef(0)
+  const borderOffset = useRef(0)
   const dragged = useRef(false)
 
   // FPS Limit
@@ -32,22 +40,23 @@ export const SwipeableListItem: FC<Props> = ({ children, background, onSwipe, th
     const $bg = bgRef.current
     const $el = elementRef.current
     if (dragged.current && elapsed > fpsInterval && $bg && $el) {
-      $el.style.transform = `translateX(${left.current}px)`
-      const opacity = Math.abs(left.current) / 100
+      $el.style.transform = `translateX(${borderOffset.current}px)`
+      const opacity = Math.abs(borderOffset.current) / 100
       if (opacity < 1 && opacity.toFixed(2) !== $bg.style.opacity) {
         $bg.style.opacity = opacity.toFixed(2)
       }
       if (opacity >= 1) {
         $bg.style.opacity = '1'
       }
-      if (left.current < $el.offsetWidth * threshold * -1) {
+      const trigger = direction == 'left' ? borderOffset.current : -borderOffset.current
+      if (trigger < $el.offsetWidth * threshold * -1) {
         $bg.style.color = 'white'
       } else {
         $bg.style.color = 'rgba(255, 255, 255, 0.3)'
       }
       startTime.current = Date.now()
     }
-  }, [dragged, startTime, bgRef, elementRef, left, threshold])
+  }, [dragged, startTime, bgRef, elementRef, borderOffset, threshold])
 
   const onDragStart = useCallback(
     (clientX: number) => {
@@ -68,38 +77,40 @@ export const SwipeableListItem: FC<Props> = ({ children, background, onSwipe, th
     const $wrapper = wrapperRef.current
     if (dragged.current && $el && $wrapper) {
       dragged.current = false
-      if (left.current < $el.offsetWidth * threshold * -1) {
-        left.current = -$el.offsetWidth * 2
+      const trigger = direction == 'left' ? borderOffset.current : -borderOffset.current
+      if (trigger < $el.offsetWidth * threshold * -1) {
+        const out = $el.offsetWidth * 2
+        borderOffset.current = direction == 'left' ? -out : out
         $wrapper.style.maxHeight = '0'
         onSwipe()
       } else {
-        left.current = 0
+        borderOffset.current = 0
       }
 
       $el.className = styles.bouncing
-      $el.style.transform = `translateX(${left.current}px)`
+      $el.style.transform = `translateX(${borderOffset.current}px)`
     }
-  }, [elementRef, wrapperRef, dragged, left, onSwipe, threshold])
+  }, [elementRef, wrapperRef, dragged, borderOffset, onSwipe, threshold])
 
   const onMouseMove = useCallback(
     (evt: MouseEvent) => {
       const l = evt.clientX - dragStartX.current
-      if (l < 0) {
-        left.current = l
+      if ((direction == 'left' && l < 0) || (direction == 'right' && l > 0)) {
+        borderOffset.current = l
       }
     },
-    [left]
+    [borderOffset]
   )
 
   const onTouchMove = useCallback(
     (evt: TouchEvent) => {
       const touch = evt.targetTouches[0]
       const l = touch.clientX - dragStartX.current
-      if (l < 0) {
-        left.current = l
+      if ((direction == 'left' && l < 0) || (direction == 'right' && l > 0)) {
+        borderOffset.current = l
       }
     },
-    [left]
+    [borderOffset]
   )
 
   const onDragStartMouse = useCallback(
@@ -152,7 +163,7 @@ export const SwipeableListItem: FC<Props> = ({ children, background, onSwipe, th
 
   return (
     <div className={styles.wrapper} ref={wrapperRef}>
-      <div ref={bgRef} className={styles.background}>
+      <div ref={bgRef} className={classNames(styles.background, styles[direction])}>
         {background ? background : <span>Action</span>}
       </div>
       <div ref={elementRef} onMouseDown={onDragStartMouse} onTouchStart={onDragStartTouch} className={styles.item}>
