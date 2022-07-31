@@ -38,7 +38,7 @@ func ExtractMetaFromDOM(doc *html.Node) MetaSet {
 			}
 
 			// Extract title
-			if node.DataAtom == atom.Title && node.FirstChild.Type == html.NodeType(html.TextToken) {
+			if node.DataAtom == atom.Title && node.FirstChild != nil && node.FirstChild.Type == html.NodeType(html.TextToken) {
 				meta := Meta{
 					Name:    "title",
 					Content: node.FirstChild.Data,
