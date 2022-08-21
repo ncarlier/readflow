@@ -1,0 +1,9 @@
+.bg {
+  width: 50%;
+  max-width: 512px;
+  max-height: 400px;
+}
+
+[data-theme="dark"] .bg {
+  filter: invert(1);
+}

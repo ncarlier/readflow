@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 
-import { ArticleList, ArticlesPageMenu } from '../articles/components'
+import { ArticleList, ArticlesPageMenu, NoArticleBg } from '../articles/components'
 import { GetArticlesRequest, GetArticlesResponse } from '../articles/models'
 import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
 import { LocalConfiguration, SortOrder, useLocalConfiguration } from '../contexts/LocalConfigurationContext'
@@ -68,7 +68,7 @@ const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: OfflineP
       return (
         <ArticleList
           articles={d.articles.entries}
-          emptyMessage="no offline articles"
+          empty={<NoArticleBg name="offline" title="if Internet does not exist, there is nothing here either" />}
           hasMore={d.articles.hasNext}
           refetch={refetch}
           fetchMoreArticles={fetchMoreArticles}

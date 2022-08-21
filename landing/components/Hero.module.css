@@ -22,3 +22,7 @@
 .hero button {
   padding: 1rem 2rem;
 }
+
+.hero img {
+  width: 100%;
+}

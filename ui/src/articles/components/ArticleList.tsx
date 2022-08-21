@@ -1,4 +1,4 @@
-import React, { RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import React, { ReactNode, RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 import { ButtonIcon, Center, Empty, Panel } from '../../components'
 import { useMedia } from '../../hooks'
@@ -9,7 +9,7 @@ import styles from './ArticleList.module.css'
 
 interface Props {
   articles: Article[]
-  emptyMessage: string
+  empty: ReactNode
   hasMore: boolean
   swipeable?: boolean
   variant?: 'list' | 'grid'
@@ -46,7 +46,7 @@ export const ArticleList = (props: Props) => {
     fetchMoreArticles,
     refetch,
     hasMore,
-    emptyMessage = 'No more article to read',
+    empty = <span>No more article to read</span>,
     swipeable = false,
     variant = 'list',
   } = props
@@ -83,9 +83,9 @@ export const ArticleList = (props: Props) => {
   if (articles.length === 0) {
     return (
       <Empty>
-        <ButtonIcon title="Refresh" icon="refresh" onClick={reload} loading={loading} />
+        {empty}
         <br />
-        <span>{emptyMessage}</span>
+        <ButtonIcon title="Refresh" icon="refresh" onClick={reload} loading={loading} />
       </Empty>
     )
   }

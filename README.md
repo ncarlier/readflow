@@ -92,7 +92,13 @@ These amazing people have sponsored this project:
 
 ***
 
-## License
+## Licenses
+
+Readflow artworks except the logo are under the [Licence Creative Commons Attribution-NonCommercial-NoDerivatives 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode).
+Attribution to [Maxime Belloche](https://www.instagram.com/bouloche61/)
+
+Avatar atrworks are under the [License Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/legalcode).
+Attribution to [David Revoy](https://www.davidrevoy.com/)
 
 Readflow is provided under the [GNU Affero General Public License Version 3 (AGPLv3)](https://github.com/ncarlier/readflow/blob/master/LICENSE).
 

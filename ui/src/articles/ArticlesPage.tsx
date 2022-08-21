@@ -7,7 +7,7 @@ import { LocalConfiguration, useLocalConfiguration } from '../contexts/LocalConf
 import { Center, ErrorPanel, Loader, Panel } from '../components'
 import { getURLParam, matchResponse } from '../helpers'
 import { Appbar, Page } from '../layout'
-import { ArticleList, ArticlesPageMenu, NewArticlesAvailable, Search } from './components'
+import { ArticleList, ArticlesPageMenu, NewArticlesAvailable, NoArticleBg, Search } from './components'
 import { ArticleStatus, GetArticlesRequest, GetArticlesResponse } from './models'
 import { GetArticles } from './queries'
 import { useMedia } from '../hooks'
@@ -16,19 +16,19 @@ type Variant = 'inbox' | 'to_read' | 'history' | 'starred'
 
 const variants = {
   inbox: {
-    emptyLabel: 'no article received',
+    emptyLabel: 'your inbox is full of air',
     getTitle: (nb: number) => `${nb} article${nb > 1 ? 's' : ''} received`,
   },
   to_read: {
-    emptyLabel: 'no article to read',
+    emptyLabel: 'nothing more to read, time to relax',
     getTitle: (nb: number) => `${nb} article${nb > 1 ? 's' : ''} to read`,
   },
   history: {
-    emptyLabel: 'history is empty',
+    emptyLabel: 'your reading history is all clean',
     getTitle: (nb: number) => `${nb} read article${nb > 1 ? 's' : ''}`,
   },
   starred: {
-    emptyLabel: 'no starred article',
+    emptyLabel: 'only the sky is full of stars',
     getTitle: (nb: number) => `${nb} stared article${nb > 1 ? 's' : ''}`,
   },
 }
@@ -163,7 +163,7 @@ export default (props: AllProps) => {
           )}
           <ArticleList
             articles={entries}
-            emptyMessage={variants[variant].emptyLabel}
+            empty={<NoArticleBg name={variant} title={variants[variant].emptyLabel} />}
             hasMore={d.articles.hasNext}
             refetch={refetch}
             swipeable={isMobileDisplay && variant !== 'starred'}

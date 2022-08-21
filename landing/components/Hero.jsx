@@ -12,7 +12,7 @@ const Hero = () => {
         <a href="https://readflow.app/login" className="primary btn">{t('get-started')}</a>
       </div>
       <div>
-        <img src="./img/worker.svg" alt="Reading with peaceful mindset" />
+        <img src="./img/relax.png" alt="Reading with peaceful mindset" />
       </div>
     </section>
   )
