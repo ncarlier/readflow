@@ -49,7 +49,7 @@ func (exp *ZIPExporter) Export(ctx context.Context, article *model.Article) (*mo
 
 	return &model.FileAsset{
 		Data:        buf.Bytes(),
-		ContentType: "aplication/zip",
+		ContentType: "application/zip",
 		Name:        strings.TrimRight(article.Title, ". ") + ".zip",
 	}, nil
 }
@@ -99,7 +99,7 @@ func (exp *ZIPExporter) processURLAttribute(ctx context.Context, output *zip.Wri
 		return err
 	}
 
-	newURL := path.Base(asset.Name)
+	newURL := strings.Split(path.Base(asset.Name), "?")[0]
 	f, err := output.Create(newURL)
 	if err != nil {
 		return err

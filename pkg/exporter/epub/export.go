@@ -112,7 +112,7 @@ func (exp *EpubExporter) processURLAttribute(ctx context.Context, output *Writer
 		return err
 	}
 
-	newURL := path.Base(asset.Name)
+	newURL := strings.Split(path.Base(asset.Name), "?")[0]
 	f, err := output.NewItem(newURL, asset.ContentType)
 	if err != nil {
 		return err
