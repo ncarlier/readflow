@@ -17,7 +17,7 @@ func TestInternalScraper(t *testing.T) {
 	assert.Equal(t, "https://about.readflow.app/", page.URL)
 	assert.Equal(t, "readflow", page.Title)
 	assert.Equal(t, "Read your Internet article flow in one place with complete peace of mind and freedom", page.Text)
-	assert.Contains(t, page.HTML, "worker.svg")
+	assert.Contains(t, page.HTML, "relax.png")
 	assert.Equal(t, "https://about.readflow.app/images/readflow.png", page.Image)
 	assert.Equal(t, "https://about.readflow.app/favicon.png", page.Favicon)
 }
