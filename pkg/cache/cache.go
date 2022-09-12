@@ -32,7 +32,7 @@ func New(conn string, size int) (Cache, error) {
 
 	switch provider {
 	case "boltdb":
-		cache, err = boltcache.New(size, u.Path)
+		cache, err = boltcache.New(size, filepath.Clean(u.Path))
 		if err != nil {
 			return nil, err
 		}
