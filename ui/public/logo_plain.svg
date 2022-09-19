@@ -7,13 +7,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   viewBox="0 0 200 200"
+   viewBox="0 0 512 512"
    version="1.1"
    id="svg4585"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    sodipodi:docname="logo_plain.svg"
-   width="200"
-   height="200"
+   width="512"
+   height="512"
    inkscape:export-filename="/home/nicolas/workspace/readflow/ui/public/android-maskable-512x512.png"
    inkscape:export-xdpi="245.75999"
    inkscape:export-ydpi="245.75999">
@@ -30,9 +30,9 @@
      inkscape:window-height="915"
      id="namedview25"
      showgrid="false"
-     inkscape:zoom="2.1572304"
-     inkscape:cx="4.2647096"
-     inkscape:cy="165.54368"
+     inkscape:zoom="0.77615181"
+     inkscape:cx="-44.15389"
+     inkscape:cy="87.170767"
      inkscape:window-x="0"
      inkscape:window-y="31"
      inkscape:window-maximized="1"
@@ -62,16 +62,16 @@
   <title
      id="title4561">integration-tile</title>
   <rect
-     style="fill:#009be5;fill-opacity:1;stroke-width:1.51339364"
+     style="fill:#009be5;fill-opacity:1;stroke-width:3.87428784"
      id="rect910"
-     width="200"
-     height="200"
+     width="512"
+     height="512"
      x="0"
      y="0"
      rx="0"
      ry="0" />
   <g
-     transform="matrix(1.1111652,1.1233196,-1.1111652,1.1233196,86.516981,-40.749205)"
+     transform="matrix(2.8445829,2.8756982,-2.8445829,2.8756982,221.48347,-104.31798)"
      id="g4181"
      style="fill:#ffffff;fill-opacity:1">
     <g
