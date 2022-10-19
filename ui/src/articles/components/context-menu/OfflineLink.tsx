@@ -14,6 +14,12 @@ interface Props {
 
 type AllProps = Props & OfflineProps
 
+const blobToDataURL = async (blob: Blob): Promise<string> => new Promise((resolve) => {
+  const reader = new FileReader()
+  reader.onloadend = () => resolve(reader.result as string)
+  reader.readAsDataURL(blob)
+})
+
 export const OfflineLink = (props: AllProps) => {
   const { article, keyboard = false, saveOfflineArticle, removeOfflineArticle, offlineArticles } = props
   const fetchArticleContent = useAPI(`/articles/${article.id}`, { method: 'GET' })
@@ -35,7 +41,7 @@ export const OfflineLink = (props: AllProps) => {
             const img = await fetchArticleImage({ url: article.image, width: '720' })
             if (img && img.ok && img.body) {
               const blob = await img.blob()
-              offlineArticle.image = window.URL.createObjectURL(blob)
+              offlineArticle.image = await blobToDataURL(blob)
             }
           }
           await saveOfflineArticle(offlineArticle)
