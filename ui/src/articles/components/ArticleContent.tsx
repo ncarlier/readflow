@@ -14,6 +14,7 @@ interface Props {
 }
 
 const getHTMLContent = (body: string, theme: string) => `
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <base target="_blank">

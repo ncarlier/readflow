@@ -1,7 +1,7 @@
 import './index.css'
 
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { createBrowserHistory } from 'history'
 import ReactModal from 'react-modal'
 
@@ -20,7 +20,16 @@ const run = () => {
   const initialState = window.initialReduxState as ApplicationState
   const store = configureStore(history, initialState)
   ReactModal.setAppElement('#root')
-  ReactDOM.render(<App store={store} history={history} />, document.getElementById('root'))
+  const container = document.getElementById('root')
+  if (!container) {
+    return
+  }
+  const root = createRoot(container)
+  root.render(
+    <React.StrictMode>
+      <App store={store} history={history} />
+    </React.StrictMode>
+  )
   serviceWorker.register({ onUpdate: (registration) => store.dispatch(updateAvailable(registration)) })
   localStorage.setItem(lastRunKey, new Date().toISOString())
 }

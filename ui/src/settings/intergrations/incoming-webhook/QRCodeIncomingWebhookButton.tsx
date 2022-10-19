@@ -38,7 +38,7 @@ export default ({ token }: Props) => {
         const err = await res.json()
         throw new Error(err.detail || res.statusText)
       }
-    } catch (err) {
+    } catch (err: any) {
       showErrorMessage(err.message)
     } finally {
       setLoading(false)

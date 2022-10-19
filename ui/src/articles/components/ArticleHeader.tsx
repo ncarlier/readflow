@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { History } from 'history'
 import { Link } from 'react-router-dom'
 
@@ -7,7 +7,7 @@ import { getHostname } from '../../helpers'
 import { Article } from '../models'
 import styles from './ArticleHeader.module.css'
 
-interface Props {
+interface Props extends PropsWithChildren {
   article: Article
   to?: History.LocationDescriptor
 }

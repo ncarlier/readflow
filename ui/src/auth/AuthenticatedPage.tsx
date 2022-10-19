@@ -1,9 +1,9 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, PropsWithChildren, useEffect } from 'react'
 
 import { useAuth } from './AuthProvider'
 import { Center, ErrorPage, Loader } from '../components'
 
-export const AuthenticatedPage: FC = ({ children }) => {
+export const AuthenticatedPage: FC<PropsWithChildren> = ({ children }) => {
   const { isLoading, isAuthenticated, error, login } = useAuth()
 
   useEffect(() => {

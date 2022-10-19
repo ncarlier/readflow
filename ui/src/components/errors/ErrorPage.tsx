@@ -1,11 +1,10 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 
-import { Panel } from '..'
 import { Page } from '../../layout'
-import { Button, ErrorPanel } from '..'
+import { Button, ErrorPanel, Panel } from '..'
 import { Link } from 'react-router-dom'
 
-interface Props {
+interface Props extends PropsWithChildren {
   title?: string
 }
 

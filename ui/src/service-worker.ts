@@ -1,4 +1,4 @@
-/// <reference lib="webworker" />
+/// <reference lib='webworker' />
 /* eslint-disable no-restricted-globals */
 
 // This service worker can be customized!
@@ -94,7 +94,7 @@ self.addEventListener('push', function (event) {
 
   let data = {
     title: 'Something has happened',
-    body: "Here's something you might want to check out.",
+    body: 'Here\'s something you might want to check out.',
     href: '/',
   }
   if (event.data) {

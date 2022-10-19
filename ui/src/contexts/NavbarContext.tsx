@@ -1,4 +1,4 @@
-import React, { createContext, FC, useContext, useState } from 'react'
+import React, { createContext, FC, PropsWithChildren, useContext, useState } from 'react'
 
 interface NavbarContextType {
   opened: boolean
@@ -12,7 +12,7 @@ const NavbarContext = createContext<NavbarContextType>({
   close: () => null,
 })
 
-const NavbarProvider: FC = ({ children }) => {
+const NavbarProvider: FC<PropsWithChildren> = ({ children }) => {
   const [opened, setOpened] = useState<boolean>(window.innerWidth > 767)
 
   const open = () => setOpened(true)

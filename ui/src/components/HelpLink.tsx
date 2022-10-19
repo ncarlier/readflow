@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-no-target-blank */
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 
 import styles from './HelpLink.module.css'
 import { Icon } from '.'
 
-interface Props {
+interface Props extends PropsWithChildren {
   href: string
   title?: string
 }

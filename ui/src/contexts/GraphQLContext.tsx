@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react'
+import React, { FC, PropsWithChildren, useCallback, useMemo } from 'react'
 import { ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache, ServerError } from '@apollo/client'
 
 import { API_BASE_URL } from '../constants'
@@ -13,7 +13,7 @@ const httpLink = new HttpLink({
 
 const cache = new InMemoryCache()
 
-const GraphQLProvider: FC = ({ children }) => {
+const GraphQLProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, login } = useAuth()
 
   // Authentication interceptor

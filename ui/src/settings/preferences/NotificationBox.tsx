@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react'
+import React, { FC, PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import { useApolloClient, useMutation } from '@apollo/client'
 import Switch from 'react-switch'
 
@@ -9,7 +9,7 @@ import { CreatePushSubscription, DeletePushSubscription, GetDevice } from './que
 
 const deviceIdKey = 'readflow.deviceId'
 
-const NotificationSupport: FC = ({ children }) => {
+const NotificationSupport: FC<PropsWithChildren> = ({ children }) => {
   const supported = isNotificationSupported()
   const [allowed, setAllowed] = useState(isNotificationGranted())
 
@@ -77,7 +77,7 @@ const NotificationSwitch = () => {
         } else {
           setActivated(true)
         }
-      } catch (err) {
+      } catch (err: any) {
         setError(err)
       } finally {
         setLoading(false)
@@ -103,7 +103,7 @@ const NotificationSwitch = () => {
           localStorage.setItem(deviceIdKey, _id.toString())
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
     } finally {
       setLoading(false)
@@ -115,7 +115,7 @@ const NotificationSwitch = () => {
       setLoading(true)
       await deletePushSubscriptionMutation({ variables: { id: pushID } })
       resetSubscription()
-    } catch (err) {
+    } catch (err: any) {
       setError(err)
     } finally {
       setLoading(false)

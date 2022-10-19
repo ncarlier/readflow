@@ -1,4 +1,4 @@
-import React, { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { createContext, FC, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Log, SigninRedirectArgs, SignoutRedirectArgs, User, UserManager } from 'oidc-client-ts'
 
@@ -29,7 +29,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
-export const AuthProvider: FC = ({ children }) => {
+export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [userManager] = useState(() => new UserManager(config))
   const [user, setUser] = useState<User | null>(null)
   const [error, setError] = useState<any>()

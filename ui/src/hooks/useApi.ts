@@ -11,13 +11,19 @@ type doRequestFn = (params?: any) => Promise<Response | undefined>
 export const useAPI = (uri = '/', init: RequestInit = { headers: defaultHeaders }): doRequestFn => {
   const { user } = useAuth()
   const [abortController] = useState(() => new AbortController())
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    return () => abortController.abort()
-  }, [abortController])
+    return () => {
+      if (loading && !abortController.abort) {
+        abortController.abort()
+      }
+    }
+  }, [abortController, loading])
 
   const doRequest = useCallback(
     async (params: any = {}) => {
+      setLoading(true)
       const headers = withCredentials(user, init.headers)
       try {
         const res = await fetchAPI(uri, params, { ...init, signal: abortController.signal, headers })
@@ -25,8 +31,11 @@ export const useAPI = (uri = '/', init: RequestInit = { headers: defaultHeaders 
           throw new Error(res.statusText)
         }
         return res
-      } catch (e) {
+      } catch (e: any) {
+        console.error(e)
         if (e.name !== 'AbortError') throw e
+      } finally {
+        setLoading(false)
       }
     },
     [user, uri, init, abortController]

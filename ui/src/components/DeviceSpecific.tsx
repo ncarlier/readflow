@@ -1,8 +1,8 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 
 import { useMedia } from '../hooks'
 
-interface Props {
+interface Props extends PropsWithChildren {
   mobile?: boolean
   desktop?: boolean
 }

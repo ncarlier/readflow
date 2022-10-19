@@ -17,7 +17,12 @@ Example:
 
 ```bash
 $ export REACT_APP_API_ROOT=http://localhost:8080
+$ export REACT_APP_AUTHORITY=mock
 ```
+
+## Dependencies
+
+Use `npm install --legacy-peer-deps` to install dependencies.
 
 ## Development server
 

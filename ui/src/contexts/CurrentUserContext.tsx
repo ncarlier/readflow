@@ -1,4 +1,4 @@
-import React, { createContext, FC, useContext } from 'react'
+import React, { createContext, FC, PropsWithChildren, useContext } from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { getGQLError, matchResponse } from '../helpers'
 import { Center, ErrorPage, Loader } from '../components'
@@ -34,7 +34,7 @@ interface GetCurrentUserResponse {
 
 const CurrentUserContext = createContext<User | null>(null)
 
-const CurrentUserProvider: FC = ({ children }) => {
+const CurrentUserProvider: FC<PropsWithChildren> = ({ children }) => {
   const online = useOnlineStatus()
   const { data, error, loading } = useQuery<GetCurrentUserResponse>(GetCurrentUser)
 

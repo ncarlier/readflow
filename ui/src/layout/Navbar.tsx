@@ -7,7 +7,7 @@ import { GetCategoriesResponse } from '../categories/models'
 import { GetCategories } from '../categories/queries'
 import { Loader, LinkIcon, NetworkStatus, Offline, UserInfos } from '../components'
 import { matchResponse } from '../helpers'
-import logo from './logo_header.svg'
+import { ReactComponent as Logo } from './logo_header.min.svg'
 import styles from './Navbar.module.css'
 import { AddArticleLink } from '../articles/components'
 import { Article } from '../articles/models'
@@ -63,7 +63,7 @@ export const Navbar = withRouter(({ location, history }: RouteComponentProps) =>
       <ul>
         <li>
           <h1>
-            <img src={logo} alt="readflow" />
+            <Logo />
           </h1>
           <UserInfos />
           <NetworkStatus status="offline">

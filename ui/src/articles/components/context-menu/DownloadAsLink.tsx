@@ -80,7 +80,7 @@ export default ({ article }: Props) => {
           const err = await res.json()
           throw new Error(err.detail || res.statusText)
         }
-      } catch (err) {
+      } catch (err: any) {
         showErrorMessage(err.message)
       } finally {
         setIsDownloading(false)

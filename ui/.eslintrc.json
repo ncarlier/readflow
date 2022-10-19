@@ -3,41 +3,30 @@
     "browser": true,
     "es2021": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+  "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": 12,
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": [
-    "react",
-    "@typescript-eslint",
-    "prettier",
-    "cypress"
-  ],
+  "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier", "cypress"],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/display-name": "off",
+    "react/prop-types": "off",
+    "quotes": ["error", "single"],
+    "semi": ["error", "never"],
+    "no-duplicate-imports": "error",
+    "@typescript-eslint/no-explicit-any": "off"
+  },
   "settings": {
     "react": {
       "pragma": "React",
       "version": "detect"
+    },
+    "import/resolver": {
+      "typescript": {}
     }
-  },
-  "rules": {
-    "prettier/prettier": ["error", {
-      "singleQuote": true,
-      "semi" : false,
-      "printWidth": 120
-     }],
-    "react/display-name": "off",
-    "react/prop-types": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off"
   }
 }

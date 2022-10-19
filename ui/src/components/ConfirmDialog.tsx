@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import ReactModal from 'react-modal'
 
 import { Button, Panel } from '.'
 import styles from './Dialog.module.css'
 
-interface Props {
+interface Props extends PropsWithChildren {
   title: string
   confirmLabel?: string
   onConfirm: (e: any) => void

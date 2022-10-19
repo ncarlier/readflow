@@ -1,9 +1,9 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 
 import { classNames } from '../helpers'
 import styles from './Notification.module.css'
 
-interface Props {
+interface Props extends PropsWithChildren {
   message: string
   variant?: 'error' | 'info' | 'warning'
 }

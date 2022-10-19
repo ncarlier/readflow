@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, PropsWithChildren, useEffect, useState } from 'react'
 
 const ScrollMemoryContext = React.createContext(0)
 
@@ -10,7 +10,7 @@ if ('scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual'
 }
 
-const ScrollMemoryProvider: FC = ({ children }) => {
+const ScrollMemoryProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, setState] = useState(0)
 
   const onPopState = () => {

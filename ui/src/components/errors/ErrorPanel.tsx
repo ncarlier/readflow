@@ -1,8 +1,8 @@
-import React, { FC, ReactNode } from 'react'
+import React, { FC, PropsWithChildren, ReactNode } from 'react'
 
 import styles from './ErrorPanel.module.css'
 
-interface Props {
+interface Props extends PropsWithChildren {
   title?: string
   actions?: ReactNode
 }

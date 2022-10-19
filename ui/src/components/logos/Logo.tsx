@@ -1,12 +1,13 @@
 import React, { CSSProperties } from 'react'
 
-import feedpushr from './FeedpushrLogo.svg'
-import keeper from './KeeperLogo.svg'
-import pocket from './PocketLogo.svg'
-import readflow from './ReadflowLogo.svg'
-import s3 from './S3Logo.svg'
-import wallabag from './WallabagLogo.svg'
-import webhook from './WebhookLogo.svg'
+import { ReactComponent as feedpushr } from './min/FeedpushrLogo.svg'
+import { ReactComponent as keeper } from './min/KeeperLogo.svg'
+import { ReactComponent as pocket } from './min/PocketLogo.svg'
+import { ReactComponent as readflow } from './min/ReadflowLogo.svg'
+import { ReactComponent as s3 } from './min/S3Logo.svg'
+import { ReactComponent as wallabag } from './min/WallabagLogo.svg'
+import { ReactComponent as webhook } from './min/WebhookLogo.svg'
+
 
 const logos = {
   feedpushr,
@@ -25,4 +26,7 @@ interface Props {
   style?: CSSProperties
 }
 
-export const Logo = ({ name, style, title }: Props) => <img src={logos[name]} alt={name} title={title} style={style} />
+export const Logo = ({ name, style, title }: Props) => {
+  const Logo = logos[name]
+  return <Logo title={title} style={style} />
+}

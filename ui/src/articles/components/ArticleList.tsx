@@ -1,8 +1,7 @@
 import React, { ReactNode, RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 import { ButtonIcon, Center, Empty, Panel } from '../../components'
-import { useMedia } from '../../hooks'
-import { useInfiniteScroll, useKeyboard } from '../../hooks'
+import { useInfiniteScroll, useKeyboard, useMedia } from '../../hooks'
 import { Article } from '../models'
 import { ArticleCard, SwipeableArticleCard } from '.'
 import styles from './ArticleList.module.css'

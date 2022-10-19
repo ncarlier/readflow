@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import CSSTransition from 'react-transition-group/CSSTransition'
 import { useModal } from 'react-modal-hook'
 
@@ -9,7 +9,7 @@ import { useDeviceSubscriptionStatus, useKeyboard, useTheme } from '../hooks'
 import classes from './AppLayout.module.css'
 import { Navbar } from '.'
 
-export const AppLayout: FC = ({ children }) => {
+export const AppLayout: FC<PropsWithChildren> = ({ children }) => {
   // Activate theme
   useTheme()
 

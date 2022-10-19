@@ -1,4 +1,4 @@
-import React, { createRef, CSSProperties, FC, MouseEventHandler, useCallback, useEffect } from 'react'
+import React, { createRef, CSSProperties, FC, MouseEventHandler, PropsWithChildren, useCallback, useEffect } from 'react'
 
 import { ButtonIcon } from '.'
 import styles from './DropDownMenu.module.css'
@@ -28,7 +28,7 @@ const getDropdownOriginStyle = (origin: DropDownOrigin = { horizontal: 'left', v
   return result
 }
 
-interface Props {
+interface Props extends PropsWithChildren {
   style?: CSSProperties
   title?: string
   icon?: string

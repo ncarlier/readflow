@@ -1,9 +1,9 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 
 import styles from './Center.module.css'
 import { classNames } from '../helpers'
 
-interface Props {
+interface Props extends PropsWithChildren {
   className?: string
 }
 

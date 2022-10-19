@@ -1,9 +1,9 @@
-import React, { CSSProperties, FC } from 'react'
+import React, { CSSProperties, FC, PropsWithChildren } from 'react'
 
 import { classNames } from '../helpers'
 import styles from './Overlay.module.css'
 
-interface Props {
+interface Props extends PropsWithChildren {
   style?: CSSProperties
   className?: string
   visible: boolean

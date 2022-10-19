@@ -1,8 +1,8 @@
-import React, { FC, ReactNode, useCallback, useEffect, useRef } from 'react'
+import React, { FC, PropsWithChildren, ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import styles from './SwipeableListItem.module.css'
 
-interface Props {
+interface Props extends PropsWithChildren {
   background?: ReactNode
   threshold?: number
   onSwipe: () => void

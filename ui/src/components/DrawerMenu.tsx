@@ -1,9 +1,9 @@
-import React, { createRef, CSSProperties, FC, useCallback, useEffect, useState } from 'react'
+import React, { createRef, CSSProperties, FC, PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import Drawer from 'react-bottom-drawer'
 
 import { ButtonIcon } from '.'
 
-interface Props {
+interface Props extends PropsWithChildren {
   style?: CSSProperties
   title?: string
   icon?: string

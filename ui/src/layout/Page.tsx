@@ -1,11 +1,11 @@
-import React, { ReactNode, FC } from 'react'
+import React, { ReactNode, FC, PropsWithChildren } from 'react'
 
 import { classNames } from '../helpers'
 import { usePageTitle } from '../hooks'
 import { Appbar, Content } from '.'
 import styles from './Page.module.css'
 
-interface Props {
+interface Props extends PropsWithChildren {
   title?: string
   subtitle?: string
   className?: string

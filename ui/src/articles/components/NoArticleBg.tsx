@@ -1,10 +1,10 @@
 import React from 'react'
 
-import history from './bg/clean_sweep.svg'
-import inbox from './bg/empty_mailbox.svg'
-import offline from './bg/dyno.svg'
-import starred from './bg/stars.svg'
-import to_read from './bg/empty_couch.svg'
+import { ReactComponent as history } from './bg/min/clean_sweep.svg'
+import { ReactComponent as inbox } from './bg/min/empty_mailbox.svg'
+import { ReactComponent as offline } from './bg/min/dyno.svg'
+import { ReactComponent as starred } from './bg/min/stars.svg'
+import { ReactComponent as to_read } from './bg/min/empty_couch.svg'
 
 import styles from './NoArticleBg.module.css'
 
@@ -21,6 +21,7 @@ interface Props {
   title?: string
 }
 
-export const NoArticleBg = ({ name, title }: Props) => (
-  <img src={backgrounds[name]} alt={name} className={styles.bg} title={title} />
-)
+export const NoArticleBg = ({ name, title }: Props) => {
+  const Bg = backgrounds[name]
+  return <Bg className={styles.bg} title={title}/>
+}

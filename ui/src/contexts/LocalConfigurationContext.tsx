@@ -1,4 +1,4 @@
-import React, { createContext, FC, useCallback, useContext, useEffect, useState } from 'react'
+import React, { createContext, FC, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
 
 const key = 'readflow.config'
 
@@ -51,7 +51,7 @@ const LocalConfigurationContext = createContext<LocalConfigurationContextType>({
   updateLocalConfiguration: () => true,
 })
 
-const LocalConfigurationProvider: FC = ({ children }) => {
+const LocalConfigurationProvider: FC<PropsWithChildren> = ({ children }) => {
   const [localConfiguration, setLocalConfiguration] = useState<LocalConfiguration>(() => {
     try {
       const config = window.localStorage.getItem(key)

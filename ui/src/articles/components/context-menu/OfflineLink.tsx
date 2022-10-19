@@ -45,7 +45,7 @@ export const OfflineLink = (props: AllProps) => {
           throw new Error(err.detail || res.statusText)
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       showErrorMessage(err.message)
     } finally {
       setLoading(false)
@@ -56,7 +56,7 @@ export const OfflineLink = (props: AllProps) => {
     try {
       await removeOfflineArticle(article)
       showMessage(`Article deleted from offline storage: ${article.title}`)
-    } catch (err) {
+    } catch (err: any) {
       showErrorMessage(err.message)
     }
   }, [article, removeOfflineArticle, showMessage, showErrorMessage])

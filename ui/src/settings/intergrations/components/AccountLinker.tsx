@@ -49,7 +49,7 @@ export const AccountLinker = ({ provider }: Props) => {
         } else {
           throw new Error(res.statusText)
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error(err.message)
       } finally {
         storeData(provider, null)
@@ -83,7 +83,7 @@ export const AccountLinker = ({ provider }: Props) => {
         const err = await res.json()
         throw new Error(err.detail || res.statusText)
       }
-    } catch (err) {
+    } catch (err: any) {
       showErrorMessage(err.message)
       setLoading(false)
     }

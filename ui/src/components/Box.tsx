@@ -1,9 +1,9 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 
 import { classNames } from '../helpers'
 import classes from './Box.module.css'
 
-interface Props {
+interface Props extends PropsWithChildren {
   title: string
   className?: string
   variant?: 'default' | 'warning' | 'danger'

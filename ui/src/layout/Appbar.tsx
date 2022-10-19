@@ -1,10 +1,10 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 
 import { ButtonIcon } from '../components'
 import { useNavbar } from '../contexts/NavbarContext'
 import styles from './Appbar.module.css'
 
-interface Props {
+interface Props extends PropsWithChildren {
   title?: string
 }
 

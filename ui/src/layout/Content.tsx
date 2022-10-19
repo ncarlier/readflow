@@ -1,10 +1,10 @@
-import React, { FC, useRef } from 'react'
+import React, { FC, PropsWithChildren, useRef } from 'react'
 
 import { ScrollToTop } from '../components'
 import { useScrollMemory } from '../hooks'
 import styles from './Content.module.css'
 
-interface Props {
+interface Props extends PropsWithChildren {
   scrollToTop?: boolean
 }
 
