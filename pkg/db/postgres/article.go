@@ -174,8 +174,8 @@ func (pg *DB) DeleteArticle(id uint) error {
 	return nil
 }
 
-// MarkAllArticlesAsReadByUser set status to read for all articles of an user and a category
-func (pg *DB) MarkAllArticlesAsReadByUser(uid uint, categoryID *uint) (int64, error) {
+// MarkAllArticlesAsReadByUser set status to read for all user's articles of a specific status and category
+func (pg *DB) MarkAllArticlesAsReadByUser(uid uint, status string, categoryID *uint) (int64, error) {
 	update := map[string]interface{}{
 		"status":     "read",
 		"updated_at": "NOW()",
@@ -185,6 +185,7 @@ func (pg *DB) MarkAllArticlesAsReadByUser(uid uint, categoryID *uint) (int64, er
 	).SetMap(update).Where(
 		sq.Eq{"user_id": uid},
 	)
+	queryBuilder = queryBuilder.Where(sq.Eq{"status": status})
 
 	if categoryID != nil {
 		queryBuilder = queryBuilder.Where(sq.Eq{"category_id": *categoryID})

@@ -94,7 +94,7 @@ func TestMarkAllArticlesAsRead(t *testing.T) {
 	assert.NotNil(t, res)
 	assert.Positive(t, res.TotalCount, "total count should be a positive integer")
 
-	nb, err := testDB.MarkAllArticlesAsReadByUser(uid, nil)
+	nb, err := testDB.MarkAllArticlesAsReadByUser(uid, "inbox", nil)
 	assert.Nil(t, err)
 	assert.NotEqual(t, 0, nb, "all articles should be marked as read")
 

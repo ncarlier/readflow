@@ -119,7 +119,7 @@ export const ArticlesPageMenu = (props: Props) => {
   const markAllAsRead = useCallback(async () => {
     try {
       await markAllArticlesAsReadMutation({
-        variables: { category: req.category },
+        variables: { status: req.status || 'inbox', category: req.category },
         update: updateCacheAfterMarkAllAsRead,
       })
       await refresh()

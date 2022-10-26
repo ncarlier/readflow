@@ -76,11 +76,11 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 	return article, nil
 }
 
-// MarkAllArticlesAsRead set status to read for all articles (of a category if provided)
-func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, categoryID *uint) (int64, error) {
+// MarkAllArticlesAsRead set status to read for all user's articles of a specific status and category
+func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, status string, categoryID *uint) (int64, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
-	nb, err := reg.db.MarkAllArticlesAsReadByUser(uid, categoryID)
+	nb, err := reg.db.MarkAllArticlesAsReadByUser(uid, status, categoryID)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,

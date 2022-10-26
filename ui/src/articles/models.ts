@@ -61,6 +61,7 @@ export interface UpdateArticleResponse {
 
 export interface MarkAllArticlesAsReadRequest {
   category: number | null
+  status: ArticleStatus
 }
 
 export interface MarkAllArticlesAsReadResponse {

@@ -14,7 +14,7 @@ type ArticleRepository interface {
 	GetArticleByID(id uint) (*model.Article, error)
 	CreateArticleForUser(uid uint, form model.ArticleCreateForm) (*model.Article, error)
 	UpdateArticleForUser(uid uint, form model.ArticleUpdateForm) (*model.Article, error)
-	MarkAllArticlesAsReadByUser(uid uint, categoryID *uint) (int64, error)
+	MarkAllArticlesAsReadByUser(uid uint, status string, categoryID *uint) (int64, error)
 	DeleteArticle(id uint) error
 	DeleteReadArticlesOlderThan(delay time.Duration) (int64, error)
 	DeleteAllReadArticlesByUser(uid uint) (int64, error)

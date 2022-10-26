@@ -56,6 +56,9 @@ var markAllArticlesAsReadMutationField = &graphql.Field{
 	Type:        category.ListResponseType,
 	Description: "set all articles (of a category if provided) to read status",
 	Args: graphql.FieldConfigArgument{
+		"status": &graphql.ArgumentConfig{
+			Type: articleStatus,
+		},
 		"category": &graphql.ArgumentConfig{
 			Type: graphql.ID,
 		},
@@ -68,8 +71,12 @@ func markAllArticlesAsReadResolver(p graphql.ResolveParams) (interface{}, error)
 	if val, ok := helper.ConvGQLStringToUint(p.Args["category"]); ok {
 		categoryID = &val
 	}
+	status := helper.GetGQLStringParameter("status", p.Args)
+	if status == nil || *status == "read" {
+		return nil, errors.New("invalid status")
+	}
 
-	_, err := service.Lookup().MarkAllArticlesAsRead(p.Context, categoryID)
+	_, err := service.Lookup().MarkAllArticlesAsRead(p.Context, *status, categoryID)
 	if err != nil {
 		return nil, err
 	}
