@@ -37,7 +37,10 @@ $ curl -s https://raw.githubusercontent.com/ncarlier/readflow/master/install.sh 
 **Or** use Docker:
 
 ```bash
-$ docker run -d --name=readflow ncarlier/readflow:edge
+$ docker run -it --rm \
+    -p 8080:8080 \
+    -e READFLOW_DB=<YOUR POSTGERSQL CONNECTION STRING> \
+    ncarlier/readflow:edge
 ```
 
 ## Configuration
