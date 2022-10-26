@@ -23,7 +23,7 @@ Read your Internet article flow in one place with complete peace of mind and fre
 Run the following command:
 
 ```bash
-$ go get -v github.com/ncarlier/readflow
+$ go install -v github.com/ncarlier/readflow@latest
 ```
 
 **Or** download the binary regarding your architecture:
