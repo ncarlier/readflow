@@ -105,7 +105,7 @@ landing:
 ## Generate Web UI
 ui:
 	echo ">>> Building Web UI..."
-	cd ui && npm install --silent && REACT_APP_VERSION=${VERSION} npm run build
+	cd ui && npm install --silent --legacy-peer-deps && REACT_APP_VERSION=${VERSION} npm run build
 .PHONY: ui
 
 ## Build bookmarklet
