@@ -19,6 +19,15 @@ var updateArticleMutationField = &graphql.Field{
 		"id": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.ID),
 		},
+		"title": &graphql.ArgumentConfig{
+			Type: graphql.String,
+		},
+		"text": &graphql.ArgumentConfig{
+			Type: graphql.String,
+		},
+		"category_id": &graphql.ArgumentConfig{
+			Type: graphql.Int,
+		},
 		"status": &graphql.ArgumentConfig{
 			Type: articleStatus,
 		},
@@ -36,9 +45,12 @@ func updateArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 	}
 
 	form := model.ArticleUpdateForm{
-		ID:     id,
-		Status: helper.GetGQLStringParameter("status", p.Args),
-		Stars:  helper.GetGQLUintParameter("stars", p.Args),
+		ID:         id,
+		Title:      helper.GetGQLStringParameter("title", p.Args),
+		Text:       helper.GetGQLStringParameter("text", p.Args),
+		CategoryID: helper.GetGQLUintParameter("category_id", p.Args),
+		Status:     helper.GetGQLStringParameter("status", p.Args),
+		Stars:      helper.GetGQLUintParameter("stars", p.Args),
 	}
 
 	article, err := service.Lookup().UpdateArticle(p.Context, form)

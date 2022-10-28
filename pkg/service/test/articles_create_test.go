@@ -1,4 +1,4 @@
-package dbtest
+package test
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
-func TestCreateArticle(t *testing.T) {
+func TestCreateRemoteArticle(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
@@ -40,13 +40,7 @@ func TestCreateArticleInCategory(t *testing.T) {
 	defer teardownTestCase(t)
 
 	// Create category
-	uid := *testUser.ID
-	formBuilder := model.NewCategoryCreateFormBuilder()
-	form := formBuilder.Random().Build()
-	cat, err := service.Lookup().CreateCategory(testContext, *form)
-	assert.Nil(t, err)
-	assert.Equal(t, form.Title, cat.Title)
-	assert.Equal(t, uid, *cat.UserID)
+	cat := assertNewCategory(t)
 
 	// Create article
 	req := model.ArticleCreateForm{
@@ -65,7 +59,7 @@ func TestCreateArticleWithRuleEngine(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)
 
-	// Create category
+	// Create category with rule
 	uid := *testUser.ID
 	formBuilder := model.NewCategoryCreateFormBuilder()
 	rule := "title matches \"^Test\""
@@ -76,14 +70,7 @@ func TestCreateArticleWithRuleEngine(t *testing.T) {
 	assert.Equal(t, uid, *cat.UserID)
 
 	// Create article
-	req := model.ArticleCreateForm{
-		Title: "TestCreateArticleWithRuleEngine",
-	}
-	opts := service.ArticleCreationOptions{}
-	art, err := service.Lookup().CreateArticle(testContext, req, opts)
-	assert.Nil(t, err)
-	assert.Equal(t, req.Title, art.Title)
-	assert.NotNil(t, art.CategoryID)
+	art := assertNewArticle(t, "TestCreateArticleWithRuleEngine")
 	assert.Equal(t, *cat.ID, *art.CategoryID)
 }
 

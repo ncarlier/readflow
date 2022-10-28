@@ -120,6 +120,15 @@ func (pg *DB) UpdateArticleForUser(uid uint, form model.ArticleUpdateForm) (*mod
 	update := map[string]interface{}{
 		"updated_at": "NOW()",
 	}
+	if form.CategoryID != nil {
+		update["category_id"] = *form.CategoryID
+	}
+	if form.Title != nil {
+		update["title"] = *form.Title
+	}
+	if form.Text != nil {
+		update["text"] = *form.Text
+	}
 	if form.Status != nil {
 		update["status"] = *form.Status
 	}
