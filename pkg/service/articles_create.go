@@ -10,6 +10,8 @@ import (
 	_ "github.com/ncarlier/readflow/pkg/scraper/content-provider/all"
 )
 
+const unableToCreateArticleErrorMsg = "unable to create article"
+
 // ArticleCreationOptions article creation options
 type ArticleCreationOptions struct {
 	IgnoreHydrateError bool
@@ -18,6 +20,8 @@ type ArticleCreationOptions struct {
 // CreateArticle creates new article
 func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreateForm, opts ArticleCreationOptions) (*model.Article, error) {
 	uid := getCurrentUserIDFromContext(ctx)
+	logger := reg.logger.Info().Uint("uid", uid).Str("title", form.TruncatedTitle())
+	debug := reg.logger.Debug().Uint("uid", uid).Str("title", form.TruncatedTitle())
 
 	plan, err := reg.GetCurrentUserPlan(ctx)
 	if err != nil {
@@ -29,18 +33,14 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		req := model.ArticlesPageRequest{}
 		totalArticles, err := reg.CountCurrentUserArticles(ctx, req)
 		if err != nil {
-			reg.logger.Info().Err(err).Uint(
-				"uid", uid,
-			).Str("title", form.TruncatedTitle()).Msg("unable to create article")
+			logger.Err(err).Msg(unableToCreateArticleErrorMsg)
 			return nil, err
 		}
 		if totalArticles >= plan.TotalArticles {
 			err = ErrUserQuotaReached
-			reg.logger.Debug().Err(err).Uint(
-				"uid", uid,
-			).Str("title", form.TruncatedTitle()).Uint(
+			debug.Err(err).Uint(
 				"total", totalArticles,
-			).Msg("unable to create article")
+			).Msg(unableToCreateArticleErrorMsg)
 			return nil, err
 		}
 	}
@@ -52,9 +52,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	if form.CategoryID != nil {
 		cat, err := reg.GetCategory(ctx, *form.CategoryID)
 		if err != nil {
-			reg.logger.Info().Err(err).Uint(
-				"uid", uid,
-			).Str("title", form.TruncatedTitle()).Msg("unable to create article")
+			logger.Err(err).Msg(unableToCreateArticleErrorMsg)
 			return nil, err
 		}
 		category = cat
@@ -63,9 +61,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	if category == nil {
 		// Process article by the rule engine
 		if err := reg.ProcessArticleByRuleEngine(ctx, &form); err != nil {
-			reg.logger.Info().Err(err).Uint(
-				"uid", uid,
-			).Str("title", form.TruncatedTitle()).Msg("unable to create article")
+			logger.Err(err).Msg(unableToCreateArticleErrorMsg)
 			return nil, err
 		}
 	}
@@ -73,14 +69,14 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	if form.URL != nil && !form.IsComplete() {
 		// Fetch original article in order to extract missing attributes
 		if err := reg.scrapOriginalArticle(ctx, &form); err != nil {
-			reg.logger.Info().Err(err).Uint(
-				"uid", uid,
-			).Str("title", form.TruncatedTitle()).Msg("unable to fetch original article")
+			logger.Err(err).Msg("unable to fetch original article")
 			// TODO excerpt and image should be extracted from HTML content
 			if !opts.IgnoreHydrateError {
 				return nil, err
 			}
 		}
+		// update logger field
+		logger = logger.Str("title", form.TruncatedTitle())
 	}
 
 	// Sanitize HTML content
@@ -89,19 +85,13 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		form.HTML = &content
 	}
 
-	reg.logger.Debug().Uint(
-		"uid", uid,
-	).Str("title", form.TruncatedTitle()).Msg("creating article...")
+	debug.Msg("creating article...")
 	article, err := reg.db.CreateArticleForUser(uid, form)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Str("title", form.TruncatedTitle()).Msg("unable to create article")
+		logger.Err(err).Msg(unableToCreateArticleErrorMsg)
 		return nil, err
 	}
-	reg.logger.Info().Uint(
-		"uid", uid,
-	).Str("title", form.TruncatedTitle()).Uint("id", article.ID).Msg("article created")
+	logger.Uint("id", article.ID).Msg("article created")
 	event.Emit(event.CreateArticle, *article)
 	return article, nil
 }

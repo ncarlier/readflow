@@ -57,25 +57,6 @@ func (reg *Registry) GetArticle(ctx context.Context, id uint) (*model.Article, e
 	return article, nil
 }
 
-// UpdateArticle update article
-func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdateForm) (*model.Article, error) {
-	uid := getCurrentUserIDFromContext(ctx)
-
-	article, err := reg.db.UpdateArticleForUser(uid, form)
-	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Uint("id", form.ID).Msg("unable to update article")
-		return nil, err
-	}
-	// TODO maybe too verbose... debug level is maybe an option here
-	reg.logger.Info().Uint("uid", uid).Uint("id", form.ID).Str(
-		"status", article.Status,
-	).Uint("stars", article.Stars).Msg("article updated")
-
-	return article, nil
-}
-
 // MarkAllArticlesAsRead set status to read for all user's articles of a specific status and category
 func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, status string, categoryID *uint) (int64, error) {
 	uid := getCurrentUserIDFromContext(ctx)

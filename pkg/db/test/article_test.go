@@ -1,6 +1,7 @@
 package dbtest
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -39,15 +40,21 @@ func TestCreateAndUpdateArticle(t *testing.T) {
 
 	// Update article
 	status := "read"
+	title := article.Title + " (updated)"
+	text := "(updated) " + *article.Text
 	update := model.ArticleUpdateForm{
 		ID:     article.ID,
 		Status: &status,
+		Title:  &title,
+		Text:   &text,
 	}
 	article, err := testDB.UpdateArticleForUser(uid, update)
 	assert.Nil(t, err)
 	assert.NotNil(t, article)
 	assert.Equal(t, "read", article.Status, "article status should be read")
 	assert.NotEqual(t, updatedAt, *article.UpdatedAt)
+	assert.True(t, strings.HasSuffix(article.Title, "(updated)"), "article title should be updated")
+	assert.True(t, strings.HasPrefix(*article.Text, "(updated)"), "article text should be updated")
 
 	// Cleanup
 	err = testDB.DeleteArticle(article.ID)
