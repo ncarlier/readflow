@@ -31,7 +31,12 @@ export default ({ webhooks, sendArticle, onCancel }: Props) => {
       {webhooks.map((webhook) => (
         <li key={`wh${webhook.id}`}>
           <LinkIcon
-            icon={<Logo name={webhook.provider} style={{ maxWidth: '2em', verticalAlign: 'middle' }} />}
+            icon={<Logo name={webhook.provider} style={{
+                paddingRight: '0.5em',
+                width: '2em',
+                height: 'auto',
+                boxSizing: 'content-box',
+            }} />}
             title={`Send article to ${webhook.alias}`}
             onClick={() => handleSendArticle(webhook.alias).then(onCancel)}
           >

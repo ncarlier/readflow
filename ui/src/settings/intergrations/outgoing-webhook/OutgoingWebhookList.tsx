@@ -31,7 +31,7 @@ const definition = [
   {
     title: 'Provider',
     render: (val: OutgoingWebhook) => (
-      <Logo name={val.provider} style={{ maxWidth: '2em' }} title={`${val.provider} provider`} />
+      <Logo name={val.provider} style={{ maxWidth: '2em', height: 'auto' }} title={`${val.provider} provider`} />
     ),
   },
   {

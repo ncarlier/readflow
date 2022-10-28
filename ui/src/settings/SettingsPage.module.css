@@ -12,7 +12,7 @@
   margin: 0;
   align-self: center;
 }
-.settings section > header > h2 > img {
+.settings section > header > h2 > svg {
   margin-right: .5em;
 }
 
