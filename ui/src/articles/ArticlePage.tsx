@@ -7,9 +7,9 @@ import { ButtonIcon, Center, ErrorPanel, Loader, Panel } from '../components'
 import { matchResponse } from '../helpers'
 import { useKeyboard } from '../hooks'
 import { Page } from '../layout'
-import { ArticleContent, ArticleHeader, MarkAsButton, StarsButton, ArticleContextMenu } from './components'
 import { GetArticleResponse } from './models'
 import { GetArticle } from './queries'
+import { ArticleSection } from './components/ArticleSection'
 
 interface Props {
   title: string
@@ -38,25 +38,7 @@ export default ({ title, match, history }: AllProps) => {
     Error: (err) => <ErrorPanel>{err.message}</ErrorPanel>,
     Data: ({ article }) => {
       if (article) {
-        return (
-          <>
-            <ArticleHeader article={article}>
-              <StarsButton article={article} keyboard />
-              {article.status === 'inbox' && (
-                <MarkAsButton article={article} onSuccess={goBack} status="to_read" keyboard />
-              )}
-              <ArticleContextMenu article={article} keyboard />
-            </ArticleHeader>
-            <ArticleContent article={article} />
-            <MarkAsButton
-              article={article}
-              status={article.status === 'read' ? 'inbox' : 'read'}
-              floating
-              onSuccess={goBack}
-              keyboard
-            />
-          </>
-        )
+        return <ArticleSection article={article} />
       }
       return <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
     },

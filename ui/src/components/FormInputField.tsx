@@ -6,6 +6,8 @@ import { classNames } from '../helpers'
 interface Props {
   label: string
   required?: boolean
+  pattern?: string
+  maxlength?: string
   readOnly?: boolean
   autoFocus?: boolean
   error?: string

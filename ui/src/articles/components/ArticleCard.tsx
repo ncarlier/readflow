@@ -7,6 +7,7 @@ import { useKeyboard } from '../../hooks'
 import { Article } from '../models'
 import styles from './ArticleCard.module.css'
 import { ArticleImage, MarkAsButton, StarsButton, ArticleContextMenu } from '.'
+import { useArticleEditModal } from '../hooks'
 
 interface Props {
   article: Article
@@ -24,6 +25,8 @@ export const ArticleCard = withRouter((props: AllProps) => {
   useKeyboard('enter', () => history.push(readMorePath), isActive)
   const kbs = isActive ? ' [enter]' : ''
   const activeClass = isActive ? styles.active : ''
+
+  const [showEditModal] = useArticleEditModal(article)
 
   return (
     <article className={classNames(styles.card, activeClass)}>
@@ -45,7 +48,7 @@ export const ArticleCard = withRouter((props: AllProps) => {
           </a>
         )}
         <TimeAgo dateTime={article.created_at} />
-        <ArticleContextMenu article={article} keyboard={isActive} />
+        <ArticleContextMenu article={article} keyboard={isActive} showEditModal={showEditModal} />
         {!article.isOffline && (
           <>
             {article.status != 'inbox' && <StarsButton article={article} keyboard={isActive} />}

@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from 'react'
+import React, { FC, PropsWithChildren, useRef } from 'react'
 import CSSTransition from 'react-transition-group/CSSTransition'
 import { useModal } from 'react-modal-hook'
 
@@ -27,13 +27,14 @@ export const AppLayout: FC<PropsWithChildren> = ({ children }) => {
   // const small = useMedia('(max-width: 400px)')
   // const large = useMedia('(min-width: 767px)')
   const navbar = useNavbar()
+  const nodeRef = useRef(null)
 
   const deviceClassName = isMobileDevice() ? classes.mobile : null
 
   return (
     <div className={classNames(classes.layout, deviceClassName)}>
-      <CSSTransition in={navbar.opened} classNames="fold" timeout={300} unmountOnExit>
-        <aside>
+      <CSSTransition in={navbar.opened} classNames="fold" timeout={300} nodeRef={nodeRef} unmountOnExit>
+        <aside ref={nodeRef}>
           <Navbar />
         </aside>
       </CSSTransition>

@@ -75,12 +75,12 @@ func addLoggerContextForUpdateArticle(logger *zerolog.Event, form model.ArticleU
 func validateArticleUpdateForm(form model.ArticleUpdateForm) error {
 	validations := new(helper.FieldsValidator)
 	validations.Validate("stars", func() bool {
-		return form.Stars == nil || (*form.Stars >= 0 && *form.Stars <= 5)
+		return form.Stars == nil || *form.Stars <= 5
 	})
 	validations.Validate("title", func() bool {
 		if form.Title != nil {
 			l := len(strings.TrimSpace(*form.Title))
-			return l >= 0 && l <= 128
+			return l > 0 && l <= 256
 		}
 		return true
 	})

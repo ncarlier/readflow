@@ -7,6 +7,7 @@ interface Props {
   label: string
   required?: boolean
   readOnly?: boolean
+  maxlength?: string
   error?: string
   children?: ReactNode
 }

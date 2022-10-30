@@ -38,8 +38,8 @@ export default function App({ store, history /*, theme*/ }: Props) {
         <AuthenticationProvider>
           <GraphQLProvider>
             <LocalConfigurationProvider>
-              <ModalProvider>
-                <MessageProvider>
+              <MessageProvider>
+                <ModalProvider>
                   <NavbarProvider>
                     <ScrollMemoryProvider>
                       <CurrentUserProvider>
@@ -49,8 +49,8 @@ export default function App({ store, history /*, theme*/ }: Props) {
                       </CurrentUserProvider>
                     </ScrollMemoryProvider>
                   </NavbarProvider>
-                </MessageProvider>
-              </ModalProvider>
+                </ModalProvider>
+              </MessageProvider>
             </LocalConfigurationProvider>
           </GraphQLProvider>
         </AuthenticationProvider>

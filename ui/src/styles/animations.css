@@ -3,7 +3,7 @@
   margin-left: -256px;
 }
 
-.fold-enter.fold-enter-active {
+.fold-enter-active {
   margin-left: 0px;
   transition: margin 300ms ease-in;
 }
@@ -12,7 +12,7 @@
   margin-left: 0px;
 }
 
-.fold-exit.fold-exit-active {
+.fold-exit-active {
   margin-left: -256px;
   transition: margin 300ms ease-in;
 }
@@ -22,7 +22,7 @@
   opacity: 0;
 }
 
-.fade-enter.fade-enter-active {
+.fade-enter-active {
   bottom: 0;
   opacity: 1;
   transition: opacity 500ms ease-in, bottom 500ms ease-in;
@@ -33,7 +33,7 @@
   opacity: 1;
 }
 
-.fade-exit.fade-exit-active {
+.fade-exit-active {
   bottom: -10px;
   opacity: 0;
   transition: opacity 500ms ease-in, bottom 500ms ease-in;

@@ -55,6 +55,9 @@ export const Shortcuts = () => (
           Star an article<kbd>s</kbd>
         </li>
         <li>
+          Edit an article<kbd>e</kbd>
+        </li>
+        <li>
           Put article offline<kbd>o</kbd>
         </li>
         <li>

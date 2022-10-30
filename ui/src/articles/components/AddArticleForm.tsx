@@ -85,7 +85,7 @@ export const AddArticleForm = ({ value, category, style, onSuccess, onCancel }: 
         </form>
       </section>
       <footer>
-        <Button title="Back to API keys" onClick={onCancel}>
+        <Button title="Cancel" onClick={onCancel}>
           Cancel
         </Button>
         <Button title="Add new article" onClick={handleOnSubmit} variant="primary">
