@@ -9,6 +9,8 @@ import (
 	_ "github.com/ncarlier/readflow/pkg/integration/webhook/pocket"
 	// activate s3 outgoing webhook
 	_ "github.com/ncarlier/readflow/pkg/integration/webhook/s3"
+	// activate shaarli outgoing webhook
+	_ "github.com/ncarlier/readflow/pkg/integration/webhook/shaarli"
 	// activate wallabag outgoing webhook
 	_ "github.com/ncarlier/readflow/pkg/integration/webhook/wallabag"
 )

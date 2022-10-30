@@ -13,7 +13,7 @@ Read your Internet article flow in one place with complete peace of mind and fre
 - Read articles from anywhere in one place.
 - Save articles for offline reading or locally on you disk in the format you want (HTML, EPUB, ZIP, ...).
 - Create categories and classify new articles automatically thanks to a customizable rule engine.
-- Link with external services thanks to incoming and outgoing webhooks ([RSS][feedpushr], [Keeper][keeper], [Pocket][pocket], [Wallabag][wallabag], S3 bucket, and more...).
+- Link with external services thanks to incoming and outgoing webhooks ([RSS][feedpushr], [Keeper][keeper], [Pocket][pocket], [Shaarli][shaarli], [Wallabag][wallabag], S3 bucket, and more...).
 - Receive notifications when new articles are available.
 - Enjoy the same user experience on mobile as on desktop thanks to [Progressive Web App][pwa] support.
 - And all this without ads and trackers.
@@ -130,4 +130,5 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 [feedpushr]: https://github.com/ncarlier/feedpushr
 [keeper]: https://keeper.nunux.org
 [wallabag]: https://www.wallabag.org
+[shaarli]: https://github.com/shaarli/Shaarli
 [pocket]: https://getpocket.com/

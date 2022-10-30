@@ -1,4 +1,4 @@
-export type Provider = 'keeper' | 'pocket' | 'wallabag' | 'generic' | 's3'
+export type Provider = 'generic' | 'keeper' | 'pocket' |  's3' | 'shaarli' | 'wallabag'
 
 export interface OutgoingWebhook {
   id: number

@@ -10,7 +10,7 @@ import { getGQLError, isValidForm } from '../../../helpers'
 import { usePageTitle } from '../../../hooks'
 import { updateCacheAfterCreate } from './cache'
 import { CreateOrUpdateOutgoingWebhookResponse, CreateOrUpdateOutgoingWebhookRequest, Provider } from './models'
-import { KeeperConfigForm, GenericConfigForm, PocketConfigForm, S3ConfigForm, WallabagConfigForm } from './providers'
+import { KeeperConfigForm, GenericConfigForm, PocketConfigForm, S3ConfigForm, ShaarliConfigForm, WallabagConfigForm } from './providers'
 import { CreateOrUpdateOutgoingWebhook } from './queries'
 import OutgoingWebhookHelp from './OutgoingWebhookHelp'
 
@@ -100,15 +100,17 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
             <option>Please select a webhook provider</option>
             <option value="generic">Generic webhook</option>
             <option value="keeper">Keeper</option>
-            <option value="wallabag">Wallabag</option>
             <option value="pocket">Pocket</option>
             <option value="s3">S3</option>
+            <option value="shaarli">Shaarli</option>
+            <option value="wallabag">Wallabag</option>
           </FormSelectField>
           {formState.values.provider === 'generic' && <GenericConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 'pocket' && <PocketConfigForm onChange={setConfig} config={config} />}
           {formState.values.provider === 's3' && <S3ConfigForm onChange={setConfig} config={config} />}
+          {formState.values.provider === 'shaarli' && <ShaarliConfigForm onChange={setConfig} config={config} />}
+          {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} config={config} />}
           <FormCheckboxField label="To use by default" {...checkbox('isDefault')} />
         </form>
       </section>

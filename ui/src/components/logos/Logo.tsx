@@ -5,6 +5,7 @@ import { ReactComponent as keeper } from './min/KeeperLogo.svg'
 import { ReactComponent as pocket } from './min/PocketLogo.svg'
 import { ReactComponent as readflow } from './min/ReadflowLogo.svg'
 import { ReactComponent as s3 } from './min/S3Logo.svg'
+import { ReactComponent as shaarli } from './min/ShaarliLogo.svg'
 import { ReactComponent as wallabag } from './min/WallabagLogo.svg'
 import { ReactComponent as webhook } from './min/WebhookLogo.svg'
 
@@ -15,13 +16,14 @@ const logos = {
   pocket,
   readflow,
   s3,
+  shaarli,
   wallabag,
   webhook,
   generic: webhook,
 }
 
 interface Props {
-  name: 'feedpushr' | 'keeper' | 'pocket' | 'readflow' | 's3' | 'wallabag' | 'webhook' | 'generic'
+  name: 'feedpushr' | 'generic'| 'keeper' | 'pocket' | 'readflow' | 's3' | 'shaarli' | 'wallabag' | 'webhook' 
   title?: string
   style?: CSSProperties
 }
