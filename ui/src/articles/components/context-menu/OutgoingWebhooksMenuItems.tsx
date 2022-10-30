@@ -7,9 +7,8 @@ import { GetOutgoingWebhooksResponse } from '../../../settings/intergrations/out
 import { GetOutgoingWebhooks } from '../../../settings/intergrations/outgoing-webhook/queries'
 import { Article } from '../../models'
 import { SendArticleToOutgoingWebhook } from '../../queries'
-import DefaultWebhookLink from './DefaultWebhookLink'
-import OtherWebhooksLink from './OtherWebhooksLink'
 import { useMessage } from '../../../contexts'
+import OutgoingWebhooksLink from './OutgoingWebhooksLink'
 
 interface SendArticleFields {
   id: number
@@ -49,18 +48,13 @@ export default ({ article, keyboard }: Props) => {
     ),
     Error: (err) => <li>{err.message}</li>,
     Data: ({ outgoingWebhooks }) => (
-      <>
-        <li>
-          <DefaultWebhookLink
-            webhook={outgoingWebhooks.find((webhook) => webhook.is_default)}
-            keyboard={keyboard}
-            sendArticle={sendArticle}
-          />
-        </li>
-        <li>
-          <OtherWebhooksLink webhooks={outgoingWebhooks} sendArticle={sendArticle} />
-        </li>
-      </>
+      <li>
+        <OutgoingWebhooksLink
+          webhooks={outgoingWebhooks}
+          keyboard={keyboard}
+          sendArticle={sendArticle}
+        />
+      </li>
     ),
   })
 

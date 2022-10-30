@@ -20,14 +20,18 @@ export const updateCacheAfterCreate = (proxy: DataProxy, mutationResult: { data?
       proxy.writeQuery({ data: { categories }, query: GetCategories })
     }
   } catch (err) {
-    console.warn('unable to update categories cache when creating article')
+    console.warn('unable to update categories cache when creating article', err)
   }
-  // Update article
-  proxy.writeQuery({
-    data: { article },
-    query: GetArticle,
-    variables: { id: article.id },
-  })
+  try {
+    // Update article
+    proxy.writeQuery({
+      data: { article },
+      query: GetArticle,
+      variables: { id: article.id },
+    })
+  } catch (err) {
+    console.warn('unable to update article cache when creating article', err)
+  }
 }
 
 export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data?: UpdateArticleResponse | null }) => {
@@ -48,7 +52,7 @@ export const updateCacheAfterUpdate = (proxy: DataProxy, mutationResult: { data?
       proxy.writeQuery({ data: { categories }, query: GetCategories })
     }
   } catch (err) {
-    console.warn('unable to update categories cache when updating article')
+    console.warn('unable to update categories cache when updating article', err)
   }
 }
 
@@ -79,6 +83,6 @@ export const updateCacheAfterMarkAllAsRead = (
       proxy.writeQuery({ data: { categories }, query: GetCategories })
     }
   } catch (err) {
-    console.warn('unable to update categories cache when mark all as read')
+    console.warn('unable to update categories cache when mark all as read', err)
   }
 }

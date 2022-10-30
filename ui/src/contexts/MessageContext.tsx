@@ -15,8 +15,8 @@ interface MessageContextType {
 
 const MessageContext = createContext<MessageContextType>({
   message: { text: '', variant: 'info' },
-  showMessage: () => true,
-  showErrorMessage: () => true,
+  showMessage: console.log,
+  showErrorMessage: console.error,
 })
 
 const MessageProvider: FC<PropsWithChildren> = ({ children }) => {

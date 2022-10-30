@@ -82,10 +82,12 @@ export const GetFullArticle = gql`
 `
 
 export const UpdateArticle = gql`
-  mutation updateArticle($id: ID!, $status: status, $stars: Int) {
-    updateArticle(id: $id, status: $status, stars: $stars) {
+  mutation updateArticle($id: ID!, $title: String, $text: String, $category_id: Int, $status: status, $stars: Int) {
+    updateArticle(id: $id, title: $title, text: $text, category_id: $category_id, status: $status, stars: $stars) {
       article {
         id
+        title
+        text
         status
         stars
         category {

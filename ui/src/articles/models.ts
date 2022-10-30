@@ -46,8 +46,11 @@ export interface GetArticleResponse {
 
 export interface UpdateArticleRequest {
   id: number
+  title?: string
+  text?: string
   status?: ArticleStatus
   stars?: number
+  category_id?: number
 }
 
 export interface UpdateArticleResponse {

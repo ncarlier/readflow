@@ -41,6 +41,7 @@ export default ({ webhooks, sendArticle, onCancel }: Props) => {
             onClick={() => handleSendArticle(webhook.alias).then(onCancel)}
           >
             <span>Send to {webhook.alias}</span>
+            { webhook.is_default && <small>default</small>}
           </LinkIcon>
         </li>
       ))}
