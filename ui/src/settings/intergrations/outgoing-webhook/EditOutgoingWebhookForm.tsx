@@ -13,7 +13,7 @@ import {
   CreateOrUpdateOutgoingWebhookRequest,
   Provider,
 } from './models'
-import { KeeperConfigForm, GenericConfigForm, PocketConfigForm, S3ConfigForm, WallabagConfigForm, ShaarliConfigForm } from './providers'
+import providers from './providers'
 import { CreateOrUpdateOutgoingWebhook } from './queries'
 import OutgoingWebhookHelp from './OutgoingWebhookHelp'
 
@@ -69,6 +69,8 @@ export default ({ data, history }: Props) => {
     },
     [data, formState, config, editOutgoingWebhook]
   )
+  
+  const ProviderConfig = providers[formState.values.provider].config
 
   return (
     <>
@@ -81,19 +83,9 @@ export default ({ data, history }: Props) => {
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
           <FormSelectField label="Provider" {...select('provider')}>
-            <option value="generic">Generic webhook</option>
-            <option value="keeper">Keeper</option>
-            <option value="pocket">Pocket</option>
-            <option value="s3">S3</option>
-            <option value="shaarli">Shaarli</option>
-            <option value="wallabag">Wallabag</option>
+            {Object.entries(providers).map(([key, p]) => <option key={`provider-${key}`} value={key}>{p.label}</option>)}
           </FormSelectField>
-          {formState.values.provider === 'generic' && <GenericConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 'pocket' && <PocketConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 's3' && <S3ConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 'shaarli' && <ShaarliConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} config={config} />}
+          <ProviderConfig onChange={setConfig} config={config} />
           <FormCheckboxField label="To use by default" {...checkbox('is_default')} />
         </form>
       </section>

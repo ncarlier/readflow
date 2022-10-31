@@ -15,12 +15,10 @@ export const updateCacheAfterCreate = (
     query: GetOutgoingWebhooks,
   })
   if (previousData) {
+    let outgoingWebhooks = [created, ...previousData.outgoingWebhooks]
     if (created.is_default) {
-      previousData.outgoingWebhooks = previousData.outgoingWebhooks.map((service) => {
-        return { ...service, is_default: false }
-      })
+      outgoingWebhooks = outgoingWebhooks.map((service) => service.id !== created.id ? { ...service, is_default: false } : service)
     }
-    const outgoingWebhooks = [created, ...previousData.outgoingWebhooks]
     proxy.writeQuery<GetOutgoingWebhooksResponse>({ data: { outgoingWebhooks }, query: GetOutgoingWebhooks })
   }
 }

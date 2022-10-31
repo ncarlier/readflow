@@ -30,11 +30,10 @@ func qrcodeHandler(conf *config.Config) http.Handler {
 			return
 		}
 		u.Path = "/articles"
-		u.User = url.UserPassword("api", token)
 
 		// Build UI outgoing webhook configuration URL
 		payload := strings.Replace(conf.Global.PublicURL, "api.", "", 1)
-		payload = fmt.Sprintf("%s/settings/integrations/outgoing-webhooks/add?provider=generic&endpoint=%s", payload, url.QueryEscape(u.String()))
+		payload = fmt.Sprintf("%s/settings/integrations/outgoing-webhooks/add?provider=readflow&endpoint=%s&api_key=%s", payload, url.QueryEscape(u.String()), token)
 
 		// Build QR code
 		png, err := qrcode.Encode(payload, qrcode.Medium, 256)

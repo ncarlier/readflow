@@ -65,8 +65,8 @@ func newShaarliProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 }
 
 // Send article to Shaarli endpoint.
-func (wp *shaarliProvider) Send(ctx context.Context, article model.Article) error {
-	token, err := wp.getAccessToken()
+func (p *shaarliProvider) Send(ctx context.Context, article model.Article) error {
+	token, err := p.getAccessToken()
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func (wp *shaarliProvider) Send(ctx context.Context, article model.Article) erro
 		Title:       article.Title,
 		Description: article.Text,
 		URL:         article.URL,
-		Private:     wp.config.Private,
+		Private:     p.config.Private,
 		Created:     article.CreatedAt.Format(time.RFC3339),
 		Updated:     article.UpdatedAt.Format(time.RFC3339),
 	}
@@ -83,10 +83,11 @@ func (wp *shaarliProvider) Send(ctx context.Context, article model.Article) erro
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(entry)
 
-	req, err := http.NewRequest("POST", wp.getAPIEndpoint("/api/v1/links"), b)
+	req, err := http.NewRequest("POST", p.getAPIEndpoint("/api/v1/links"), b)
 	if err != nil {
 		return err
 	}
+	req.Header.Set("User-Agent", constant.UserAgent)
 	req.Header.Set("Content-Type", constant.ContentTypeJSON)
 	req.Header.Set("Authorization", "Bearer "+token)
 	client := &http.Client{}
@@ -101,19 +102,19 @@ func (wp *shaarliProvider) Send(ctx context.Context, article model.Article) erro
 	return nil
 }
 
-func (wp *shaarliProvider) getAPIEndpoint(path string) string {
-	baseURL := *wp.endpoint
+func (p *shaarliProvider) getAPIEndpoint(path string) string {
+	baseURL := *p.endpoint
 	baseURL.Path = path
 	return baseURL.String()
 }
 
-func (wp *shaarliProvider) getAccessToken() (string, error) {
+func (p *shaarliProvider) getAccessToken() (string, error) {
 	claims := new(jwt.StandardClaims)
 	claims.IssuedAt = time.Now().Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 
-	return token.SignedString([]byte(wp.config.Secret))
+	return token.SignedString([]byte(p.config.Secret))
 }
 
 func init() {

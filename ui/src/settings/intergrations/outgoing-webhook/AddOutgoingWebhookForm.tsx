@@ -10,7 +10,7 @@ import { getGQLError, isValidForm } from '../../../helpers'
 import { usePageTitle } from '../../../hooks'
 import { updateCacheAfterCreate } from './cache'
 import { CreateOrUpdateOutgoingWebhookResponse, CreateOrUpdateOutgoingWebhookRequest, Provider } from './models'
-import { KeeperConfigForm, GenericConfigForm, PocketConfigForm, S3ConfigForm, ShaarliConfigForm, WallabagConfigForm } from './providers'
+import providers from './providers'
 import { CreateOrUpdateOutgoingWebhook } from './queries'
 import OutgoingWebhookHelp from './OutgoingWebhookHelp'
 
@@ -86,6 +86,9 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
     [formState, config, addOutgoingWebhook]
   )
 
+  const { provider } = formState.values
+  const ProviderConfig = provider ? providers[formState.values.provider].config : null
+
   return (
     <Panel>
       <header>
@@ -98,19 +101,9 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
           <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
           <FormSelectField label="Provider" {...select('provider')} error={formState.errors.provider} required>
             <option>Please select a webhook provider</option>
-            <option value="generic">Generic webhook</option>
-            <option value="keeper">Keeper</option>
-            <option value="pocket">Pocket</option>
-            <option value="s3">S3</option>
-            <option value="shaarli">Shaarli</option>
-            <option value="wallabag">Wallabag</option>
+            {Object.entries(providers).map(([key, p]) => <option key={`provider-${key}`} value={key}>{p.label}</option>)}
           </FormSelectField>
-          {formState.values.provider === 'generic' && <GenericConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 'keeper' && <KeeperConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 'pocket' && <PocketConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 's3' && <S3ConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 'shaarli' && <ShaarliConfigForm onChange={setConfig} config={config} />}
-          {formState.values.provider === 'wallabag' && <WallabagConfigForm onChange={setConfig} config={config} />}
+          { ProviderConfig && <ProviderConfig onChange={setConfig} config={config} /> }
           <FormCheckboxField label="To use by default" {...checkbox('isDefault')} />
         </form>
       </section>
