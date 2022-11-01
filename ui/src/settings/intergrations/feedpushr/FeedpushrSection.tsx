@@ -5,7 +5,7 @@ import { useCurrentUser } from '../../../contexts'
 
 const FeedpushrSection = () => {
   const user = useCurrentUser()
-  if (!user || user.plan !== 'premium') {
+  if (!user /*|| user.plan !== 'premium'*/) {
     return null
   }
 
@@ -13,7 +13,7 @@ const FeedpushrSection = () => {
     <section>
       <header>
         <h2>
-          <Logo name="feedpushr" style={{ maxWidth: '2em', verticalAlign: 'middle' }} />
+          <Logo name="feedpushr" />
           Feedpushr
         </h2>
         <Button as={'a'} href={`https://feedpushr.nunux.org/${user.hashid}`} target="_blank" title="Manage my feeds">

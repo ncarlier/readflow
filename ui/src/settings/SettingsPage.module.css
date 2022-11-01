@@ -14,6 +14,9 @@
 }
 .settings section > header > h2 > svg {
   margin-right: .5em;
+  max-height: 2em;
+  max-width: 2em;
+  vertical-align: middle;
 }
 
 .settings section > header > a,
