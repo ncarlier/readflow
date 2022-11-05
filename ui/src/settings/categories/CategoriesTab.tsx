@@ -4,7 +4,6 @@ import { useModal } from 'react-modal-hook'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 
-import classes from './CategoriesTab.module.css'
 import { updateCacheAfterDelete } from '../../categories/cache'
 import {
   Category,
@@ -40,12 +39,6 @@ const CategoryDates = ({ val }: { val: Category }) => (
   </small>
 )
 
-const CategoryRule = ({ val: { rule } }: { val: Category }) => (
-  <small className={classes.rule} title={rule || '-'}>
-    {rule || '-'}
-  </small>
-)
-
 const definition = [
   {
     title: 'Title',
@@ -54,14 +47,6 @@ const definition = [
         {val.title}
       </Link>
     ),
-  },
-  {
-    title: 'Rule',
-    render: (val: Category) => <CategoryRule val={val} />,
-  },
-  {
-    title: 'Notification strategy',
-    render: (val: Category) => val.notification_strategy,
   },
   {
     title: 'Date(s)',

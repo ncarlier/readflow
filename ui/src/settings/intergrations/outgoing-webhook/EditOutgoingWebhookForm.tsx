@@ -81,7 +81,7 @@ export default ({ data, history }: Props) => {
         <OutgoingWebhookHelp />
         {errorMessage != null && <ErrorPanel title="Unable to edit outgoing webhook">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
+          <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required pattern=".*\S+.*" maxLength={32} autoFocus />
           <FormSelectField label="Provider" {...select('provider')}>
             {Object.entries(providers).map(([key, p]) => <option key={`provider-${key}`} value={key}>{p.label}</option>)}
           </FormSelectField>

@@ -12,9 +12,6 @@ import {
   Button,
   ErrorPanel,
   FormInputField,
-  FormSelectField,
-  FormTextareaField,
-  HelpLink,
   Panel,
 } from '../../components'
 import { getGQLError, isValidForm } from '../../helpers'
@@ -22,18 +19,14 @@ import { usePageTitle } from '../../hooks'
 
 interface AddCategoryFormFields {
   title: string
-  rule: string
-  notification_strategy: 'none' | 'global' | 'individual'
 }
 
 const AddCategoryForm = ({ history }: RouteComponentProps) => {
   usePageTitle('Settings - Add new category')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [formState, { text, textarea, select }] = useFormState<AddCategoryFormFields>({
+  const [formState, { text }] = useFormState<AddCategoryFormFields>({
     title: '',
-    rule: '',
-    notification_strategy: 'none',
   })
   const [addCategoryMutation] = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useMessage()
@@ -75,20 +68,7 @@ const AddCategoryForm = ({ history }: RouteComponentProps) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to add new category">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Title" {...text('title')} error={formState.errors.title} required autoFocus />
-          <FormTextareaField label="Rule" {...textarea('rule')} error={formState.errors.rule}>
-            <HelpLink href="https://docs.readflow.app/en/read-flow/categories/#rule">View rule syntax</HelpLink>
-          </FormTextareaField>
-          <FormSelectField
-            label="Notification strategy"
-            {...select('notification_strategy')}
-            error={formState.errors.notification_strategy}
-            required
-          >
-            <option value="none">Don&apos;t send any notification</option>
-            <option value="individual">Send a notification as soon as an article is received</option>
-            <option value="global">Use global notification strategy</option>
-          </FormSelectField>
+          <FormInputField label="Title" {...text('title')} error={formState.errors.title} required pattern=".*\S+.*" maxLength={32} autoFocus />
         </form>
       </section>
       <footer>

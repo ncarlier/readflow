@@ -7,7 +7,7 @@ interface Props {
   label: string
   required?: boolean
   pattern?: string
-  maxlength?: string
+  maxLength?: number
   readOnly?: boolean
   autoFocus?: boolean
   error?: string

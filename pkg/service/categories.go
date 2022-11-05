@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/ncarlier/readflow/pkg/model"
-	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
 )
 
 // GetCategories get categories from current user
@@ -70,14 +69,6 @@ func (reg *Registry) CreateCategory(ctx context.Context, form model.CategoryCrea
 		}
 	}
 
-	// Validate category's rule
-	if err := validateCategoryRule(form.Rule); err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Msg("invalid category rule")
-		return nil, err
-	}
-
 	// Create category
 	result, err := reg.db.CreateCategoryForUser(uid, form)
 	if err != nil {
@@ -87,23 +78,12 @@ func (reg *Registry) CreateCategory(ctx context.Context, form model.CategoryCrea
 		return nil, err
 	}
 
-	// Force to refresh the rule engine cache
-	reg.ruleEngineCache.Evict(uid)
-
 	return result, err
 }
 
 // UpdateCategory update a category for current user
 func (reg *Registry) UpdateCategory(ctx context.Context, form model.CategoryUpdateForm) (*model.Category, error) {
 	uid := getCurrentUserIDFromContext(ctx)
-
-	// Validate category's rule
-	if err := validateCategoryRule(form.Rule); err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Msg("invalid category rule")
-		return nil, err
-	}
 
 	// Update category
 	result, err := reg.db.UpdateCategoryForUser(uid, form)
@@ -115,9 +95,6 @@ func (reg *Registry) UpdateCategory(ctx context.Context, form model.CategoryUpda
 		).Msg("unable to update category")
 		return nil, err
 	}
-
-	// Force to refresh the rule engine cache
-	reg.ruleEngineCache.Evict(uid)
 
 	return result, err
 }
@@ -139,9 +116,6 @@ func (reg *Registry) DeleteCategory(ctx context.Context, id uint) (*model.Catego
 		return nil, err
 	}
 
-	// Force to refresh the rule engine cache
-	reg.ruleEngineCache.Evict(uid)
-
 	return category, nil
 }
 
@@ -161,21 +135,5 @@ func (reg *Registry) DeleteCategories(ctx context.Context, ids []uint) (int64, e
 		"uid", uid,
 	).Str("ids", idsStr).Int64("nb", nb).Msg("categories deleted")
 
-	// Force to refresh the rule engine cache
-	reg.ruleEngineCache.Evict(uid)
-
 	return nb, nil
-}
-
-func validateCategoryRule(rule *string) error {
-	if rule == nil {
-		return nil
-	}
-	// Create dummy category in order to validate rule
-	category := model.Category{
-		Rule: rule,
-	}
-	// Validate category's rule
-	_, err := ruleengine.NewRuleProcessor(category)
-	return err
 }

@@ -10,9 +10,9 @@ import (
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	ratelimiter "github.com/ncarlier/readflow/pkg/rate-limiter"
-	ruleengine "github.com/ncarlier/readflow/pkg/rule-engine"
 	"github.com/ncarlier/readflow/pkg/sanitizer"
 	"github.com/ncarlier/readflow/pkg/scraper"
+	"github.com/ncarlier/readflow/pkg/scripting"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -24,13 +24,13 @@ type Registry struct {
 	conf                    config.Config
 	db                      db.DB
 	logger                  zerolog.Logger
-	ruleEngineCache         *ruleengine.Cache
 	downloadCache           cache.Cache
 	properties              *model.Properties
 	webScraper              scraper.WebScraper
 	downloader              exporter.Downloader
 	hashid                  *helper.HashIDHandler
 	notificationRateLimiter ratelimiter.RateLimiter
+	scriptEngine            *scripting.ScriptEngine
 	sanitizer               *sanitizer.Sanitizer
 }
 
@@ -57,13 +57,13 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 		conf:                    conf,
 		db:                      database,
 		logger:                  log.With().Str("component", "service").Logger(),
-		ruleEngineCache:         ruleengine.NewRuleEngineCache(1024),
 		downloadCache:           downloadCache,
 		webScraper:              webScraper,
 		downloader:              exporter.NewInternalDownloader(downloadCache, 10, constant.DefaultTimeout),
 		hashid:                  hashid,
 		notificationRateLimiter: notificationRateLimiter,
 		sanitizer:               sanitizer.NewSanitizer(blockList),
+		scriptEngine:            scripting.NewScriptEngine(128),
 	}
 	return instance.initProperties()
 }

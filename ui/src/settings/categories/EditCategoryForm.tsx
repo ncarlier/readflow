@@ -7,13 +7,11 @@ import { useFormState } from 'react-use-form-state'
 import { Category, CreateOrUpdateCategoryResponse } from '../../categories/models'
 import { CreateOrUpdateCategory } from '../../categories/queries'
 import { useMessage } from '../../contexts'
-import { Button, ErrorPanel, FormInputField, FormSelectField, FormTextareaField, HelpLink } from '../../components'
+import { Button, ErrorPanel, FormInputField } from '../../components'
 import { getGQLError, isValidForm } from '../../helpers'
 
 interface EditCategoryFormFields {
   title: string
-  rule: string
-  notification_strategy: 'none' | 'global' | 'individual'
 }
 
 interface Props {
@@ -23,10 +21,8 @@ interface Props {
 
 const EditCategoryForm = ({ category, history }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [formState, { text, textarea, select }] = useFormState<EditCategoryFormFields>({
+  const [formState, { text }] = useFormState<EditCategoryFormFields>({
     title: category.title,
-    rule: category.rule ? category.rule : '',
-    notification_strategy: category.notification_strategy,
   })
   const [editCategoryMutation] = useMutation<CreateOrUpdateCategoryResponse, Category>(CreateOrUpdateCategory)
   const { showMessage } = useMessage()
@@ -67,20 +63,7 @@ const EditCategoryForm = ({ category, history }: Props) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to edit category">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Title" {...text('title')} error={formState.errors.title} required autoFocus />
-          <FormTextareaField label="Rule" {...textarea('rule')}>
-            <HelpLink href="https://docs.readflow.app/en/read-flow/categories/#rule">View rule syntax</HelpLink>
-          </FormTextareaField>
-          <FormSelectField
-            label="Notification strategy"
-            {...select('notification_strategy')}
-            error={formState.errors.notification_strategy}
-            required
-          >
-            <option value="none">Don&apos;t send any notification</option>
-            <option value="individual">Send a notification as soon as an article is received</option>
-            <option value="global">Use global notification strategy</option>
-          </FormSelectField>
+          <FormInputField label="Title" {...text('title')} error={formState.errors.title} required pattern=".*\S+.*" maxLength={32} autoFocus />
         </form>
       </section>
       <footer>

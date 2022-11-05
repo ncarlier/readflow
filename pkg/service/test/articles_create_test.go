@@ -55,25 +55,6 @@ func TestCreateArticleInCategory(t *testing.T) {
 	assert.Equal(t, *cat.ID, *art.CategoryID)
 }
 
-func TestCreateArticleWithRuleEngine(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
-	defer teardownTestCase(t)
-
-	// Create category with rule
-	uid := *testUser.ID
-	formBuilder := model.NewCategoryCreateFormBuilder()
-	rule := "title matches \"^Test\""
-	form := formBuilder.Random().Rule(&rule).Build()
-	cat, err := service.Lookup().CreateCategory(testContext, *form)
-	assert.Nil(t, err)
-	assert.Equal(t, form.Title, cat.Title)
-	assert.Equal(t, uid, *cat.UserID)
-
-	// Create article
-	art := assertNewArticle(t, "TestCreateArticleWithRuleEngine")
-	assert.Equal(t, *cat.ID, *art.CategoryID)
-}
-
 func TestCreateArticlesExceedingQuota(t *testing.T) {
 	teardownTestCase := setupTestCase(t)
 	defer teardownTestCase(t)

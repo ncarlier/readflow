@@ -14,6 +14,7 @@ var inboundServiceColumns = []string{
 	"user_id",
 	"alias",
 	"token",
+	"script",
 	"last_usage_at",
 	"created_at",
 	"updated_at",
@@ -27,6 +28,7 @@ func mapRowToIncomingWebhook(row *sql.Row) (*model.IncomingWebhook, error) {
 		&result.UserID,
 		&result.Alias,
 		&result.Token,
+		&result.Script,
 		&result.LastUsageAt,
 		&result.CreatedAt,
 		&result.UpdatedAt,
@@ -45,11 +47,12 @@ func (pg *DB) CreateIncomingWebhookForUser(uid uint, form model.IncomingWebhookC
 	query, args, _ := pg.psql.Insert(
 		"incoming_webhooks",
 	).Columns(
-		"user_id", "alias", "token",
+		"user_id", "alias", "token", "script",
 	).Values(
 		uid,
 		form.Alias,
 		form.Token,
+		form.Script,
 	).Suffix(
 		"RETURNING " + strings.Join(inboundServiceColumns, ","),
 	).ToSql()
@@ -64,6 +67,9 @@ func (pg *DB) UpdateIncomingWebhookForUser(uid uint, form model.IncomingWebhookU
 	}
 	if form.Alias != nil {
 		update["alias"] = *form.Alias
+	}
+	if form.Script != nil {
+		update["script"] = *form.Script
 	}
 	query, args, _ := pg.psql.Update(
 		"incoming_webhooks",
@@ -140,6 +146,7 @@ func (pg *DB) GetIncomingWebhooksByUser(uid uint) ([]model.IncomingWebhook, erro
 			&item.UserID,
 			&item.Alias,
 			&item.Token,
+			&item.Script,
 			&item.LastUsageAt,
 			&item.CreatedAt,
 			&item.UpdatedAt,

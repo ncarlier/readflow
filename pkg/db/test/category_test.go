@@ -16,8 +16,7 @@ func assertCategoryExists(t *testing.T, uid uint, title string, notif string) *m
 	}
 
 	createForm := model.CategoryCreateForm{
-		Title:                title,
-		NotificationStrategy: notif,
+		Title: title,
 	}
 
 	category, err = testDB.CreateCategoryForUser(uid, createForm)
@@ -25,8 +24,6 @@ func assertCategoryExists(t *testing.T, uid uint, title string, notif string) *m
 	assert.NotNil(t, category)
 	assert.NotNil(t, category.ID)
 	assert.Equal(t, title, category.Title)
-	assert.Equal(t, notif, category.NotificationStrategy)
-	assert.Nil(t, category.Rule)
 	return category
 }
 func TestCreateAndUpdateCategory(t *testing.T) {
@@ -40,33 +37,15 @@ func TestCreateAndUpdateCategory(t *testing.T) {
 
 	// Update category title
 	title = "My updated category"
-	notif := "global"
 	update := model.CategoryUpdateForm{
-		ID:                   *category.ID,
-		Title:                &title,
-		NotificationStrategy: &notif,
+		ID:    *category.ID,
+		Title: &title,
 	}
 	category, err := testDB.UpdateCategoryForUser(uid, update)
 	assert.Nil(t, err)
 	assert.NotNil(t, category)
 	assert.NotNil(t, category.ID)
 	assert.Equal(t, title, category.Title)
-	assert.Nil(t, category.Rule)
-	assert.Equal(t, notif, category.NotificationStrategy)
-
-	// Update category title
-	rule := "title matches \"test\""
-	update = model.CategoryUpdateForm{
-		ID:   *category.ID,
-		Rule: &rule,
-	}
-	category, err = testDB.UpdateCategoryForUser(uid, update)
-	assert.Nil(t, err)
-	assert.NotNil(t, category)
-	assert.NotNil(t, category.ID)
-	assert.Equal(t, title, category.Title)
-	assert.Equal(t, rule, *category.Rule)
-	assert.Equal(t, notif, category.NotificationStrategy)
 
 	// Count categories of test user
 	nb, err := testDB.CountCategoriesByUser(uid)

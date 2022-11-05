@@ -2,9 +2,12 @@ package service
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/model"
+	"github.com/ncarlier/readflow/pkg/scripting"
 
 	// activate all content providers
 	_ "github.com/ncarlier/readflow/pkg/scraper/content-provider/all"
@@ -46,21 +49,9 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	}
 
 	// TODO validate article!
-
-	// Get category if specified
-	var category *model.Category
+	// validate category
 	if form.CategoryID != nil {
-		cat, err := reg.GetCategory(ctx, *form.CategoryID)
-		if err != nil {
-			logger.Err(err).Msg(unableToCreateArticleErrorMsg)
-			return nil, err
-		}
-		category = cat
-	}
-
-	if category == nil {
-		// Process article by the rule engine
-		if err := reg.ProcessArticleByRuleEngine(ctx, &form); err != nil {
+		if _, err := reg.GetCategory(ctx, *form.CategoryID); err != nil {
 			logger.Err(err).Msg(unableToCreateArticleErrorMsg)
 			return nil, err
 		}
@@ -85,6 +76,25 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		form.HTML = &content
 	}
 
+	var ops scripting.OperationStack
+	if alias := ctx.Value(constant.ContextIncomingWebhookAlias); alias != nil {
+		// Process article by the script engine if comming from webhook
+		if ops, err = reg.ProcessArticleByScriptEngine(ctx, alias.(string), &form); err != nil {
+			debug.Err(err).Msg("unable to process article by script engine")
+			text := err.Error()
+			if form.Text != nil {
+				text = fmt.Sprintf("%s\n%s", text, *form.Text)
+			}
+			form.Text = &text
+		}
+	}
+	// Drop if asked
+	for _, v := range ops {
+		if v.Name == scripting.OpDrop {
+			return nil, nil
+		}
+	}
+
 	debug.Msg("creating article...")
 	article, err := reg.db.CreateArticleForUser(uid, form)
 	if err != nil {
@@ -92,6 +102,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		return nil, err
 	}
 	logger.Uint("id", article.ID).Msg("article created")
+	// TODO trigger async actions (notification/webhook)
 	event.Emit(event.CreateArticle, *article)
 	return article, nil
 }

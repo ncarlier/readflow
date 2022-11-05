@@ -8,27 +8,6 @@ import (
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
-var notificationStrategy = graphql.NewEnum(
-	graphql.EnumConfig{
-		Name:        "notificationStrategy",
-		Description: "Notification strategy",
-		Values: graphql.EnumValueConfigMap{
-			"none": &graphql.EnumValueConfig{
-				Value:       "none",
-				Description: "no notification will be sent",
-			},
-			"individual": &graphql.EnumValueConfig{
-				Value:       "individual",
-				Description: "a notification will be sent as soon as an article is received",
-			},
-			"global": &graphql.EnumValueConfig{
-				Value:       "global",
-				Description: "a notification will be sent using the global strategy",
-			},
-		},
-	},
-)
-
 // Type of a category
 var Type = graphql.NewObject(
 	graphql.ObjectConfig{
@@ -40,14 +19,6 @@ var Type = graphql.NewObject(
 			"title": &graphql.Field{
 				Type:        graphql.String,
 				Description: "title of the category",
-			},
-			"rule": &graphql.Field{
-				Type:        graphql.String,
-				Description: "rule definition to put articles into this category",
-			},
-			"notification_strategy": &graphql.Field{
-				Type:        notificationStrategy,
-				Description: "notification strategy for this category",
 			},
 			"inbox": &graphql.Field{
 				Type:        graphql.Int,

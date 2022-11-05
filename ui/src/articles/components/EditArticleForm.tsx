@@ -76,8 +76,8 @@ export const EditArticleForm = ({ article, onSuccess, onCancel }: Props) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to edit article">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Title" {...text('title')} error={formState.errors.title} required pattern=".*\S+.*" maxlength="256" autoFocus />
-          <FormTextareaField label="Text" {...textarea('text')} error={formState.errors.text} maxlength="512" />
+          <FormInputField label="Title" {...text('title')} error={formState.errors.title} required pattern=".*\S+.*" maxLength={256} autoFocus />
+          <FormTextareaField label="Text" {...textarea('text')} error={formState.errors.text} maxLength={512} />
           <FormSelectField label="Category" {...select('category_id')} error={formState.errors.category_id}>
             <option>Optional category</option>
             <CategoriesOptions />
