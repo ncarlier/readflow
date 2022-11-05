@@ -15,8 +15,9 @@ export default ({ data }: Props) => (
   <HelpSection>
     <Logo name="webhook" style={{ maxWidth: '10%', verticalAlign: 'middle' }} />
     <span>
-      Use incoming webhooks to post articles to your Readflow. <br />
-      Messages are sent via an HTTP POST request to Readflow integration URL.
+      Use incoming webhooks to post articles to your Readflow.<br />
+      Messages are sent via an HTTP POST request to Readflow integration URL.<br />
+      You can customise your integration with a script.
       {data && (
         <table>
           <tbody>

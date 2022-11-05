@@ -17,6 +17,9 @@ var incomingWebhookType = graphql.NewObject(
 			"token": &graphql.Field{
 				Type: graphql.String,
 			},
+			"script": &graphql.Field{
+				Type: graphql.String,
+			},
 			"last_usage_at": &graphql.Field{
 				Type: graphql.DateTime,
 			},

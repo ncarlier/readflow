@@ -98,7 +98,7 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
         <OutgoingWebhookHelp />
         {errorMessage != null && <ErrorPanel title="Unable to add new outgoing webhook">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
+          <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required pattern=".*\S+.*" maxLength={32} autoFocus />
           <FormSelectField label="Provider" {...select('provider')} error={formState.errors.provider} required>
             <option>Please select a webhook provider</option>
             {Object.entries(providers).map(([key, p]) => <option key={`provider-${key}`} value={key}>{p.label}</option>)}

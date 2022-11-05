@@ -8,7 +8,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-func assertIncomingWebhookExists(t *testing.T, uid uint, alias string) *model.IncomingWebhook {
+func assertIncomingWebhookExists(t *testing.T, uid uint, alias string, script string) *model.IncomingWebhook {
 	webhook, err := testDB.GetIncomingWebhookByUserAndAlias(uid, alias)
 	assert.Nil(t, err)
 	if webhook != nil {
@@ -16,13 +16,14 @@ func assertIncomingWebhookExists(t *testing.T, uid uint, alias string) *model.In
 	}
 
 	builder := model.NewIncomingWebhookCreateFormBuilder()
-	form := builder.Alias(alias).Build()
+	form := builder.Alias(alias).Script(script).Build()
 
 	webhook, err = testDB.CreateIncomingWebhookForUser(uid, *form)
 	assert.Nil(t, err)
 	assert.NotNil(t, webhook)
 	assert.NotNil(t, webhook.ID)
 	assert.Equal(t, alias, webhook.Alias)
+	assert.Equal(t, script, webhook.Script)
 	assert.NotEqual(t, "", webhook.Token)
 	return webhook
 }
@@ -32,8 +33,9 @@ func TestCreateOrUpdateIncomingWebhook(t *testing.T) {
 
 	uid := *testUser.ID
 	alias := "My test incoming webhook"
+	script := "return false;"
 
-	assertIncomingWebhookExists(t, uid, alias)
+	assertIncomingWebhookExists(t, uid, alias, script)
 }
 
 func TestDeleteIncomingWebhook(t *testing.T) {
@@ -42,9 +44,10 @@ func TestDeleteIncomingWebhook(t *testing.T) {
 
 	uid := *testUser.ID
 	alias := "My incoming webhook"
+	script := "return false;"
 
 	// Assert webhook exists
-	webhook := assertIncomingWebhookExists(t, uid, alias)
+	webhook := assertIncomingWebhookExists(t, uid, alias, script)
 
 	err := testDB.DeleteIncomingWebhookByUser(uid, *webhook.ID)
 	assert.Nil(t, err)

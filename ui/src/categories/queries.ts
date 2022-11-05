@@ -9,8 +9,6 @@ export const GetCategories = gql`
       entries {
         id
         title
-        rule
-        notification_strategy
         inbox
         created_at
         updated_at
@@ -24,8 +22,6 @@ export const GetCategory = gql`
     category(id: $id) {
       id
       title
-      rule
-      notification_strategy
       created_at
       updated_at
     }
@@ -42,14 +38,10 @@ export const CreateOrUpdateCategory = gql`
   mutation createOrUpdateCategory(
     $id: ID
     $title: String
-    $rule: String
-    $notification_strategy: notificationStrategy
   ) {
-    createOrUpdateCategory(id: $id, title: $title, rule: $rule, notification_strategy: $notification_strategy) {
+    createOrUpdateCategory(id: $id, title: $title) {
       id
       title
-      rule
-      notification_strategy
       created_at
       updated_at
     }

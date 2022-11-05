@@ -45,49 +45,29 @@ func init() {
 				return
 			}
 
-			globalStrategy := true
-			text := "You have a new article to read."
-			href := "/"
-			if article.CategoryID != nil {
-				category, err := service.Lookup().GetCategory(ctx, *article.CategoryID)
-				if err != nil {
-					log.Info().Err(err).Uint("id", uid).Msg(errorMessage)
-					return
-				}
-				if category.NotificationStrategy == "none" {
-					return
-				}
-				globalStrategy = category.NotificationStrategy == "global"
-				text = fmt.Sprintf("You have a new article to read in %s", category.Title)
-				href = fmt.Sprintf("/categories/%d/%d", *category.ID, article.ID)
+			// Send notification only if user is inactive for a while
+			lastLoginDelay := time.Now().Add(-maxUserInactivityBeforeNotification)
+			if user.Enabled && user.LastLoginAt != nil && user.LastLoginAt.After(lastLoginDelay) {
+				return
+			}
+			// Retrieve number of articles
+			nb, err = service.Lookup().CountCurrentUserArticles(ctx, req)
+			if err != nil {
+				log.Info().Err(err).Uint("id", uid).Msg(errorMessage)
+				return
+			}
+			// Send notification only every 10 articles
+			if !(nb > 0 && math.Mod(float64(nb), 10) == 0) {
+				return
 			}
 
-			if globalStrategy {
-				// Send notification only if user is inactive for a while
-				lastLoginDelay := time.Now().Add(-maxUserInactivityBeforeNotification)
-				if user.Enabled && user.LastLoginAt != nil && user.LastLoginAt.After(lastLoginDelay) {
-					return
-				}
-				// Retrieve number of articles
-				nb, err := service.Lookup().CountCurrentUserArticles(ctx, req)
-				if err != nil {
-					log.Info().Err(err).Uint("id", uid).Msg(errorMessage)
-					return
-				}
-				// Send notification only every 10 articles
-				if !(nb > 0 && math.Mod(float64(nb), 10) == 0) {
-					return
-				}
-				// Format text message
-				text = fmt.Sprintf("You have %d articles to read.", nb)
-				href = "/"
-			}
+			text := fmt.Sprintf("You have %d articles to read.", nb)
 
 			// Build notification
 			notif := &model.DeviceNotification{
 				Title: "New articles to read",
 				Body:  text,
-				Href:  href,
+				Href:  "/",
 			}
 			b, err := json.Marshal(notif)
 			if err == nil {

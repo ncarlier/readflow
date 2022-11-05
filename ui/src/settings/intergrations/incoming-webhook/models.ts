@@ -2,6 +2,7 @@ export interface IncomingWebhook {
   id: number
   alias: string
   token: string
+  script: string
   last_usage_at: string
   created_at?: string
   updated_at?: string
@@ -18,6 +19,7 @@ export interface GetIncomingWebhookResponse {
 export interface CreateOrUpdateIncomingWebhookRequest {
   id?: number
   alias: string
+  script: string
 }
 
 export interface CreateOrUpdateIncomingWebhookResponse {

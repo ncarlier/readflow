@@ -1,10 +1,13 @@
 [
   {
-    "title": "test 001"
+    "title": "test 001",
+    "tags": "foo,bar"
   }, {
     "title": "test 002",
-    "html": "<p>test 002</p>"
+    "html": "<p>test 002</p>",
+    "tags": "foo,bar"
   }, {
-    "url": "https://en.wikipedia.org/wiki/Special:Random"
+    "url": "https://en.wikipedia.org/wiki/Special:Random",
+    "tags": "bar"
   }
 ]

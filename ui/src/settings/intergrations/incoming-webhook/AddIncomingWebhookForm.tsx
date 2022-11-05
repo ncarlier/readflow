@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
 import { useMessage } from '../../../contexts'
-import { Button, ErrorPanel, FormInputField, Panel } from '../../../components'
+import { Button, ErrorPanel, FormInputField, FormTextareaField, HelpLink, Panel } from '../../../components'
 import { getGQLError, isValidForm } from '../../../helpers'
 import { usePageTitle } from '../../../hooks'
 import { updateCacheAfterCreate } from './cache'
@@ -15,6 +15,7 @@ import { CreateOrUpdateIncomingWebhook } from './queries'
 
 interface AddIncomingWebhookFormFields {
   alias: string
+  script: string
 }
 
 type AllProps = RouteComponentProps
@@ -23,7 +24,9 @@ export default ({ history }: AllProps) => {
   usePageTitle('Settings - Add new incoming webhook')
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [formState, { text }] = useFormState<AddIncomingWebhookFormFields>()
+  const [formState, { text, textarea }] = useFormState<AddIncomingWebhookFormFields>({
+    script: 'return true;'
+  })
   const [addIncomingWebhookMutation] = useMutation<
     CreateOrUpdateIncomingWebhookResponse,
     CreateOrUpdateIncomingWebhookRequest
@@ -56,8 +59,7 @@ export default ({ history }: AllProps) => {
         setErrorMessage('Please fill out correctly the mandatory fields.')
         return
       }
-      const { alias } = formState.values
-      addIncomingWebhook({ alias })
+      addIncomingWebhook(formState.values)
     },
     [formState, addIncomingWebhook]
   )
@@ -71,7 +73,10 @@ export default ({ history }: AllProps) => {
         <IncomingWebhookHelp />
         {errorMessage != null && <ErrorPanel title="Unable to add new incoming webhook">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required autoFocus />
+          <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required pattern=".*\S+.*" maxLength={32} autoFocus />
+          <FormTextareaField label="Script" {...textarea('script')} error={formState.errors.script} required pattern=".*\S+.*" maxLength={256} >
+            <HelpLink href="https://docs.readflow.app/en/integrations/incoming-webhook/scripting/">View script syntax</HelpLink>
+          </FormTextareaField>
         </form>
       </section>
       <footer>

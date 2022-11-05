@@ -12,6 +12,7 @@ type IncomingWebhook struct {
 	UserID      uint       `json:"user_id,omitempty"`
 	Alias       string     `json:"alias,omitempty"`
 	Token       string     `json:"token,omitempty"`
+	Script      string     `json:"script,omitempty"`
 	LastUsageAt *time.Time `json:"last_usage_at,omitempty"`
 	CreatedAt   *time.Time `json:"created_at,omitempty"`
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
@@ -19,14 +20,16 @@ type IncomingWebhook struct {
 
 // IncomingWebhookCreateForm structure definition
 type IncomingWebhookCreateForm struct {
-	Alias string
-	Token string
+	Alias  string
+	Token  string
+	Script string
 }
 
 // IncomingWebhookUpdateForm structure definition
 type IncomingWebhookUpdateForm struct {
-	ID    uint
-	Alias *string
+	ID     uint
+	Alias  *string
+	Script *string
 }
 
 // IncomingWebhookCreateFormBuilder is a builder to create an incoming webhook create form
@@ -49,5 +52,11 @@ func (ab *IncomingWebhookCreateFormBuilder) Build() *IncomingWebhookCreateForm {
 // Alias set incoming webhook alias
 func (ab *IncomingWebhookCreateFormBuilder) Alias(alias string) *IncomingWebhookCreateFormBuilder {
 	ab.form.Alias = alias
+	return ab
+}
+
+// Script set incoming webhook script
+func (ab *IncomingWebhookCreateFormBuilder) Script(script string) *IncomingWebhookCreateFormBuilder {
+	ab.form.Script = script
 	return ab
 }

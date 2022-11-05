@@ -21,21 +21,26 @@ var createOrUpdateIncomingWebhookMutationField = &graphql.Field{
 		"alias": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.String),
 		},
+		"script": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(graphql.String),
+		},
 	},
 	Resolve: createOrUpdateIncomingWebhookResolver,
 }
 
 func createOrUpdateIncomingWebhookResolver(p graphql.ResolveParams) (interface{}, error) {
 	alias := helper.GetGQLStringParameter("alias", p.Args)
+	script := helper.GetGQLStringParameter("script", p.Args)
 	if id, ok := helper.ConvGQLStringToUint(p.Args["id"]); ok {
 		form := model.IncomingWebhookUpdateForm{
-			ID:    id,
-			Alias: alias,
+			ID:     id,
+			Alias:  alias,
+			Script: script,
 		}
 		return service.Lookup().UpdateIncomingWebhook(p.Context, form)
 	}
 	builder := model.NewIncomingWebhookCreateFormBuilder()
-	form := builder.Alias(*alias).Build()
+	form := builder.Alias(*alias).Script(*script).Build()
 	return service.Lookup().CreateIncomingWebhook(p.Context, *form)
 }
 

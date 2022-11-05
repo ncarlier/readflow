@@ -1,8 +1,6 @@
 export interface Category {
   id?: number
   title: string
-  rule: string | null
-  notification_strategy: 'none' | 'individual' | 'global'
   inbox?: number
   created_at?: string
   updated_at?: string
