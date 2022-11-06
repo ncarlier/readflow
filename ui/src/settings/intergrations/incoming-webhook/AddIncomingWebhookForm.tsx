@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
 import { useMessage } from '../../../contexts'
-import { Button, ErrorPanel, FormInputField, FormTextareaField, HelpLink, Panel } from '../../../components'
+import { Button, ErrorPanel, FormCodeEditorField, FormInputField, HelpLink, Panel } from '../../../components'
 import { getGQLError, isValidForm } from '../../../helpers'
 import { usePageTitle } from '../../../hooks'
 import { updateCacheAfterCreate } from './cache'
@@ -74,9 +74,9 @@ export default ({ history }: AllProps) => {
         {errorMessage != null && <ErrorPanel title="Unable to add new incoming webhook">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required pattern=".*\S+.*" maxLength={32} autoFocus />
-          <FormTextareaField label="Script" {...textarea('script')} error={formState.errors.script} required pattern=".*\S+.*" maxLength={256} >
+          <FormCodeEditorField label="Script" {...textarea('script')} error={formState.errors.script} required pattern=".*\S+.*" maxLength={256} >
             <HelpLink href="https://docs.readflow.app/en/integrations/incoming-webhook/scripting/">View script syntax</HelpLink>
-          </FormTextareaField>
+          </FormCodeEditorField>
         </form>
       </section>
       <footer>
