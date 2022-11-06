@@ -16,9 +16,7 @@ Cliquez sur le menu contextuel pour accéder au bouton de mise hors-ligne d'un a
 
 ![](images/put-offline.png)
 
-Vous pouvez ensuite consulter la [page des articles hors-ligne](https://readflow.app/offline):
-
-![](images/offline-articles.png)
+Vous pouvez ensuite consulter la [page des articles hors-ligne](https://readflow.app/offline).
 
 Cette page ressemble à la page de flux de lecture à l'exception qu'il n'y a pas de notion de marquage.
 

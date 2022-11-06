@@ -1,7 +1,7 @@
 +++
 title = "L'API d'intégration"
 description = "Utilisation de l'API de création de contenu"
-weight = 1
+weight = 2
 +++
 
 L'API d'intégration est une simple URL accessible en POST avec un payload JSON.

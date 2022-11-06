@@ -45,7 +45,7 @@ Pour ajouter un webhook générique, vous devez [configurer votre webhook sortan
 Cliquer sur le bouton `Add` pour ajouter un webhook sortant.
 La page d'ajout de webhook s'ouvre:
 
-![](images/add-generic-webhook.png)
+![](images/config.png)
 
 1. Saisissez un alias
 1. Choisissez `generic` comme fournisseur de service

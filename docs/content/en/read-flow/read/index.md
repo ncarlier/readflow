@@ -7,7 +7,8 @@ weight = 2
 The reading flows are organized as follows:
 
 - The main flow: It includes all the unread articles.
-- Categories: They allow you to split your reading flow.
+- The reading flow: It includes all articles marked as to-read.
+- Categories: They allow you to organize your reading flow.
 - Stared articles: They include the items you have kept.
 - The history: It includes all the articles read.
 
@@ -27,6 +28,8 @@ If you are interested in an article, you can click on its title or illustration 
 You will also find in this page the marking button.
 
 The history is regularly cleaned of its oldest articles.
+
+If you want to read this article later you can mark it as `to read`. It will then be moved into the reading flow.
 
 If you wish to keep an article you can click on the star.
 It will be kept whatever is its reading state.

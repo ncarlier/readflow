@@ -19,7 +19,7 @@ Une fois obtenue, vous pouvez [configurer votre webhook sortant](https://readflo
 Cliquer sur le bouton `Add` pour ajouter un webhook sortant.
 La page d'ajout de webhook s'ouvre:
 
-![](images/add-outgoing-webhook.png)
+![](images/config.png)
 
 1. Saisissez un alias
 1. Choisissez `Nunux Keeper` comme fournisseur
@@ -29,8 +29,6 @@ La page d'ajout de webhook s'ouvre:
 
 Le service d'archivage par défaut peut être invoqué via le racourci clavier `shift+s` lors de la visualisation d'un article.
 
-Une fois configuré, vous verrez une nouvelle entrée dans le menu contextuel des articles:
-
-![](images/send-to-keeper.png)
+Une fois configuré, vous verrez une nouvelle entrée dans le menu contextuel des articles.
 
 Vous pouvez désormais envoyer un article vers Nunux Keeper.

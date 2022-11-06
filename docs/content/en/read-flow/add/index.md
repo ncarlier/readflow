@@ -4,9 +4,9 @@ description = "Add an article from the web interface"
 weight = 1
 +++
 
-You have a `+` button on the main reading page and on categories pages:
+You can add an item from the main menu:
 
-![](images/add-button.png)
+![](images/menu.png)
 
 Clicking on this button opens a window for adding a link:
 

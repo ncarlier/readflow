@@ -4,7 +4,7 @@ description = "Send articles to Pocket"
 weight = 3
 +++
 
-![](images/pocket-logo.png)
+![](images/logo.png)
 
 [Pocket](https://getpocket.com) is a service that saves articles and allows you to read them later.
 
@@ -14,6 +14,8 @@ To use readflow with Pocket you must [configure your outgoing webhook](https://r
 
 Click on the `Add` button to add an outgoing webhook.
 The webhook add page opens.
+
+![](images/config.png)
 
 1. Choose `Pocket` as provider
 1. Click on `Link with Pocket` button

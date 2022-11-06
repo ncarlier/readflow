@@ -12,4 +12,9 @@ Vous pouvez renommer la bookmarklet comme bon vous semble.
 
 Lors de votre navigation Web, si une page vous intéresse, cliquez sur le lien dans vos favoris.
 
-Un message devrait vous confirmer l'ajout de la page à votre flux de lecture.
+Une petite fenêtre doit apparaitre sur la page:
+
+![](images/bookmarklet.png)
+
+Elle vous permet d'envoyer toute ou partie de la page.
+Vous pouvez cliquer sur les éléments de la page qui ne vous intéressent pas pour les retirer (ou garder la touche `ctrl` enfoncée pour faire le contraire).

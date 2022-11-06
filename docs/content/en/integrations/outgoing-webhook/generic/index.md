@@ -45,7 +45,7 @@ To add a generic webhook, you must[configure your outgoing webhook](https://read
 Click on the `Add` button to add an outgoing webhook.
 The outgoing webhook creation page opens:
 
-![](images/add-generic-webhook.png)
+![](images/config.png)
 
 1. Enter an alias
 1. Choose `generic` as provider

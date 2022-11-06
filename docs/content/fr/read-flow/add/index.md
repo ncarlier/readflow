@@ -4,9 +4,9 @@ description = "Ajouter un article depuis l'interface Web"
 weight = 1
 +++
 
-Vous avez un bouton `+` sur la page du flux de lecture principale et sur les pages des catégories:
+Vous pouvez ajouter un article depuis le menu principale:
 
-![](images/add-button.png)
+![](images/menu.png)
 
 En cliquant sur ce bouton vous ouvrez une fenêtre d'ajout de lien:
 
