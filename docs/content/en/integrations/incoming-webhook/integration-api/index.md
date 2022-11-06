@@ -1,7 +1,7 @@
 +++
 title = "Integration API"
 description = "Using the content creation API"
-weight = 1
+weight = 2
 +++
 
 The integration API is a simple URL accessible in POST with a JSON payload.

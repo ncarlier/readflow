@@ -16,9 +16,7 @@ Click on the context menu to access the offline button for an article:
 
 ![](images/put-offline.png)
 
-You can then consult the [offline articles page](https://readflow.app/offline):
-
-![](images/offline-articles.png)
+You can then consult the [offline articles page](https://readflow.app/offline).
 
 This page is similar to the read flow page except that there is no notion of marking.
 

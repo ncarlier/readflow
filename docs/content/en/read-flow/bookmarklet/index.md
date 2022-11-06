@@ -12,4 +12,9 @@ You can rename the bookmarklet as you wish.
 
 While browsing the web, if you are interested in a page, click on the link in your favorites.
 
-A message should confirm that the page has been added to your playback feed.
+A small window should appear on the page:
+
+![](images/bookmarklet.png)
+
+It allows you to send all or part of the page.
+You can click on the elements of the page you are not interested in to remove them (or hold down the `ctrl` key to do the opposite).

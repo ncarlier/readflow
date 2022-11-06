@@ -19,7 +19,7 @@ Once obtained, you can [configure your outgoing webhook](https://readflow.app/se
 Click on the `Add` button to add an outgoing webhook.
 The outgoing webhook creation page opens:
 
-![](images/add-outgoing-webhook.png)
+![](images/config.png)
 
 1. Enter an alias
 1. Choose `Nunux Keeper` as provider
@@ -29,8 +29,6 @@ The outgoing webhook creation page opens:
 
 The default archiving service can be invoked via the keyboard shortcut `s` when viewing an article.
 
-Once configured, you will see a new entry in the context menu of the article:
-
-![](images/send-to-keeper.png)
+Once configured, you will see a new entry in the context menu of the article.
 
 You can now send an article to Nunux Keeper.

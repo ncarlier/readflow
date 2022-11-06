@@ -7,7 +7,8 @@ weight = 2
 Les flux de lecture sont organisés de la façon suivante:
 
 - Le flux principal: Il regroupe tous les articles non lus.
-- Les catégories: Elles permettent de scinder votre flux de lecture.
+- Le flux de lecture: Il regroupe les articles marqués comme à lire.
+- Les catégories: Elles permettent d'organiser votre flux de lecture.
 - Les favoris: Ils regroupent les articles que vous avez conservé.
 - L'historique: Il regroupe tous les articles lus.
 
@@ -26,7 +27,9 @@ Il est possible de le remettre dans le flux de lecture depuis l'historique en cl
 Si un article vous intéresse vous pouvez cliquer sur son titre ou son illustration pour ouvrir l'intégralité de son contenu.
 Vous retrouvez dans cette page le bouton de marquage.
 
-L'historique est régulièrement vidé de ses articles les plus anciens.
+L'historique est régulièrement vidée de ses articles les plus anciens.
+
+Si vous voulez lire cet article plus tard vous pouvez le marquer comme `à lire`. Il sera alors déplacé dans le flux de lecture.
 
 Si vous souhaitez conserver un article vous pouvez cliquer sur l'étoile.
 Il sera conservé quelque soit sont état de lecture.

@@ -15,13 +15,15 @@ readflow permet d'ajouter des articles à votre flux de lecture :
 
 Les articles ajoutés sont nettoyés de leur contenu indésirable (publicité, trackers, ...).
 
-Dans tous les cas vous avez la possibilité de classer les articles dans des [catégories](categories) et ceci de façon automatique.
+Vous avez également la possibilité de classer les articles dans des [catégories](categories).
 
 ## Lire des articles
 
 Une fois votre flux de lecture alimenté vous pouvez :
 
 - [Lire](read) les articles.
+- [Editer](edit) les articles.
 - Conserver une copie (notamment accessible [hors-ligne](offline)).
 - [Partager](mobile/share) le contenu.
+- [Télécharger](download) les articles dans un format désiré.
 - Envoyer les articles [vers d'autres services](../integrations/outgoing-webhook).

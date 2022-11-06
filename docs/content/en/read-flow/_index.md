@@ -15,13 +15,15 @@ readflow allows you to add articles to your reading flow:
 
 The added articles are cleaned of their unwanted content (advertising, trackers,...).
 
-In all cases you have the possibility to classify the articles in [categories](categories) and this automatically.
+You have also the possibility to classify the articles in [categories](categories).
 
 ## read articles
 
 Once your reading flow is fed you can:
 
 - [Read](read) the articles.
+- [Edit](edit) the articles.
 - Keep copy (including [offline](offline) access).
 - [Share](mobile/share) content.
+- [Download](download) the articles in a desired format.
 - Send articles [to third-party services](../integrations/outgoing-webhook).
