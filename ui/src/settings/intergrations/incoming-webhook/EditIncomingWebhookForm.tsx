@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { useFormState } from 'react-use-form-state'
 
 import { useMessage } from '../../../contexts'
-import { Button, ErrorPanel, FormInputField, FormTextareaField, HelpLink } from '../../../components'
+import { Button, ErrorPanel, FormCodeEditorField, FormInputField, HelpLink } from '../../../components'
 import { getGQLError, isValidForm } from '../../../helpers'
 import IncomingWebhookHelp from './IncomingWebhookHelp'
 import { IncomingWebhook, CreateOrUpdateIncomingWebhookRequest, CreateOrUpdateIncomingWebhookResponse } from './models'
@@ -67,9 +67,9 @@ export default ({ data, history }: Props) => {
         {errorMessage != null && <ErrorPanel title="Unable to edit incoming webhook">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required pattern=".*\S+.*" maxLength={32} autoFocus />
-          <FormTextareaField label="Script" {...textarea('script')} error={formState.errors.script} required pattern=".*\S+.*" maxLength={256} >
+          <FormCodeEditorField label="Script" {...textarea('script')} error={formState.errors.script} required pattern=".*\S+.*" maxLength={256} >
             <HelpLink href="https://docs.readflow.app/en/integrations/incoming-webhook/scripting/">View script syntax</HelpLink>
-          </FormTextareaField>
+          </FormCodeEditorField>
         </form>
       </section>
       <footer>

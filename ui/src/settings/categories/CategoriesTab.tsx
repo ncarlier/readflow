@@ -143,7 +143,7 @@ const CategoriesTab = ({ match }: RouteComponentProps) => {
           </Button>
         </header>
         <section>
-          <p>Automatically organize your articles into categories using the rule engine.</p>
+          <p>Organize your articles into categories.</p>
           {errorMessage != null && <ErrorPanel title="Unable to delete categories">{errorMessage}</ErrorPanel>}
           {render(loading, data, error)}
         </section>

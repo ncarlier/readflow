@@ -112,6 +112,12 @@ fieldset {
   -webkit-transition: all 0.28s ease;
   transition: all 0.28s ease;
 }
+.form-group .control-label-alt {
+  font-size: 0.8rem;
+  color: gray;
+  margin-bottom: 0.8em;
+  display: block;
+}
 .form-group .bar {
   position: relative;
   border-bottom: 0.0625rem solid #999;
