@@ -6,6 +6,30 @@ import (
 	"github.com/skx/evalfilter/v2/object"
 )
 
+type fnType = func(args []object.Object) object.Object
+
+func (i *Interpreter) buildSingleArgFunction(op OperationName) fnType {
+	return func(args []object.Object) object.Object {
+		if len(args) != 1 {
+			return &object.Void{}
+		}
+		arg := args[0].Inspect()
+		operations := *i.operations
+		operations = append(operations, *NewOperation(op, arg))
+		i.operations = &operations
+		return &object.Void{}
+	}
+}
+
+func (i *Interpreter) buildNoArgFunction(op OperationName) fnType {
+	return func(args []object.Object) object.Object {
+		operations := *i.operations
+		operations = append(operations, *NewOperation(OpSendNotification))
+		i.operations = &operations
+		return &object.Void{}
+	}
+}
+
 // fnNoOp do nothing
 func fnNoOp(args []object.Object) object.Object {
 	return &object.Void{}
@@ -42,45 +66,5 @@ func (i *Interpreter) fnPrintf(args []object.Object) object.Object {
 	// Call the helper
 	out := fmt.Sprintf(fs, fmtArgs...)
 	i.logger.Debug().Str("fn", "printf").Msg(out)
-	return &object.Void{}
-}
-
-func (i *Interpreter) fnTriggerWebhook(args []object.Object) object.Object {
-	if len(args) != 1 {
-		return &object.Void{}
-	}
-	name := args[0].Inspect()
-	operations := *i.operations
-	operations = append(operations, *NewOperation(OpTriggerWebhook, name))
-	i.operations = &operations
-	return &object.Void{}
-}
-
-func (i *Interpreter) fnSendNotification(args []object.Object) object.Object {
-	operations := *i.operations
-	operations = append(operations, *NewOperation(OpSendNotification))
-	i.operations = &operations
-	return &object.Void{}
-}
-
-func (i *Interpreter) fnSetTitle(args []object.Object) object.Object {
-	if len(args) != 1 {
-		return &object.Void{}
-	}
-	value := args[0].Inspect()
-	operations := *i.operations
-	operations = append(operations, *NewOperation(OpSetTitle, value))
-	i.operations = &operations
-	return &object.Void{}
-}
-
-func (i *Interpreter) fnSetCategory(args []object.Object) object.Object {
-	if len(args) != 1 {
-		return &object.Void{}
-	}
-	value := args[0].Inspect()
-	operations := *i.operations
-	operations = append(operations, *NewOperation(OpSetCategory, value))
-	i.operations = &operations
 	return &object.Void{}
 }

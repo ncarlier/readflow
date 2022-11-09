@@ -44,10 +44,11 @@ func (i *Interpreter) init() {
 	i.eval.AddFunction("print", i.fnPrint)
 	i.eval.AddFunction("printf", i.fnPrintf)
 	// add custom functions
-	i.eval.AddFunction("triggerWebhook", i.fnTriggerWebhook)
-	i.eval.AddFunction("sendNotification", i.fnSendNotification)
-	i.eval.AddFunction("setTitle", i.fnSetTitle)
-	i.eval.AddFunction("setCategory", i.fnSetCategory)
+	i.eval.AddFunction("triggerWebhook", i.buildSingleArgFunction(OpTriggerWebhook))
+	i.eval.AddFunction("sendNotification", i.buildNoArgFunction(OpSendNotification))
+	i.eval.AddFunction("setCategory", i.buildSingleArgFunction(OpSetCategory))
+	i.eval.AddFunction("setTitle", i.buildSingleArgFunction(OpSetTitle))
+	i.eval.AddFunction("setText", i.buildSingleArgFunction(OpSetTitle))
 }
 
 // Exec a script by the interpreter

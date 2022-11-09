@@ -2,7 +2,6 @@ package listener
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"math"
 	"time"
@@ -69,13 +68,8 @@ func init() {
 				Body:  text,
 				Href:  "/",
 			}
-			b, err := json.Marshal(notif)
-			if err == nil {
-				text = string(b)
-			}
-
 			// Notify all user devices
-			service.Lookup().NotifyDevices(ctx, text)
+			service.Lookup().NotifyDevices(ctx, notif)
 		}
 	})
 }

@@ -32,7 +32,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	}
 
 	if plan != nil {
-		// Check user quota
+		// check user quota
 		req := model.ArticlesPageRequest{}
 		totalArticles, err := reg.CountCurrentUserArticles(ctx, req)
 		if err != nil {
@@ -58,7 +58,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	}
 
 	if form.URL != nil && !form.IsComplete() {
-		// Fetch original article in order to extract missing attributes
+		// fetch original article in order to extract missing attributes
 		if err := reg.scrapOriginalArticle(ctx, &form); err != nil {
 			logger.Err(err).Msg("unable to fetch original article")
 			// TODO excerpt and image should be extracted from HTML content
@@ -70,7 +70,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		logger = logger.Str("title", form.TruncatedTitle())
 	}
 
-	// Sanitize HTML content
+	// sanitize HTML content
 	if form.HTML != nil {
 		content := reg.sanitizer.Sanitize(*form.HTML)
 		form.HTML = &content
@@ -78,8 +78,8 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 
 	var ops scripting.OperationStack
 	if alias := ctx.Value(constant.ContextIncomingWebhookAlias); alias != nil {
-		// Process article by the script engine if comming from webhook
-		if ops, err = reg.ProcessArticleByScriptEngine(ctx, alias.(string), &form); err != nil {
+		// process article by the script engine if comming from webhook
+		if ops, err = reg.processArticleByScriptEngine(ctx, alias.(string), &form); err != nil {
 			debug.Err(err).Msg("unable to process article by script engine")
 			text := err.Error()
 			if form.Text != nil {
@@ -88,21 +88,27 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 			form.Text = &text
 		}
 	}
-	// Drop if asked
-	for _, v := range ops {
-		if v.Name == scripting.OpDrop {
-			return nil, nil
-		}
+	// drop if asked
+	if ops.Contains(scripting.OpDrop) {
+		return nil, nil
 	}
+	// exec set operations
+	reg.execSetOperations(ctx, ops, &form)
 
 	debug.Msg("creating article...")
+	// persist article
 	article, err := reg.db.CreateArticleForUser(uid, form)
 	if err != nil {
 		logger.Err(err).Msg(unableToCreateArticleErrorMsg)
 		return nil, err
 	}
 	logger.Uint("id", article.ID).Msg("article created")
-	// TODO trigger async actions (notification/webhook)
+	// exec asynchronously other operations
+	go func() {
+		if err := reg.execOtherOperations(ctx, ops, article); err != nil {
+			logger.Err(err).Msg(unableToCreateArticleErrorMsg)
+		}
+	}()
 	event.Emit(event.CreateArticle, *article)
 	return article, nil
 }
