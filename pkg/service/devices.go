@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -111,7 +112,7 @@ func (reg *Registry) DeleteDevices(ctx context.Context, ids []uint) (int64, erro
 }
 
 // NotifyDevices send a notification to all user devices
-func (reg *Registry) NotifyDevices(ctx context.Context, msg string) (int, error) {
+func (reg *Registry) NotifyDevices(ctx context.Context, payload *model.DeviceNotification) (int, error) {
 	user, err := reg.GetCurrentUser(ctx)
 	if err != nil {
 		reg.logger.Info().Err(err).Msg(errNotification)
@@ -124,6 +125,10 @@ func (reg *Registry) NotifyDevices(ctx context.Context, msg string) (int, error)
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,
 		).Msg(errNotification)
+		return 0, err
+	}
+	msg, err := json.Marshal(payload)
+	if err != nil {
 		return 0, err
 	}
 	counter := 0
@@ -139,7 +144,7 @@ func (reg *Registry) NotifyDevices(ctx context.Context, msg string) (int, error)
 			continue
 		}
 		// Send notification
-		res, err := webpush.SendNotification([]byte(msg), device.Subscription, &webpush.Options{
+		res, err := webpush.SendNotification(msg, device.Subscription, &webpush.Options{
 			Subscriber:      user.Username,
 			VAPIDPublicKey:  reg.properties.VAPIDPublicKey,
 			VAPIDPrivateKey: reg.properties.VAPIDPrivateKey,

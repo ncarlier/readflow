@@ -24,6 +24,10 @@
   border-top: 1px solid rgba(0,0,0,.06);
 }
 
+.data_table td:last-child {
+  text-align: end;
+}
+
 .data_table td a, table th a, table td a {
   text-decoration: none;
   color: inherit;

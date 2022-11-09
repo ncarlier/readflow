@@ -10,6 +10,8 @@ const (
 	OpTriggerWebhook
 	// OpSendNotification to send a notification to all user devices
 	OpSendNotification
+	// OpSetText to set article text
+	OpSetText
 	// OpSetTitle to set article title
 	OpSetTitle
 	// OpSetCategory to set article category
@@ -24,6 +26,16 @@ type Operation struct {
 
 // OperationStack is a stack of operation
 type OperationStack []Operation
+
+// Contains test if an operation is part of the stack
+func (ops OperationStack) Contains(op OperationName) bool {
+	for _, v := range ops {
+		if v.Name == op {
+			return true
+		}
+	}
+	return false
+}
 
 // NewOperation create new operation
 func NewOperation(name OperationName, args ...string) *Operation {
