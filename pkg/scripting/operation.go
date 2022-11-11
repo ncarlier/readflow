@@ -24,6 +24,14 @@ type Operation struct {
 	Args []string
 }
 
+// GetFirstArg retrn first operation argument
+func (op Operation) GetFirstArg() string {
+	if len(op.Args) > 0 {
+		return op.Args[0]
+	}
+	return ""
+}
+
 // OperationStack is a stack of operation
 type OperationStack []Operation
 

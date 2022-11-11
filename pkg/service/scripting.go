@@ -63,25 +63,31 @@ func (reg *Registry) processArticleByScriptEngine(ctx context.Context, alias str
 
 func (reg *Registry) execSetOperations(ctx context.Context, ops scripting.OperationStack, article *model.ArticleCreateForm) {
 	uid := getCurrentUserIDFromContext(ctx)
+	category := ""
 	for _, op := range ops {
-		value := op.Args[0]
 		switch op.Name {
 		case scripting.OpSetCategory:
-			// set category
-			if cat, err := reg.db.GetCategoryByUserAndTitle(uid, value); err == nil && cat != nil {
-				article.CategoryID = cat.ID
-			}
+			// only execute last setCategory operation
+			category = op.GetFirstArg()
 		case scripting.OpSetText:
 			// set text
-			article.Text = &value
+			text := op.GetFirstArg()
+			article.Text = &text
 		case scripting.OpSetTitle:
 			// set title
-			article.Title = value
+			article.Title = op.GetFirstArg()
+		}
+	}
+	if category != "" {
+		if cat, err := reg.db.GetCategoryByUserAndTitle(uid, category); err == nil && cat != nil {
+			article.CategoryID = cat.ID
 		}
 	}
 }
 
 func (reg *Registry) execOtherOperations(ctx context.Context, ops scripting.OperationStack, article *model.Article) error {
+	// allows only 2 webhook trigger
+	hardLimitCounter := 2
 	for _, op := range ops {
 		switch op.Name {
 		case scripting.OpSendNotification:
@@ -99,7 +105,11 @@ func (reg *Registry) execOtherOperations(ctx context.Context, ops scripting.Oper
 				return err
 			}
 		case scripting.OpTriggerWebhook:
-			name := op.Args[0]
+			if hardLimitCounter == 0 {
+				continue
+			}
+			hardLimitCounter--
+			name := op.GetFirstArg()
 			if err := reg.SendArticle(ctx, article.ID, &name); err != nil {
 				return err
 			}
