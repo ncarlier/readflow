@@ -53,7 +53,7 @@ return true;
 ### Add a prefix to the title
 
 ```c
-setTitle(sprintf("[From my awesome webhook] %s", Title);
+setTitle(sprintf("[From my awesome webhook] %s", Title));
 return true;
 ```
 
@@ -62,7 +62,7 @@ return true;
 ```c
 if ("news" in Tags) {
     setCategory("News");
-    if (Title ~= /breaking|important/i ) {
+    if (Title ~= /breaking|important/i) {
         sendNotification();
     }
 }
@@ -72,8 +72,18 @@ return true;
 ### Filter a topic without interest
 
 ```c
-if (Title ~= /boring|stupid/i ) {
+if (Title ~= /boring|stupid/i) {
     return false;
 }
 return true;
+```
+
+### Accepting articles from another readflow user
+
+```c
+if (Origin == "johndoe@example.com") {
+    setTitle(sprintf("[From %s] %s", Origin, Title));
+    return true;
+}
+return false;
 ```
