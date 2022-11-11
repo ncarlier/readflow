@@ -24,6 +24,9 @@ func mapArticleCreateFromToScriptInput(article *model.ArticleCreateForm) *script
 	if article.HTML != nil {
 		input.HTML = *article.HTML
 	}
+	if article.Origin != nil {
+		input.Origin = *article.Origin
+	}
 	if article.Tags != nil {
 		input.Tags = strings.Split(*article.Tags, ",")
 	}
