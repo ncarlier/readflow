@@ -34,6 +34,7 @@ Vous pouvez accéder au sein de votre script aux attributs suivants:
 - `Text`: le texte de l'article
 - `HTML`: le contenu HTML de l'article
 - `URL`: l'URL de l'article
+- `Origin`: l'origine de l'article
 - `Tags`: les tags de l'article (tableau de string)
 
 ## Exemples

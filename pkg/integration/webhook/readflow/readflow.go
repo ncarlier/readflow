@@ -53,8 +53,14 @@ func newReadflowProvider(srv model.OutgoingWebhook, conf config.Config) (webhook
 
 // Send article to Readflow endpoint.
 func (p *Provider) Send(ctx context.Context, article model.Article) error {
+	builder := model.NewArticleCreateFormBuilder()
+	builder.FromArticle(article)
+	if value := ctx.Value(constant.ContextUser); value != nil {
+		user := value.(model.User)
+		builder.Origin(user.Username)
+	}
 	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(article)
+	json.NewEncoder(b).Encode(builder.Build())
 
 	req, err := http.NewRequest("POST", p.getAPIEndpoint("/articles"), b)
 	if err != nil {

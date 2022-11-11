@@ -16,6 +16,8 @@ Un article peut avoir la structure suivant :
 - `image`: L'illustration de l'article.
 - `published_at`: La date de publication de l'article.
 - `category`: La catégorie cible dans readflow.
+- `origin`: Origine de la création de l'article.
+- `tags`: Liste de tag séparées par des virgules.
 
 Toutes les propriétés sont facultatives à l'exception du titre.
 

@@ -19,6 +19,7 @@ type ArticleCreateForm struct {
 	Image       *string    `json:"image,omitempty"`
 	PublishedAt *time.Time `json:"published_at,omitempty"`
 	CategoryID  *uint      `json:"category,omitempty"`
+	Origin      *string    `json:"origin,omitempty"`
 	Tags        *string    `json:"tags,omitempty"`
 }
 
@@ -155,6 +156,17 @@ func (b *ArticleCreateFormBuilder) Random() *ArticleCreateFormBuilder {
 	return b
 }
 
+// FromArticle fill article create form internal article
+func (b *ArticleCreateFormBuilder) FromArticle(article Article) *ArticleCreateFormBuilder {
+	b.form.HTML = article.HTML
+	b.form.Image = article.Image
+	b.form.PublishedAt = article.PublishedAt
+	b.form.Text = article.Text
+	b.form.Title = article.Title
+	b.form.URL = article.URL
+	return b
+}
+
 // CategoryID set article category ID
 func (b *ArticleCreateFormBuilder) CategoryID(categoryID uint) *ArticleCreateFormBuilder {
 	b.form.CategoryID = &categoryID
@@ -170,6 +182,12 @@ func (b *ArticleCreateFormBuilder) Title(title string) *ArticleCreateFormBuilder
 // Text set article text
 func (b *ArticleCreateFormBuilder) Text(text string) *ArticleCreateFormBuilder {
 	b.form.Text = &text
+	return b
+}
+
+// Origin set article origin
+func (b *ArticleCreateFormBuilder) Origin(origin string) *ArticleCreateFormBuilder {
+	b.form.Origin = &origin
 	return b
 }
 

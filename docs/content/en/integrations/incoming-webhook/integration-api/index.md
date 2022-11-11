@@ -16,6 +16,8 @@ An article can have the following structure:
 - `image`: The illustration dof the article.
 - `published_at`: Publication date of the article.
 - `category`: The target category in readflow.
+- `origin`: The origin of the article creation.
+- `tags`: Comma separated list of tags.
 
 All properties are optional except the title.
 

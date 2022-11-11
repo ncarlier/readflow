@@ -34,6 +34,7 @@ You can access the following attributes within your script:
 - `Text`: the text of the article
 - `HTML`: the HTML content of the article
 - `URL`: the URL of the article
+- `Origin`: the article origin
 - `Tags`: the tags of the article (string array)
 
 ## Examples

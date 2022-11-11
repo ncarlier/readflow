@@ -144,14 +144,17 @@ func (reg *Registry) DeleteOutgoingWebhooks(ctx context.Context, ids []uint) (in
 
 // SendArticle send an article to outgoing webhook
 func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *string) error {
-	uid := getCurrentUserIDFromContext(ctx)
+	user, err := reg.GetCurrentUser(ctx)
+	if err != nil {
+		return err
+	}
 
 	logger := reg.logger.With().Uint(
-		"uid", uid,
+		"uid", *user.ID,
 	).Uint("article", idArticle).Logger()
 
 	article, err := reg.db.GetArticleByID(idArticle)
-	if err != nil || article == nil || article.UserID != uid {
+	if err != nil || article == nil || article.UserID != *user.ID {
 		if err == nil {
 			err = errors.New("article not found")
 		}
@@ -163,7 +166,7 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 		logger = logger.With().Str("alias", *alias).Logger()
 	}
 
-	webhookConf, err := reg.db.GetOutgoingWebhookByUserAndAlias(uid, alias)
+	webhookConf, err := reg.db.GetOutgoingWebhookByUserAndAlias(*user.ID, alias)
 	if err != nil || webhookConf == nil {
 		if err == nil {
 			err = errors.New("outgoing webhook not found")
@@ -181,8 +184,13 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 	logger.Debug().Msg("sending article...")
 	// HACK: put downloader inside the context
 	// This is needed by some providers (S3 for instance)
-	providerContext := context.WithValue(ctx, constant.ContextDownloader, reg.downloader)
-	err = provider.Send(providerContext, *article)
+	webhookContext := context.WithValue(ctx, constant.ContextDownloader, reg.downloader)
+	// Add user to the context
+	if value := ctx.Value(constant.ContextUser); value == nil {
+		webhookContext = context.WithValue(webhookContext, constant.ContextUser, user)
+	}
+
+	err = provider.Send(webhookContext, *article)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
 		return err
