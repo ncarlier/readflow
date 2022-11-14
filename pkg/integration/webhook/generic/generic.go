@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"text/template"
 	"time"
 
@@ -31,6 +32,7 @@ func isValidContentType(contentType string) bool {
 
 // webhookArticle is the structure definition of a generic Webhook article
 type webhookArticle struct {
+	Href        string     `json:"href,omitempty"`
 	Title       string     `json:"title,omitempty"`
 	Text        *string    `json:"text,omitempty"`
 	HTML        *string    `json:"html,omitempty"`
@@ -49,8 +51,9 @@ type ProviderConfig struct {
 
 // Provider is the structure definition of a Webhook outbound service
 type Provider struct {
-	config ProviderConfig
-	tpl    *template.Template
+	config   ProviderConfig
+	tpl      *template.Template
+	hrefBase string
 }
 
 func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
@@ -81,8 +84,9 @@ func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 	}
 
 	provider := &Provider{
-		config: config,
-		tpl:    tpl,
+		config:   config,
+		tpl:      tpl,
+		hrefBase: strings.Replace(conf.Global.PublicURL, "api.", "", 1),
 	}
 
 	return provider, nil
@@ -91,6 +95,7 @@ func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 // Send article to Webhook endpoint.
 func (whp *Provider) Send(ctx context.Context, article model.Article) error {
 	art := webhookArticle{
+		Href:        fmt.Sprintf("%s/inbox/%d", whp.hrefBase, article.ID),
 		Title:       article.Title,
 		Text:        article.Text,
 		HTML:        article.HTML,

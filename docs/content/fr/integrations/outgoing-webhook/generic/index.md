@@ -14,6 +14,7 @@ Par défaut, l'article est envoyé en JSON selon le format suivant:
 
 ```json
 {
+  "href": "L'URL de l'article sur readflow",
   "title": "Le titre",
   "text": "Le text de l'article (le résumé)",
   "html": "Le contenu HTML de l'article",
