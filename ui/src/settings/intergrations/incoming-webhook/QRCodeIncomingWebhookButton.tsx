@@ -2,14 +2,16 @@ import React, { useCallback, useState } from 'react'
 import { useModal } from 'react-modal-hook'
 
 import { ButtonIcon, ConfirmDialog, Loader } from '../../../components'
-import { fetchAPI } from '../../../helpers'
+import { fetchAPI, withCredentials } from '../../../helpers'
 import { useMessage } from '../../../contexts'
+import { useAuth } from '../../../auth/AuthProvider'
 
 interface Props {
   token: string
 }
 
 export default ({ token }: Props) => {
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [dataURI, setDataURI] = useState('')
   const { showErrorMessage } = useMessage()
@@ -29,7 +31,8 @@ export default ({ token }: Props) => {
   const generateQRCode = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetchAPI('/qr', { t: token }, { method: 'GET' })
+      const headers = withCredentials(user)
+      const res = await fetchAPI('/qr', { t: token }, { method: 'GET', headers })
       if (res.ok) {
         const data = await res.blob()
         setDataURI(window.URL.createObjectURL(data))
