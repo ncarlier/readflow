@@ -12,6 +12,7 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	"github.com/ncarlier/readflow/pkg/model"
 )
@@ -72,7 +73,7 @@ func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 	// Validate format
 	var tpl *template.Template
 	if config.Format != "" {
-		tplName := fmt.Sprintf("webhook-%d", *srv.ID)
+		tplName := fmt.Sprintf("webhook-%s", helper.Hash(config.Format))
 		tpl, err = template.New(tplName).Parse(config.Format)
 		if err != nil {
 			return nil, err
