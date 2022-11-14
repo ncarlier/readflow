@@ -43,7 +43,7 @@ func (pg *DB) CreateCategoryForUser(uid uint, form model.CategoryCreateForm) (*m
 		"user_id", "title",
 	).Values(
 		uid,
-		form.Title,
+		strings.TrimSpace(form.Title),
 	).Suffix(
 		"RETURNING " + strings.Join(categoryColumns, ","),
 	).ToSql()
@@ -57,7 +57,7 @@ func (pg *DB) UpdateCategoryForUser(uid uint, form model.CategoryUpdateForm) (*m
 		"updated_at": "NOW()",
 	}
 	if form.Title != nil {
-		update["title"] = *form.Title
+		update["title"] = strings.TrimSpace(*form.Title)
 	}
 	query, args, _ := pg.psql.Update(
 		"categories",
