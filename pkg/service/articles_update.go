@@ -16,12 +16,11 @@ const unableToUpdateArticleErrorMsg = "unable to update article"
 func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdateForm) (*model.Article, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
-	logger := reg.logger.Info().Uint("uid", uid).Uint("id", form.ID)
-	debug := reg.logger.Debug().Uint("uid", uid).Uint("id", form.ID)
+	logger := reg.logger.With().Uint("uid", uid).Uint("id", form.ID).Logger()
 
 	// Validate update form
 	if err := validateArticleUpdateForm(form); err != nil {
-		logger.Err(err).Msg(unableToUpdateArticleErrorMsg)
+		logger.Info().Err(err).Msg(unableToUpdateArticleErrorMsg)
 		return nil, err
 	}
 
@@ -29,24 +28,23 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 	// TODO manage category deafectation
 	if form.CategoryID != nil {
 		if _, err := reg.GetCategory(ctx, *form.CategoryID); err != nil {
-			logger.Err(err).Msg(unableToUpdateArticleErrorMsg)
+			logger.Info().Err(err).Msg(unableToUpdateArticleErrorMsg)
 			return nil, err
 		}
 	}
 
 	// Update loggers values
-	addLoggerContextForUpdateArticle(logger, form)
-	addLoggerContextForUpdateArticle(debug, form)
+	logger = addLoggerContextForUpdateArticle(logger, form)
 
 	// Update article
-	debug.Msg("updating article...")
+	logger.Debug().Msg("updating article...")
 	article, err := reg.db.UpdateArticleForUser(uid, form)
 	if err != nil {
 		logger.Err(err).Msg(unableToUpdateArticleErrorMsg)
 		return nil, err
 	}
 
-	logger.Msg("article updated")
+	logger.Info().Msg("article updated")
 
 	// Emit update event
 	event.Emit(event.UpdateArticle, *article)
@@ -54,22 +52,24 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 	return article, nil
 }
 
-func addLoggerContextForUpdateArticle(logger *zerolog.Event, form model.ArticleUpdateForm) {
+func addLoggerContextForUpdateArticle(logger zerolog.Logger, form model.ArticleUpdateForm) zerolog.Logger {
+	ctx := logger.With()
 	if form.CategoryID != nil {
-		logger.Uint("category_id", *form.CategoryID)
+		ctx = ctx.Uint("category_id", *form.CategoryID)
 	}
 	if form.Stars != nil {
-		logger.Uint("stars", *form.Stars)
+		ctx = ctx.Uint("stars", *form.Stars)
 	}
 	if form.Status != nil {
-		logger.Str("status", *form.Status)
+		ctx = ctx.Str("status", *form.Status)
 	}
 	if form.Title != nil {
-		logger.Str("title", helper.Truncate(*form.Title, 24))
+		ctx = ctx.Str("title", helper.Truncate(*form.Title, 24))
 	}
 	if form.Text != nil {
-		logger.Str("text", helper.Truncate(*form.Text, 24))
+		ctx = ctx.Str("text", helper.Truncate(*form.Text, 24))
 	}
+	return ctx.Logger()
 }
 
 func validateArticleUpdateForm(form model.ArticleUpdateForm) error {

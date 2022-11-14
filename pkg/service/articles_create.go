@@ -23,8 +23,7 @@ type ArticleCreationOptions struct {
 // CreateArticle creates new article
 func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreateForm, opts ArticleCreationOptions) (*model.Article, error) {
 	uid := getCurrentUserIDFromContext(ctx)
-	logger := reg.logger.Info().Uint("uid", uid).Str("title", form.TruncatedTitle())
-	debug := reg.logger.Debug().Uint("uid", uid).Str("title", form.TruncatedTitle())
+	logger := reg.logger.With().Uint("uid", uid).Str("title", form.TruncatedTitle()).Logger()
 
 	plan, err := reg.GetCurrentUserPlan(ctx)
 	if err != nil {
@@ -36,12 +35,12 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		req := model.ArticlesPageRequest{}
 		totalArticles, err := reg.CountCurrentUserArticles(ctx, req)
 		if err != nil {
-			logger.Err(err).Msg(unableToCreateArticleErrorMsg)
+			logger.Info().Err(err).Msg(unableToCreateArticleErrorMsg)
 			return nil, err
 		}
 		if totalArticles >= plan.TotalArticles {
 			err = ErrUserQuotaReached
-			debug.Err(err).Uint(
+			logger.Debug().Err(err).Uint(
 				"total", totalArticles,
 			).Msg(unableToCreateArticleErrorMsg)
 			return nil, err
@@ -52,7 +51,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	// validate category
 	if form.CategoryID != nil {
 		if _, err := reg.GetCategory(ctx, *form.CategoryID); err != nil {
-			logger.Err(err).Msg(unableToCreateArticleErrorMsg)
+			logger.Info().Err(err).Msg(unableToCreateArticleErrorMsg)
 			return nil, err
 		}
 	}
@@ -60,14 +59,12 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	if form.URL != nil && !form.IsComplete() {
 		// fetch original article in order to extract missing attributes
 		if err := reg.scrapOriginalArticle(ctx, &form); err != nil {
-			logger.Err(err).Msg("unable to fetch original article")
+			logger.Info().Err(err).Msg("unable to fetch original article")
 			// TODO excerpt and image should be extracted from HTML content
 			if !opts.IgnoreHydrateError {
 				return nil, err
 			}
 		}
-		// update logger field
-		logger = logger.Str("title", form.TruncatedTitle())
 	}
 
 	// sanitize HTML content
@@ -80,7 +77,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	if alias := ctx.Value(constant.ContextIncomingWebhookAlias); alias != nil {
 		// process article by the script engine if comming from webhook
 		if ops, err = reg.processArticleByScriptEngine(ctx, alias.(string), &form); err != nil {
-			debug.Err(err).Msg("unable to process article by script engine")
+			logger.Debug().Err(err).Msg("unable to process article by script engine")
 			text := err.Error()
 			if form.Text != nil {
 				text = fmt.Sprintf("%s\n%s", text, *form.Text)
@@ -95,18 +92,18 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	// exec set operations
 	reg.execSetOperations(ctx, ops, &form)
 
-	debug.Msg("creating article...")
+	logger.Debug().Msg("creating article...")
 	// persist article
 	article, err := reg.db.CreateArticleForUser(uid, form)
 	if err != nil {
-		logger.Err(err).Msg(unableToCreateArticleErrorMsg)
+		logger.Error().Err(err).Msg(unableToCreateArticleErrorMsg)
 		return nil, err
 	}
-	logger.Uint("id", article.ID).Msg("article created")
+	logger.Info().Uint("id", article.ID).Msg("article created")
 	// exec asynchronously other operations
 	go func() {
 		if err := reg.execOtherOperations(ctx, ops, article); err != nil {
-			logger.Err(err).Msg(unableToCreateArticleErrorMsg)
+			logger.Info().Err(err).Msg(unableToCreateArticleErrorMsg)
 		}
 	}()
 	event.Emit(event.CreateArticle, *article)
