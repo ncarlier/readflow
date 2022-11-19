@@ -1,0 +1,9 @@
+
+.menu_item {
+  display: flex;
+  align-items: center;
+}
+
+.menu_item span, .menu_item kbd, .menu_item i {
+  margin: 8px;
+}

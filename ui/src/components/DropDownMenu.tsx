@@ -43,7 +43,7 @@ export const DropDownMenu: FC<Props> = (props) => {
     (e: MouseEvent) => {
       const $el = e.target
       if (!($el instanceof Element)) return
-      if (ref.current) {
+      if (ref.current && !ref.current.contains($el)) {
         /*
         const isButton = $el.parentElement && $el.parentElement.tagName === 'BUTTON'
         const $details = $el.closest('details')

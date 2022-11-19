@@ -18,7 +18,7 @@
   composes: container from global;
   position: absolute;
   z-index: 99;
-  width: auto;
+  width: max-content;
   font-weight: 400;
   font-size: initial;
   background-color: var(--panel-body-color);

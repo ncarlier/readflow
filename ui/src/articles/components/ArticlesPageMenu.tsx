@@ -1,12 +1,10 @@
-import React, { SyntheticEvent, useCallback } from 'react'
-import { Location } from 'history'
+import React, { useCallback } from 'react'
 import { useMutation } from '@apollo/client'
 import { useModal } from 'react-modal-hook'
-import { Link, useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import { ConfirmDialog, DropDownMenu, Kbd, LinkIcon } from '../../components'
 import {
-  DisplayMode,
   DisplayPreference,
   DisplayPreferences,
   SortBy,
@@ -23,6 +21,11 @@ import {
 } from '../models'
 import { MarkAllArticlesAsRead } from '../queries'
 import { updateCacheAfterMarkAllAsRead } from '../cache'
+import { DropDownMenuItem } from '../../components/DropDownMenuItem'
+import { ToggleDisplayMode } from './ToggleDisplayMode'
+import { ToggleSortOrder } from './ToggleSortOrder'
+import { ToggleSortBy } from './ToggleSortBy'
+import { ToggleView } from './ToggleView'
 
 type Variant = keyof DisplayPreferences
 
@@ -30,55 +33,6 @@ interface Props {
   refresh: () => void
   req: GetArticlesRequest
   variant: Variant
-}
-
-function revertSortOrder(order: SortOrder | null) {
-  return order === 'asc' ? 'desc' : 'asc'
-}
-
-function revertSortBy(by: SortBy | null) {
-  return by === 'key' ? 'stars' : 'key'
-}
-
-function revertStatus(status: string | null) {
-  return status === 'inbox' ? 'read' : 'inbox'
-}
-
-function revertDisplayMode(mode: DisplayMode | null) {
-  return mode === 'grid' ? 'list' : 'grid'
-}
-
-function getSortByMessage(req: GetArticlesRequest) {
-  return req.sortBy === 'stars' ? 'Sort by date' : 'Sort by stars'
-}
-
-function getSortOrderMessage(req: GetArticlesRequest) {
-  if (req.sortBy === 'stars') {
-    return req.sortOrder === 'asc' ? 'More stars first' : 'Less stars first'
-  }
-  return req.sortOrder === 'asc' ? 'Recent articles first' : 'Older articles first'
-}
-
-function getDisplayModeMessage(mode: DisplayMode) {
-  return mode === 'grid' ? 'Display as list' : 'Display as grid'
-}
-
-function getLocationWithSortByParam(loc: Location, by: SortBy) {
-  const params = new URLSearchParams(loc.search)
-  params.set('by', by)
-  return { ...loc, search: params.toString() }
-}
-
-function getLocationWithSortOrderParam(loc: Location, order: SortOrder) {
-  const params = new URLSearchParams(loc.search)
-  params.set('sort', order)
-  return { ...loc, search: params.toString() }
-}
-
-function getLocationWithStatusParam(loc: Location, status: ArticleStatus) {
-  const params = new URLSearchParams(loc.search)
-  params.set('status', status)
-  return { ...loc, search: params.toString() }
 }
 
 export const ArticlesPageMenu = (props: Props) => {
@@ -128,42 +82,32 @@ export const ArticlesPageMenu = (props: Props) => {
     }
   }, [markAllArticlesAsReadMutation, req, refresh, showErrorMessage])
 
-  const toggleSortBy = useCallback(
-    (event: SyntheticEvent | KeyboardEvent) => {
-      event.preventDefault()
-      const by = revertSortBy(req.sortBy)
-      setDisplayPreference({ by })
-      push(getLocationWithSortByParam(loc, revertSortBy(req.sortBy)))
-    },
-    [loc, req, push, setDisplayPreference]
-  )
+  const handleChangeSortOrder = useCallback((order: SortOrder) => {
+    setDisplayPreference({order})
+    const params = new URLSearchParams(loc.search)
+    params.set('sort', order)
+    push({ ...loc, search: params.toString() })
+  }, [loc, setDisplayPreference, push])
+  
+  const handleChangeSortBy = useCallback((by: SortBy) => {
+    setDisplayPreference({by})
+    const params = new URLSearchParams(loc.search)
+    params.set('by', by)
+    push({ ...loc, search: params.toString() })
+  }, [loc, setDisplayPreference, push])
+  
+  const handleChangeView = useCallback((view: ArticleStatus | 'starred') => {
+    const params = new URLSearchParams(loc.search)
+    if (view == 'starred') {
+      params.set('starred', 'true')
+      params.delete('status')
+    } else {
+      params.set('status', view)
+      params.delete('starred')
+    }
+      push({ ...loc, search: params.toString() })
+  }, [loc, setDisplayPreference, push])
 
-  const toggleSortOrder = useCallback(
-    (event: SyntheticEvent | KeyboardEvent) => {
-      event.preventDefault()
-      const order = revertSortOrder(req.sortOrder)
-      setDisplayPreference({ order })
-      push(getLocationWithSortOrderParam(loc, revertSortOrder(req.sortOrder)))
-    },
-    [loc, req, push, setDisplayPreference]
-  )
-
-  const toggleDisplayMode = useCallback(
-    (event: SyntheticEvent | KeyboardEvent) => {
-      event.preventDefault()
-      const mode = revertDisplayMode(getDisplayPreference().mode)
-      setDisplayPreference({ mode })
-    },
-    [getDisplayPreference, setDisplayPreference]
-  )
-
-  const toggleStatus = useCallback(
-    (event: SyntheticEvent | KeyboardEvent) => {
-      event.preventDefault()
-      push(getLocationWithStatusParam(loc, revertStatus(req.status)))
-    },
-    [loc, req, push]
-  )
   const [showMarkAllAsReadDialog, hideMarkAllAsReadDialog] = useModal(() => (
     <ConfirmDialog
       title="Mark all as read?"
@@ -184,49 +128,35 @@ export const ArticlesPageMenu = (props: Props) => {
             <Kbd keys="shift+r" onKeypress={refresh} />
           </LinkIcon>
         </li>
-        {variant === 'starred' && (
+        {!!req.category && (
           <li>
-            <LinkIcon
-              as={Link}
-              to={getLocationWithSortByParam(loc, revertSortBy(req.sortBy))}
-              onClick={toggleSortBy}
-              icon="swap_horiz"
-            >
-              <span>{getSortByMessage(req)}</span>
-              <Kbd keys="shift+b" onKeypress={toggleSortBy} />
-            </LinkIcon>
+            <DropDownMenuItem label='View'>
+              <ToggleView value={req.starred ? 'starred' : req.status ?? 'inbox'} onChange={handleChangeView} keys="shift+h" />
+            </DropDownMenuItem>
           </li>
         )}
         <li>
-          <LinkIcon
-            as={Link}
-            to={getLocationWithSortOrderParam(loc, revertSortOrder(req.sortOrder))}
-            onClick={toggleSortOrder}
-            icon="low_priority"
-          >
-            <span>{getSortOrderMessage(req)}</span>
-            <Kbd keys="shift+o" onKeypress={toggleSortOrder} />
-          </LinkIcon>
+          <DropDownMenuItem label='Display as'>
+            <ToggleDisplayMode value={getDisplayPreference().mode} onChange={(mode) => setDisplayPreference({mode})} keys="shift+d" />
+          </DropDownMenuItem>
         </li>
+        {variant === 'starred' && (
+          <li>
+            <DropDownMenuItem label='Sort by'>
+              <ToggleSortBy value={getDisplayPreference().by} onChange={handleChangeSortBy} keys="shift+b" />
+            </DropDownMenuItem>
+          </li>
+        )}
         <li>
-          <LinkIcon onClick={toggleDisplayMode} icon="dashboard">
-            <span>{getDisplayModeMessage(getDisplayPreference().mode)}</span>
-            <Kbd keys="shift+d" onKeypress={toggleDisplayMode} />
-          </LinkIcon>
+          <DropDownMenuItem label='Order '>
+            <ToggleSortOrder value={getDisplayPreference().order} onChange={handleChangeSortOrder} keys="shift+o" />
+          </DropDownMenuItem>
         </li>
         {req.status === 'inbox' && (
           <li>
             <LinkIcon onClick={showMarkAllAsReadDialog} icon="done_all">
               <span>Mark all as read</span>
               <Kbd keys="shift+m" onKeypress={showMarkAllAsReadDialog} />
-            </LinkIcon>
-          </li>
-        )}
-        {!!req.category && !!req.status && (
-          <li>
-            <LinkIcon as={Link} to={getLocationWithStatusParam(loc, revertStatus(req.status))} icon="history">
-              <span>{req.status === 'read' ? 'View inbox articles' : 'View read articles'}</span>
-              <Kbd keys="shift+h" onKeypress={toggleStatus} />
             </LinkIcon>
           </li>
         )}

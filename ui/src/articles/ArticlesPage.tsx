@@ -69,6 +69,10 @@ const buildArticlesRequest = (variant: Variant, props: AllProps, localConfig: Lo
         if (Object.prototype.hasOwnProperty.call(localConfig.display, configKey)) {
           req.sortOrder = getURLParam(params, 'order', localConfig.display[configKey].order)
         }
+        if (getURLParam(params, 'starred', '' as string) === 'true') {
+          req.starred = true
+          req.status = null
+        }
       }
   }
 
@@ -177,7 +181,10 @@ export default (props: AllProps) => {
 
   // Build title
   const nbArticles = data && data.articles ? computeTotalArticles(data, req.status) : 0
-  const variantKey = category && req.status === 'read' ? 'history' : variant
+  let variantKey = variant
+  if (category && req.status === 'read') variantKey = 'history'
+  if (category && req.status === 'to_read') variantKey = 'to_read'
+  if (category && req.starred) variantKey = 'starred'
   const title = variants[variantKey].getTitle(nbArticles) + (category ? ` in "${category?.title}"` : '')
 
   const $header = (
