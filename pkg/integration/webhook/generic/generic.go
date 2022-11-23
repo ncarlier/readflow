@@ -8,52 +8,40 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"text/template"
-	"time"
 
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
-	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	"github.com/ncarlier/readflow/pkg/model"
+	"github.com/ncarlier/readflow/pkg/template"
+	_ "github.com/ncarlier/readflow/pkg/template/all"
 )
 
 func isValidContentType(contentType string) bool {
-	switch contentType {
+	switch true {
 	case
-		constant.ContentTypeForm,
-		constant.ContentTypeHTML,
-		constant.ContentTypeJSON,
-		constant.ContentTypeText:
+		contentType == "",
+		strings.HasPrefix(contentType, constant.ContentTypeForm),
+		strings.HasPrefix(contentType, "application/json"),
+		strings.HasPrefix(contentType, "text/"):
 		return true
 	}
 	return false
 }
 
-// webhookArticle is the structure definition of a generic Webhook article
-type webhookArticle struct {
-	Href        string     `json:"href,omitempty"`
-	Title       string     `json:"title,omitempty"`
-	Text        *string    `json:"text,omitempty"`
-	HTML        *string    `json:"html,omitempty"`
-	URL         *string    `json:"url,omitempty"`
-	Image       *string    `json:"image,omitempty"`
-	PublishedAt *time.Time `json:"published_at,omitempty"`
-}
-
 // ProviderConfig is the structure definition of a Webhook configuration
 type ProviderConfig struct {
-	Endpoint    string            `json:"endpoint"`
-	ContentType string            `json:"contentType"`
-	Headers     map[string]string `json:"headers"`
-	Format      string            `json:"format"`
+	Endpoint string            `json:"endpoint"`
+	Headers  map[string]string `json:"headers"`
+	Body     string            `json:"body"`
 }
 
 // Provider is the structure definition of a Webhook outbound service
 type Provider struct {
-	config   ProviderConfig
-	tpl      *template.Template
-	hrefBase string
+	config         ProviderConfig
+	headers        http.Header
+	templateEngine template.Provider
+	hrefBase       string
 }
 
 func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
@@ -68,25 +56,34 @@ func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 		return nil, err
 	}
 
-	// Validate Content-Type
-	if !isValidContentType(config.ContentType) {
-		config.ContentType = constant.ContentTypeJSON
+	// Extract headers
+	headers := http.Header{}
+	for k, v := range config.Headers {
+		headers.Set(k, v)
 	}
 
-	// Validate format
-	var tpl *template.Template
-	if config.Format != "" {
-		tplName := fmt.Sprintf("webhook-%s", helper.Hash(config.Format))
-		tpl, err = template.New(tplName).Parse(config.Format)
+	// Validate Content-Type
+	if !isValidContentType(headers.Get("Content-Type")) {
+		return nil, fmt.Errorf("Content-Type not supported")
+	}
+
+	var templateEngine template.Provider
+	if strings.TrimSpace(config.Body) != "" {
+		// Use template engine if body is not empty
+		templateEngine, err = template.NewTemplateEngine("fast", config.Body)
 		if err != nil {
 			return nil, err
 		}
+	} else {
+		// force content-type to JSON otherwise
+		headers.Set("Content-Type", constant.ContentTypeJSON)
 	}
 
 	provider := &Provider{
-		config:   config,
-		tpl:      tpl,
-		hrefBase: strings.Replace(conf.Global.PublicURL, "api.", "", 1),
+		config:         config,
+		headers:        headers,
+		templateEngine: templateEngine,
+		hrefBase:       strings.Replace(conf.Global.PublicURL, "api.", "", 1),
 	}
 
 	return provider, nil
@@ -94,24 +91,17 @@ func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 
 // Send article to Webhook endpoint.
 func (whp *Provider) Send(ctx context.Context, article model.Article) error {
-	art := webhookArticle{
-		Href:        fmt.Sprintf("%s/inbox/%d", whp.hrefBase, article.ID),
-		Title:       article.Title,
-		Text:        article.Text,
-		HTML:        article.HTML,
-		URL:         article.URL,
-		Image:       article.Image,
-		PublishedAt: article.PublishedAt,
-	}
+	data := article.ToMap()
+	data["href"] = fmt.Sprintf("%s/inbox/%d", whp.hrefBase, article.ID)
 
 	// Build payload
 	b := new(bytes.Buffer)
-	if whp.tpl != nil {
-		if err := whp.tpl.Execute(b, art); err != nil {
+	if whp.templateEngine != nil {
+		if err := whp.templateEngine.Execute(b, data); err != nil {
 			return err
 		}
 	} else {
-		if err := json.NewEncoder(b).Encode(art); err != nil {
+		if err := json.NewEncoder(b).Encode(data); err != nil {
 			return err
 		}
 	}
@@ -122,11 +112,12 @@ func (whp *Provider) Send(ctx context.Context, article model.Article) error {
 		return err
 	}
 
-	// Set headers
+	// Set default headers
 	req.Header.Set("User-Agent", constant.UserAgent)
-	req.Header.Set("Content-Type", whp.config.ContentType)
-	for k, v := range whp.config.Headers {
-		req.Header.Set(k, v)
+	req.Header.Set("Content-Type", constant.ContentTypeJSON)
+	// Set configured headers
+	for k, v := range whp.headers {
+		req.Header.Set(k, v[0])
 	}
 
 	// Do HTTP request

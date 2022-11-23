@@ -2,8 +2,14 @@ import React, { forwardRef, ReactNode, Ref } from 'react'
 import Editor from 'react-simple-code-editor'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
-import evalfilter from './highlight/language'
-hljs.registerLanguage('evalfilter', evalfilter)
+import http_lang from 'highlight.js/lib/languages/http'
+import text_lang from 'highlight.js/lib/languages/plaintext'
+import evalfilter_lang from './highlight/evalfiter'
+import fast_lang from './highlight/fasttemplate'
+hljs.registerLanguage('script', evalfilter_lang)
+hljs.registerLanguage('headers', http_lang)
+hljs.registerLanguage('template', fast_lang)
+hljs.registerLanguage('text', text_lang)
 
 import { BaseInputProps, Omit } from 'react-use-form-state'
 
@@ -11,6 +17,7 @@ import { classNames } from '../helpers'
 
 interface Props {
   label: string
+  language?: 'script' | 'headers' | 'template' | 'text'
   required?: boolean
   readOnly?: boolean
   pattern?: string
@@ -22,19 +29,19 @@ interface Props {
 type AllProps = Props & Omit<BaseInputProps<any>, 'type'>
 
 export const FormCodeEditorField = forwardRef((props: AllProps, ref: Ref<any>) => {
-  const { error, label, children, ...rest } = { ...props, ref }
+  const { error, label, children, language = 'text', ...rest } = { ...props, ref }
 
   const className = classNames('form-group', error ? 'has-error' : null)
 
   return (
     <div className={className}>
-      <label htmlFor={rest.name} className="control-label-alt">
+      <label htmlFor={rest.name} className="control-label alt">
         {label}
       </label>
       <Editor
         {...rest}
         onValueChange={code => rest.value = code}
-        highlight={code => hljs.highlight(code, {language: 'evalfilter'}).value}
+        highlight={code => hljs.highlight(code, {language}).value}
       />
       <i className="bar" />
       {!!error && <><span className="helper">{error}</span><br /></>}

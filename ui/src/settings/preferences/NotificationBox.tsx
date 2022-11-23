@@ -141,8 +141,6 @@ const NotificationBox = () => (
   <Box title="Notifications">
     <p>
       Receive notifications on your device when new articles are available.
-      <br />
-      You can fine-tune the behavior through the use of categories.
     </p>
     <NotificationSupport>
       <NotificationSwitch />

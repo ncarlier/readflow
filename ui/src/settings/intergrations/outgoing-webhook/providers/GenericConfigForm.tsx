@@ -1,49 +1,60 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import { FormInputField, FormSelectField, FormTextareaField, HelpLink } from '../../../../components'
+import { FormCodeEditorField, FormInputField, HelpLink } from '../../../../components'
+
+interface GenericConfig {
+  endpoint: string
+  headers: Record<string, string>
+  body: string
+}
 
 interface GenericConfigFormFields {
   endpoint: string
-  contentType: string
-  format?: string
+  headers: string
+  body: string
 }
 
 interface Props {
   onChange(config: any): void
-  config?: GenericConfigFormFields
+  config: GenericConfig
 }
 
-const contentTypes: Map<string, string> = new Map([
-  ['JSON', 'application/json; charset=utf-8'],
-  ['Text', 'text/plain; charset=utf-8'],
-  ['HTML', 'text/html; charset=utf-8'],
-])
+const defautHeaders = {
+  'Content-Type': 'application/json',
+}
 
-const ContentTypes = () => (
-  <>
-    {Array.from(contentTypes.keys()).map((key) => (
-      <option key={`content-type-${key}`} value={contentTypes.get(key)}>
-        {key}
-      </option>
-    ))}
-  </>
-)
+const HEADERS_REGEX = /^(\w+(?:-\w+)*: .+\n?)+$/
 
-export const GenericConfigForm = ({ onChange, config }: Props) => {
-  const [formState, { url, select, textarea }] = useFormState<GenericConfigFormFields>(config, {
-    onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
+const validateHeaders = (value: string) => value.trim() && !HEADERS_REGEX.test(value) ? 'Invalid headers definition' : true
+
+export const GenericConfigForm = ({ onChange, config: {endpoint, body, headers = defautHeaders} }: Props) => {
+  const [formState, { url, textarea }] = useFormState<GenericConfigFormFields>({
+    endpoint,
+    body,
+    headers: Object.keys(headers).map(k => `${k}: ${headers[k]}`).join('\n'),
+  }, {
+    onChange: (_e, _stateValues, nextStateValues) => onChange({
+      ...nextStateValues,
+      headers: nextStateValues.headers.split('\n').reduce(
+        (obj: Record<string, string>, line) => {
+          const [k, v] = line.split(': ')
+          obj[k] = v
+          return obj
+        },
+        {}
+      ),
+    }),
   })
 
   return (
     <>
       <FormInputField label="Endpoint" {...url('endpoint')} error={formState.errors.endpoint} required />
-      <FormSelectField label="Content Type" {...select('contentType')} error={formState.errors.contentType} required>
-        <ContentTypes />
-      </FormSelectField>
-      <FormTextareaField label="Format" {...textarea('format')} error={formState.errors.format}>
-        <HelpLink href="https://docs.readflow.app/en/integrations/outgoing-webhook/generic/#format">View format syntax</HelpLink>
-      </FormTextareaField>
+      <FormCodeEditorField label="HTTP headers" language="headers" {...textarea({name: 'headers', validate: validateHeaders})} error={formState.errors.headers} maxLength={1024} >
+      </FormCodeEditorField>
+      <FormCodeEditorField label="HTTP body" language="template" {...textarea('body')} error={formState.errors.body} maxLength={1024} >
+        <HelpLink href="https://docs.readflow.app/en/integrations/outgoing-webhook/generic/#templating">View template syntax</HelpLink>
+      </FormCodeEditorField>
     </>
   )
 }

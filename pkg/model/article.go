@@ -96,9 +96,23 @@ type Article struct {
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
 }
 
+// String convert article to JSON string
 func (a Article) String() string {
 	result, _ := json.Marshal(a)
 	return string(result)
+}
+
+// ToMap convert article to map
+func (a Article) ToMap() map[string]interface{} {
+	return map[string]interface{}{
+		"id":           a.ID,
+		"title":        a.Title,
+		"text":         helper.IfNil(a.Text, ""),
+		"html":         helper.IfNil(a.HTML, ""),
+		"url":          helper.IfNil(a.URL, ""),
+		"image":        helper.IfNil(a.Image, ""),
+		"published_at": helper.IfNil(a.PublishedAt, time.Now()),
+	}
 }
 
 // ArticlesPageRequest request structure for a paginated list of articles
