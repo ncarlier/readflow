@@ -59,7 +59,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	if form.URL != nil && !form.IsComplete() {
 		// fetch original article in order to extract missing attributes
 		if err := reg.scrapOriginalArticle(ctx, &form); err != nil {
-			logger.Info().Err(err).Msg("unable to fetch original article")
+			logger.Info().Err(err).Str("URL", *form.URL).Msg("unable to fetch original article")
 			// TODO excerpt and image should be extracted from HTML content
 			if !opts.IgnoreHydrateError {
 				return nil, err

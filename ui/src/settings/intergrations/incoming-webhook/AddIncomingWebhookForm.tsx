@@ -74,7 +74,7 @@ export default ({ history }: AllProps) => {
         {errorMessage != null && <ErrorPanel title="Unable to add new incoming webhook">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required pattern=".*\S+.*" maxLength={32} autoFocus />
-          <FormCodeEditorField label="Script" {...textarea('script')} error={formState.errors.script} required pattern=".*\S+.*" maxLength={1024} >
+          <FormCodeEditorField label="Script" language="script" {...textarea('script')} error={formState.errors.script} required pattern=".*\S+.*" maxLength={1024} >
             <HelpLink href="https://docs.readflow.app/en/integrations/incoming-webhook/scripting/">View script syntax</HelpLink>
           </FormCodeEditorField>
         </form>
