@@ -107,11 +107,11 @@ func (a Article) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		"id":           a.ID,
 		"title":        a.Title,
-		"text":         helper.IfNil(a.Text, ""),
-		"html":         helper.IfNil(a.HTML, ""),
-		"url":          helper.IfNil(a.URL, ""),
-		"image":        helper.IfNil(a.Image, ""),
-		"published_at": helper.IfNil(a.PublishedAt, time.Now()),
+		"text":         helper.PtrValueOr(a.Text, ""),
+		"html":         helper.PtrValueOr(a.HTML, ""),
+		"url":          helper.PtrValueOr(a.URL, ""),
+		"image":        helper.PtrValueOr(a.Image, ""),
+		"published_at": helper.PtrValueOr(a.PublishedAt, time.Now()),
 	}
 }
 

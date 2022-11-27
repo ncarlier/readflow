@@ -13,19 +13,11 @@ import (
 
 func mapArticleCreateFromToScriptInput(article *model.ArticleCreateForm) *scripting.ScriptInput {
 	input := scripting.ScriptInput{
-		Title: article.Title,
-	}
-	if article.URL != nil {
-		input.URL = *article.URL
-	}
-	if article.Text != nil {
-		input.Text = *article.Text
-	}
-	if article.HTML != nil {
-		input.HTML = *article.HTML
-	}
-	if article.Origin != nil {
-		input.Origin = *article.Origin
+		Title:  article.Title,
+		URL:    helper.PtrValueOr(article.URL, ""),
+		HTML:   helper.PtrValueOr(article.HTML, ""),
+		Text:   helper.PtrValueOr(article.Text, ""),
+		Origin: helper.PtrValueOr(article.Origin, ""),
 	}
 	if article.Tags != nil {
 		input.Tags = strings.Split(*article.Tags, ",")

@@ -8,8 +8,8 @@ func If[T any](cond bool, vtrue, vfalse T) T {
 	return vfalse
 }
 
-// IfNil return value if obj is nil
-func IfNil[T any](obj *T, fallback T) T {
+// PtrValueOr return value of the pointer or a fallback if nil
+func PtrValueOr[T any](obj *T, fallback T) T {
 	if obj == nil {
 		return fallback
 	}
