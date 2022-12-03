@@ -41,7 +41,7 @@
   },
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false react-scripts start",
-    "dev": "GENERATE_SOURCEMAP=false REACT_APP_AUTHORITY=mock REACT_APP_API_ROOT=http://localhost:8080 react-scripts start",
+    "dev": "GENERATE_SOURCEMAP=false REACT_APP_AUTHORITY=none REACT_APP_API_ROOT=http://localhost:8080 react-scripts start",
     "build": "npm run lint && react-scripts build",
     "test": "react-scripts test",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}"

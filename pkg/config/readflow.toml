@@ -24,8 +24,8 @@ metrics_listen_addr = "${READFLOW_LISTEN_METRICS}"
 ## Authentication method
 # - `mock`: Generic user use for testing
 # - `proxy`: For proxied authentication that use "X-WEBAUTH-USER", "X-Auth-Username", "Remote-User" or "Remote-Name" HTTP header as username
-#            Note: Set 'REACT_APP_AUTHORITY=mock' when bulding UI
 # - `https://...`: Use OpenID Connect provider
+# Note: If the API authentication method is `mock` or `proxy`, then set 'REACT_APP_AUTHORITY=none' when bulding UI. 
 # Default: "https://login.nunux.org/auth/realms/readflow"
 authn = "${READFLOW_AUTHN}"
 

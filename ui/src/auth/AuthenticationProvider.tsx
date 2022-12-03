@@ -7,7 +7,7 @@ import { useOnlineStatus } from '../hooks'
 
 const AuthenticationProvider: FC<PropsWithChildren> = ({ children }) => {
   const offline = !useOnlineStatus()
-  const disabled = AUTHORITY === 'mock'
+  const disabled = AUTHORITY === 'none'
   if (disabled || offline) {
     return <>{children}</>
   }
