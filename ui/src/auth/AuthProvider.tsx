@@ -3,7 +3,7 @@ import React, { createContext, FC, PropsWithChildren, useCallback, useContext, u
 import { Log, SigninRedirectArgs, SignoutRedirectArgs, User, UserManager } from 'oidc-client-ts'
 
 import { config } from './oidc-configuration'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 Log.setLogger(console)
 Log.setLevel(Log.WARN)
@@ -20,7 +20,6 @@ const getErrorParam = (search: string): string | null => {
 
 interface AuthContextType {
   user: User | null
-  isAuthenticated: boolean
   isLoading: boolean
   error?: any
   login: (args?: SigninRedirectArgs | undefined) => Promise<void>
@@ -33,50 +32,61 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [userManager] = useState(() => new UserManager(config))
   const [user, setUser] = useState<User | null>(null)
   const [error, setError] = useState<any>()
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const { search } = useLocation()
-
-  useEffect(() => {
-    if (!userManager) return
-    if (isAuthenticated) return
-    ;(async () => {
-      setIsLoading(true)
-      //console.debug('auth provider logic...')
-      try {
-        const error = getErrorParam(search)
-        if (error) {
-          console.error('error callback from Authority server:', error)
-          await userManager.removeUser()
-          throw error
-        }
-        if (hasAuthParams(search)) {
-          console.info('callback from Authority server: sign in...')
-          const user = await userManager.signinCallback()
-          if (user) {
-            // clear query params
-            window.history.replaceState(null, '', window.location.pathname)
-            console.debug('logged user:', user.profile?.preferred_username)
-          }
-          return
-        }
-        const user = await userManager.getUser()
-        if (user) {
-          console.debug('current user:', user?.profile.preferred_username)
-          setIsAuthenticated(!user.expired)
-          setUser(user)
-          return
-        }
-      } catch (err) {
-        setError(err)
-      } finally {
-        setIsLoading(false)
+  const history = useHistory()
+  
+  const login = useCallback(userManager.signinRedirect.bind(userManager), [userManager])
+  const logout = useCallback(userManager.signoutRedirect.bind(userManager), [userManager])
+  const handleLoginFlow = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      // handle error callback:
+      const error = getErrorParam(search)
+      if (error) {
+        console.error('error callback from Authority server:', error)
+        await userManager.removeUser()
+        throw error
       }
-    })()
-  }, [userManager, isAuthenticated, search])
+      // handle login callback:
+      if (hasAuthParams(search)) {
+        console.info('callback from Authority server: sign in...')
+        const user = await userManager.signinCallback()
+        if (user) {
+          console.debug('logged user:', user.profile?.preferred_username)
+          setUser(user)
+          history.replace({
+            search: '',
+          })
+          return
+        }
+      }
+      // otherwise handle user state:
+      const user = await userManager.getUser()
+      if (user) {
+        console.debug('authenticated user:', user?.profile.preferred_username)
+        setUser(user)
+      } else {
+        console.info('user not authenticated, redirecting to sign-in page...')
+        await userManager.signinRedirect()
+      }
+    } catch (err) {
+      setError(err)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [userManager, search])
 
+  // main login flow
   useEffect(() => {
-    if (!userManager) return
+    if (isLoading) return
+    console.info('exectuting login flow')
+    handleLoginFlow()
+  }, [isLoading, handleLoginFlow])
+
+  // userManager events handlers:
+  useEffect(() => {
+    if (!user) return
     // event UserSignedOut (e.g. external sign out)
     const handleUserSignedOut = () => {
       console.log('user signed out from Authority server: sign out...')
@@ -85,21 +95,19 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     userManager.events.addUserSignedOut(handleUserSignedOut)
     // event UserLoaded (e.g. initial load, silent renew success)
     const handleUserLoaded = (user: User) => {
-      //console.debug('UserLoaded', user, user.expired)
-      setIsAuthenticated(!user.expired)
+      console.debug('UserLoaded', user, user.expired)
       setUser(user)
     }
     userManager.events.addUserLoaded(handleUserLoaded)
     // event UserUnloaded (e.g. userManager.removeUser)
     const handleUserUnloaded = () => {
-      //console.debug('UserUnLoaded')
-      setIsAuthenticated(false)
+      console.debug('UserUnLoaded')
       setUser(null)
     }
     userManager.events.addUserUnloaded(handleUserUnloaded)
     // event SilentRenewError (silent renew error)
     const handleSilentRenewError = (err: Error) => {
-      //console.debug('SilentRenewError', err)
+      console.debug('SilentRenewError', err)
       setError(err)
     }
     userManager.events.addSilentRenewError(handleSilentRenewError)
@@ -113,21 +121,17 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
       userManager.events.removeUserUnloaded(handleUserUnloaded)
       userManager.events.removeSilentRenewError(handleSilentRenewError)
     }
-  }, [userManager])
-
-  const login = useCallback(userManager.signinRedirect.bind(userManager), [userManager])
-  const logout = useCallback(userManager.signoutRedirect.bind(userManager), [userManager])
+  }, [user, userManager])
 
   const value = useMemo(
     () => ({
       user,
       isLoading,
-      isAuthenticated,
       error,
       login,
       logout,
     }),
-    [user, isLoading, isAuthenticated, error, login, logout]
+    [user, isLoading, error, login, logout]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
