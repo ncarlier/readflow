@@ -1,4 +1,4 @@
-import React, { createContext, FC, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { createContext, FC, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Log, SigninRedirectArgs, SignoutRedirectArgs, User, UserManager } from 'oidc-client-ts'
 
@@ -78,15 +78,17 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [userManager, search])
 
   // main login flow
+  const didInitialize = useRef<boolean>(false)
   useEffect(() => {
-    if (isLoading) return
+    if (didInitialize.current) return
+    didInitialize.current = true
     console.info('exectuting login flow')
     handleLoginFlow()
-  }, [isLoading, handleLoginFlow])
+  }, [handleLoginFlow])
 
   // userManager events handlers:
   useEffect(() => {
-    if (!user) return
+    if (!userManager) return
     // event UserSignedOut (e.g. external sign out)
     const handleUserSignedOut = () => {
       console.log('user signed out from Authority server: sign out...')
@@ -95,19 +97,19 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     userManager.events.addUserSignedOut(handleUserSignedOut)
     // event UserLoaded (e.g. initial load, silent renew success)
     const handleUserLoaded = (user: User) => {
-      console.debug('UserLoaded', user, user.expired)
+      //console.debug('UserLoaded', user, user.expired)
       setUser(user)
     }
     userManager.events.addUserLoaded(handleUserLoaded)
     // event UserUnloaded (e.g. userManager.removeUser)
     const handleUserUnloaded = () => {
-      console.debug('UserUnLoaded')
+      //console.debug('UserUnLoaded')
       setUser(null)
     }
     userManager.events.addUserUnloaded(handleUserUnloaded)
     // event SilentRenewError (silent renew error)
     const handleSilentRenewError = (err: Error) => {
-      console.debug('SilentRenewError', err)
+      //console.debug('SilentRenewError', err)
       setError(err)
     }
     userManager.events.addSilentRenewError(handleSilentRenewError)
@@ -121,7 +123,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
       userManager.events.removeUserUnloaded(handleUserUnloaded)
       userManager.events.removeSilentRenewError(handleSilentRenewError)
     }
-  }, [user, userManager])
+  }, [userManager])
 
   const value = useMemo(
     () => ({
