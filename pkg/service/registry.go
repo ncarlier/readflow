@@ -36,7 +36,7 @@ type Registry struct {
 
 // Configure the global service registry
 func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) error {
-	webScraper, err := scraper.NewWebScraper(conf.Integration.ExternalWebScraperURL)
+	webScraper, err := scraper.NewWebScraper(constant.DefaultClient, conf.Integration.ExternalWebScraperURL)
 	if err != nil {
 		return err
 	}

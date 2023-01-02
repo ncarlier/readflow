@@ -2,6 +2,7 @@ package scraper
 
 import (
 	"context"
+	"net/http"
 )
 
 // WebPage is the result of a web scraping
@@ -23,9 +24,9 @@ type WebScraper interface {
 }
 
 // NewWebScraper create new Web Scraping service
-func NewWebScraper(uri string) (WebScraper, error) {
+func NewWebScraper(httpClient *http.Client, uri string) (WebScraper, error) {
 	if uri == "" {
-		return NewInternalWebScraper(), nil
+		return NewInternalWebScraper(httpClient), nil
 	}
-	return NewExternalWebScraper(uri)
+	return NewExternalWebScraper(httpClient, uri)
 }

@@ -6,12 +6,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/scraper"
 )
 
 func TestInternalScraper(t *testing.T) {
 	ctx := context.TODO()
-	page, err := scraper.NewInternalWebScraper().Scrap(ctx, "https://about.readflow.app/")
+	page, err := scraper.NewInternalWebScraper(constant.DefaultClient).Scrap(ctx, "https://about.readflow.app/")
 	assert.Nil(t, err)
 	assert.NotNil(t, page)
 	assert.Equal(t, "https://about.readflow.app/", page.URL)

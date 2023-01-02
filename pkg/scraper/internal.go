@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 
 	"github.com/go-shiori/dom"
 	read "github.com/go-shiori/go-readability"
@@ -20,17 +19,13 @@ type internalWebScraper struct {
 }
 
 // NewInternalWebScraper create an internal web scrapping service
-func NewInternalWebScraper() WebScraper {
+func NewInternalWebScraper(httpClient *http.Client) WebScraper {
 	return &internalWebScraper{
-		httpClient: &http.Client{
-			Timeout: constant.DefaultTimeout,
-		},
+		httpClient: httpClient,
 	}
 }
 
 func (ws internalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage, error) {
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
-	defer cancel()
 	// Validate URL
 	_, err := url.ParseRequestURI(rawurl)
 	if err != nil {

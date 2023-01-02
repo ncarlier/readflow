@@ -1,12 +1,20 @@
 package constant
 
-import "time"
+import (
+	"net/http"
+	"time"
+)
 
 // UserAgent used by HTTP client
 const UserAgent = "Mozilla/5.0 (compatible; Readflow/1.0; +https://github.com/ncarlier/readflow)"
 
 // DefaultTimeout for HTTP requests
 const DefaultTimeout = time.Duration(5 * time.Second)
+
+// DefaultClient is the default HTTP client
+var DefaultClient = &http.Client{
+	Timeout: DefaultTimeout,
+}
 
 const (
 	// ContentTypeBinary for binary Content-Type

@@ -129,6 +129,8 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleCre
 
 // scrapOriginalArticle add missing attributes form original article
 func (reg *Registry) scrapOriginalArticle(ctx context.Context, article *model.ArticleCreateForm) error {
+	ctx, cancel := context.WithTimeout(ctx, constant.DefaultTimeout)
+	defer cancel()
 	page, err := reg.webScraper.Scrap(ctx, *article.URL)
 	if page == nil {
 		return err
