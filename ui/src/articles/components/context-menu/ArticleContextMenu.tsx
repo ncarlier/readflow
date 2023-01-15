@@ -16,7 +16,7 @@ interface Props {
 
 export const ArticleContextMenu = (props: Props) => {
   const nvg: any = window.navigator
-  const title = 'More actions...'
+  const title = 'More actions ...'
   const isOnline = !props.article.isOffline
   
   return (

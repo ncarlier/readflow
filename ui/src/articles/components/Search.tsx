@@ -42,7 +42,7 @@ export const Search = ({ req }: Props) => {
         <Icon name="search" />
       </div>
       <form onSubmit={handleOnSubmit}>
-        <input {...search('query')} placeholder="Search..." autoFocus={!!req.query} />
+        <input {...search('query')} placeholder="Search ..." autoFocus={!!req.query} />
       </form>
     </div>
   )

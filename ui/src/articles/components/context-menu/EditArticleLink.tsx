@@ -19,7 +19,7 @@ export const EditArticleLink = ({ keyboard, showEditModal }: Props) => {
 
   return (
     <LinkIcon title="Edit article" icon="edit" onClick={handleOnClick}>
-      <span>Edit article...</span>
+      <span>Edit article ...</span>
       {keyboard && <Kbd keys="e" onKeypress={showEditModal} />}
     </LinkIcon>
   )

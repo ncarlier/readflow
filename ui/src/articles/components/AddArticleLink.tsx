@@ -51,7 +51,7 @@ export const AddArticleLink = ({ category, onSuccess }: Props) => {
 
   return (
     <LinkIcon icon="add" onClick={handleOnClick} as={Link} to={'/inbox/add'}>
-      Add new...
+      Add new ...
     </LinkIcon>
   )
 }

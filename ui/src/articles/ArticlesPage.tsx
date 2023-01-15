@@ -136,7 +136,7 @@ export default (props: AllProps) => {
   }, [data, fetchMore, req])
 
   const refresh = useCallback(async () => {
-    console.log('re-fetching articles...')
+    console.log('re-fetching articles ...')
     const { errors } = await refetch()
     if (errors) {
       console.error(errors)

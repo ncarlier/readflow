@@ -41,7 +41,7 @@ const GraphQLProvider: FC<PropsWithChildren> = ({ children }) => {
           message === 'login_required' ||
           message === 'invalid_grant'
         ) {
-          console.warn(`${message}: redirecting to login page...`)
+          console.warn(`${message}: redirecting to login page ...`)
           login()
         }
       }

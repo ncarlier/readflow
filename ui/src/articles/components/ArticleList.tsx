@@ -103,7 +103,7 @@ export const ArticleList = (props: Props) => {
       {(isFetchingMore || loading) && (
         <li>
           <Panel>
-            <Center>Fetching more articles...</Center>
+            <Center>Fetching more articles ...</Center>
           </Panel>
         </li>
       )}
