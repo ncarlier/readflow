@@ -87,7 +87,7 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
   )
 
   const { provider } = formState.values
-  const ProviderConfig = provider ? providers[formState.values.provider].config : null
+  const ProviderConfig = provider ? providers[provider].config : null
 
   return (
     <Panel>
@@ -100,7 +100,7 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
         <form onSubmit={handleOnSubmit}>
           <FormInputField label="Alias" {...text('alias')} error={formState.errors.alias} required pattern=".*\S+.*" maxLength={32} autoFocus />
           <FormSelectField label="Provider" {...select('provider')} error={formState.errors.provider} required>
-            <option>Please select a webhook provider</option>
+            <option value="">Please select a webhook provider</option>
             {Object.entries(providers).map(([key, p]) => <option key={`provider-${key}`} value={key}>{p.label}</option>)}
           </FormSelectField>
           { ProviderConfig && <ProviderConfig onChange={setConfig} config={config} /> }
