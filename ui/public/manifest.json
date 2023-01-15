@@ -39,6 +39,7 @@
   ],
   "share_target": {
     "action": "/inbox/add",
+    "method": "GET",
     "params": {
       "title": "title",
       "text": "text",
