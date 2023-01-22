@@ -4,19 +4,10 @@ import { Log, SigninRedirectArgs, SignoutRedirectArgs, User, UserManager } from 
 
 import { config } from './oidc-configuration'
 import { useHistory, useLocation } from 'react-router-dom'
+import { clearAuthParams, hasAuthParams } from './helper'
 
 Log.setLogger(console)
 Log.setLevel(Log.WARN)
-
-const hasAuthParams = (search: string): boolean => {
-  const params = new URLSearchParams(search)
-  return params.has('code') && params.has('state')
-}
-
-const getErrorParam = (search: string): string | null => {
-  const params = new URLSearchParams(search)
-  return params.get('error')
-}
 
 interface AuthContextType {
   user: User | null
@@ -41,22 +32,24 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const handleLoginFlow = useCallback(async () => {
     setIsLoading(true)
     try {
+      const params = new URLSearchParams(search)
       // handle error callback:
-      const error = getErrorParam(search)
-      if (error) {
+      if (params.has('error')) {
+        const error = params.get('error')
         console.error('error callback from Authority server:', error)
         await userManager.removeUser()
         throw error
       }
       // handle login callback:
-      if (hasAuthParams(search)) {
+      if (hasAuthParams(params)) {
         console.info('callback from Authority server: sign in...')
         const user = await userManager.signinCallback()
         if (user) {
           console.debug('logged user:', user.profile?.preferred_username)
+          clearAuthParams(params)
           setUser(user)
           history.replace({
-            search: '',
+            search: params.toString(),
           })
           return
         }
