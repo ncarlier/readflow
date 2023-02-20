@@ -15,6 +15,7 @@ This script gives control over a set of features:
 - Categorize the article (`setCategory(string)`)
 - Notify connected devices of the article (`sendNotification()`)
 - Call an outgoing webhook (`triggerWebhook(string)`)
+- Disable the global notification policy for this webhook (`disableGlobalNotification()`)
 
 The script expects a boolean value in return.
 This value decides the fate of the article:

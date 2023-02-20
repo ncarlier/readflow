@@ -24,7 +24,7 @@ func (i *Interpreter) buildSingleArgFunction(op OperationName) fnType {
 func (i *Interpreter) buildNoArgFunction(op OperationName) fnType {
 	return func(args []object.Object) object.Object {
 		operations := *i.operations
-		operations = append(operations, *NewOperation(OpSendNotification))
+		operations = append(operations, *NewOperation(op))
 		i.operations = &operations
 		return &object.Void{}
 	}

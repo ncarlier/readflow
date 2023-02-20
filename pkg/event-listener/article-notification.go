@@ -24,6 +24,12 @@ var status string = "inbox"
 func init() {
 	event.Subscribe(event.CreateArticle, func(payload ...interface{}) {
 		if article, ok := payload[0].(model.Article); ok {
+			if len(payload) > 1 {
+				// stop here if global notification is disabled
+				if opts, ok := payload[1].(event.EventOption); ok && opts.Has(event.NoNotification) {
+					return
+				}
+			}
 			uid := article.UserID
 			ctx := context.WithValue(context.TODO(), constant.ContextUserID, uid)
 			req := model.ArticlesPageRequest{Status: &status}

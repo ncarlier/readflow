@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -79,11 +78,4 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 
 func init() {
 	logger.Configure("debug", true, "")
-}
-
-func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv("READFLOW_" + key); ok {
-		return value
-	}
-	return fallback
 }

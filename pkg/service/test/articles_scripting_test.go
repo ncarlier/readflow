@@ -26,8 +26,8 @@ if ( Title ~= /script/i ) {
 }
 return false;
 `, cat.Title)
-	assertNewIncomingWebhook(t, "foo", script)
-	ctx := context.WithValue(testContext, constant.ContextIncomingWebhookAlias, "foo")
+	webhook := assertNewIncomingWebhook(t, "foo", script)
+	ctx := context.WithValue(testContext, constant.ContextIncomingWebhook, webhook)
 
 	// Create article
 	form := model.ArticleCreateForm{

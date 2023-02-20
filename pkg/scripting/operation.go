@@ -16,6 +16,8 @@ const (
 	OpSetTitle
 	// OpSetCategory to set article category
 	OpSetCategory
+	// OpDisableGlobalNotification to disable global notification
+	OpDisableGlobalNotification
 )
 
 // Operation object

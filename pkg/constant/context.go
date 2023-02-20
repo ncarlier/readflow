@@ -9,8 +9,8 @@ const (
 	ContextUser
 	// ContextRequestID is the key used to store request ID into the request context
 	ContextRequestID
-	// ContextIncomingWebhookAlias is the key used to store incoming webhook alias into the request context
-	ContextIncomingWebhookAlias
+	// ContextIncomingWebhook is the key used to store incoming webhook into the request context
+	ContextIncomingWebhook
 	// ContextIsAdmin is true when the user is an admin
 	ContextIsAdmin
 	// ContextDownloader is the key used to store downloader service (uggly hack)

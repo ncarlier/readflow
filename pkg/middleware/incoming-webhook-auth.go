@@ -10,8 +10,8 @@ import (
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
-// APIKeyAuth is a middleware to checks HTTP request with API key
-func APIKeyAuth(inner http.Handler) http.Handler {
+// IncomingWebhookAuth is a middleware to checks HTTP request with API key of an incoming webhook
+func IncomingWebhookAuth(inner http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
@@ -48,7 +48,7 @@ func APIKeyAuth(inner http.Handler) http.Handler {
 			return
 		}
 		ctx = context.WithValue(ctx, constant.ContextUserID, incomingWebhook.UserID)
-		ctx = context.WithValue(ctx, constant.ContextIncomingWebhookAlias, incomingWebhook.Alias)
+		ctx = context.WithValue(ctx, constant.ContextIncomingWebhook, incomingWebhook)
 		ctx = context.WithValue(ctx, constant.ContextIsAdmin, false)
 
 		inner.ServeHTTP(w, r.WithContext(ctx))

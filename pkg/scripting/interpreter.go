@@ -49,6 +49,7 @@ func (i *Interpreter) init() {
 	i.eval.AddFunction("setCategory", i.buildSingleArgFunction(OpSetCategory))
 	i.eval.AddFunction("setTitle", i.buildSingleArgFunction(OpSetTitle))
 	i.eval.AddFunction("setText", i.buildSingleArgFunction(OpSetTitle))
+	i.eval.AddFunction("disableGlobalNotification", i.buildNoArgFunction(OpDisableGlobalNotification))
 }
 
 // Exec a script by the interpreter

@@ -76,7 +76,7 @@ self.addEventListener('message', (event) => {
   switch (event.data.type) {
     // This allows the web app to trigger skipWaiting via
     // registration.waiting.postMessage({type: 'SKIP_WAITING'})
-    case 'SkIP_WAITING':
+    case 'SKIP_WAITING':
       self.skipWaiting()
       break
     case 'CLOSE_NOTIFICATIONS':

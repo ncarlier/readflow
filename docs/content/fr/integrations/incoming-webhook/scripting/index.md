@@ -15,6 +15,7 @@ Ce script donne la main sur un ensemble de fonctionnalités:
 - Catégoriser l'article (`setCategory(string)`)
 - Notifier l'article aux appareils connectés (`sendNotification()`)
 - Appeler un webhook sortant (`triggerWebhook(string)`)
+- Désactiver la politique de notification globale pour ce webhook (`disableGlobalNotification()`)
 
 Le script attend en retour une valeur booléenne.
 Cette valeur décide du sort de l'article:

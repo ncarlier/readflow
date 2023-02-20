@@ -74,9 +74,9 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	}
 
 	var ops scripting.OperationStack
-	if alias := ctx.Value(constant.ContextIncomingWebhookAlias); alias != nil {
+	if webhook, ok := ctx.Value(constant.ContextIncomingWebhook).(*model.IncomingWebhook); ok {
 		// process article by the script engine if comming from webhook
-		if ops, err = reg.processArticleByScriptEngine(ctx, alias.(string), &form); err != nil {
+		if ops, err = reg.processArticleByScriptEngine(ctx, webhook, &form); err != nil {
 			logger.Debug().Err(err).Msg("unable to process article by script engine")
 			text := err.Error()
 			if form.Text != nil {
@@ -106,7 +106,10 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 			logger.Info().Err(err).Msg(unableToCreateArticleErrorMsg)
 		}
 	}()
-	event.Emit(event.CreateArticle, *article)
+	// emit article creation event
+	var evtOpts event.EventOption
+	evtOpts.AddIf(event.NoNotification, ops.Contains(scripting.OpDisableGlobalNotification))
+	event.Emit(event.CreateArticle, *article, evtOpts)
 	return article, nil
 }
 

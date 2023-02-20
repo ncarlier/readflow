@@ -26,16 +26,8 @@ func mapArticleCreateFromToScriptInput(article *model.ArticleCreateForm) *script
 }
 
 // processArticleByScriptEngine apply user's script on the article
-func (reg *Registry) processArticleByScriptEngine(ctx context.Context, alias string, article *model.ArticleCreateForm) (scripting.OperationStack, error) {
-	uid := getCurrentUserIDFromContext(ctx)
-
+func (reg *Registry) processArticleByScriptEngine(ctx context.Context, webhook *model.IncomingWebhook, article *model.ArticleCreateForm) (scripting.OperationStack, error) {
 	noops := scripting.OperationStack{}
-
-	// retrieve webhook
-	webhook, err := reg.db.GetIncomingWebhookByUserAndAlias(uid, alias)
-	if err != nil || webhook == nil {
-		return noops, err
-	}
 
 	// limit execution time to 1 sec
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(time.Second))

@@ -68,7 +68,7 @@ func TestUpdateArticleWithBadCategory(t *testing.T) {
 		CategoryID: &catID,
 	}
 	// Update article
-	art, err := service.Lookup().UpdateArticle(testContext, update)
+	_, err := service.Lookup().UpdateArticle(testContext, update)
 	assert.NotNil(t, err)
 	assert.Contains(t, err.Error(), "category not found")
 }

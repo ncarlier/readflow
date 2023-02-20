@@ -140,7 +140,7 @@ const NotificationSwitch = () => {
 const NotificationBox = () => (
   <Box title="Notifications">
     <p>
-      Receive notifications on your device when new articles are available.
+      Receive notifications on this device.
     </p>
     <NotificationSupport>
       <NotificationSwitch />
