@@ -15,6 +15,6 @@ var (
 	ErrUserQuotaReached = errors.New("user quota reached")
 	// ErrOutgoingWebhookSend if an article can not be send to the outgoing webhook
 	ErrOutgoingWebhookSend = errors.New("unable to send article to outgoing webhook")
-	// ErrArticleArchiving if an article can not be archived
-	ErrArticleArchiving = errors.New("unable to archive article")
+	// ErrArticleDownload if an article can not be downloaded
+	ErrArticleDownload = errors.New("unable to download article")
 )

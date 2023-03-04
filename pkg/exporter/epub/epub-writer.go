@@ -17,6 +17,7 @@ type epubItem struct {
 	Filename    string
 }
 
+// Writer of a ePub format
 type Writer struct {
 	id      string
 	title   string
@@ -24,6 +25,7 @@ type Writer struct {
 	items   []epubItem
 }
 
+// NewWriter create new ePub writer
 func NewWriter(w io.Writer, title string) (*Writer, error) {
 	// create ZIP archive
 	archive := zip.NewWriter(w)
@@ -49,6 +51,7 @@ func NewWriter(w io.Writer, title string) (*Writer, error) {
 	}, nil
 }
 
+// NewContainer create new ePub container
 func (w *Writer) NewContainer() error {
 	f, err := w.archive.Create("META-INF/container.xml")
 	if err != nil {
@@ -58,6 +61,7 @@ func (w *Writer) NewContainer() error {
 	return err
 }
 
+// NewItem create new ePub container item
 func (w *Writer) NewItem(filename string, ContentType string) (io.Writer, error) {
 	w.items = append(w.items, epubItem{
 		Filename:    filename,
@@ -66,6 +70,7 @@ func (w *Writer) NewItem(filename string, ContentType string) (io.Writer, error)
 	return w.archive.Create(contentDir + filename)
 }
 
+// WriteOPF write ePub file
 func (w *Writer) WriteOPF(filename string, spineRef string) error {
 	f, err := w.archive.Create(contentDir + filename)
 	if err != nil {
@@ -80,6 +85,7 @@ func (w *Writer) WriteOPF(filename string, spineRef string) error {
 	})
 }
 
+// Close the writer
 func (w *Writer) Close() error {
 	return w.archive.Close()
 }
