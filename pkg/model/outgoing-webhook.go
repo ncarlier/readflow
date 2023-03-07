@@ -2,18 +2,21 @@ package model
 
 import (
 	"time"
+
+	"github.com/ncarlier/readflow/pkg/secret"
 )
 
 // OutgoingWebhook structure definition
 type OutgoingWebhook struct {
-	ID        *uint      `json:"id,omitempty"`
-	UserID    *uint      `json:"user_id,omitempty"`
-	Alias     string     `json:"alias,omitempty"`
-	IsDefault bool       `json:"is_default,omitempty"`
-	Provider  string     `json:"provider,omitempty"`
-	Config    string     `json:"config,omitempty"`
-	CreatedAt *time.Time `json:"created_at,omitempty"`
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	ID        *uint          `json:"id,omitempty"`
+	UserID    *uint          `json:"user_id,omitempty"`
+	Alias     string         `json:"alias,omitempty"`
+	IsDefault bool           `json:"is_default,omitempty"`
+	Provider  string         `json:"provider,omitempty"`
+	Config    string         `json:"config,omitempty"`
+	Secrets   secret.Secrets `json:"-"`
+	CreatedAt *time.Time     `json:"created_at,omitempty"`
+	UpdatedAt *time.Time     `json:"updated_at,omitempty"`
 }
 
 // OutgoingWebhookCreateForm structure definition
@@ -22,6 +25,7 @@ type OutgoingWebhookCreateForm struct {
 	IsDefault bool
 	Provider  string
 	Config    string
+	Secrets   secret.Secrets
 }
 
 // OutgoingWebhookUpdateForm structure definition
@@ -31,6 +35,7 @@ type OutgoingWebhookUpdateForm struct {
 	IsDefault *bool
 	Provider  *string
 	Config    *string
+	Secrets   *secret.Secrets
 }
 
 // OutgoingWebhookCreateFormBuilder is a builder to create an outgoing webhook create form
@@ -40,7 +45,9 @@ type OutgoingWebhookCreateFormBuilder struct {
 
 // NewOutgoingWebhookCreateFormBuilder creates new outgoing webhook builder instance
 func NewOutgoingWebhookCreateFormBuilder() OutgoingWebhookCreateFormBuilder {
-	form := &OutgoingWebhookCreateForm{}
+	form := &OutgoingWebhookCreateForm{
+		Secrets: make(secret.Secrets),
+	}
 	return OutgoingWebhookCreateFormBuilder{form}
 }
 
@@ -67,6 +74,12 @@ func (ab *OutgoingWebhookCreateFormBuilder) Config(config string) *OutgoingWebho
 	return ab
 }
 
+// Secrets set secrets
+func (ab *OutgoingWebhookCreateFormBuilder) Secrets(secrets secret.Secrets) *OutgoingWebhookCreateFormBuilder {
+	ab.form.Secrets = secrets
+	return ab
+}
+
 // IsDefault set is default
 func (ab *OutgoingWebhookCreateFormBuilder) IsDefault(isDefault bool) *OutgoingWebhookCreateFormBuilder {
 	ab.form.IsDefault = isDefault
@@ -77,5 +90,6 @@ func (ab *OutgoingWebhookCreateFormBuilder) IsDefault(isDefault bool) *OutgoingW
 func (ab *OutgoingWebhookCreateFormBuilder) Dummy() *OutgoingWebhookCreateFormBuilder {
 	ab.form.Provider = "dummy"
 	ab.form.Config = "{\"foo\": \"bar\"}"
+	ab.form.Secrets["foo"] = "bar"
 	return ab
 }

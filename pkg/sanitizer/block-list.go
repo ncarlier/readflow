@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/bits-and-blooms/bloom/v3"
+	"github.com/ncarlier/readflow/pkg/helper"
 )
 
 var DefaultBlockList = []string{
@@ -27,7 +28,7 @@ func NewBlockList(location string, init []string) (*BlockList, error) {
 		return nil, nil
 	}
 	// open block-list file
-	input, err := open(location)
+	input, err := helper.OpenResource(location)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +37,7 @@ func NewBlockList(location string, init []string) (*BlockList, error) {
 	// count number of lines
 	var buf bytes.Buffer
 	tee := io.TeeReader(input, &buf)
-	size, err := countLines(tee)
+	size, err := helper.CountLines(tee)
 	if err != nil {
 		return nil, err
 	}

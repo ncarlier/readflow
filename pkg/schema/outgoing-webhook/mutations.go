@@ -6,6 +6,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/schema"
+	"github.com/ncarlier/readflow/pkg/secret"
 
 	"github.com/graphql-go/graphql"
 	"github.com/ncarlier/readflow/pkg/service"
@@ -27,6 +28,9 @@ var createOrUpdateOutgoingWebhookMutationField = &graphql.Field{
 		"config": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.String),
 		},
+		"secrets": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(graphql.String),
+		},
 		"is_default": &graphql.ArgumentConfig{
 			Type:         graphql.Boolean,
 			DefaultValue: false,
@@ -40,18 +44,29 @@ func createOrUpdateOutgoingWebhookResolver(p graphql.ResolveParams) (interface{}
 	provider := helper.GetGQLStringParameter("provider", p.Args)
 	config := helper.GetGQLStringParameter("config", p.Args)
 	isDefault := helper.GetGQLBoolParameter("is_default", p.Args)
+
+	// decode secrets
+	secretsParams := helper.GetGQLStringParameter("secrets", p.Args)
+	secrets := make(secret.Secrets)
+	if secretsParams != nil {
+		if err := secrets.Scan(secretsParams); err != nil {
+			return nil, errors.New("invalid secrets")
+		}
+	}
+
 	if id, ok := helper.ConvGQLStringToUint(p.Args["id"]); ok {
 		form := model.OutgoingWebhookUpdateForm{
 			ID:        id,
 			Alias:     alias,
 			Provider:  provider,
 			Config:    config,
+			Secrets:   &secrets,
 			IsDefault: isDefault,
 		}
 		return service.Lookup().UpdateOutgoingWebhook(p.Context, form)
 	}
 	builder := model.NewOutgoingWebhookCreateFormBuilder()
-	builder.Alias(*alias).Provider(*provider).Config(*config)
+	builder.Alias(*alias).Provider(*provider).Config(*config).Secrets(secrets)
 	if isDefault != nil && *isDefault {
 		builder.IsDefault(true)
 	}
