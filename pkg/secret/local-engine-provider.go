@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"encoding/base64"
 
 	"github.com/ncarlier/readflow/pkg/helper"
 )
@@ -46,12 +47,13 @@ func (p fileSecretProvider) Seal(secrets *Secrets) error {
 		return err
 	}
 
+	// TODO find a way to avoid to seal already sealed secrets (try to unseal first?)
 	for k, v := range *secrets {
 		if v == "" {
 			continue
 		}
 		ciphertext := gcm.Seal(nonce, nonce, []byte(v), nil)
-		(*secrets)[k] = string(ciphertext)
+		(*secrets)[k] = base64.StdEncoding.EncodeToString(ciphertext)
 	}
 
 	return nil
@@ -72,7 +74,12 @@ func (p fileSecretProvider) UnSeal(secrets *Secrets) error {
 		if v == "" {
 			continue
 		}
-		data := []byte(v)
+
+		data, err := base64.StdEncoding.DecodeString(v)
+		if err != nil {
+			return err
+		}
+
 		nonce, ciphertext := data[:gcm.NonceSize()], data[gcm.NonceSize():]
 
 		plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
@@ -83,4 +90,11 @@ func (p fileSecretProvider) UnSeal(secrets *Secrets) error {
 	}
 
 	return nil
+}
+
+func (p fileSecretProvider) Apply(action Action, secrets *Secrets) error {
+	if action == Seal {
+		return p.Seal(secrets)
+	}
+	return p.UnSeal(secrets)
 }

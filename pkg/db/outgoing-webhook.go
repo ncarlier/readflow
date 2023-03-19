@@ -1,6 +1,11 @@
 package db
 
-import "github.com/ncarlier/readflow/pkg/model"
+import (
+	"context"
+
+	"github.com/ncarlier/readflow/pkg/model"
+	"github.com/ncarlier/readflow/pkg/secret"
+)
 
 // OutgoingWebhookRepository is the repository interface to manage outgoing webhooks
 type OutgoingWebhookRepository interface {
@@ -11,4 +16,5 @@ type OutgoingWebhookRepository interface {
 	UpdateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookUpdateForm) (*model.OutgoingWebhook, error)
 	DeleteOutgoingWebhookByUser(uid uint, id uint) error
 	DeleteOutgoingWebhooksByUser(uid uint, ids []uint) (int64, error)
+	ManageOutgoingWebhookSecrets(ctx context.Context, provider secret.EngineProvider, action secret.Action) (uint, error)
 }

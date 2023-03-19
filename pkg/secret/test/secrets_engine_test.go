@@ -16,12 +16,12 @@ func TestSealAndUnSealSecrets(t *testing.T) {
 	secrets["foo"] = "bar"
 	secrets["zoo"] = ""
 
-	err = engine.Seal(&secrets)
+	err = engine.Apply(secret.Seal, &secrets)
 	require.Nil(t, err)
 	require.NotEqual(t, "bar", secrets["foo"])
 	require.Empty(t, secrets["zoo"])
 
-	err = engine.UnSeal(&secrets)
+	err = engine.Apply(secret.UnSeal, &secrets)
 	require.Nil(t, err)
 	require.Equal(t, "bar", secrets["foo"])
 	require.Empty(t, secrets["zoo"])

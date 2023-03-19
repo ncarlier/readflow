@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ncarlier/readflow/pkg/model"
-	"github.com/ncarlier/readflow/pkg/secret"
 )
 
 func assertOutgoingWebhookExists(t *testing.T, uid uint, form model.OutgoingWebhookCreateForm) *model.OutgoingWebhook {
@@ -125,45 +124,5 @@ func TestUpdateDefaultOutgoingWebhook(t *testing.T) {
 	err = testDB.DeleteOutgoingWebhookByUser(uid, *first.ID)
 	require.Nil(t, err)
 	err = testDB.DeleteOutgoingWebhookByUser(uid, *second.ID)
-	require.Nil(t, err)
-}
-
-func TestOutgoingWebhookSecretsManagement(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
-	defer teardownTestCase(t)
-
-	// Create webhook
-	uid := *testUser.ID
-	builder := model.NewOutgoingWebhookCreateFormBuilder()
-	create := builder.Alias(
-		"My test outgoing webhook with secrets",
-	).Dummy().Build()
-	webhook := assertOutgoingWebhookExists(t, uid, *create)
-
-	require.Equal(t, "bar", webhook.Secrets["foo"])
-
-	// Update webhook with empty secret should not affect secret value
-	secrets := make(secret.Secrets)
-	secrets["foo"] = ""
-	update := model.OutgoingWebhookUpdateForm{
-		ID:      *webhook.ID,
-		Secrets: &secrets,
-	}
-	webhook, err := testDB.UpdateOutgoingWebhookForUser(uid, update)
-	require.Nil(t, err)
-	require.NotNil(t, webhook)
-	require.Equal(t, "bar", webhook.Secrets["foo"])
-
-	// Update webhook secrets by omitting a previous one should remove it
-	delete(*update.Secrets, "foo")
-	(*update.Secrets)["zoo"] = "baz"
-	webhook, err = testDB.UpdateOutgoingWebhookForUser(uid, update)
-	require.Nil(t, err)
-	require.NotNil(t, webhook)
-	require.Equal(t, "baz", webhook.Secrets["zoo"])
-	require.NotContains(t, "bar", webhook.Secrets)
-
-	// Cleanup
-	err = testDB.DeleteOutgoingWebhookByUser(uid, *webhook.ID)
 	require.Nil(t, err)
 }

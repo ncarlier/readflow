@@ -7,7 +7,6 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/ncarlier/readflow/pkg/model"
-	"github.com/ncarlier/readflow/pkg/secret"
 )
 
 var outgoingWebhookColumns = []string{
@@ -145,26 +144,6 @@ func (pg *DB) UpdateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookU
 		}
 	}
 	return result, tx.Commit()
-}
-
-func (pg *DB) updateOutgoingWebhookSecrets(webhook *model.OutgoingWebhook, secrets *secret.Secrets) error {
-	for k, v := range *secrets {
-		// if secret's value is not provided use the current value
-		if current, ok := webhook.Secrets[k]; ok && v == "" {
-			(*secrets)[k] = current
-		}
-	}
-	query, args, _ := pg.psql.Update(
-		"outgoing_webhooks",
-	).Set("secrets", *secrets).Where(
-		sq.Eq{"id": webhook.ID},
-	).Where(
-		sq.Eq{"user_id": webhook.UserID},
-	).ToSql()
-
-	_, err := pg.db.Exec(query, args...)
-	webhook.Secrets = *secrets
-	return err
 }
 
 func (pg *DB) unsetDefaultForOtherOutgoingWebhooks(webhook *model.OutgoingWebhook) error {

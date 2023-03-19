@@ -6,6 +6,7 @@ import (
 	"errors"
 )
 
+// Secrets store
 type Secrets map[string]string
 
 // values returns the JSON-encoded representation
