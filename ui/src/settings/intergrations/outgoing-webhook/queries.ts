@@ -20,6 +20,7 @@ export const GetOutgoingWebhook = gql`
       alias
       provider
       config
+      secrets
       is_default
       created_at
       updated_at
@@ -39,6 +40,7 @@ export const CreateOrUpdateOutgoingWebhook = gql`
     $alias: String!
     $provider: outgoingWebhookProvider!
     $config: String!
+    $secrets: String!
     $is_default: Boolean!
   ) {
     createOrUpdateOutgoingWebhook(
@@ -46,12 +48,14 @@ export const CreateOrUpdateOutgoingWebhook = gql`
       alias: $alias
       provider: $provider
       config: $config
+      secrets: $secrets
       is_default: $is_default
     ) {
       id
       alias
       provider
       config
+      secrets
       is_default
       created_at
       updated_at

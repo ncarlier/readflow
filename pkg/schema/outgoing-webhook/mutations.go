@@ -2,6 +2,7 @@ package outboundservice
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -49,8 +50,8 @@ func createOrUpdateOutgoingWebhookResolver(p graphql.ResolveParams) (interface{}
 	secretsParams := helper.GetGQLStringParameter("secrets", p.Args)
 	secrets := make(secret.Secrets)
 	if secretsParams != nil {
-		if err := secrets.Scan(secretsParams); err != nil {
-			return nil, errors.New("invalid secrets")
+		if err := secrets.Scan(*secretsParams); err != nil {
+			return nil, fmt.Errorf("invalid secrets: %v", err)
 		}
 	}
 

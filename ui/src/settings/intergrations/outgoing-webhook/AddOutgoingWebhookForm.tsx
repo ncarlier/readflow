@@ -81,13 +81,14 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
         return
       }
       const { alias, provider, isDefault } = formState.values
-      addOutgoingWebhook({ alias, provider, is_default: isDefault, config: JSON.stringify(config) })
+      const [conf, secrets] = providers[provider].marshal(config)
+      addOutgoingWebhook({ alias, provider, is_default: isDefault, config: conf, secrets })
     },
     [formState, config, addOutgoingWebhook]
   )
 
   const { provider } = formState.values
-  const ProviderConfig = provider ? providers[provider].config : null
+  const ProviderConfigForm = provider ? providers[provider].form : null
 
   return (
     <Panel>
@@ -103,7 +104,7 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
             <option value="">Please select a webhook provider</option>
             {Object.entries(providers).map(([key, p]) => <option key={`provider-${key}`} value={key}>{p.label}</option>)}
           </FormSelectField>
-          { ProviderConfig && <ProviderConfig onChange={setConfig} config={config} /> }
+          { ProviderConfigForm && <ProviderConfigForm onChange={setConfig} config={config} /> }
           <FormCheckboxField label="To use by default" {...checkbox('isDefault')} />
         </form>
       </section>

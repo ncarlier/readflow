@@ -83,11 +83,12 @@ func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.Outgo
 func (reg *Registry) UpdateOutgoingWebhook(ctx context.Context, form model.OutgoingWebhookUpdateForm) (*model.OutgoingWebhook, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
-	if form.Provider != nil && form.Config != nil {
+	if form.Provider != nil && form.Config != nil && form.Secrets != nil {
 		// Validate outgoing webhook configuration
 		dummy := model.OutgoingWebhook{
 			Provider: *form.Provider,
 			Config:   *form.Config,
+			Secrets:  *form.Secrets,
 		}
 		_, err := webhookProvider.NewOutgoingWebhookProvider(dummy, reg.conf)
 		if err != nil {

@@ -1,20 +1,30 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import { FormInputField, FormSelectField } from '../../../../components'
+import { FormInputField, FormSelectField } from '../../../../../components'
 
-interface S3ConfigFormFields {
+interface Config {
   endpoint: string
   access_key_id: string
-  access_key_secret: string
   region: string
   bucket: string
   format: string
 }
 
+interface Secrets {
+  access_key_secret: string
+}
+
+type ConfigFormFields = Config & Secrets
+
+export const marshal = (config: ConfigFormFields) : string[] => [
+  JSON.stringify(config, ['endpoint', 'access_key_id', 'region', 'bucket', 'format']),
+  JSON.stringify(config, ['access_key_secret']),
+]
+
 interface Props {
   onChange(config: any): void
-  config?: S3ConfigFormFields
+  config?: ConfigFormFields
 }
 
 const defaultConfig = {
@@ -41,8 +51,8 @@ const Formats = () => (
   </>
 )
 
-export const S3ConfigForm = ({ onChange, config }: Props) => {
-  const [formState, { url, text, password, select }] = useFormState<S3ConfigFormFields>(
+export const ConfigForm = ({ onChange, config }: Props) => {
+  const [formState, { url, text, password, select }] = useFormState<ConfigFormFields>(
     { ...defaultConfig, ...config },
     {
       onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),

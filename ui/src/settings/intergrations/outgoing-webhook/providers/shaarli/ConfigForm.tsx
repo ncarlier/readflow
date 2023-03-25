@@ -1,25 +1,35 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import { FormCheckboxField, FormInputField } from '../../../../components'
+import { FormCheckboxField, FormInputField } from '../../../../../components'
 
-interface ShaarliConfigFormFields {
+interface Config {
   endpoint: string
-  secret: string
   private: boolean
 }
 
+interface Secrets {
+  secret: string
+}
+
+type ConfigFormFields = Config & Secrets
+
+export const marshal = (config: ConfigFormFields) : string[] => [
+  JSON.stringify(config, ['endpoint', 'private']),
+  JSON.stringify(config, ['secret']),
+]
+
 interface Props {
   onChange(config: any): void
-  config?: ShaarliConfigFormFields
+  config?: ConfigFormFields
 }
 
 const defaultConfig = {
   endpoint: 'https://demo.shaarli.org',
 }
 
-export const ShaarliConfigForm = ({ onChange, config }: Props) => {
-  const [formState, { url, checkbox, password }] = useFormState<ShaarliConfigFormFields>(
+export const ConfigForm = ({ onChange, config }: Props) => {
+  const [formState, { url, checkbox, password }] = useFormState<ConfigFormFields>(
     { ...defaultConfig, ...config },
     {
       onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
