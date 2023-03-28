@@ -86,7 +86,7 @@ func main() {
 	}
 
 	// Configure download cache
-	downloadCache, err := cache.NewDefault()
+	downloadCache, err := cache.NewDefault("readflow-downloads")
 	if err != nil {
 		log.Fatal().Err(err).Msg("could not configure cache")
 	}

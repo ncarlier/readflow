@@ -61,7 +61,7 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 	testUser = assertUserExists(t, defaultUsername)
 	testContext = context.Background()
 	testContext = context.WithValue(testContext, constant.ContextUserID, *testUser.ID)
-	downloadCache, _ := cache.NewDefault()
+	downloadCache, _ := cache.NewDefault("")
 
 	service.Configure(*conf, testDB, downloadCache)
 	if err != nil {

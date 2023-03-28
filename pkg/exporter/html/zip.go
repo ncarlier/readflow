@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/go-shiori/dom"
+	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/model"
 	"golang.org/x/net/html"
@@ -18,17 +19,17 @@ import (
 
 // ZIPExporter convert an article to a ZIP archive
 type ZIPExporter struct {
-	downloader exporter.Downloader
+	dl downloader.Downloader
 }
 
-func newZIPExporter(downloader exporter.Downloader) (exporter.ArticleExporter, error) {
+func newZIPExporter(dl downloader.Downloader) (exporter.ArticleExporter, error) {
 	return &ZIPExporter{
-		downloader: downloader,
+		dl: dl,
 	}, nil
 }
 
 // Export an article to ZIP archive
-func (exp *ZIPExporter) Export(ctx context.Context, article *model.Article) (*model.FileAsset, error) {
+func (exp *ZIPExporter) Export(ctx context.Context, article *model.Article) (*downloader.WebAsset, error) {
 	var buffer bytes.Buffer
 	if err := articleAsHTMLTpl.Execute(&buffer, article); err != nil {
 		return nil, err
@@ -47,7 +48,7 @@ func (exp *ZIPExporter) Export(ctx context.Context, article *model.Article) (*mo
 	}
 	w.Close()
 
-	return &model.FileAsset{
+	return &downloader.WebAsset{
 		Data:        buf.Bytes(),
 		ContentType: "application/zip",
 		Name:        strings.TrimRight(article.Title, ". ") + ".zip",
@@ -112,7 +113,7 @@ func (exp *ZIPExporter) processURLAttribute(ctx context.Context, output *zip.Wri
 	return nil
 }
 
-func (exp *ZIPExporter) processURL(ctx context.Context, url string, parentURL string) (*model.FileAsset, error) {
+func (exp *ZIPExporter) processURL(ctx context.Context, url string, parentURL string) (*downloader.WebAsset, error) {
 	// Ignore special URLs
 	url = strings.TrimSpace(url)
 	if url == "" || strings.HasPrefix(url, "data:") || strings.HasPrefix(url, "#") {
@@ -125,7 +126,7 @@ func (exp *ZIPExporter) processURL(ctx context.Context, url string, parentURL st
 	}
 
 	// Download URL
-	asset, err := exp.downloader.Download(ctx, url)
+	asset, err := exp.dl.Download(ctx, url)
 	if err != nil {
 		return nil, errSkippedURL
 	}

@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-shiori/dom"
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/model"
 	"golang.org/x/net/html"
@@ -21,17 +22,17 @@ var errSkippedURL = errors.New("skip processing url")
 
 // SingleHTMLExporter convert an article to HTML offline format
 type SingleHTMLExporter struct {
-	downloader exporter.Downloader
+	dl downloader.Downloader
 }
 
-func newHTMLOffflineExporter(downloader exporter.Downloader) (exporter.ArticleExporter, error) {
+func newHTMLOffflineExporter(dl downloader.Downloader) (exporter.ArticleExporter, error) {
 	return &SingleHTMLExporter{
-		downloader: downloader,
+		dl: dl,
 	}, nil
 }
 
 // Export an article to HTML offline format
-func (exp *SingleHTMLExporter) Export(ctx context.Context, article *model.Article) (*model.FileAsset, error) {
+func (exp *SingleHTMLExporter) Export(ctx context.Context, article *model.Article) (*downloader.WebAsset, error) {
 	var buffer bytes.Buffer
 	if err := articleAsHTMLTpl.Execute(&buffer, article); err != nil {
 		return nil, err
@@ -42,7 +43,7 @@ func (exp *SingleHTMLExporter) Export(ctx context.Context, article *model.Articl
 		return nil, err
 	}
 
-	return &model.FileAsset{
+	return &downloader.WebAsset{
 		Data:        data,
 		ContentType: constant.ContentTypeHTML,
 		Name:        strings.TrimRight(article.Title, ". ") + ".html",
@@ -111,7 +112,7 @@ func (exp *SingleHTMLExporter) processURLAttribute(ctx context.Context, node *ht
 	return nil
 }
 
-func (exp *SingleHTMLExporter) processURL(ctx context.Context, url string, parentURL string) (*model.FileAsset, error) {
+func (exp *SingleHTMLExporter) processURL(ctx context.Context, url string, parentURL string) (*downloader.WebAsset, error) {
 	// Ignore special URLs
 	url = strings.TrimSpace(url)
 	if url == "" || strings.HasPrefix(url, "data:") || strings.HasPrefix(url, "#") {
@@ -124,7 +125,7 @@ func (exp *SingleHTMLExporter) processURL(ctx context.Context, url string, paren
 	}
 
 	// Download URL
-	asset, err := exp.downloader.Download(ctx, url)
+	asset, err := exp.dl.Download(ctx, url)
 	if err != nil {
 		return nil, errSkippedURL
 	}

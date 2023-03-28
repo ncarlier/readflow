@@ -4,13 +4,13 @@ import (
 	"context"
 	"errors"
 
+	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/helper"
-	"github.com/ncarlier/readflow/pkg/model"
 )
 
 // DownloadArticle get article as a binary file
-func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format string) (*model.FileAsset, error) {
+func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format string) (*downloader.WebAsset, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
 	logger := reg.logger.With().Uint(
@@ -21,7 +21,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		"format", format,
 	).Logger()
 
-	exp, err := exporter.NewArticleExporter(format, reg.downloader)
+	exp, err := exporter.NewArticleExporter(format, reg.dl)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
 		return nil, err
@@ -43,17 +43,19 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 	}
 	logger.Debug().Msg("preparing article download artifact")
 
+	// get downloadable article from the cache
 	key := helper.Hash(format, article.Hash)
-	result, err := reg.downloadCache.Get(key)
+	data, err := reg.downloadCache.Get(key)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
 	}
-	if result != nil {
+	if data != nil {
 		reg.logger.Debug().Uint("uid", uid).Uint("id", idArticle).Msg("returns article download artefact from cache")
-		return result, nil
+		return downloader.NewWebAsset(data)
 	}
 
-	result, err = exp.Export(ctx, article)
+	// export article to the downloadable format
+	result, err := exp.Export(ctx, article)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
 		return result, err
@@ -61,7 +63,12 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 
 	// TODO compute user quota
 
-	if err := reg.downloadCache.Put(key, result); err != nil {
+	// put downloadable article into the cache
+	value, err := result.Encode()
+	if err != nil {
+		return nil, err
+	}
+	if err := reg.downloadCache.Put(key, value); err != nil {
 		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
 	}
 

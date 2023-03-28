@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-shiori/dom"
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/model"
 	"golang.org/x/net/html"
@@ -21,17 +22,17 @@ var errSkippedURL = errors.New("skip processing url")
 
 // EpubExporter convert an article to a epub file
 type EpubExporter struct {
-	downloader exporter.Downloader
+	dl downloader.Downloader
 }
 
-func newEpubExporter(downloader exporter.Downloader) (exporter.ArticleExporter, error) {
+func newEpubExporter(dl downloader.Downloader) (exporter.ArticleExporter, error) {
 	return &EpubExporter{
-		downloader: downloader,
+		dl: dl,
 	}, nil
 }
 
 // Export an article to epub file
-func (exp *EpubExporter) Export(ctx context.Context, article *model.Article) (*model.FileAsset, error) {
+func (exp *EpubExporter) Export(ctx context.Context, article *model.Article) (*downloader.WebAsset, error) {
 	var buffer bytes.Buffer
 	if err := articleAsXHTMLTpl.Execute(&buffer, article); err != nil {
 		return nil, err
@@ -53,7 +54,7 @@ func (exp *EpubExporter) Export(ctx context.Context, article *model.Article) (*m
 	}
 	w.Close()
 
-	return &model.FileAsset{
+	return &downloader.WebAsset{
 		Data:        buf.Bytes(),
 		ContentType: constant.ContentTypeEpub,
 		Name:        strings.TrimRight(article.Title, ". ") + ".epub",
@@ -125,7 +126,7 @@ func (exp *EpubExporter) processURLAttribute(ctx context.Context, output *Writer
 	return nil
 }
 
-func (exp *EpubExporter) processURL(ctx context.Context, url string, parentURL string) (*model.FileAsset, error) {
+func (exp *EpubExporter) processURL(ctx context.Context, url string, parentURL string) (*downloader.WebAsset, error) {
 	// Ignore special URLs
 	url = strings.TrimSpace(url)
 	if url == "" || strings.HasPrefix(url, "data:") || strings.HasPrefix(url, "#") {
@@ -138,7 +139,7 @@ func (exp *EpubExporter) processURL(ctx context.Context, url string, parentURL s
 	}
 
 	// Download URL
-	asset, err := exp.downloader.Download(ctx, url)
+	asset, err := exp.dl.Download(ctx, url)
 	if err != nil {
 		return nil, errSkippedURL
 	}

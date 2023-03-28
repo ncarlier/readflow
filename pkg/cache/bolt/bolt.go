@@ -2,29 +2,36 @@ package boltcache
 
 import (
 	"container/list"
-	"errors"
+	"fmt"
+	"net/url"
 	"sync"
 
-	"github.com/ncarlier/readflow/pkg/model"
+	"github.com/ncarlier/readflow/pkg/helper"
 	bolt "go.etcd.io/bbolt"
+)
+
+const (
+	defaultMaxEntrySize = 5   // Mb
+	defaultMaxSize      = 256 // Mb
+	defaultMaxEntries   = 1024
 )
 
 var bucketName = []byte("cache")
 
 // BoltLRUCache implement a LRU cache with BoltDB
 type BoltLRUCache struct {
-	size         int
+	maxEntrySize int
+	maxSize      int
+	maxEntries   int
 	evictionList *list.List
-	items        map[string]*list.Element
+	entries      map[string]*list.Element
 	lock         sync.RWMutex
+	size         int
 	db           *bolt.DB
 }
 
 // New LRU cache using BoltDB as storage backend
-func New(size int, path string) (*BoltLRUCache, error) {
-	if size <= 0 {
-		return nil, errors.New("invalide cache size")
-	}
+func New(path string, params url.Values) (*BoltLRUCache, error) {
 	db, err := bolt.Open(path, 0640, nil)
 	if err != nil {
 		return nil, err
@@ -36,20 +43,26 @@ func New(size int, path string) (*BoltLRUCache, error) {
 	if err != nil {
 		return nil, err
 	}
+	maxSize := helper.GetIntOrDefault(params, "maxSize", defaultMaxSize)
+	maxEntries := helper.GetIntOrDefault(params, "maxEntries", defaultMaxEntries)
+	maxEntrySize := helper.GetIntOrDefault(params, "maxEntrySize", defaultMaxEntrySize)
 	c := &BoltLRUCache{
-		size:         size,
+		maxSize:      maxSize * 1024 * 1024,
+		maxEntries:   maxEntries,
+		maxEntrySize: maxEntrySize * 1024 * 1024,
 		evictionList: list.New(),
-		items:        make(map[string]*list.Element, size),
+		entries:      make(map[string]*list.Element, maxEntries),
 		db:           db,
 	}
 	db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucketName)
 		cur := b.Cursor()
 		var key string
-		for k, _ := cur.First(); k != nil; k, _ = cur.Next() {
+		for k, v := cur.First(); k != nil; k, v = cur.Next() {
 			key = string(k)
 			el := c.evictionList.PushFront(key)
-			c.items[key] = el
+			c.entries[key] = el
+			c.size += len(v)
 		}
 		return nil
 	})
@@ -57,17 +70,16 @@ func New(size int, path string) (*BoltLRUCache, error) {
 }
 
 // Get item from cache
-func (c *BoltLRUCache) Get(key string) (asset *model.FileAsset, err error) {
+func (c *BoltLRUCache) Get(key string) (value []byte, err error) {
 	err = c.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucketName)
-		data := b.Get([]byte(key))
-		asset, err = model.DecodeFileAsset(data)
+		value = b.Get([]byte(key))
 		return err
 	})
-	if asset != nil {
+	if value != nil {
 		c.lock.Lock()
-		if item, ok := c.items[key]; ok {
-			c.evictionList.MoveToFront(item)
+		if entry, ok := c.entries[key]; ok {
+			c.evictionList.MoveToFront(entry)
 		}
 		c.lock.Unlock()
 	}
@@ -75,36 +87,54 @@ func (c *BoltLRUCache) Get(key string) (asset *model.FileAsset, err error) {
 }
 
 // Put item into the cache
-func (c *BoltLRUCache) Put(key string, asset *model.FileAsset) error {
+func (c *BoltLRUCache) Put(key string, value []byte) error {
+	if len(value) > c.maxEntrySize {
+		return fmt.Errorf("entry size exceeding MaxEntrySize: %d > %d", len(value), c.maxEntrySize)
+	}
 	return c.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket(bucketName)
-		data, err := asset.Encode()
-		if err != nil {
-			return err
-		}
-		err = b.Put([]byte(key), data)
-		if err != nil {
-			return err
-		}
+		bucket := tx.Bucket(bucketName)
 		c.lock.Lock()
 		defer c.lock.Unlock()
-		if item, ok := c.items[key]; ok {
-			c.evictionList.MoveToFront(item)
+		oldEntrySize := 0
+		entry, exists := c.entries[key]
+		if exists {
+			oldEntrySize = len(bucket.Get([]byte(key)))
+		}
+
+		// update cache
+		if err := bucket.Put([]byte(key), value); err != nil {
+			return err
+		}
+
+		// update cache size
+		c.size = c.size - oldEntrySize + len(value)
+
+		// update eviction list
+		if exists {
+			c.evictionList.MoveToFront(entry)
 		} else {
 			el := c.evictionList.PushFront(key)
-			c.items[key] = el
-			for c.evictionList.Len() > c.size {
-				el := c.evictionList.Back()
-				if el != nil {
-					k := el.Value.(string)
-					c.evictionList.Remove(el)
-					delete(c.items, k)
-					return b.Delete([]byte(k))
-				}
-			}
+			c.entries[key] = el
 		}
-		return nil
+
+		// run eviction
+		return c.runEviction(tx)
 	})
+}
+
+func (c *BoltLRUCache) runEviction(tx *bolt.Tx) error {
+	bucket := tx.Bucket(bucketName)
+	for c.evictionList.Len() > c.maxEntries || c.size > c.maxSize {
+		entry := c.evictionList.Back()
+		if entry != nil {
+			k := entry.Value.(string)
+			c.evictionList.Remove(entry)
+			delete(c.entries, k)
+			c.size -= len(bucket.Get([]byte(k)))
+			return bucket.Delete([]byte(k))
+		}
+	}
+	return nil
 }
 
 // Close cache

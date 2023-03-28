@@ -184,7 +184,7 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 	logger.Debug().Msg("sending article...")
 	// HACK: put downloader inside the context
 	// This is needed by some providers (S3 for instance)
-	webhookContext := context.WithValue(ctx, constant.ContextDownloader, reg.downloader)
+	webhookContext := context.WithValue(ctx, constant.ContextDownloader, reg.dl)
 	// Add user to the context
 	if value := ctx.Value(constant.ContextUser); value == nil {
 		webhookContext = context.WithValue(webhookContext, constant.ContextUser, user)

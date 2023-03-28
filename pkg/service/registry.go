@@ -5,7 +5,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/db"
-	"github.com/ncarlier/readflow/pkg/exporter"
+	"github.com/ncarlier/readflow/pkg/downloader"
 	_ "github.com/ncarlier/readflow/pkg/exporter/all"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -21,13 +21,13 @@ var instance *Registry
 
 // Registry is the structure definition of the service registry
 type Registry struct {
-	conf                    config.Config
-	db                      db.DB
-	logger                  zerolog.Logger
+	conf   config.Config
+	db     db.DB
+	logger zerolog.Logger
 	downloadCache           cache.Cache
 	properties              *model.Properties
 	webScraper              scraper.WebScraper
-	downloader              exporter.Downloader
+	dl                      downloader.Downloader
 	hashid                  *helper.HashIDHandler
 	notificationRateLimiter ratelimiter.RateLimiter
 	scriptEngine            *scripting.ScriptEngine
@@ -54,12 +54,12 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	}
 
 	instance = &Registry{
-		conf:                    conf,
-		db:                      database,
-		logger:                  log.With().Str("component", "service").Logger(),
+		conf:   conf,
+		db:     database,
+		logger: log.With().Str("component", "service").Logger(),
 		downloadCache:           downloadCache,
 		webScraper:              webScraper,
-		downloader:              exporter.NewInternalDownloader(downloadCache, 10, constant.DefaultTimeout),
+		dl:                      downloader.NewDefaultDownloader(downloadCache),
 		hashid:                  hashid,
 		notificationRateLimiter: notificationRateLimiter,
 		sanitizer:               sanitizer.NewSanitizer(blockList),

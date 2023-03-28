@@ -1,49 +1,49 @@
-package exporter
+package downloader
 
 import (
 	"context"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	nurl "net/url"
 	"strings"
-	"time"
 
 	"golang.org/x/sync/semaphore"
 
 	"github.com/ncarlier/readflow/pkg/cache"
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/helper"
-	"github.com/ncarlier/readflow/pkg/model"
+)
+
+const (
+	defaultMaxConcurentDownload = 10
 )
 
 var errInvalidURL = errors.New("invalid URL")
 
+// InternalDownloader interface
 type InternalDownloader struct {
 	cache                 cache.Cache
-	requestTimeout        time.Duration
 	maxConcurrentDownload int64
 	httpClient            *http.Client
 	dlSemaphore           *semaphore.Weighted
 }
 
-func NewInternalDownloader(_cache cache.Cache, maxConcurrentDownload int64, requestTimeout time.Duration) *InternalDownloader {
+// NewInternalDownloader create new downloader instance
+func NewInternalDownloader(client *http.Client, downloadCache cache.Cache, maxConcurrentDownload int64) Downloader {
 	if maxConcurrentDownload <= 0 {
-		maxConcurrentDownload = 10
-	}
-	httpClient := &http.Client{
-		Timeout: requestTimeout,
+		maxConcurrentDownload = defaultMaxConcurentDownload
 	}
 	return &InternalDownloader{
-		cache:                 _cache,
-		httpClient:            httpClient,
-		requestTimeout:        requestTimeout,
+		cache:                 downloadCache,
+		httpClient:            client,
 		maxConcurrentDownload: maxConcurrentDownload,
 		dlSemaphore:           semaphore.NewWeighted(maxConcurrentDownload),
 	}
 }
 
-func (d *InternalDownloader) Download(ctx context.Context, url string) (*model.FileAsset, error) {
+// Download web asset from its URL
+func (dl *InternalDownloader) Download(ctx context.Context, url string) (*WebAsset, error) {
 	// Ignore special URLs
 	url = strings.TrimSpace(url)
 	if url == "" || strings.HasPrefix(url, "data:") || strings.HasPrefix(url, "#") {
@@ -57,18 +57,18 @@ func (d *InternalDownloader) Download(ctx context.Context, url string) (*model.F
 
 	// Get the asset from cache
 	hurl := helper.Hash(url)
-	asset, _ := d.cache.Get(hurl)
-	if asset != nil {
-		return asset, nil
+	data, _ := dl.cache.Get(hurl)
+	if data != nil {
+		return NewWebAsset(data)
 	}
 
 	// Download the asset, use semaphore to limit concurrent downloads
-	err = d.dlSemaphore.Acquire(ctx, 1)
+	err = dl.dlSemaphore.Acquire(ctx, 1)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := d.download(url)
-	d.dlSemaphore.Release(1)
+	resp, err := dl.download(url)
+	dl.dlSemaphore.Release(1)
 	if err != nil {
 		return nil, err
 	}
@@ -82,25 +82,29 @@ func (d *InternalDownloader) Download(ctx context.Context, url string) (*model.F
 	}
 
 	// Get response body
-	bodyContent, err := ioutil.ReadAll(resp.Body)
+	bodyContent, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	// Put asset into the cache
-	asset = &model.FileAsset{
+	asset := &WebAsset{
 		Data:        bodyContent,
 		ContentType: contentType,
 		Name:        url,
 	}
-	if err := d.cache.Put(hurl, asset); err != nil {
+	data, err = asset.Encode()
+	if err != nil {
+		return nil, err
+	}
+	if err := dl.cache.Put(hurl, data); err != nil {
 		return nil, err
 	}
 
 	return asset, nil
 }
 
-func (d *InternalDownloader) download(url string) (*http.Response, error) {
+func (dl *InternalDownloader) download(url string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -109,7 +113,7 @@ func (d *InternalDownloader) download(url string) (*http.Response, error) {
 	req.Header.Set("User-Agent", constant.UserAgent)
 	// req.Header.Set("Referer", parentURL)
 
-	resp, err := d.httpClient.Do(req)
+	resp, err := dl.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}

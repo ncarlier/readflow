@@ -12,6 +12,7 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -70,10 +71,10 @@ func (s3p *Provider) Send(ctx context.Context, article model.Article) error {
 	if ctxValue == nil {
 		return errors.New("downloader not found inside the context")
 	}
-	downloader := ctxValue.(exporter.Downloader)
+	dl := ctxValue.(downloader.Downloader)
 
 	// Get article exporter
-	exp, err := exporter.NewArticleExporter(s3p.config.Format, downloader)
+	exp, err := exporter.NewArticleExporter(s3p.config.Format, dl)
 	if err != nil {
 		return err
 	}

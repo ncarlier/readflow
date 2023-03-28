@@ -7,22 +7,18 @@ import (
 	"path/filepath"
 
 	boltcache "github.com/ncarlier/readflow/pkg/cache/bolt"
-	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/rs/zerolog/log"
 )
 
-// DefaultCacheSize is the maximum number of items
-const DefaultCacheSize = 256
-
 // Cache interface
 type Cache interface {
-	Put(key string, data *model.FileAsset) error
-	Get(key string) (*model.FileAsset, error)
+	Put(key string, value []byte) error
+	Get(key string) ([]byte, error)
 	Close() error
 }
 
 // New create new cache provider regarding the datasource URI
-func New(conn string, size int) (Cache, error) {
+func New(conn string) (Cache, error) {
 	u, err := url.ParseRequestURI(conn)
 	if err != nil {
 		return nil, fmt.Errorf("invalid connection URL: %s", conn)
@@ -32,7 +28,7 @@ func New(conn string, size int) (Cache, error) {
 
 	switch provider {
 	case "boltdb":
-		cache, err = boltcache.New(size, filepath.Clean(u.Path))
+		cache, err = boltcache.New(filepath.Clean(u.Path), u.Query())
 		if err != nil {
 			return nil, err
 		}
@@ -44,9 +40,9 @@ func New(conn string, size int) (Cache, error) {
 }
 
 // NewDefault return default cache
-func NewDefault() (Cache, error) {
-	cacheFileName := filepath.ToSlash(os.TempDir() + string(os.PathSeparator) + "readflow.cache")
+func NewDefault(name string) (Cache, error) {
+	cacheFileName := filepath.ToSlash(os.TempDir() + string(os.PathSeparator) + name + ".cache")
 	os.Remove(cacheFileName)
 	conn := "boltdb://" + cacheFileName
-	return New(conn, DefaultCacheSize)
+	return New(conn)
 }

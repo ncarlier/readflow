@@ -3,12 +3,13 @@ package txtpaper
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 
+	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/model"
 )
@@ -20,8 +21,8 @@ type TxtpaperExporter struct {
 	format string
 }
 
-func newTxtpaperExporter(format string) func(downloader exporter.Downloader) (exporter.ArticleExporter, error) {
-	return func(downloader exporter.Downloader) (exporter.ArticleExporter, error) {
+func newTxtpaperExporter(format string) func(dl downloader.Downloader) (exporter.ArticleExporter, error) {
+	return func(dl downloader.Downloader) (exporter.ArticleExporter, error) {
 		return &TxtpaperExporter{
 			format: format,
 		}, nil
@@ -29,7 +30,7 @@ func newTxtpaperExporter(format string) func(downloader exporter.Downloader) (ex
 }
 
 // Export an article using txtpaper service
-func (exp *TxtpaperExporter) Export(ctx context.Context, article *model.Article) (*model.FileAsset, error) {
+func (exp *TxtpaperExporter) Export(ctx context.Context, article *model.Article) (*downloader.WebAsset, error) {
 	form := url.Values{}
 	form.Add("byline", *article.URL)
 	form.Add("content", *article.HTML)
@@ -52,12 +53,12 @@ func (exp *TxtpaperExporter) Export(ctx context.Context, article *model.Article)
 		return nil, fmt.Errorf("invalid txtpaper response: %d", res.StatusCode)
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	return &model.FileAsset{
+	return &downloader.WebAsset{
 		Data:        body,
 		ContentType: res.Header.Get("Content-Type"),
 		Name:        strings.TrimRight(article.Title, ". ") + "." + exp.format,
