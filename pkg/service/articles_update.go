@@ -47,7 +47,7 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 	logger.Info().Msg("article updated")
 
 	// Emit update event
-	event.Emit(event.UpdateArticle, *article)
+	reg.events.Publish(event.NewEvent(EventUpdateArticle, *article))
 
 	return article, nil
 }

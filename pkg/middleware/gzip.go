@@ -3,10 +3,10 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/NYTimes/gziphandler"
+	"github.com/klauspost/compress/gzhttp"
 )
 
 // Gzip is a middleware to enabling GZIP on HTTP requests
 func Gzip(inner http.Handler) http.Handler {
-	return gziphandler.GzipHandler(inner)
+	return gzhttp.GzipHandler(inner)
 }

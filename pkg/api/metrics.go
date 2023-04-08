@@ -1,4 +1,4 @@
-package metric
+package api
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 )
 
 // NewRouter creates metrics router
-func NewRouter() *http.ServeMux {
+func NewMetricsRouter() *http.ServeMux {
 	router := http.NewServeMux()
 
 	handler := promhttp.Handler()

@@ -85,7 +85,7 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 	reg.logger.Info().Uint(
 		"uid", *user.ID,
 	).Str("username", username).Msg("user registered")
-	event.Emit(event.CreateUser, *user)
+	reg.events.Publish(event.NewEvent(EventCreateUser, *user))
 	return user, nil
 }
 
@@ -107,7 +107,7 @@ func (reg *Registry) DeleteAccount(ctx context.Context) (bool, error) {
 	if err = reg.db.DeleteUser(*user); err != nil {
 		return false, err
 	}
-	event.Emit(event.DeleteUser, *user)
+	reg.events.Publish(event.NewEvent(EventDeleteUser, *user))
 	return true, nil
 }
 
@@ -204,7 +204,7 @@ func (reg *Registry) UpdateUser(ctx context.Context, form model.UserForm) (*mode
 		"uid", *user.ID,
 	).Str("username", user.Username).Msg("user updated")
 
-	event.Emit(event.UpdateUser, *user)
+	reg.events.Publish(event.NewEvent(EventUpdateUser, *user))
 
 	return user, nil
 }

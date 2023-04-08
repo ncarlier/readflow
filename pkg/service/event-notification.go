@@ -1,4 +1,4 @@
-package listener
+package service
 
 import (
 	"context"
@@ -9,40 +9,34 @@ import (
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/model"
-	"github.com/ncarlier/readflow/pkg/service"
-
 	"github.com/rs/zerolog/log"
 )
 
 const (
-	errorMessage                        = "unable to send notification"
+	notificationErrorMessage            = "unable to send notification"
 	maxUserInactivityBeforeNotification = 8 * time.Hour
 )
 
-var status string = "inbox"
-
-func init() {
-	event.Subscribe(event.CreateArticle, func(payload ...interface{}) {
-		if article, ok := payload[0].(model.Article); ok {
-			if len(payload) > 1 {
-				// stop here if global notification is disabled
-				if opts, ok := payload[1].(event.EventOption); ok && opts.Has(event.NoNotification) {
-					return
-				}
+func newNotificationEventHandler(srv *Registry) event.EventHandler {
+	var status string = "inbox"
+	return func(evt event.Event) {
+		if article, ok := evt.Payload.(model.Article); ok {
+			if evt.Option.Has(NoNotificationEventOption) {
+				return
 			}
 			uid := article.UserID
 			ctx := context.WithValue(context.TODO(), constant.ContextUserID, uid)
 			req := model.ArticlesPageRequest{Status: &status}
 
-			user, err := service.Lookup().GetCurrentUser(ctx)
+			user, err := srv.GetCurrentUser(ctx)
 			if err != nil {
-				log.Info().Err(err).Uint("id", uid).Msg(errorMessage)
+				log.Info().Err(err).Uint("id", uid).Msg(notificationErrorMessage)
 				return
 			}
 
-			nb, err := service.Lookup().CountCurrentUserDevices(ctx)
+			nb, err := srv.CountCurrentUserDevices(ctx)
 			if err != nil {
-				log.Info().Err(err).Uint("id", uid).Msg(errorMessage)
+				log.Info().Err(err).Uint("id", uid).Msg(notificationErrorMessage)
 				return
 			}
 			if nb == 0 {
@@ -56,9 +50,9 @@ func init() {
 				return
 			}
 			// Retrieve number of articles
-			nb, err = service.Lookup().CountCurrentUserArticles(ctx, req)
+			nb, err = srv.CountCurrentUserArticles(ctx, req)
 			if err != nil {
-				log.Info().Err(err).Uint("id", uid).Msg(errorMessage)
+				log.Info().Err(err).Uint("id", uid).Msg(notificationErrorMessage)
 				return
 			}
 			// Send notification only every 10 articles
@@ -75,7 +69,7 @@ func init() {
 				Href:  "/",
 			}
 			// Notify all user devices
-			service.Lookup().NotifyDevices(ctx, notif)
+			srv.NotifyDevices(ctx, notif)
 		}
-	})
+	}
 }

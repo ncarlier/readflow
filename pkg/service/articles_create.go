@@ -108,8 +108,8 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	}()
 	// emit article creation event
 	var evtOpts event.EventOption
-	evtOpts.AddIf(event.NoNotification, ops.Contains(scripting.OpDisableGlobalNotification))
-	event.Emit(event.CreateArticle, *article, evtOpts)
+	evtOpts.AddIf(NoNotificationEventOption, ops.Contains(scripting.OpDisableGlobalNotification))
+	reg.events.Publish(event.NewEventWithOption(EventCreateArticle, *article, evtOpts))
 	return article, nil
 }
 

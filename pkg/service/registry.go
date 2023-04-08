@@ -6,6 +6,8 @@ import (
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/db"
 	"github.com/ncarlier/readflow/pkg/downloader"
+	"github.com/ncarlier/readflow/pkg/event"
+	"github.com/ncarlier/readflow/pkg/event/dispatcher"
 	_ "github.com/ncarlier/readflow/pkg/exporter/all"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -21,9 +23,9 @@ var instance *Registry
 
 // Registry is the structure definition of the service registry
 type Registry struct {
-	conf   config.Config
-	db     db.DB
-	logger zerolog.Logger
+	conf                    config.Config
+	db                      db.DB
+	logger                  zerolog.Logger
 	downloadCache           cache.Cache
 	properties              *model.Properties
 	webScraper              scraper.WebScraper
@@ -32,6 +34,8 @@ type Registry struct {
 	notificationRateLimiter ratelimiter.RateLimiter
 	scriptEngine            *scripting.ScriptEngine
 	sanitizer               *sanitizer.Sanitizer
+	events                  *event.Manager
+	dispatcher              dispatcher.Dispatcher
 }
 
 // Configure the global service registry
@@ -52,11 +56,15 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	if err != nil {
 		return err
 	}
+	dispatcher, err := dispatcher.NewDispatcher(conf.Integration.ExternalEventBrokerURI)
+	if err != nil {
+		return err
+	}
 
 	instance = &Registry{
-		conf:   conf,
-		db:     database,
-		logger: log.With().Str("component", "service").Logger(),
+		conf:                    conf,
+		db:                      database,
+		logger:                  log.With().Str("component", "service").Logger(),
 		downloadCache:           downloadCache,
 		webScraper:              webScraper,
 		dl:                      downloader.NewDefaultDownloader(downloadCache),
@@ -64,7 +72,10 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 		notificationRateLimiter: notificationRateLimiter,
 		sanitizer:               sanitizer.NewSanitizer(blockList),
 		scriptEngine:            scripting.NewScriptEngine(128),
+		dispatcher:              dispatcher,
+		events:                  event.NewEventManager(),
 	}
+	instance.registerEventHandlers()
 	return instance.initProperties()
 }
 

@@ -1,17 +1,29 @@
 package event
 
-const (
-	// CreateUser is the create event on an user
-	CreateUser = "user:create"
-	// UpdateUser is the update event on an user
-	UpdateUser = "user:update"
-	// DeleteUser is the delete event on an user
-	DeleteUser = "user:delete"
-	// CreateArticle is the create event on an article
-	CreateArticle = "article:create"
-	// UpdateArticle is the update event on an article
-	UpdateArticle = "article:update"
-)
+// EventHandler is a event handler function
+type EventHandler func(event Event)
+
+// Event structure
+type Event struct {
+	Name    string
+	Payload interface{}
+	Option  EventOption
+}
+
+// NewEvent create new event
+func NewEvent(name string, payload interface{}) *Event {
+	return &Event{
+		Name:    name,
+		Payload: payload,
+	}
+}
+
+// NewEventWithOption create new event with option
+func NewEventWithOption(name string, payload interface{}, option EventOption) *Event {
+	result := NewEvent(name, payload)
+	result.Option = option
+	return result
+}
 
 // EventOption is a set of event option.
 type EventOption byte
@@ -27,8 +39,3 @@ func (opts *EventOption) AddIf(opt EventOption, condition bool) {
 func (opts EventOption) Has(opt EventOption) bool {
 	return opts&opt != 0
 }
-
-const (
-	// NoNotification will disable global notification policy
-	NoNotification EventOption = 1 << iota // 1
-)

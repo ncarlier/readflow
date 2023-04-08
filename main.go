@@ -18,8 +18,6 @@ import (
 	"github.com/ncarlier/readflow/pkg/config"
 	configflag "github.com/ncarlier/readflow/pkg/config/flag"
 	"github.com/ncarlier/readflow/pkg/db"
-	eventbroker "github.com/ncarlier/readflow/pkg/event-broker"
-	_ "github.com/ncarlier/readflow/pkg/event-listener"
 	"github.com/ncarlier/readflow/pkg/job"
 	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/ncarlier/readflow/pkg/metric"
@@ -73,12 +71,6 @@ func main() {
 
 	log.Debug().Msg("starting readflow server...")
 
-	// Configure Event Broker
-	_, err := eventbroker.Configure(conf.Integration.ExternalEventBrokerURI)
-	if err != nil {
-		log.Fatal().Err(err).Msg("could not configure event broker")
-	}
-
 	// Configure the DB
 	database, err := db.NewDB(conf.Global.DatabaseURI)
 	if err != nil {
@@ -110,7 +102,7 @@ func main() {
 	if conf.Global.MetricsListenAddr != "" {
 		metricsServer = &http.Server{
 			Addr:    conf.Global.MetricsListenAddr,
-			Handler: metric.NewRouter(),
+			Handler: api.NewMetricsRouter(),
 		}
 		metric.StartCollectors(database)
 		go func() {
