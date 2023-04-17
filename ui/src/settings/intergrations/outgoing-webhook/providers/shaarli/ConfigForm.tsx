@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import { FormCheckboxField, FormInputField } from '../../../../../components'
+import { FormCheckboxField, FormInputField, FormSecretInputField } from '../../../../../components'
 
 interface Config {
   endpoint: string
@@ -22,13 +22,14 @@ export const marshal = (config: ConfigFormFields) : string[] => [
 interface Props {
   onChange(config: any): void
   config?: ConfigFormFields
+  locked?: boolean
 }
 
 const defaultConfig = {
   endpoint: 'https://demo.shaarli.org',
 }
 
-export const ConfigForm = ({ onChange, config }: Props) => {
+export const ConfigForm = ({ onChange, config, locked = true }: Props) => {
   const [formState, { url, checkbox, password }] = useFormState<ConfigFormFields>(
     { ...defaultConfig, ...config },
     {
@@ -39,7 +40,7 @@ export const ConfigForm = ({ onChange, config }: Props) => {
   return (
     <>
       <FormInputField label="Endpoint" {...url('endpoint')} error={formState.errors.endpoint} required />
-      <FormInputField label="Secret" {...password('secret')} error={formState.errors.secret} required />
+      <FormSecretInputField label="Secret" {...password('secret')} error={formState.errors.secret} required locked={locked} />
       <FormCheckboxField label="Public" {...checkbox('secret')} error={formState.errors.private} />
     </>
   )

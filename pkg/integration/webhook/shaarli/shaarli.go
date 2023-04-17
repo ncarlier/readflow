@@ -29,7 +29,6 @@ type shaarliEntry struct {
 // shaarliProviderConfig is the structure definition of a Shaarli API configuration
 type shaarliProviderConfig struct {
 	Endpoint string `json:"endpoint"`
-	Secret   string `json:"secret"`
 	Private  bool   `json:"private"`
 }
 
@@ -37,6 +36,7 @@ type shaarliProviderConfig struct {
 type shaarliProvider struct {
 	config   shaarliProviderConfig
 	endpoint *url.URL
+	secret   string
 }
 
 func newShaarliProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
@@ -51,14 +51,16 @@ func newShaarliProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 		return nil, err
 	}
 
-	// Validate config
-	if config.Secret == "" {
-		return nil, fmt.Errorf("shaarli: missing secret")
+	// Validate secrets
+	secret, ok := srv.Secrets["secret"]
+	if !ok {
+		return nil, fmt.Errorf("missing secret")
 	}
 
 	provider := &shaarliProvider{
 		config:   config,
 		endpoint: endpoint,
+		secret:   secret,
 	}
 
 	return provider, nil
@@ -114,7 +116,7 @@ func (p *shaarliProvider) getAccessToken() (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 
-	return token.SignedString([]byte(p.config.Secret))
+	return token.SignedString([]byte(p.secret))
 }
 
 func init() {

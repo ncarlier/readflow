@@ -32,17 +32,17 @@ type wallabagTokenResponse struct {
 
 // wallabagProviderConfig is the structure definition of a Wallabag API configuration
 type wallabagProviderConfig struct {
-	Endpoint     string `json:"endpoint"`
-	ClientID     string `json:"client_id"`
-	ClientSecret string `json:"client_secret"`
-	Username     string `json:"username"`
-	Password     string `json:"password"`
+	Endpoint string `json:"endpoint"`
+	ClientID string `json:"client_id"`
+	Username string `json:"username"`
 }
 
 // wallabagProvider is the structure definition of a Wallabag webhook provider
 type wallabagProvider struct {
-	config   wallabagProviderConfig
-	endpoint *url.URL
+	config       wallabagProviderConfig
+	endpoint     *url.URL
+	clientSecret string
+	password     string
 }
 
 func newWallabagProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
@@ -57,14 +57,26 @@ func newWallabagProvider(srv model.OutgoingWebhook, conf config.Config) (webhook
 		return nil, err
 	}
 
+	// Validate secrets
+	clientSecret, ok := srv.Secrets["client_secret"]
+	if !ok {
+		return nil, fmt.Errorf("missing client secret")
+	}
+	password, ok := srv.Secrets["password"]
+	if !ok {
+		return nil, fmt.Errorf("missing password")
+	}
+
 	// Validate credentials
-	if config.ClientID == "" || config.ClientSecret == "" || config.Username == "" || config.Password == "" {
+	if config.ClientID == "" || config.Username == "" {
 		return nil, fmt.Errorf("wallabag: missing credentials")
 	}
 
 	provider := &wallabagProvider{
-		config:   config,
-		endpoint: endpoint,
+		config:       config,
+		endpoint:     endpoint,
+		clientSecret: clientSecret,
+		password:     password,
 	}
 
 	return provider, nil
@@ -114,9 +126,9 @@ func (wp *wallabagProvider) getAccessToken() (*wallabagTokenResponse, error) {
 	values := url.Values{}
 	values.Add("grant_type", "password")
 	values.Add("client_id", wp.config.ClientID)
-	values.Add("client_secret", wp.config.ClientSecret)
+	values.Add("client_secret", wp.clientSecret)
 	values.Add("username", wp.config.Username)
-	values.Add("password", wp.config.Password)
+	values.Add("password", wp.password)
 
 	res, err := http.PostForm(wp.getAPIEndpoint("/oauth/v2/token"), values)
 	if err != nil {

@@ -104,7 +104,7 @@ export default ({ history, location: { search } }: RouteComponentProps) => {
             <option value="">Please select a webhook provider</option>
             {Object.entries(providers).map(([key, p]) => <option key={`provider-${key}`} value={key}>{p.label}</option>)}
           </FormSelectField>
-          { ProviderConfigForm && <ProviderConfigForm onChange={setConfig} config={config} /> }
+          { ProviderConfigForm && <ProviderConfigForm onChange={setConfig} config={config} locked={false} /> }
           <FormCheckboxField label="To use by default" {...checkbox('isDefault')} />
         </form>
       </section>

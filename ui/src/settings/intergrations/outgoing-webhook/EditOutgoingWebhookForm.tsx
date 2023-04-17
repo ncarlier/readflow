@@ -30,7 +30,7 @@ interface Props {
 
 export default ({ data, history }: Props) => {
   const [config, setConfig] = useState<any>({
-    ...(data.secrets.reduce((a, v) => ({ ...a, [v]: ""}), {})),
+    ...(data.secrets.reduce((a, v) => ({ ...a, [v]: ''}), {})),
     ...JSON.parse(data.config),
   })
   const [errorMessage, setErrorMessage] = useState<string | null>(null)

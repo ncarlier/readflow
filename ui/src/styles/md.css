@@ -119,6 +119,9 @@ fieldset {
   margin-bottom: 0.8em;
   display: block;
 }
+.form-group .control-label i {
+  font-size: inherit;
+}
 .form-group .bar {
   position: relative;
   border-bottom: 0.0625rem solid #999;
@@ -169,6 +172,7 @@ fieldset {
   color: var(--input-text-color);
 }
 .form-group select ~ .control-label,
+.form-group button ~ .control-label,
 .form-group input:focus ~ .control-label,
 .form-group input:valid ~ .control-label,
 .form-group input.form-file ~ .control-label,

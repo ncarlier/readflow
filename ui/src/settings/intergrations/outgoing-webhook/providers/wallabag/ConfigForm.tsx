@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import { FormInputField } from '../../../../../components'
+import { FormInputField, FormSecretInputField } from '../../../../../components'
 
 interface Config {
   endpoint: string
@@ -24,13 +24,14 @@ export const marshal = (config: ConfigFormFields) : string[] => [
 interface Props {
   onChange(config: any): void
   config?: ConfigFormFields
+  locked?: boolean
 }
 
 const defaultConfig = {
   endpoint: 'https://app.wallabag.it',
 }
 
-export const ConfigForm = ({ onChange, config }: Props) => {
+export const ConfigForm = ({ onChange, config, locked = true }: Props) => {
   const [formState, { url, text, password }] = useFormState<ConfigFormFields>(
     { ...defaultConfig, ...config },
     {
@@ -42,14 +43,21 @@ export const ConfigForm = ({ onChange, config }: Props) => {
     <>
       <FormInputField label="Endpoint" {...url('endpoint')} error={formState.errors.endpoint} required />
       <FormInputField label="Client ID" {...text('client_id')} error={formState.errors.client_id} required />
-      <FormInputField
+      <FormSecretInputField
         label="Client Secret"
         {...text('client_secret')}
         error={formState.errors.client_secret}
         required
+        locked={locked}
       />
       <FormInputField label="Username" {...text('username')} error={formState.errors.username} required />
-      <FormInputField label="Password" {...password('password')} error={formState.errors.password} required />
+      <FormSecretInputField
+        label="Password"
+        {...password('password')}
+        error={formState.errors.password}
+        required
+        locked={locked}
+      />
     </>
   )
 }

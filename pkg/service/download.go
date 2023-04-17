@@ -69,7 +69,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		return nil, err
 	}
 	if err := reg.downloadCache.Put(key, value); err != nil {
-		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
+		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 	}
 
 	reg.logger.Info().Uint("uid", uid).Uint("id", idArticle).Msg("article download artifact created")

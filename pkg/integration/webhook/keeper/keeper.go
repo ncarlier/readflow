@@ -25,12 +25,13 @@ type Article struct {
 // ProviderConfig is the structure definition of a Nunux Keeper API configuration
 type ProviderConfig struct {
 	Endpoint string `json:"endpoint"`
-	APIKey   string `json:"api_key"`
 }
 
 // Provider is the structure definition of a Nunux Keeper webhook provider
 type Provider struct {
-	config ProviderConfig
+	config   ProviderConfig
+	APIKey   string
+	endpoint *url.URL
 }
 
 func newKeeperProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
@@ -40,20 +41,28 @@ func newKeeperProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.P
 	}
 
 	// Validate endpoint URL
-	_, err := url.ParseRequestURI(config.Endpoint)
+	endpoint, err := url.ParseRequestURI(config.Endpoint)
 	if err != nil {
 		return nil, err
 	}
 
+	// Validate secrets
+	apiKey, ok := srv.Secrets["api_key"]
+	if !ok {
+		return nil, fmt.Errorf("missing API key")
+	}
+
 	provider := &Provider{
-		config: config,
+		config:   config,
+		APIKey:   apiKey,
+		endpoint: endpoint,
 	}
 
 	return provider, nil
 }
 
 // Send article to Nunux Keeper endpoint.
-func (kp *Provider) Send(ctx context.Context, article model.Article) error {
+func (p *Provider) Send(ctx context.Context, article model.Article) error {
 	art := Article{
 		Title:       article.Title,
 		Origin:      article.URL,
@@ -64,12 +73,12 @@ func (kp *Provider) Send(ctx context.Context, article model.Article) error {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(art)
 
-	req, err := http.NewRequest("POST", kp.config.Endpoint, b)
+	req, err := http.NewRequest("POST", p.getAPIEndpoint("/v2/documents"), b)
 	if err != nil {
 		return err
 	}
 	req.Header.Set("Content-Type", constant.ContentTypeJSON)
-	req.SetBasicAuth("api", kp.config.APIKey)
+	req.SetBasicAuth("api", p.APIKey)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode >= 300 {
@@ -80,6 +89,12 @@ func (kp *Provider) Send(ctx context.Context, article model.Article) error {
 	}
 
 	return nil
+}
+
+func (p *Provider) getAPIEndpoint(path string) string {
+	baseURL := *p.endpoint
+	baseURL.Path = path
+	return baseURL.String()
 }
 
 func init() {

@@ -23,14 +23,14 @@ type pocketEntry struct {
 
 // pocketProviderConfig is the structure definition of a Pocket API configuration
 type pocketProviderConfig struct {
-	AccessToken string `json:"access_token"`
-	Username    string `json:"username"`
+	Username string `json:"username"`
 }
 
 // pocketProvider is the structure definition of a Pocket webhook provider
 type pocketProvider struct {
 	config      pocketProviderConfig
-	ConsumerKey string
+	consumerKey string
+	accessToken string
 }
 
 func newPocketProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
@@ -39,14 +39,21 @@ func newPocketProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.P
 		return nil, err
 	}
 
-	// Validate credentials
-	if config.AccessToken == "" || config.Username == "" {
-		return nil, fmt.Errorf("pocket: missing credentials")
+	// Validate username
+	if config.Username == "" {
+		return nil, fmt.Errorf("missing username")
+	}
+
+	// Validate secrets
+	accessToken, ok := srv.Secrets["access_token"]
+	if !ok {
+		return nil, fmt.Errorf("missing access token")
 	}
 
 	provider := &pocketProvider{
 		config:      config,
-		ConsumerKey: conf.Integration.Pocket.ConsumerKey,
+		consumerKey: conf.Integration.Pocket.ConsumerKey,
+		accessToken: accessToken,
 	}
 
 	return provider, nil
@@ -57,8 +64,8 @@ func (wp *pocketProvider) Send(ctx context.Context, article model.Article) error
 	entry := pocketEntry{
 		Title:       article.Title,
 		URL:         article.URL,
-		ConsumerKey: wp.ConsumerKey,
-		AccessToken: wp.config.AccessToken,
+		ConsumerKey: wp.consumerKey,
+		AccessToken: wp.accessToken,
 	}
 
 	b := new(bytes.Buffer)

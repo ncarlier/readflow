@@ -10,6 +10,7 @@ import wallabag from './wallabag'
 interface ConfigProps {
   onChange(config: any): void
   config: any
+  locked?: boolean
 }
 
 interface Provider {
