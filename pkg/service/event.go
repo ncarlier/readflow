@@ -27,9 +27,11 @@ const (
 )
 
 func (reg *Registry) registerEventHandlers() {
-	reg.events.Subscribe(EventCreateUser, newExternalEventHandler(reg.dispatcher))
-	reg.events.Subscribe(EventUpdateUser, newExternalEventHandler(reg.dispatcher))
-	reg.events.Subscribe(EventDeleteUser, newExternalEventHandler(reg.dispatcher))
+	if reg.dispatcher != nil {
+		reg.events.Subscribe(EventCreateUser, newExternalEventHandler(reg.dispatcher))
+		reg.events.Subscribe(EventUpdateUser, newExternalEventHandler(reg.dispatcher))
+		reg.events.Subscribe(EventDeleteUser, newExternalEventHandler(reg.dispatcher))
+	}
 	reg.events.Subscribe(EventCreateArticle, newCreateArticleMetricEventHandler())
 	reg.events.Subscribe(EventCreateArticle, newNotificationEventHandler(reg))
 }

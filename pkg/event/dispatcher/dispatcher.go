@@ -3,6 +3,8 @@ package dispatcher
 import (
 	"fmt"
 	"net/url"
+
+	"github.com/rs/zerolog/log"
 )
 
 // Dispatcher is the event dispatcher interface
@@ -22,6 +24,7 @@ func NewDispatcher(uri string) (Dispatcher, error) {
 
 	switch u.Scheme {
 	case "http", "https":
+		log.Info().Str("component", "event").Str("uri", u.Redacted()).Msg("using HTTP external event broker")
 		return newHTTPDispatcher(u)
 	default:
 		return nil, fmt.Errorf("unsupported event dispatcher: %s", u.Scheme)
