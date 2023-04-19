@@ -15,7 +15,7 @@ interface ConfigFormFields {
   body: string
 }
 
-export const marshal = (config: Config) : string[] => [JSON.stringify(config)]
+export const marshal = (config: Config) : string[] => [JSON.stringify(config), '{}']
 
 interface Props {
   onChange(config: any): void
