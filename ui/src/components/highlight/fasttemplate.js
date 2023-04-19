@@ -1,6 +1,6 @@
 
 export default function() {
-  const FILTERS = ['urlquery', 'base64', 'json' ]
+  const FILTERS = ['urlquery', 'base64', 'json', 'html2text' ]
   const PROPS = ['id', 'title', 'text', 'html', 'url', 'image', 'href']
   const FILTER = {
     begin: /\|\s*\w+:?/,

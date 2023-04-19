@@ -10,6 +10,7 @@ import (
 
 	"github.com/valyala/fasttemplate"
 
+	"github.com/ncarlier/readflow/pkg/html"
 	templateEngine "github.com/ncarlier/readflow/pkg/template"
 )
 
@@ -73,6 +74,8 @@ func evalTemplateFilter(value string, filter string) (string, error) {
 		return url.QueryEscape(value), nil
 	case "base64":
 		return base64.StdEncoding.EncodeToString([]byte(value)), nil
+	case "html2text":
+		return html.HTML2Text(value)
 	case "json":
 		buf, err := json.Marshal(value)
 		if err != nil {
