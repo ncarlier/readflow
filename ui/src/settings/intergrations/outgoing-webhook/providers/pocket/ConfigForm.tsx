@@ -37,7 +37,7 @@ export const ConfigForm = ({ onChange, config, locked = true }: Props) => {
     }
   }, [formState, config])
 
-  if (formState.values.access_token === '') {
+  if (formState.values.username === '') {
     return <AccountLinker provider="pocket" />
   }
 
