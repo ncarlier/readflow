@@ -47,10 +47,19 @@ func (reg *Registry) GetOutgoingWebhook(ctx context.Context, id uint) (*model.Ou
 func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.OutgoingWebhookCreateForm) (*model.OutgoingWebhook, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
+	// Seal secrets
+	if reg.secretsEngineProvider != nil {
+		err := reg.secretsEngineProvider.Seal(&form.Secrets)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	// Validate outgoing webhook configuration
 	dummy := model.OutgoingWebhook{
 		Provider: form.Provider,
 		Config:   form.Config,
+		Secrets:  form.Secrets,
 	}
 	_, err := webhookProvider.NewOutgoingWebhookProvider(dummy, reg.conf)
 	if err != nil {
@@ -74,11 +83,12 @@ func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.Outgo
 func (reg *Registry) UpdateOutgoingWebhook(ctx context.Context, form model.OutgoingWebhookUpdateForm) (*model.OutgoingWebhook, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
-	if form.Provider != nil && form.Config != nil {
+	if form.Provider != nil && form.Config != nil && form.Secrets != nil {
 		// Validate outgoing webhook configuration
 		dummy := model.OutgoingWebhook{
 			Provider: *form.Provider,
 			Config:   *form.Config,
+			Secrets:  *form.Secrets,
 		}
 		_, err := webhookProvider.NewOutgoingWebhookProvider(dummy, reg.conf)
 		if err != nil {
@@ -91,6 +101,13 @@ func (reg *Registry) UpdateOutgoingWebhook(ctx context.Context, form model.Outgo
 		// Provider can only be modify with its configuration
 		form.Provider = nil
 		form.Config = nil
+	}
+
+	if form.Secrets != nil && reg.secretsEngineProvider != nil {
+		err := reg.secretsEngineProvider.Seal(form.Secrets)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	result, err := reg.db.UpdateOutgoingWebhookForUser(uid, form)
@@ -173,6 +190,15 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 		}
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
 		return err
+	}
+
+	// UnSeal secrets
+	if reg.secretsEngineProvider != nil {
+		err := reg.secretsEngineProvider.UnSeal(&webhookConf.Secrets)
+		if err != nil {
+			logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
+			return err
+		}
 	}
 
 	provider, err := webhookProvider.NewOutgoingWebhookProvider(*webhookConf, reg.conf)

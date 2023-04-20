@@ -25,6 +25,7 @@ type IntegrationConfig struct {
 	ExternalWebScraperURL  string `toml:"external_web_scraper_url"`
 	ImageProxyURL          string `toml:"image_proxy_url"`
 	AvatarProvider         string `toml:"avatar_provider"`
+	SecretsEngineProvider  string `toml:"secrets_engine_provider"`
 	Sentry                 SentryConfiguration
 	Pocket                 PocketConfiguration
 }

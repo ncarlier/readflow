@@ -1,7 +1,10 @@
 package outboundservice
 
 import (
+	"errors"
+
 	"github.com/graphql-go/graphql"
+	"github.com/ncarlier/readflow/pkg/model"
 )
 
 var providerEnum = graphql.NewEnum(
@@ -41,6 +44,21 @@ var providerEnum = graphql.NewEnum(
 	},
 )
 
+var outgoingWebhookSecretsField = &graphql.Field{
+	Type: graphql.NewList(graphql.String),
+	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+		obj, ok := p.Source.(*model.OutgoingWebhook)
+		if !ok {
+			return nil, errors.New("invalid object received by secrets resolver")
+		}
+		keys := make([]string, 0, len(obj.Secrets))
+		for k := range obj.Secrets {
+			keys = append(keys, k)
+		}
+		return keys, nil
+	},
+}
+
 var outgoingWebhookType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "OutgoingWebhook",
@@ -57,6 +75,7 @@ var outgoingWebhookType = graphql.NewObject(
 			"config": &graphql.Field{
 				Type: graphql.String,
 			},
+			"secrets": outgoingWebhookSecretsField,
 			"is_default": &graphql.Field{
 				Type: graphql.Boolean,
 			},

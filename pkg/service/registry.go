@@ -8,15 +8,18 @@ import (
 	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/event/dispatcher"
-	_ "github.com/ncarlier/readflow/pkg/exporter/all"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	ratelimiter "github.com/ncarlier/readflow/pkg/rate-limiter"
 	"github.com/ncarlier/readflow/pkg/sanitizer"
 	"github.com/ncarlier/readflow/pkg/scraper"
 	"github.com/ncarlier/readflow/pkg/scripting"
+	"github.com/ncarlier/readflow/pkg/secret"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+
+	// load all exporters
+	_ "github.com/ncarlier/readflow/pkg/exporter/all"
 )
 
 var instance *Registry
@@ -36,6 +39,7 @@ type Registry struct {
 	sanitizer               *sanitizer.Sanitizer
 	events                  *event.Manager
 	dispatcher              dispatcher.Dispatcher
+	secretsEngineProvider   secret.EngineProvider
 }
 
 // Configure the global service registry
@@ -60,6 +64,10 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	if err != nil {
 		return err
 	}
+	secretsEngineProvider, err := secret.NewSecretsEngineProvider(conf.Integration.SecretsEngineProvider)
+	if err != nil {
+		return err
+	}
 
 	instance = &Registry{
 		conf:                    conf,
@@ -74,6 +82,7 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 		scriptEngine:            scripting.NewScriptEngine(128),
 		dispatcher:              dispatcher,
 		events:                  event.NewEventManager(),
+		secretsEngineProvider:   secretsEngineProvider,
 	}
 	instance.registerEventHandlers()
 	return instance.initProperties()

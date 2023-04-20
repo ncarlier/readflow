@@ -62,6 +62,7 @@ It is also possible to modify a property with a filter function:
 - `{{ title | json }}`: JSON value escaping
 - `{{ title | urlquery }}`: URL value escaping
 - `{{ title | bas64 }}`: base 64 encoding
+- `{{ html | html2text }}`: conversion of HTML code to plain text
 
 Example:
 

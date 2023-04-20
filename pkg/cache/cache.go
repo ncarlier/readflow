@@ -41,7 +41,7 @@ func New(conn string) (Cache, error) {
 
 // NewDefault return default cache
 func NewDefault(name string) (Cache, error) {
-	cacheFileName := filepath.ToSlash(os.TempDir() + string(os.PathSeparator) + name + ".cache")
+	cacheFileName := filepath.Join(os.TempDir(), name+".cache")
 	os.Remove(cacheFileName)
 	conn := "boltdb://" + cacheFileName
 	return New(conn)

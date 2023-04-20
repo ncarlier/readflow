@@ -3,27 +3,30 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
 func assertOutgoingWebhookExists(t *testing.T, uid uint, form model.OutgoingWebhookCreateForm) *model.OutgoingWebhook {
 	result, err := testDB.GetOutgoingWebhookByUserAndAlias(uid, &form.Alias)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	if result != nil {
 		return result
 	}
 
 	result, err = testDB.CreateOutgoingWebhookForUser(uid, form)
-	assert.Nil(t, err)
-	assert.NotNil(t, result)
-	assert.NotNil(t, result.ID)
-	assert.Equal(t, uid, *result.UserID)
-	assert.Equal(t, form.Alias, result.Alias)
-	assert.Equal(t, form.Provider, result.Provider)
-	assert.Equal(t, form.Config, result.Config)
-	assert.Equal(t, form.IsDefault, result.IsDefault)
+	require.Nil(t, err)
+	require.NotNil(t, result)
+	require.NotNil(t, result.ID)
+	require.Equal(t, uid, *result.UserID)
+	require.Equal(t, form.Alias, result.Alias)
+	require.Equal(t, form.Provider, result.Provider)
+	require.Equal(t, form.Config, result.Config)
+	for k := range form.Secrets {
+		require.Contains(t, result.Secrets, k)
+	}
+	require.Equal(t, form.IsDefault, result.IsDefault)
 	return result
 }
 func TestOutgoingWebhookCRUD(t *testing.T) {
@@ -46,17 +49,17 @@ func TestOutgoingWebhookCRUD(t *testing.T) {
 
 	// Update webhook
 	webhook, err := testDB.UpdateOutgoingWebhookForUser(uid, update)
-	assert.Nil(t, err)
-	assert.NotNil(t, webhook)
-	assert.NotNil(t, webhook.ID)
-	assert.Equal(t, alias, webhook.Alias)
-	assert.Equal(t, create.Provider, webhook.Provider)
-	assert.Equal(t, create.Config, webhook.Config)
-	assert.Equal(t, create.IsDefault, webhook.IsDefault)
+	require.Nil(t, err)
+	require.NotNil(t, webhook)
+	require.NotNil(t, webhook.ID)
+	require.Equal(t, alias, webhook.Alias)
+	require.Equal(t, create.Provider, webhook.Provider)
+	require.Equal(t, create.Config, webhook.Config)
+	require.Equal(t, create.IsDefault, webhook.IsDefault)
 
 	// Cleanup
 	err = testDB.DeleteOutgoingWebhookByUser(uid, *webhook.ID)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 }
 
 func TestDeleteOutgoingWebhook(t *testing.T) {
@@ -73,17 +76,17 @@ func TestDeleteOutgoingWebhook(t *testing.T) {
 
 	// Retrieve webhook
 	webhooks, err := testDB.GetOutgoingWebhooksByUser(uid)
-	assert.Nil(t, err)
-	assert.True(t, len(webhooks) > 0)
+	require.Nil(t, err)
+	require.True(t, len(webhooks) > 0)
 
 	// Delete webhook
 	err = testDB.DeleteOutgoingWebhookByUser(uid, *webhook.ID)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// Unable to retrieve deleted webhook
 	webhook, err = testDB.GetOutgoingWebhookByUserAndAlias(uid, &create.Alias)
-	assert.Nil(t, err)
-	assert.Nil(t, webhook)
+	require.Nil(t, err)
+	require.Nil(t, webhook)
 }
 
 func TestUpdateDefaultOutgoingWebhook(t *testing.T) {
@@ -107,19 +110,19 @@ func TestUpdateDefaultOutgoingWebhook(t *testing.T) {
 
 	// Refresh first webhook
 	first, err := testDB.GetOutgoingWebhookByID(*first.ID)
-	assert.Nil(t, err)
-	assert.False(t, first.IsDefault, "outgoing webhook should not be the default anymore")
+	require.Nil(t, err)
+	require.False(t, first.IsDefault, "outgoing webhook should not be the default anymore")
 
 	// Test default webhook query
 	defaultOutgoingWebhook, err := testDB.GetOutgoingWebhookByUserAndAlias(uid, nil)
-	assert.Nil(t, err)
-	assert.NotNil(t, defaultOutgoingWebhook)
-	assert.NotEqual(t, *first.ID, *defaultOutgoingWebhook.ID)
-	assert.Equal(t, *second.ID, *defaultOutgoingWebhook.ID)
+	require.Nil(t, err)
+	require.NotNil(t, defaultOutgoingWebhook)
+	require.NotEqual(t, *first.ID, *defaultOutgoingWebhook.ID)
+	require.Equal(t, *second.ID, *defaultOutgoingWebhook.ID)
 
 	// Cleanup
 	err = testDB.DeleteOutgoingWebhookByUser(uid, *first.ID)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	err = testDB.DeleteOutgoingWebhookByUser(uid, *second.ID)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 }

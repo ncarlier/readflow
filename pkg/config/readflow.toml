@@ -65,6 +65,11 @@ image_proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
 # - https://seccdn.libravatar.org/avatar/{seed}?d=mp&s=48
 avatar_provider = "${READFLOW_AVATAR_PROVIDER}"
 
+## Secrets Engine provider for secrets encryption, deactivated if empty (aka: no encryption)
+# Examples:
+# - file:///var/opt/key.txt
+secrets_engine_provider = "${READFLOW_SECRETS_ENGINE_PROVIDER}"
+
 ## Sentry integration
 [integration.sentry]
 ## DSN URL, deactivated if empty

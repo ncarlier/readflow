@@ -23,7 +23,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 
 	exp, err := exporter.NewArticleExporter(format, reg.dl)
 	if err != nil {
-		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
+		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 		return nil, err
 	}
 
@@ -32,13 +32,13 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		if err == nil {
 			err = errors.New("article not found")
 		}
-		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
+		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 		return nil, err
 	}
 
 	if article.HTML == nil || article.URL == nil {
 		err := errors.New("missing require attributes")
-		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
+		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 		return nil, err
 	}
 	logger.Debug().Msg("preparing article download artifact")
@@ -47,7 +47,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 	key := helper.Hash(format, article.Hash)
 	data, err := reg.downloadCache.Get(key)
 	if err != nil {
-		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
+		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 	}
 	if data != nil {
 		reg.logger.Debug().Uint("uid", uid).Uint("id", idArticle).Msg("returns article download artefact from cache")
@@ -57,7 +57,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 	// export article to the downloadable format
 	result, err := exp.Export(ctx, article)
 	if err != nil {
-		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
+		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 		return result, err
 	}
 
@@ -69,7 +69,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		return nil, err
 	}
 	if err := reg.downloadCache.Put(key, value); err != nil {
-		logger.Info().Err(err).Msg(ErrArticleArchiving.Error())
+		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 	}
 
 	reg.logger.Info().Uint("uid", uid).Uint("id", idArticle).Msg("article download artifact created")

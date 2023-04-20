@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/url"
 
 	"github.com/minio/minio-go/v7"
@@ -20,18 +21,18 @@ import (
 
 // ProviderConfig is the structure definition of a S3 configuration
 type ProviderConfig struct {
-	Endpoint        string `json:"endpoint"`
-	AccessKeyID     string `json:"access_key_id"`
-	AccessKeySecret string `json:"access_key_secret"`
-	Region          string `json:"region"`
-	Bucket          string `json:"bucket"`
-	Format          string `json:"format"`
+	Endpoint    string `json:"endpoint"`
+	AccessKeyID string `json:"access_key_id"`
+	Region      string `json:"region"`
+	Bucket      string `json:"bucket"`
+	Format      string `json:"format"`
 }
 
 // Provider is the structure definition of a S3 outbound service
 type Provider struct {
-	config ProviderConfig
-	client *minio.Client
+	config          ProviderConfig
+	client          *minio.Client
+	AccessKeySecret string
 }
 
 func newS3Provider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
@@ -46,9 +47,15 @@ func newS3Provider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provi
 		return nil, err
 	}
 
+	// Validate secrets
+	accessKeySecret, ok := srv.Secrets["access_key_secret"]
+	if !ok {
+		return nil, fmt.Errorf("missing access key secret")
+	}
+
 	// Create S3 client
 	client, err := minio.New(endpoint.Host, &minio.Options{
-		Creds:  credentials.NewStaticV4(config.AccessKeyID, config.AccessKeySecret, ""),
+		Creds:  credentials.NewStaticV4(config.AccessKeyID, accessKeySecret, ""),
 		Secure: endpoint.Scheme == "https",
 	})
 	if err != nil {

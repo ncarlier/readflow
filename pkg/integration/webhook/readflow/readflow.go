@@ -17,12 +17,12 @@ import (
 // ProviderConfig is the structure definition of a Readflow API configuration
 type ProviderConfig struct {
 	Endpoint string `json:"endpoint"`
-	APIKey   string `json:"api_key"`
 }
 
 // Provider is the structure definition of a Readflow webhook provider
 type Provider struct {
 	config   ProviderConfig
+	APIKey   string
 	endpoint *url.URL
 }
 
@@ -38,13 +38,15 @@ func newReadflowProvider(srv model.OutgoingWebhook, conf config.Config) (webhook
 		return nil, err
 	}
 
-	// Validate config
-	if config.APIKey == "" {
+	// Validate secrets
+	apiKey, ok := srv.Secrets["api_key"]
+	if !ok {
 		return nil, fmt.Errorf("missing API key")
 	}
 
 	provider := &Provider{
 		config:   config,
+		APIKey:   apiKey,
 		endpoint: endpoint,
 	}
 
@@ -68,7 +70,7 @@ func (p *Provider) Send(ctx context.Context, article model.Article) error {
 	}
 	req.Header.Set("User-Agent", constant.UserAgent)
 	req.Header.Set("Content-Type", constant.ContentTypeJSON)
-	req.SetBasicAuth("api", p.config.APIKey)
+	req.SetBasicAuth("api", p.APIKey)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode >= 300 {

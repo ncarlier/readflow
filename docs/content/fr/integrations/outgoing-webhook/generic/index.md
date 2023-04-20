@@ -62,6 +62,7 @@ Il est également possible de modifier une propriété avec une fonction de filt
 - `{{ title | json }}`: echapement JSON de la valeur
 - `{{ title | urlquery }}`: echapement URL de la valeur
 - `{{ title | bas64 }}`: encodeage en base 64 de la valeur
+- `{{ html | html2text }}`: conversion du code HTML en texte simple
 
 Exemple:
 

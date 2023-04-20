@@ -16,6 +16,7 @@ var outgoingWebhookColumns = []string{
 	"is_default",
 	"provider",
 	"config",
+	"secrets",
 	"created_at",
 	"updated_at",
 }
@@ -30,6 +31,7 @@ func mapRowToOutgoingWebhook(row *sql.Row) (*model.OutgoingWebhook, error) {
 		&result.IsDefault,
 		&result.Provider,
 		&result.Config,
+		&result.Secrets,
 		&result.CreatedAt,
 		&result.UpdatedAt,
 	)
@@ -50,13 +52,14 @@ func (pg *DB) CreateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookC
 	query, args, _ := pg.psql.Insert(
 		"outgoing_webhooks",
 	).Columns(
-		"user_id", "alias", "is_default", "provider", "config",
+		"user_id", "alias", "is_default", "provider", "config", "secrets",
 	).Values(
 		uid,
 		form.Alias,
 		form.IsDefault,
 		form.Provider,
 		form.Config,
+		form.Secrets,
 	).Suffix(
 		"RETURNING " + strings.Join(outgoingWebhookColumns, ","),
 	).ToSql()
@@ -69,8 +72,8 @@ func (pg *DB) CreateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookC
 	}
 
 	if result != nil && result.IsDefault {
-		// Unset previous OutgoingWebhook default
-		err = pg.setDefaultOutgoingWebhook(result)
+		// Unset default for other outgoing webhooks
+		err = pg.unsetDefaultForOtherOutgoingWebhooks(result)
 		if err != nil {
 			tx.Rollback()
 			return nil, err
@@ -122,27 +125,37 @@ func (pg *DB) UpdateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookU
 		return nil, err
 	}
 
-	if result != nil && result.IsDefault {
-		// Unset previous outgoing webhook default
-		err = pg.setDefaultOutgoingWebhook(result)
-		if err != nil {
-			tx.Rollback()
-			return nil, err
+	if result != nil {
+		if form.Secrets != nil {
+			// Update secrets
+			err = pg.updateOutgoingWebhookSecrets(result, form.Secrets)
+			if err != nil {
+				tx.Rollback()
+				return nil, err
+			}
+		}
+		if result.IsDefault {
+			// Unset default for other outgoing webhooks
+			err = pg.unsetDefaultForOtherOutgoingWebhooks(result)
+			if err != nil {
+				tx.Rollback()
+				return nil, err
+			}
 		}
 	}
 	return result, tx.Commit()
 }
 
-func (pg *DB) setDefaultOutgoingWebhook(OutgoingWebhook *model.OutgoingWebhook) error {
+func (pg *DB) unsetDefaultForOtherOutgoingWebhooks(webhook *model.OutgoingWebhook) error {
 	update := map[string]interface{}{
 		"is_default": false,
 	}
 	query, args, _ := pg.psql.Update(
 		"outgoing_webhooks",
 	).SetMap(update).Where(
-		sq.NotEq{"id": OutgoingWebhook.ID},
+		sq.NotEq{"id": webhook.ID},
 	).Where(
-		sq.Eq{"user_id": OutgoingWebhook.UserID},
+		sq.Eq{"user_id": webhook.UserID},
 	).ToSql()
 
 	_, err := pg.db.Exec(query, args...)
@@ -204,6 +217,7 @@ func (pg *DB) GetOutgoingWebhooksByUser(uid uint) ([]model.OutgoingWebhook, erro
 			&OutgoingWebhook.IsDefault,
 			&OutgoingWebhook.Provider,
 			&OutgoingWebhook.Config,
+			&OutgoingWebhook.Secrets,
 			&OutgoingWebhook.CreatedAt,
 			&OutgoingWebhook.UpdatedAt,
 		)

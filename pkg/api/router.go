@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -12,7 +13,8 @@ import (
 )
 
 func nextRequestID() string {
-	return fmt.Sprintf("%d", time.Now().UnixNano())
+	now := time.Now().UnixNano()
+	return strconv.FormatInt(now, 32)
 }
 
 func buildOriginFromPublicURL(publicURL string) string {

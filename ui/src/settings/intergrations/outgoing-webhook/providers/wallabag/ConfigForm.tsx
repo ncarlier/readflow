@@ -1,27 +1,38 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import { FormInputField } from '../../../../components'
+import { FormInputField, FormSecretInputField } from '../../../../../components'
 
-interface WallabagConfigFormFields {
+interface Config {
   endpoint: string
   client_id: string
-  client_secret: string
   username: string
+}
+
+interface Secrets {
+  client_secret: string
   password: string
 }
 
+type ConfigFormFields = Config & Secrets
+
+export const marshal = (config: ConfigFormFields) : string[] => [
+  JSON.stringify(config, ['endpoint', 'client_id', 'username']),
+  JSON.stringify(config, ['client_secret', 'password']),
+]
+
 interface Props {
   onChange(config: any): void
-  config?: WallabagConfigFormFields
+  config?: ConfigFormFields
+  locked?: boolean
 }
 
 const defaultConfig = {
   endpoint: 'https://app.wallabag.it',
 }
 
-export const WallabagConfigForm = ({ onChange, config }: Props) => {
-  const [formState, { url, text, password }] = useFormState<WallabagConfigFormFields>(
+export const ConfigForm = ({ onChange, config, locked = true }: Props) => {
+  const [formState, { url, text, password }] = useFormState<ConfigFormFields>(
     { ...defaultConfig, ...config },
     {
       onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
@@ -32,14 +43,21 @@ export const WallabagConfigForm = ({ onChange, config }: Props) => {
     <>
       <FormInputField label="Endpoint" {...url('endpoint')} error={formState.errors.endpoint} required />
       <FormInputField label="Client ID" {...text('client_id')} error={formState.errors.client_id} required />
-      <FormInputField
+      <FormSecretInputField
         label="Client Secret"
         {...text('client_secret')}
         error={formState.errors.client_secret}
         required
+        locked={locked}
       />
       <FormInputField label="Username" {...text('username')} error={formState.errors.username} required />
-      <FormInputField label="Password" {...password('password')} error={formState.errors.password} required />
+      <FormSecretInputField
+        label="Password"
+        {...password('password')}
+        error={formState.errors.password}
+        required
+        locked={locked}
+      />
     </>
   )
 }

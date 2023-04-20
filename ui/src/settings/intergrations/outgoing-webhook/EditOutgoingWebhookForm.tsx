@@ -29,7 +29,10 @@ interface Props {
 }
 
 export default ({ data, history }: Props) => {
-  const [config, setConfig] = useState<any>(JSON.parse(data.config))
+  const [config, setConfig] = useState<any>({
+    ...(data.secrets.reduce((a, v) => ({ ...a, [v]: ''}), {})),
+    ...JSON.parse(data.config),
+  })
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [formState, { text, select, checkbox }] = useFormState<EditOutgoingWebhookFormFields>({
     alias: data.alias,
@@ -65,12 +68,13 @@ export default ({ data, history }: Props) => {
         return
       }
       const { alias, provider, is_default } = formState.values
-      editOutgoingWebhook({ id: data.id, alias, provider, is_default, config: JSON.stringify(config) })
+      const [conf, secrets] = providers[provider].marshal(config)
+      editOutgoingWebhook({ id: data.id, alias, provider, is_default, config: conf, secrets })
     },
     [data, formState, config, editOutgoingWebhook]
   )
   
-  const ProviderConfig = providers[formState.values.provider].config
+  const ProviderConfigForm = providers[formState.values.provider].form
 
   return (
     <>
@@ -85,7 +89,7 @@ export default ({ data, history }: Props) => {
           <FormSelectField label="Provider" {...select('provider')}>
             {Object.entries(providers).map(([key, p]) => <option key={`provider-${key}`} value={key}>{p.label}</option>)}
           </FormSelectField>
-          <ProviderConfig onChange={setConfig} config={config} />
+          <ProviderConfigForm onChange={setConfig} config={config} />
           <FormCheckboxField label="To use by default" {...checkbox('is_default')} />
         </form>
       </section>

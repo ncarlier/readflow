@@ -1,23 +1,25 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import { FormCodeEditorField, FormInputField, HelpLink } from '../../../../components'
+import { FormCodeEditorField, FormInputField, HelpLink } from '../../../../../components'
 
-interface GenericConfig {
+interface Config {
   endpoint: string
   headers: Record<string, string>
   body: string
 }
 
-interface GenericConfigFormFields {
+interface ConfigFormFields {
   endpoint: string
   headers: string
   body: string
 }
 
+export const marshal = (config: Config) : string[] => [JSON.stringify(config), '{}']
+
 interface Props {
   onChange(config: any): void
-  config: GenericConfig
+  config: Config
 }
 
 const defautHeaders = {
@@ -28,8 +30,8 @@ const HEADERS_REGEX = /^(\w+(?:-\w+)*: .+\n?)+$/
 
 const validateHeaders = (value: string) => value.trim() && !HEADERS_REGEX.test(value) ? 'Invalid headers definition' : true
 
-export const GenericConfigForm = ({ onChange, config: {endpoint, body, headers = defautHeaders} }: Props) => {
-  const [formState, { url, textarea }] = useFormState<GenericConfigFormFields>({
+export const ConfigForm = ({ onChange, config: {endpoint, body, headers = defautHeaders} }: Props) => {
+  const [formState, { url, textarea }] = useFormState<ConfigFormFields>({
     endpoint,
     body,
     headers: Object.keys(headers).map(k => `${k}: ${headers[k]}`).join('\n'),

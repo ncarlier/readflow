@@ -1,20 +1,31 @@
 import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
-import { FormInputField, FormSelectField } from '../../../../components'
+import { FormInputField, FormSecretInputField, FormSelectField } from '../../../../../components'
 
-interface S3ConfigFormFields {
+interface Config {
   endpoint: string
   access_key_id: string
-  access_key_secret: string
   region: string
   bucket: string
   format: string
 }
 
+interface Secrets {
+  access_key_secret: string
+}
+
+type ConfigFormFields = Config & Secrets
+
+export const marshal = (config: ConfigFormFields) : string[] => [
+  JSON.stringify(config, ['endpoint', 'access_key_id', 'region', 'bucket', 'format']),
+  JSON.stringify(config, ['access_key_secret']),
+]
+
 interface Props {
   onChange(config: any): void
-  config?: S3ConfigFormFields
+  config?: ConfigFormFields
+  locked?: boolean
 }
 
 const defaultConfig = {
@@ -41,8 +52,8 @@ const Formats = () => (
   </>
 )
 
-export const S3ConfigForm = ({ onChange, config }: Props) => {
-  const [formState, { url, text, password, select }] = useFormState<S3ConfigFormFields>(
+export const ConfigForm = ({ onChange, config, locked = true }: Props) => {
+  const [formState, { url, text, select }] = useFormState<ConfigFormFields>(
     { ...defaultConfig, ...config },
     {
       onChange: (_e, _stateValues, nextStateValues) => onChange(nextStateValues),
@@ -53,11 +64,12 @@ export const S3ConfigForm = ({ onChange, config }: Props) => {
     <>
       <FormInputField label="Endpoint" {...url('endpoint')} error={formState.errors.endpoint} required />
       <FormInputField label="Access Key" {...text('access_key_id')} error={formState.errors.access_key_id} required />
-      <FormInputField
+      <FormSecretInputField
         label="Secret Key"
-        {...password('access_key_secret')}
+        {...text('access_key_secret')}
         error={formState.errors.access_key_secret}
         required
+        locked={locked}
       />
       <FormInputField label="Region" {...text('region')} error={formState.errors.region} required />
       <FormInputField label="Bucket" {...text('bucket')} error={formState.errors.bucket} required />

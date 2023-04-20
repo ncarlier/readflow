@@ -1,40 +1,32 @@
-import { GenericConfigForm } from './GenericConfigForm'
-import { KeeperConfigForm } from './KeeperConfigForm'
-import { PocketConfigForm } from './PocketConfigForm'
-import { ReadflowConfigForm } from './ReadflowConfigForm'
-import { S3ConfigForm } from './S3ConfigForm'
-import { ShaarliConfigForm } from './ShaarliConfigForm'
-import { WallabagConfigForm } from './WallabagConfigForm'
+import React from 'react'
+import generic from './generic'
+import keeper from './keeper'
+import pocket from './pocket'
+import readflow from './readflow'
+import s3 from './s3'
+import shaarli from './shaarli'
+import wallabag from './wallabag'
 
-const providers = {
-  generic: {
-    label: 'Generic webhook',
-    config: GenericConfigForm
-  },
-  keeper: {
-    label: 'Keeper',
-    config: KeeperConfigForm
-  },
-  pocket: {
-    label: 'Pocket',
-    config: PocketConfigForm
-  },
-  readflow: {
-    label: 'Readflow',
-    config: ReadflowConfigForm
-  },
-  s3: {
-    label: 'S3',
-    config: S3ConfigForm
-  },
-  shaarli: {
-    label: 'Shaarli',
-    config: ShaarliConfigForm
-  },
-  wallabag: {
-    label: 'Wallabag',
-    config: WallabagConfigForm
-  },
+interface ConfigProps {
+  onChange(config: any): void
+  config: any
+  locked?: boolean
+}
+
+interface Provider {
+  label: string
+  form: React.FC<ConfigProps>
+  marshal: (config: any) => string[]
+}
+
+const providers: Record<string, Provider> = {
+  generic,
+  keeper,
+  pocket,
+  readflow,
+  s3,
+  shaarli,
+  wallabag
 }
 
 export default providers
