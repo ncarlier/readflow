@@ -25,6 +25,10 @@ func index(conf *config.Config) http.Handler {
 	}
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
 		data, err := json.Marshal(v)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -8,7 +8,6 @@ import (
 	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/event/dispatcher"
-	_ "github.com/ncarlier/readflow/pkg/exporter/all"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	ratelimiter "github.com/ncarlier/readflow/pkg/rate-limiter"
