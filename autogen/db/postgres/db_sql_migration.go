@@ -118,6 +118,7 @@ alter table categories drop column notification_strategy;
 drop type notification_strategy_type;
 `,
 	"db_migration_14": `alter table outgoing_webhooks add column secrets varchar null;
+update outgoing_webhooks set secrets = config;
 `,
 	"db_migration_2": `create table devices (
   id serial not null,
@@ -176,7 +177,7 @@ var DatabaseSQLMigrationChecksums = map[string]string{
 	"db_migration_11": "1150b8fa81099eb5956989560e8eebecafe5e39cbd1a5f6f7d23f3dfceb810bf",
 	"db_migration_12": "b24497bb03f04fb4705ae752f8a5bf69dad26f168bc8ec196af93aee29deef49",
 	"db_migration_13": "4a52465eeb50a236d7f7a94cc51cd78238de0f885a6d29da4a548b5c389ebe81",
-	"db_migration_14": "747d4c78f064c0b7b941572b9a5fa2165db0204aa6047d0dd6dae8b788b02041",
+	"db_migration_14": "f2c6e03988386e662f943d0f37255cf6db19b69e2c4f63c312f3778b401bb96a",
 	"db_migration_2":  "0be0d1ef1e9481d61db425a7d54378f3667c091949525b9c285b18660b6e8a1d",
 	"db_migration_3":  "5cd0d3628d990556c0b85739fd376c42244da7e98b66852b6411d27eda20c3fc",
 	"db_migration_4":  "d5fb83c15b523f15291310ff27d36c099c4ba68de2fd901c5ef5b70a18fedf65",
