@@ -67,7 +67,7 @@ const reducer: Reducer<OfflineArticlesState> = (state = initialState, action) =>
       const nbFetchedArticles = articles.entries.length
       console.log(nbFetchedArticles + ' article(s) fetched')
       if (data && query.afterCursor) {
-        articles.entries = articles.entries.concat(articles.entries)
+        articles.entries = data.articles.entries.concat(articles.entries)
       }
       return { ...state, loading: false, data: { articles }, error: undefined }
     }
