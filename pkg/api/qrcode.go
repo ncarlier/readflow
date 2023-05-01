@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/skip2/go-qrcode"
 
@@ -24,16 +23,18 @@ func qrcodeHandler(conf *config.Config) http.Handler {
 		}
 
 		// Build outgoing webhook endpoint
-		u, err := url.Parse(conf.Global.PublicURL)
-		if err != nil {
-			http.Error(w, "invalid public URL", http.StatusInternalServerError)
-			return
-		}
-		u.Path = "/articles"
+		endpoint := *r.URL
+		endpoint.RawPath = "/articles"
+		endpoint.RawFragment = ""
+		endpoint.RawQuery = ""
 
 		// Build UI outgoing webhook configuration URL
-		payload := strings.Replace(conf.Global.PublicURL, "api.", "", 1)
-		payload = fmt.Sprintf("%s/settings/integrations/outgoing-webhooks/add?provider=readflow&endpoint=%s&api_key=%s", payload, url.QueryEscape(u.String()), token)
+		payload := fmt.Sprintf(
+			"%s/settings/integrations/outgoing-webhooks/add?provider=readflow&endpoint=%s&api_key=%s",
+			conf.Global.PublicURL,
+			url.QueryEscape(endpoint.String()),
+			token,
+		)
 
 		// Build QR code
 		png, err := qrcode.Encode(payload, qrcode.Medium, 256)

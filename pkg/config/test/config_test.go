@@ -24,7 +24,7 @@ func TestLaodConfigFromFile(t *testing.T) {
 	// Env variable substitution
 	assert.NotEqual(t, "${USER}", conf.Global.SecretSalt)
 	// Default if empty
-	assert.Equal(t, "https://api.readflow.app", conf.Global.PublicURL)
+	assert.Equal(t, "https://readflow.app", conf.Global.PublicURL)
 	// Sub attribute
 	assert.Equal(t, "https://1..9:1..9@sentry.io/1..9", conf.Integration.Sentry.DSN)
 }

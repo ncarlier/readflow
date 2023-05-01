@@ -1,11 +1,8 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
-	"net/url"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/ncarlier/readflow/pkg/config"
@@ -15,17 +12,6 @@ import (
 func nextRequestID() string {
 	now := time.Now().UnixNano()
 	return strconv.FormatInt(now, 32)
-}
-
-func buildOriginFromPublicURL(publicURL string) string {
-	if publicURL == "" {
-		return "*"
-	}
-	u, err := url.Parse(publicURL)
-	if err != nil {
-		return "*"
-	}
-	return fmt.Sprintf("%s://%s", u.Scheme, strings.TrimPrefix(u.Host, "api."))
 }
 
 // NewRouter creates router with declared routes

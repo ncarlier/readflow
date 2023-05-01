@@ -1,7 +1,7 @@
 package config
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/BurntSushi/toml"
@@ -15,7 +15,7 @@ func NewConfig() *Config {
 			AuthN:       "https://login.nunux.org/auth/realms/readflow",
 			DatabaseURI: "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable",
 			ListenAddr:  ":8080",
-			PublicURL:   "https://api.readflow.app",
+			PublicURL:   "https://readflow.app",
 			SecretSalt:  "pepper",
 		},
 		Integration: IntegrationConfig{
@@ -40,7 +40,7 @@ func (c *Config) LoadFile(path string) error {
 		return err
 	}
 	defer f.Close()
-	data, err := ioutil.ReadAll(f)
+	data, err := io.ReadAll(f)
 	if err != nil {
 		return err
 	}

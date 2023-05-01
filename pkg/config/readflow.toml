@@ -30,7 +30,7 @@ metrics_listen_addr = "${READFLOW_LISTEN_METRICS}"
 authn = "${READFLOW_AUTHN}"
 
 ## Public URL
-# Default: "https://api.readflow.app"
+# Default: "https://readflow.app"
 public_url = "${READFLOW_PUBLIC_URL}"
 
 ## Secret salt used by hash algorythms

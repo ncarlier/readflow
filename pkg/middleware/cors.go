@@ -8,6 +8,7 @@ import (
 func Cors(allowOrigin string) Middleware {
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{allowOrigin},
+		AllowedHeaders:   []string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "Authorization"},
 		AllowCredentials: true,
 	})
 	return c.Handler
