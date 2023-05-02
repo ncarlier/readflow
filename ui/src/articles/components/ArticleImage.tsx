@@ -15,6 +15,7 @@ export const ArticleImage: FC<ImgHTMLAttributes<HTMLImageElement>> = ({ src, ...
       sizes="(max-width: 767px) 767px, 320px"
       src={src}
       onError={(e) => (e.currentTarget.style.display = 'none')}
+      crossOrigin='anonymous'
     />
   )
 }

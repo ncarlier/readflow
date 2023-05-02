@@ -25,7 +25,7 @@ export const UserInfos = () => {
         </small>
       </span>
       <a href={getAccountURL()} target="_blank" title="Go to my profile page">
-        <img src={`${API_BASE_URL}/avatar/${user.hash}`} alt={user.username} />
+        <img src={`${API_BASE_URL}/avatar/${user.hash}`} alt={user.username} crossOrigin='anonymous' />
       </a>
     </div>
   )
