@@ -12,7 +12,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	_ "github.com/ncarlier/readflow/pkg/integration/webhook/all"
 	"github.com/ncarlier/readflow/pkg/model"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var article = model.Article{
@@ -26,10 +26,13 @@ var headers = fmt.Sprintf(`{"Content-Type": "%s", "X-API-Key": "xxx"}`, constant
 
 func TestGenericWebhook(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, constant.UserAgent, r.Header.Get("User-Agent"))
-		assert.Equal(t, constant.ContentTypeForm, r.Header.Get("Content-Type"))
-		assert.Equal(t, "xxx", r.Header.Get("X-API-Key"))
-		assert.Equal(t, article.Title, r.FormValue("title"))
+		require.Equal(t, constant.UserAgent, r.Header.Get("User-Agent"))
+		require.Equal(t, constant.ContentTypeForm, r.Header.Get("Content-Type"))
+		require.Equal(t, "xxx", r.Header.Get("X-API-Key"))
+		require.Equal(t, article.Title, r.FormValue("title"))
+		w.Header().Set("Content-Type", "text/plain")
+		w.Header().Set("Location", "https://example.org")
+		w.Write([]byte("ok"))
 	}))
 	defer srv.Close()
 
@@ -41,9 +44,15 @@ func TestGenericWebhook(t *testing.T) {
 	conf.Global.PublicURL = "http://localhost:3000"
 
 	provider, err := webhook.NewOutgoingWebhookProvider(outgoingWebhook, *conf)
-	assert.Nil(t, err)
-	assert.NotNil(t, provider)
+	require.Nil(t, err)
+	require.NotNil(t, provider)
 
-	err = provider.Send(context.TODO(), article)
-	assert.Nil(t, err)
+	result, err := provider.Send(context.TODO(), article)
+	require.Nil(t, err)
+	require.NotNil(t, result)
+	require.Nil(t, result.JSON)
+	require.NotNil(t, result.Text)
+	require.Equal(t, "ok", *result.Text)
+	require.NotNil(t, result.URL)
+	require.Equal(t, "https://example.org", *result.URL)
 }

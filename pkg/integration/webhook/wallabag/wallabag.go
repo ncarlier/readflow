@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 
@@ -83,10 +84,10 @@ func newWallabagProvider(srv model.OutgoingWebhook, conf config.Config) (webhook
 }
 
 // Send article to Wallabag endpoint.
-func (wp *wallabagProvider) Send(ctx context.Context, article model.Article) error {
+func (wp *wallabagProvider) Send(ctx context.Context, article model.Article) (*webhook.Result, error) {
 	token, err := wp.getAccessToken()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	entry := wallabagEntry{
@@ -98,22 +99,39 @@ func (wp *wallabagProvider) Send(ctx context.Context, article model.Article) err
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(entry)
 
-	req, err := http.NewRequest("POST", wp.getAPIEndpoint("/api/entries.json"), b)
+	req, err := http.NewRequestWithContext(ctx, "POST", wp.getAPIEndpoint("/api/entries.json"), b)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.Header.Set("Content-Type", constant.ContentTypeJSON)
 	req.Header.Set("Authorization", "Bearer "+token.AccessToken)
-	client := &http.Client{}
+	client := constant.DefaultClient
+	if _, ok := ctx.Deadline(); ok {
+		client = &http.Client{}
+	}
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode >= 300 {
 		if err == nil {
 			err = fmt.Errorf("bad status code: %d", resp.StatusCode)
 		}
-		return err
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	obj := make(map[string]interface{})
+	if err := json.Unmarshal(body, &obj); err != nil {
+		return nil, nil
 	}
 
-	return nil
+	id := uint(obj["id"].(float64))
+	link := wp.getAPIEndpoint(fmt.Sprintf("/view/%d", id))
+	result := &webhook.Result{
+		URL: &link,
+	}
+	return result, nil
 }
 
 func (wp *wallabagProvider) getAPIEndpoint(path string) string {

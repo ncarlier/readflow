@@ -67,10 +67,10 @@ func newShaarliProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 }
 
 // Send article to Shaarli endpoint.
-func (p *shaarliProvider) Send(ctx context.Context, article model.Article) error {
+func (p *shaarliProvider) Send(ctx context.Context, article model.Article) (*webhook.Result, error) {
 	token, err := p.getAccessToken()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	entry := shaarliEntry{
@@ -85,23 +85,30 @@ func (p *shaarliProvider) Send(ctx context.Context, article model.Article) error
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(entry)
 
-	req, err := http.NewRequest("POST", p.getAPIEndpoint("/api/v1/links"), b)
+	req, err := http.NewRequestWithContext(ctx, "POST", p.getAPIEndpoint("/api/v1/links"), b)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.Header.Set("User-Agent", constant.UserAgent)
 	req.Header.Set("Content-Type", constant.ContentTypeJSON)
 	req.Header.Set("Authorization", "Bearer "+token)
-	client := &http.Client{}
+	client := constant.DefaultClient
+	if _, ok := ctx.Deadline(); ok {
+		client = &http.Client{}
+	}
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode != 201 {
 		if err == nil {
 			err = fmt.Errorf("bad status code: %d", resp.StatusCode)
 		}
-		return err
+		return nil, err
 	}
 
-	return nil
+	link := p.getAPIEndpoint(resp.Header.Get("Location"))
+	result := &webhook.Result{
+		URL: &link,
+	}
+	return result, nil
 }
 
 func (p *shaarliProvider) getAPIEndpoint(path string) string {

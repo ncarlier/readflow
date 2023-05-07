@@ -105,7 +105,10 @@ export const UpdateArticle = gql`
 
 export const SendArticleToOutgoingWebhook = gql`
   mutation sendArticleToOutgoingWebhook($id: ID!, $alias: String!) {
-    sendArticleToOutgoingWebhook(id: $id, alias: $alias)
+    sendArticleToOutgoingWebhook(id: $id, alias: $alias) {
+      url
+      text
+    }
   }
 `
 

@@ -1,6 +1,6 @@
 import React, { FC, PropsWithChildren } from 'react'
 
-import { classNames } from '../helpers'
+import { basicMarkdownToHTML, classNames } from '../helpers'
 import styles from './Notification.module.css'
 
 interface Props extends PropsWithChildren {
@@ -13,7 +13,7 @@ export const Notification: FC<Props> = ({ message, variant = 'info', children })
 
   return (
     <div className={className}>
-      <div className={styles.message}>{message}</div>
+      <div className={styles.message} dangerouslySetInnerHTML={{__html: basicMarkdownToHTML(message)}} />
       <div className={styles.actions}>{children}</div>
     </div>
   )

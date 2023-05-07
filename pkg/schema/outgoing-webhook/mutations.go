@@ -103,7 +103,7 @@ func deleteOutgoingWebhooksResolver(p graphql.ResolveParams) (interface{}, error
 }
 
 var sendArticleToOutgoingWebhookMutationField = &graphql.Field{
-	Type:        graphql.ID,
+	Type:        outgoingWebhookResponseType,
 	Description: "send an article to the outgoing webhook",
 	Args: graphql.FieldConfigArgument{
 		"id": &graphql.ArgumentConfig{
@@ -129,8 +129,7 @@ func sendArticleToOutgoingWebhookResolver(p graphql.ResolveParams) (interface{},
 		alias = &sVal
 	}
 
-	err := service.Lookup().SendArticle(p.Context, id, alias)
-	return id, err
+	return service.Lookup().SendArticle(p.Context, id, alias)
 }
 
 func init() {

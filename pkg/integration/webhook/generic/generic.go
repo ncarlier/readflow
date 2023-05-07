@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -90,7 +91,7 @@ func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 }
 
 // Send article to Webhook endpoint.
-func (whp *Provider) Send(ctx context.Context, article model.Article) error {
+func (whp *Provider) Send(ctx context.Context, article model.Article) (*webhook.Result, error) {
 	data := article.ToMap()
 	data["href"] = fmt.Sprintf("%s/inbox/%d", whp.hrefBase, article.ID)
 
@@ -98,18 +99,18 @@ func (whp *Provider) Send(ctx context.Context, article model.Article) error {
 	b := new(bytes.Buffer)
 	if whp.templateEngine != nil {
 		if err := whp.templateEngine.Execute(b, data); err != nil {
-			return err
+			return nil, err
 		}
 	} else {
 		if err := json.NewEncoder(b).Encode(data); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
 	// Build request
-	req, err := http.NewRequest("POST", whp.config.Endpoint, b)
+	req, err := http.NewRequestWithContext(ctx, "POST", whp.config.Endpoint, b)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Set default headers
@@ -121,18 +122,46 @@ func (whp *Provider) Send(ctx context.Context, article model.Article) error {
 	}
 
 	// Do HTTP request
-	client := &http.Client{Timeout: constant.DefaultTimeout}
+	client := constant.DefaultClient
+	if _, ok := ctx.Deadline(); ok {
+		client = &http.Client{}
+	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
+	// Validate response status
 	if resp.StatusCode >= 300 {
-		return fmt.Errorf("bad status code: %d", resp.StatusCode)
+		return nil, fmt.Errorf("bad status code: %d", resp.StatusCode)
 	}
 
-	return nil
+	return buildWebhookResultFromResponse(resp)
+}
+
+func buildWebhookResultFromResponse(resp *http.Response) (result *webhook.Result, err error) {
+	link := resp.Header.Get("Location")
+	result = &webhook.Result{
+		URL: &link,
+	}
+	contentType := resp.Header.Get("Content-type")
+	isText := strings.HasPrefix(contentType, "application/json")
+	isJSON := strings.HasPrefix(contentType, "text/")
+	var body []byte
+	switch true {
+	case isJSON || isText:
+		if body, err = io.ReadAll(resp.Body); err != nil {
+			return
+		}
+		fallthrough
+	case isText:
+		text := string(body)
+		result.Text = &text
+	case isJSON:
+		json.Unmarshal(body, &result.JSON)
+	}
+	return
 }
 
 func init() {

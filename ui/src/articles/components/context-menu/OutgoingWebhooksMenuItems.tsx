@@ -5,7 +5,7 @@ import { Loader } from '../../../components'
 import { getGQLError, matchResponse } from '../../../helpers'
 import { GetOutgoingWebhooksResponse } from '../../../settings/intergrations/outgoing-webhook/models'
 import { GetOutgoingWebhooks } from '../../../settings/intergrations/outgoing-webhook/queries'
-import { Article } from '../../models'
+import { Article, SendArticleToOutgoingWebhookResponse } from '../../models'
 import { SendArticleToOutgoingWebhook } from '../../queries'
 import { useMessage } from '../../../contexts'
 import OutgoingWebhooksLink from './OutgoingWebhooksLink'
@@ -23,21 +23,31 @@ interface Props {
 
 export default ({ article, keyboard }: Props) => {
   const { showMessage, showErrorMessage } = useMessage()
-  const [SendArticleToOutgoingWebhookMutation] = useMutation<SendArticleFields>(SendArticleToOutgoingWebhook)
+  const [SendArticleToOutgoingWebhookMutation] = useMutation<SendArticleToOutgoingWebhookResponse, SendArticleFields>(SendArticleToOutgoingWebhook)
   const { data, error, loading } = useQuery<GetOutgoingWebhooksResponse>(GetOutgoingWebhooks)
-
+  
   const sendArticle = useCallback(
     async (alias: string) => {
       try {
-        await SendArticleToOutgoingWebhookMutation({
+        const result = await SendArticleToOutgoingWebhookMutation({
           variables: { id: article.id, alias },
         })
-        showMessage(`Article sent to ${alias}: ${article.title}`)
+        let message = `Article "${article.title}" sent to ${alias}`
+        if (result.data) {
+          const { url, text } = result.data.sendArticleToOutgoingWebhook
+          if (text) {
+            alert(text)
+          }
+          if (url) {
+            message = `${message}\n[more](${url})`
+          }
+        }
+        showMessage(message)
       } catch (err) {
         showErrorMessage(getGQLError(err))
       }
     },
-    [SendArticleToOutgoingWebhookMutation, article, showMessage, showErrorMessage]
+    [SendArticleToOutgoingWebhookMutation, article, showMessage, showErrorMessage ]
   )
 
   const render = matchResponse<GetOutgoingWebhooksResponse>({

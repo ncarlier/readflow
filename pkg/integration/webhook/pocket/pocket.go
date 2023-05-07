@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/ncarlier/readflow/pkg/config"
@@ -60,7 +61,7 @@ func newPocketProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.P
 }
 
 // Send article to Pocket endpoint.
-func (wp *pocketProvider) Send(ctx context.Context, article model.Article) error {
+func (wp *pocketProvider) Send(ctx context.Context, article model.Article) (*webhook.Result, error) {
 	entry := pocketEntry{
 		Title:       article.Title,
 		URL:         article.URL,
@@ -71,21 +72,42 @@ func (wp *pocketProvider) Send(ctx context.Context, article model.Article) error
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(entry)
 
-	req, err := http.NewRequest("POST", "https://getpocket.com/v3/add", b)
+	req, err := http.NewRequestWithContext(ctx, "POST", "https://getpocket.com/v3/add", b)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.Header.Set("Content-Type", constant.ContentTypeJSON)
-	client := &http.Client{}
+	client := constant.DefaultClient
+	if _, ok := ctx.Deadline(); ok {
+		client = &http.Client{}
+	}
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode >= 300 {
 		if err == nil {
 			err = fmt.Errorf("bad status code: %d", resp.StatusCode)
 		}
-		return err
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	obj := make(map[string]interface{})
+	if err := json.Unmarshal(body, &obj); err != nil {
+		return nil, nil
 	}
 
-	return nil
+	link := ""
+	if item, ok := obj["item"]; ok {
+		itemMap := item.(map[string]interface{})
+		link = fmt.Sprintf("https://getpocket.com/read/%s", itemMap["item_id"])
+	}
+	result := &webhook.Result{
+		URL: &link,
+	}
+
+	return result, nil
 }
 
 func init() {
