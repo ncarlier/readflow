@@ -54,7 +54,7 @@ func newReadflowProvider(srv model.OutgoingWebhook, conf config.Config) (webhook
 }
 
 // Send article to Readflow endpoint.
-func (p *Provider) Send(ctx context.Context, article model.Article) error {
+func (p *Provider) Send(ctx context.Context, article model.Article) (*webhook.Result, error) {
 	builder := model.NewArticleCreateFormBuilder()
 	builder.FromArticle(article)
 	if value := ctx.Value(constant.ContextUser); value != nil {
@@ -64,23 +64,26 @@ func (p *Provider) Send(ctx context.Context, article model.Article) error {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(builder.Build())
 
-	req, err := http.NewRequest("POST", p.getAPIEndpoint("/articles"), b)
+	req, err := http.NewRequestWithContext(ctx, "POST", p.getAPIEndpoint("/articles"), b)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.Header.Set("User-Agent", constant.UserAgent)
 	req.Header.Set("Content-Type", constant.ContentTypeJSON)
 	req.SetBasicAuth("api", p.APIKey)
-	client := &http.Client{}
+	client := constant.DefaultClient
+	if _, ok := ctx.Deadline(); ok {
+		client = &http.Client{}
+	}
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode >= 300 {
 		if err == nil {
 			err = fmt.Errorf("bad status code: %d", resp.StatusCode)
 		}
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &webhook.Result{}, nil
 }
 
 func (p *Provider) getAPIEndpoint(path string) string {

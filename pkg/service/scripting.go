@@ -94,7 +94,7 @@ func (reg *Registry) execOtherOperations(ctx context.Context, ops scripting.Oper
 			}
 			hardLimitCounter--
 			name := op.GetFirstArg()
-			if err := reg.SendArticle(ctx, article.ID, &name); err != nil {
+			if _, err := reg.SendArticle(ctx, article.ID, &name); err != nil {
 				return err
 			}
 		}

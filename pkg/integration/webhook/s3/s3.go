@@ -71,32 +71,32 @@ func newS3Provider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provi
 }
 
 // Send article to Webhook endpoint.
-func (s3p *Provider) Send(ctx context.Context, article model.Article) error {
+func (s3p *Provider) Send(ctx context.Context, article model.Article) (*webhook.Result, error) {
 	// Get download from context
 	// /!\ this is a ugly hack required to simplify service coupling
 	ctxValue := ctx.Value(constant.ContextDownloader)
 	if ctxValue == nil {
-		return errors.New("downloader not found inside the context")
+		return nil, errors.New("downloader not found inside the context")
 	}
 	dl := ctxValue.(downloader.Downloader)
 
 	// Get article exporter
 	exp, err := exporter.NewArticleExporter(s3p.config.Format, dl)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	asset, err := exp.Export(ctx, &article)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	data := bytes.NewReader(asset.Data)
 
 	_, err = s3p.client.PutObject(ctx, s3p.config.Bucket, asset.Name, data, int64(len(asset.Data)), minio.PutObjectOptions{ContentType: asset.ContentType})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &webhook.Result{}, nil
 }
 
 func init() {

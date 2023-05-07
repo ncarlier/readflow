@@ -62,6 +62,14 @@ export interface UpdateArticleResponse {
   }
 }
 
+export interface SendArticleToOutgoingWebhookResponse {
+  sendArticleToOutgoingWebhook: {
+    url?: string
+    text?: string
+    json?: string
+  }
+}
+
 export interface MarkAllArticlesAsReadRequest {
   category: number | null
   status: ArticleStatus

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/integration/webhook"
 	webhookProvider "github.com/ncarlier/readflow/pkg/integration/webhook"
 
 	// import all outgoing webhook providers
@@ -160,10 +161,10 @@ func (reg *Registry) DeleteOutgoingWebhooks(ctx context.Context, ids []uint) (in
 }
 
 // SendArticle send an article to outgoing webhook
-func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *string) error {
+func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *string) (*webhook.Result, error) {
 	user, err := reg.GetCurrentUser(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	logger := reg.logger.With().Uint(
@@ -176,7 +177,7 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 			err = errors.New("article not found")
 		}
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
-		return err
+		return nil, err
 	}
 
 	if alias != nil {
@@ -189,7 +190,7 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 			err = errors.New("outgoing webhook not found")
 		}
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
-		return err
+		return nil, err
 	}
 
 	// UnSeal secrets
@@ -197,14 +198,14 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 		err := reg.secretsEngineProvider.UnSeal(&webhookConf.Secrets)
 		if err != nil {
 			logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
-			return err
+			return nil, err
 		}
 	}
 
 	provider, err := webhookProvider.NewOutgoingWebhookProvider(*webhookConf, reg.conf)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
-		return err
+		return nil, err
 	}
 
 	logger.Debug().Msg("sending article...")
@@ -215,12 +216,18 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 	if value := ctx.Value(constant.ContextUser); value == nil {
 		webhookContext = context.WithValue(webhookContext, constant.ContextUser, user)
 	}
+	if _, isDeadline := ctx.Deadline(); !isDeadline {
+		// no outgoing webhook deadline defined... setting one
+		var cancel context.CancelFunc
+		webhookContext, cancel = context.WithTimeout(webhookContext, 3*constant.DefaultTimeout)
+		defer cancel()
+	}
 
-	err = provider.Send(webhookContext, *article)
+	result, err := provider.Send(webhookContext, *article)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
-		return err
+		return nil, err
 	}
 	logger.Info().Msg("article sent to outgoing webhook")
-	return nil
+	return result, nil
 }

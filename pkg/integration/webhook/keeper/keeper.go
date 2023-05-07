@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 
@@ -62,7 +63,7 @@ func newKeeperProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.P
 }
 
 // Send article to Nunux Keeper endpoint.
-func (p *Provider) Send(ctx context.Context, article model.Article) error {
+func (p *Provider) Send(ctx context.Context, article model.Article) (*webhook.Result, error) {
 	art := Article{
 		Title:       article.Title,
 		Origin:      article.URL,
@@ -73,22 +74,40 @@ func (p *Provider) Send(ctx context.Context, article model.Article) error {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(art)
 
-	req, err := http.NewRequest("POST", p.getAPIEndpoint("/v2/documents"), b)
+	req, err := http.NewRequestWithContext(ctx, "POST", p.getAPIEndpoint("/v2/documents"), b)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.Header.Set("Content-Type", constant.ContentTypeJSON)
 	req.SetBasicAuth("api", p.APIKey)
-	client := &http.Client{}
+	client := constant.DefaultClient
+	if _, ok := ctx.Deadline(); ok {
+		client = &http.Client{}
+	}
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode >= 300 {
 		if err == nil {
 			err = fmt.Errorf("bad status code: %d", resp.StatusCode)
 		}
-		return err
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	obj := make(map[string]interface{})
+	if err := json.Unmarshal(body, &obj); err != nil {
+		return nil, nil
 	}
 
-	return nil
+	id := uint(obj["id"].(float64))
+	link := p.getAPIEndpoint(fmt.Sprintf("/documents/%d", id))
+	result := &webhook.Result{
+		URL: &link,
+	}
+
+	return result, nil
 }
 
 func (p *Provider) getAPIEndpoint(path string) string {

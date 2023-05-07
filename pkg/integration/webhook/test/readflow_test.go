@@ -13,7 +13,6 @@ import (
 	_ "github.com/ncarlier/readflow/pkg/integration/webhook/all"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/secret"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -41,9 +40,10 @@ func TestReadflowWebhook(t *testing.T) {
 	conf.Global.PublicURL = "http://localhost:3000"
 
 	provider, err := webhook.NewOutgoingWebhookProvider(outgoingWebhook, *conf)
-	assert.Nil(t, err)
-	assert.NotNil(t, provider)
+	require.Nil(t, err)
+	require.NotNil(t, provider)
 
-	err = provider.Send(context.TODO(), article)
-	assert.Nil(t, err)
+	result, err := provider.Send(context.TODO(), article)
+	require.Nil(t, err)
+	require.NotNil(t, result)
 }

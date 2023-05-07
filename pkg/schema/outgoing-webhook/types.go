@@ -88,3 +88,20 @@ var outgoingWebhookType = graphql.NewObject(
 		},
 	},
 )
+
+var outgoingWebhookResponseType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "OutgoingWebhookResponse",
+		Fields: graphql.Fields{
+			"url": &graphql.Field{
+				Type: graphql.String,
+			},
+			"text": &graphql.Field{
+				Type: graphql.String,
+			},
+			"json": &graphql.Field{
+				Type: graphql.String,
+			},
+		},
+	},
+)

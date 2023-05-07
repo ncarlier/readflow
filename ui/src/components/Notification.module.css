@@ -52,6 +52,12 @@
   padding: 14px 16px;
 }
 
+.message a {
+  color: #bb86fc;
+  text-decoration: none;
+  font-weight: bold;
+}
+
 .actions {
   margin-left: 0;
   margin-right: 8px;
