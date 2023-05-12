@@ -8,6 +8,8 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
+const unableToCreateCategoryErrorMsg = "unable to create category"
+
 // GetCategories get categories from current user
 func (reg *Registry) GetCategories(ctx context.Context) ([]model.Category, error) {
 	uid := getCurrentUserIDFromContext(ctx)
@@ -45,6 +47,8 @@ func (reg *Registry) GetCategory(ctx context.Context, id uint) (*model.Category,
 func (reg *Registry) CreateCategory(ctx context.Context, form model.CategoryCreateForm) (*model.Category, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
+	logger := reg.logger.With().Uint("uid", uid).Logger()
+
 	// Validate user quota
 	plan, err := reg.GetCurrentUserPlan(ctx)
 	if err != nil {
@@ -53,30 +57,25 @@ func (reg *Registry) CreateCategory(ctx context.Context, form model.CategoryCrea
 	if plan != nil {
 		totalCategories, err := reg.CountCurrentUserCategories(ctx)
 		if err != nil {
-			reg.logger.Info().Err(err).Uint(
-				"uid", uid,
-			).Msg("unable to create category")
+			logger.Info().Err(err).Msg(unableToCreateCategoryErrorMsg)
 			return nil, err
 		}
 		if totalCategories >= plan.TotalCategories {
 			err = ErrUserQuotaReached
-			reg.logger.Info().Err(err).Uint(
-				"uid", uid,
-			).Uint(
-				"total", plan.TotalCategories,
-			).Msg("unable to create category")
+			logger.Info().Err(err).Uint("total", plan.TotalCategories).Msg(unableToCreateCategoryErrorMsg)
 			return nil, err
 		}
 	}
+	logger = logger.With().Str("title", form.Title).Logger()
 
 	// Create category
+	logger.Debug().Msg("creating category...")
 	result, err := reg.db.CreateCategoryForUser(uid, form)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Str("title", form.Title).Msg("unable to create category")
+		logger.Info().Err(err).Msg(unableToCreateCategoryErrorMsg)
 		return nil, err
 	}
+	logger.Info().Uint("id", *result.ID).Msg("category created")
 
 	return result, err
 }
@@ -85,16 +84,16 @@ func (reg *Registry) CreateCategory(ctx context.Context, form model.CategoryCrea
 func (reg *Registry) UpdateCategory(ctx context.Context, form model.CategoryUpdateForm) (*model.Category, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
+	logger := reg.logger.With().Uint("uid", uid).Uint("id", form.ID).Logger()
+
 	// Update category
+	logger.Debug().Msg("updating category...")
 	result, err := reg.db.UpdateCategoryForUser(uid, form)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Str("title", *form.Title).Uint(
-			"id", form.ID,
-		).Msg("unable to update category")
+		logger.Info().Err(err).Msg("unable to update category")
 		return nil, err
 	}
+	logger.Info().Msg("category updated")
 
 	return result, err
 }
@@ -103,18 +102,20 @@ func (reg *Registry) UpdateCategory(ctx context.Context, form model.CategoryUpda
 func (reg *Registry) DeleteCategory(ctx context.Context, id uint) (*model.Category, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
+	logger := reg.logger.With().Uint("uid", uid).Uint("id", id).Logger()
+
 	category, err := reg.GetCategory(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
+	logger.Debug().Msg("deleting category...")
 	err = reg.db.DeleteCategoryByUser(uid, id)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Uint("id", id).Msg("unable to delete category")
+		logger.Info().Err(err).Msg("unable to delete category")
 		return nil, err
 	}
+	logger.Info().Msg("category deleted")
 
 	return category, nil
 }
@@ -124,16 +125,15 @@ func (reg *Registry) DeleteCategories(ctx context.Context, ids []uint) (int64, e
 	uid := getCurrentUserIDFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
+	logger := reg.logger.With().Uint("uid", uid).Str("ids", idsStr).Logger()
+
+	logger.Debug().Msg("deleting categories...")
 	nb, err := reg.db.DeleteCategoriesByUser(uid, ids)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Str("ids", idsStr).Msg("unable to delete categories")
+		logger.Info().Err(err).Msg("unable to delete categories")
 		return 0, err
 	}
-	reg.logger.Debug().Err(err).Uint(
-		"uid", uid,
-	).Str("ids", idsStr).Int64("nb", nb).Msg("categories deleted")
+	logger.Info().Int64("nb", nb).Msg("categories deleted")
 
 	return nb, nil
 }

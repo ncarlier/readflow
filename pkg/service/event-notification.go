@@ -28,15 +28,17 @@ func newNotificationEventHandler(srv *Registry) event.EventHandler {
 			ctx := context.WithValue(context.TODO(), constant.ContextUserID, uid)
 			req := model.ArticlesPageRequest{Status: &status}
 
+			logger := log.With().Uint("uid", uid).Logger()
+
 			user, err := srv.GetCurrentUser(ctx)
 			if err != nil {
-				log.Info().Err(err).Uint("id", uid).Msg(notificationErrorMessage)
+				logger.Info().Err(err).Msg(notificationErrorMessage)
 				return
 			}
 
 			nb, err := srv.CountCurrentUserDevices(ctx)
 			if err != nil {
-				log.Info().Err(err).Uint("id", uid).Msg(notificationErrorMessage)
+				logger.Info().Err(err).Msg(notificationErrorMessage)
 				return
 			}
 			if nb == 0 {
@@ -52,7 +54,7 @@ func newNotificationEventHandler(srv *Registry) event.EventHandler {
 			// Retrieve number of articles
 			nb, err = srv.CountCurrentUserArticles(ctx, req)
 			if err != nil {
-				log.Info().Err(err).Uint("id", uid).Msg(notificationErrorMessage)
+				logger.Info().Err(err).Msg(notificationErrorMessage)
 				return
 			}
 			// Send notification only every 10 articles

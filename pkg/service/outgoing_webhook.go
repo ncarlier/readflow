@@ -8,7 +8,6 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/integration/webhook"
-	webhookProvider "github.com/ncarlier/readflow/pkg/integration/webhook"
 
 	// import all outgoing webhook providers
 	_ "github.com/ncarlier/readflow/pkg/integration/webhook/all"
@@ -48,6 +47,8 @@ func (reg *Registry) GetOutgoingWebhook(ctx context.Context, id uint) (*model.Ou
 func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.OutgoingWebhookCreateForm) (*model.OutgoingWebhook, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
+	logger := reg.logger.With().Uint("uid", uid).Str("alias", form.Alias).Logger()
+
 	// Seal secrets
 	if reg.secretsEngineProvider != nil {
 		err := reg.secretsEngineProvider.Seal(&form.Secrets)
@@ -62,27 +63,27 @@ func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.Outgo
 		Config:   form.Config,
 		Secrets:  form.Secrets,
 	}
-	_, err := webhookProvider.NewOutgoingWebhookProvider(dummy, reg.conf)
+	_, err := webhook.NewOutgoingWebhookProvider(dummy, reg.conf)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Msg("unable to configure outgoing webhook")
+		logger.Info().Err(err).Msg("unable to configure outgoing webhook")
 		return nil, err
 	}
 
+	logger.Debug().Msg("creating outgoing webhook...")
 	result, err := reg.db.CreateOutgoingWebhookForUser(uid, form)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Str("alias", form.Alias).Msg("unable to create outgoing webhook")
+		logger.Info().Err(err).Msg("unable to create outgoing webhook")
 		return nil, err
 	}
+	logger.Info().Uint("id", *result.ID).Msg("outgoing webhook created")
 	return result, err
 }
 
 // UpdateOutgoingWebhook update an outgoing webhook for current user
 func (reg *Registry) UpdateOutgoingWebhook(ctx context.Context, form model.OutgoingWebhookUpdateForm) (*model.OutgoingWebhook, error) {
 	uid := getCurrentUserIDFromContext(ctx)
+
+	logger := reg.logger.With().Uint("uid", uid).Uint("id", form.ID).Logger()
 
 	if form.Provider != nil && form.Config != nil && form.Secrets != nil {
 		// Validate outgoing webhook configuration
@@ -91,11 +92,9 @@ func (reg *Registry) UpdateOutgoingWebhook(ctx context.Context, form model.Outgo
 			Config:   *form.Config,
 			Secrets:  *form.Secrets,
 		}
-		_, err := webhookProvider.NewOutgoingWebhookProvider(dummy, reg.conf)
+		_, err := webhook.NewOutgoingWebhookProvider(dummy, reg.conf)
 		if err != nil {
-			reg.logger.Info().Err(err).Uint(
-				"uid", uid,
-			).Msg("unable to configure outgoing webhook")
+			logger.Info().Err(err).Msg("unable to configure outgoing webhook")
 			return nil, err
 		}
 	} else {
@@ -111,15 +110,13 @@ func (reg *Registry) UpdateOutgoingWebhook(ctx context.Context, form model.Outgo
 		}
 	}
 
+	logger.Debug().Msg("updating outgoing webhook...")
 	result, err := reg.db.UpdateOutgoingWebhookForUser(uid, form)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Uint(
-			"id", form.ID,
-		).Msg("unable to update outgoing webhook")
+		logger.Info().Err(err).Msg("unable to update outgoing webhook")
 		return nil, err
 	}
+	logger.Info().Msg("outgoing webhook updated")
 	return result, err
 }
 
@@ -127,18 +124,20 @@ func (reg *Registry) UpdateOutgoingWebhook(ctx context.Context, form model.Outgo
 func (reg *Registry) DeleteOutgoingWebhook(ctx context.Context, id uint) (*model.OutgoingWebhook, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
+	logger := reg.logger.With().Uint("uid", uid).Uint("id", id).Logger()
+
 	webhook, err := reg.GetOutgoingWebhook(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
+	logger.Debug().Msg("deleting outgoing webhook...")
 	err = reg.db.DeleteOutgoingWebhookByUser(uid, id)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Uint("id", id).Msg("unable to delete outgoing webhook")
+		logger.Info().Err(err).Msg("unable to delete outgoing webhook")
 		return nil, err
 	}
+	logger.Info().Msg("outgoing webhook deleted")
 	return webhook, nil
 }
 
@@ -147,16 +146,15 @@ func (reg *Registry) DeleteOutgoingWebhooks(ctx context.Context, ids []uint) (in
 	uid := getCurrentUserIDFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
+	logger := reg.logger.With().Uint("uid", uid).Str("ids", idsStr).Logger()
+
+	logger.Debug().Msg("deleting outgoing webhooks...")
 	nb, err := reg.db.DeleteOutgoingWebhooksByUser(uid, ids)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Str("ids", idsStr).Msg("unable to delete outgoing webhooks")
+		logger.Info().Err(err).Msg("unable to delete outgoing webhooks")
 		return 0, err
 	}
-	reg.logger.Debug().Err(err).Uint(
-		"uid", uid,
-	).Str("ids", idsStr).Int64("nb", nb).Msg("outgoing webhooks deleted")
+	logger.Info().Err(err).Int64("nb", nb).Msg("outgoing webhooks deleted")
 	return nb, nil
 }
 
@@ -167,9 +165,7 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 		return nil, err
 	}
 
-	logger := reg.logger.With().Uint(
-		"uid", *user.ID,
-	).Uint("article", idArticle).Logger()
+	logger := reg.logger.With().Uint("uid", *user.ID).Uint("article", idArticle).Logger()
 
 	article, err := reg.db.GetArticleByID(idArticle)
 	if err != nil || article == nil || article.UserID != *user.ID {
@@ -202,13 +198,12 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 		}
 	}
 
-	provider, err := webhookProvider.NewOutgoingWebhookProvider(*webhookConf, reg.conf)
+	provider, err := webhook.NewOutgoingWebhookProvider(*webhookConf, reg.conf)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
 		return nil, err
 	}
 
-	logger.Debug().Msg("sending article...")
 	// HACK: put downloader inside the context
 	// This is needed by some providers (S3 for instance)
 	webhookContext := context.WithValue(ctx, constant.ContextDownloader, reg.dl)
@@ -223,6 +218,7 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 		defer cancel()
 	}
 
+	logger.Debug().Msg("sending article to outgoing webhook...")
 	result, err := provider.Send(webhookContext, *article)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())

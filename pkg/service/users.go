@@ -34,16 +34,13 @@ func (reg *Registry) GetCurrentUser(ctx context.Context) (*model.User, error) {
 
 // GetOrRegisterUser get an existing user or creates new one
 func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*model.User, error) {
-	reg.logger.Debug().Str(
-		"username", username,
-	).Msg("user login...")
+	logger := reg.logger.With().Str("username", username).Logger()
 
+	logger.Debug().Msg("user login...")
 	// Try to fetch existing user...
 	user, err := reg.db.GetUserByUsername(username)
 	if err != nil {
-		reg.logger.Info().Err(err).Str(
-			"username", username,
-		).Msg("unable to login")
+		logger.Info().Err(err).Msg("unable to login")
 		return nil, err
 	}
 	// If user already exists...
@@ -51,9 +48,7 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 		// Checks that the user is not disabled
 		if !user.Enabled {
 			err = errors.New("user disabled")
-			reg.logger.Info().Err(err).Str(
-				"username", username,
-			).Msg("unable to login")
+			logger.Info().Err(err).Msg("unable to login")
 			return nil, err
 		}
 		// Update user login date
@@ -61,9 +56,7 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 		user.LastLoginAt = &lastLoginDate
 		user, err = reg.db.CreateOrUpdateUser(*user)
 		if err != nil {
-			reg.logger.Info().Err(err).Str(
-				"username", username,
-			).Msg("unable to login")
+			logger.Info().Err(err).Msg("unable to login")
 			return nil, err
 		}
 		// Returns existing user
@@ -77,14 +70,10 @@ func (reg *Registry) GetOrRegisterUser(ctx context.Context, username string) (*m
 	}
 	user, err = reg.db.CreateOrUpdateUser(*user)
 	if err != nil {
-		reg.logger.Info().Err(err).Str(
-			"username", username,
-		).Msg("unable to register user")
+		logger.Info().Err(err).Msg("unable to register user")
 		return nil, err
 	}
-	reg.logger.Info().Uint(
-		"uid", *user.ID,
-	).Str("username", username).Msg("user registered")
+	logger.Info().Uint("uid", *user.ID).Msg("user registered")
 	reg.events.Publish(event.NewEvent(EventCreateUser, *user))
 	return user, nil
 }
