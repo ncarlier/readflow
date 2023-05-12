@@ -41,7 +41,6 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 		return nil, err
 	}
-	logger.Debug().Msg("preparing article download artifact")
 
 	// get downloadable article from the cache
 	key := helper.Hash(format, article.Hash)
@@ -50,11 +49,12 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 	}
 	if data != nil {
-		reg.logger.Debug().Uint("uid", uid).Uint("id", idArticle).Msg("returns article download artefact from cache")
+		logger.Debug().Msg("get article downloadable asset from cache")
 		return downloader.NewWebAsset(data)
 	}
 
 	// export article to the downloadable format
+	logger.Debug().Msg("preparing article downloadable asset...")
 	result, err := exp.Export(ctx, article)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
@@ -72,7 +72,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 	}
 
-	reg.logger.Info().Uint("uid", uid).Uint("id", idArticle).Msg("article download artifact created")
+	logger.Info().Msg("article downloadable asset created")
 
 	return result, nil
 }

@@ -53,24 +53,25 @@ func (reg *Registry) GetDevice(ctx context.Context, id uint) (*model.Device, err
 func (reg *Registry) CreateDevice(ctx context.Context, sub string) (*model.Device, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
+	logger := reg.logger.With().Uint("uid", uid).Logger()
+
 	builder := model.NewDeviceBuilder()
 	device := builder.UserID(uid).Subscription(sub).Build()
 
 	if device.Subscription == nil {
 		err := errors.New("invalid subscription")
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Msg("unable to configure device")
+		logger.Info().Err(err).Msg("unable to configure device")
 		return nil, err
 	}
+	logger = logger.With().Str("key", device.Key).Logger()
 
+	logger.Debug().Msg("creating device...")
 	result, err := reg.db.CreateDevice(*device)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Str("key", device.Key).Msg("unable to create device")
+		logger.Info().Err(err).Msg("unable to create device")
 		return nil, err
 	}
+	logger.Info().Uint("id", *result.ID).Msg("device created")
 	return result, err
 }
 
@@ -78,18 +79,20 @@ func (reg *Registry) CreateDevice(ctx context.Context, sub string) (*model.Devic
 func (reg *Registry) DeleteDevice(ctx context.Context, id uint) (*model.Device, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
+	logger := reg.logger.With().Uint("uid", uid).Uint("id", id).Logger()
+
 	device, err := reg.GetDevice(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
+	logger.Debug().Msg("deleting device...")
 	err = reg.db.DeleteDevice(id)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Uint("id", id).Msg("unable to delete device")
+		logger.Info().Err(err).Msg("unable to delete device")
 		return nil, err
 	}
+	logger.Info().Msg("device deleted")
 	return device, nil
 }
 
@@ -98,16 +101,15 @@ func (reg *Registry) DeleteDevices(ctx context.Context, ids []uint) (int64, erro
 	uid := getCurrentUserIDFromContext(ctx)
 	idsStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(ids)), ","), "[]")
 
+	logger := reg.logger.With().Uint("uid", uid).Str("ids", idsStr).Logger()
+
+	logger.Debug().Msg("deleting devices...")
 	nb, err := reg.db.DeleteDevicesByUser(uid, ids)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Str("ids", idsStr).Msg(errNotification)
+		logger.Info().Err(err).Msg("unable to delete devices")
 		return 0, err
 	}
-	reg.logger.Debug().Err(err).Uint(
-		"uid", uid,
-	).Str("ids", idsStr).Int64("nb", nb).Msg("devices deleted")
+	logger.Info().Int64("nb", nb).Msg("devices deleted")
 	return nb, nil
 }
 
@@ -120,11 +122,11 @@ func (reg *Registry) NotifyDevices(ctx context.Context, payload *model.DeviceNot
 	}
 	uid := *user.ID
 
+	logger := reg.logger.With().Uint("uid", uid).Logger()
+
 	devices, err := reg.GetDevices(ctx)
 	if err != nil {
-		reg.logger.Info().Err(err).Uint(
-			"uid", uid,
-		).Msg(errNotification)
+		logger.Info().Err(err).Msg(errNotification)
 		return 0, err
 	}
 	msg, err := json.Marshal(payload)
@@ -133,14 +135,13 @@ func (reg *Registry) NotifyDevices(ctx context.Context, payload *model.DeviceNot
 	}
 	counter := 0
 	for _, device := range *devices {
+		logger = reg.logger.With().Uint("uid", uid).Uint("device", *device.ID).Logger()
 		// Rate limiting
 		if _, _, _, ok, err := reg.notificationRateLimiter.Take(ctx, user.Username); err != nil || !ok {
 			if !ok {
 				err = errors.New("rate limiting activated")
 			}
-			reg.logger.Info().Err(err).Uint(
-				"uid", uid,
-			).Uint("device", *device.ID).Msg(errNotification)
+			logger.Info().Err(err).Msg(errNotification)
 			continue
 		}
 		// Send notification
@@ -151,33 +152,21 @@ func (reg *Registry) NotifyDevices(ctx context.Context, payload *model.DeviceNot
 			TTL:             30,
 		})
 		if err != nil {
-			reg.logger.Info().Err(err).Uint(
-				"uid", uid,
-			).Uint("device", *device.ID).Msg(errNotification)
+			logger.Info().Err(err).Msg(errNotification)
 			continue
 		}
 		if res.StatusCode == 410 {
 			// Registration is gone... we should remove the device
 			err = reg.db.DeleteDevice(*device.ID)
-			reg.logger.Info().Err(err).Uint(
-				"uid", uid,
-			).Uint("device", *device.ID).Msg("registration gone: device deleted")
+			logger.Info().Err(err).Msg("registration gone: device deleted")
 			continue
 		}
 		if res.StatusCode >= 400 {
-			reg.logger.Info().Err(errors.New(res.Status)).Uint(
-				"uid", uid,
-			).Uint(
-				"device", *device.ID,
-			).Int("status", res.StatusCode).Msg(errNotification)
+			logger.Info().Err(errors.New(res.Status)).Int("status", res.StatusCode).Msg(errNotification)
 			continue
 		}
 		counter++
-		reg.logger.Info().Uint(
-			"uid", uid,
-		).Uint(
-			"device", *device.ID,
-		).Int("status", res.StatusCode).Msg("notification sent to user device")
+		logger.Info().Str("title", payload.Title).Msg("notification sent to user device")
 	}
 	return counter, nil
 }
