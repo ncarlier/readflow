@@ -11,10 +11,14 @@ dsn_url = "https://1..9:1..9@sentry.io/1..9"
 ## User Plans
 [[user_plans]]
 name = "starter"
-total_articles = 200
-total_categories = 10
+articles_limit = 200
+categories_limit = 10
+incoming_webhooks_limit = 1
+outgoing_webhooks_limit = 1
 
 [[user_plans]]
 name = "premium"
-total_articles = 2000
-total_categories = 50
+articles_limit = 2000
+categories_limit = 50
+incoming_webhooks_limit = 3
+outgoing_webhooks_limit = 5

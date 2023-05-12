@@ -14,6 +14,8 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
+const unableToCreateOutgoingWebhookErrorMsg = "unable to create outgoing webhook"
+
 // GetOutgoingWebhooks get outgoing webhooks from current user
 func (reg *Registry) GetOutgoingWebhooks(ctx context.Context) (*[]model.OutgoingWebhook, error) {
 	uid := getCurrentUserIDFromContext(ctx)
@@ -48,6 +50,24 @@ func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.Outgo
 	uid := getCurrentUserIDFromContext(ctx)
 
 	logger := reg.logger.With().Uint("uid", uid).Str("alias", form.Alias).Logger()
+	
+	// Validate user quota
+	plan, err := reg.GetCurrentUserPlan(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if plan != nil {
+		totalWebhooks, err := reg.db.CountOutgoingWebhooksByUser(uid)
+		if err != nil {
+			logger.Info().Err(err).Msg(unableToCreateOutgoingWebhookErrorMsg)
+			return nil, err
+		}
+		if totalWebhooks >= plan.OutgoingWebhooksLimit {
+			err = ErrUserQuotaReached
+			logger.Info().Err(err).Uint("total", totalWebhooks).Msg(unableToCreateOutgoingWebhookErrorMsg)
+			return nil, err
+		}
+	}
 
 	// Seal secrets
 	if reg.secretsEngineProvider != nil {
@@ -63,16 +83,16 @@ func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.Outgo
 		Config:   form.Config,
 		Secrets:  form.Secrets,
 	}
-	_, err := webhook.NewOutgoingWebhookProvider(dummy, reg.conf)
+	_, err = webhook.NewOutgoingWebhookProvider(dummy, reg.conf)
 	if err != nil {
-		logger.Info().Err(err).Msg("unable to configure outgoing webhook")
+		logger.Info().Err(err).Msg(unableToCreateOutgoingWebhookErrorMsg)
 		return nil, err
 	}
 
 	logger.Debug().Msg("creating outgoing webhook...")
 	result, err := reg.db.CreateOutgoingWebhookForUser(uid, form)
 	if err != nil {
-		logger.Info().Err(err).Msg("unable to create outgoing webhook")
+		logger.Info().Err(err).Msg(unableToCreateOutgoingWebhookErrorMsg)
 		return nil, err
 	}
 	logger.Info().Uint("id", *result.ID).Msg("outgoing webhook created")

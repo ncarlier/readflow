@@ -6,6 +6,7 @@ db = "${READFLOW_DB}"
 ## User Plans
 [[user_plans]]
 name = "test"
-total_articles = 5
-total_categories = 2
-total_webhooks = 2
+articles_limit = 5
+categories_limit = 2
+incoming_webhooks_limit = 2
+outgoing_webhooks_limit = 2

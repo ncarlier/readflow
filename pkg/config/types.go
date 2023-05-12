@@ -58,10 +58,11 @@ type RateLimiting struct {
 
 // UserPlanConfig is the configuration a a user plan
 type UserPlan struct {
-	Name            string `toml:"name" json:"name"`
-	TotalArticles   uint   `toml:"total_articles" json:"total_articles"`
-	TotalCategories uint   `toml:"total_categories" json:"total_categories"`
-	TotalWebhooks   uint   `toml:"total_webhooks" json:"total_webhooks"`
+	Name                  string `toml:"name" json:"name"`
+	ArticlesLimit         uint   `toml:"articles_limit" json:"articles_limit"`
+	CategoriesLimit       uint   `toml:"categories_limit" json:"categories_limit"`
+	IncomingWebhooksLimit uint   `toml:"incoming_webhooks_limit" json:"incoming_webhooks_limit"`
+	OutgoingWebhooksLimit uint   `toml:"outgoing_webhooks_limit" json:"outgoing_webhooks_limit"`
 }
 
 // GetUserPlan return an user plan by its name and fallback to first plan if missing

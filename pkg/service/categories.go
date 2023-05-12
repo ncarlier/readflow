@@ -60,9 +60,9 @@ func (reg *Registry) CreateCategory(ctx context.Context, form model.CategoryCrea
 			logger.Info().Err(err).Msg(unableToCreateCategoryErrorMsg)
 			return nil, err
 		}
-		if totalCategories >= plan.TotalCategories {
+		if totalCategories >= plan.CategoriesLimit {
 			err = ErrUserQuotaReached
-			logger.Info().Err(err).Uint("total", plan.TotalCategories).Msg(unableToCreateCategoryErrorMsg)
+			logger.Info().Err(err).Uint("total", totalCategories).Msg(unableToCreateCategoryErrorMsg)
 			return nil, err
 		}
 	}

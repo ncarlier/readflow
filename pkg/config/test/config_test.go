@@ -36,8 +36,8 @@ func TestUserPlans(t *testing.T) {
 	assert.Equal(t, 2, len(conf.UserPlans), "unexpected number of plan")
 	plan := conf.GetUserPlan("test")
 	assert.Equal(t, "starter", plan.Name)
-	assert.Equal(t, uint(200), plan.TotalArticles, "unexpected total articles value")
+	assert.Equal(t, uint(200), plan.ArticlesLimit, "unexpected articles limit value")
 	plan = conf.GetUserPlan("premium")
 	assert.Equal(t, "premium", plan.Name)
-	assert.Equal(t, uint(2000), plan.TotalArticles, "unexpected total articles value")
+	assert.Equal(t, uint(2000), plan.ArticlesLimit, "unexpected articles limit value")
 }

@@ -11,13 +11,16 @@ var planType = graphql.NewObject(
 			"name": &graphql.Field{
 				Type: graphql.String,
 			},
-			"total_articles": &graphql.Field{
+			"articles_limit": &graphql.Field{
 				Type: graphql.Int,
 			},
-			"total_categories": &graphql.Field{
+			"categories_limit": &graphql.Field{
 				Type: graphql.Int,
 			},
-			"total_webhooks": &graphql.Field{
+			"incoming_webhooks_limit": &graphql.Field{
+				Type: graphql.Int,
+			},
+			"outgoing_webhooks_limit": &graphql.Field{
 				Type: graphql.Int,
 			},
 		},
