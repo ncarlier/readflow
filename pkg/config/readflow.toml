@@ -95,12 +95,14 @@ consumer_key = "${READFLOW_POCKET_CONSUMER_KEY}"
 ## User Plans, none by default
 #[[user_plans]]
 #name = "free to play"
-#total_articles = 200
-#total_categories = 10
-#total_webhooks = 1
+#articles_limit = 200
+#categories_limit = 10
+#incoming_webhooks_limit = 1
+#outgoing_webhooks_limit = 1
 
 #[[user_plans]]
 #name = "friends and family"
-#total_articles = 2000
-#total_categories = 50
-#total_webhooks = 5
+#articles_limit = 2000
+#categories_limit = 50
+#incoming_webhooks_limit = 5
+#outgoing_webhooks_limit = 5

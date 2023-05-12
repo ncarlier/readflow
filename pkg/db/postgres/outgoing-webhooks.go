@@ -233,6 +233,20 @@ func (pg *DB) GetOutgoingWebhooksByUser(uid uint) ([]model.OutgoingWebhook, erro
 	return result, nil
 }
 
+// CountOutgoingWebhooksByUser returns total nb of outgoing webhooks of an user from the DB
+func (pg *DB) CountOutgoingWebhooksByUser(uid uint) (uint, error) {
+	counter := pg.psql.Select("count(*)").From(
+		"outgoing_webhooks",
+	).Where(sq.Eq{"user_id": uid})
+	query, args, _ := counter.ToSql()
+
+	var count uint
+	if err := pg.db.QueryRow(query, args...).Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 // DeleteOutgoingWebhookByUser removes an outgoing webhook from the DB
 func (pg *DB) DeleteOutgoingWebhookByUser(uid uint, id uint) error {
 	query, args, _ := pg.psql.Delete("outgoing_webhooks").Where(

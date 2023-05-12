@@ -11,17 +11,19 @@ export const GetPlans = gql`
   query {
     plans {
       name
-      total_articles
-      total_categories
-      total_webhooks
+      articles_limit
+      categories_limit
+      incoming_webhooks_limit
+      outgoing_webhooks_limit
     }
   }
 `
 interface Plan {
   name: string
-  total_articles: number
-  total_categories: number
-  total_webhooks: number
+  articles_limit: number
+  categories_limit: number
+  incoming_webhooks_limit: number
+  outgoing_webhooks_limit: number
 }
 
 export interface GetPlansResponse {
@@ -47,13 +49,16 @@ const UserPlanBox = ({ plans }: UserPlanBoxProps) => {
     <Box title={plan.name}>
       <ul>
         <li>
-          Max number of articles: <b>{plan.total_articles}</b>
+          Up to <b>{plan.articles_limit}</b> articles.
         </li>
         <li>
-          Max number of categories: <b>{plan.total_categories}</b>
+          Up to <b>{plan.categories_limit}</b> categories.
         </li>
         <li>
-          Max number of incoming webhooks: <b>{plan.total_webhooks}</b>
+          Up to <b>{plan.incoming_webhooks_limit}</b> incoming webhooks.
+        </li>
+        <li>
+          Up to <b>{plan.outgoing_webhooks_limit}</b> outgoing webhooks.
         </li>
         {plan.name === 'premium' && (
           <li>

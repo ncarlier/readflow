@@ -12,6 +12,7 @@ type OutgoingWebhookRepository interface {
 	GetOutgoingWebhookByID(id uint) (*model.OutgoingWebhook, error)
 	GetOutgoingWebhookByUserAndAlias(uid uint, alias *string) (*model.OutgoingWebhook, error)
 	GetOutgoingWebhooksByUser(uid uint) ([]model.OutgoingWebhook, error)
+	CountOutgoingWebhooksByUser(uid uint) (uint, error)
 	CreateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookCreateForm) (*model.OutgoingWebhook, error)
 	UpdateOutgoingWebhookForUser(uid uint, form model.OutgoingWebhookUpdateForm) (*model.OutgoingWebhook, error)
 	DeleteOutgoingWebhookByUser(uid uint, id uint) error

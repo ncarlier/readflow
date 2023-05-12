@@ -88,8 +88,8 @@ func (ab *OutgoingWebhookCreateFormBuilder) IsDefault(isDefault bool) *OutgoingW
 
 // Dummy fill outgoing webhook with test data
 func (ab *OutgoingWebhookCreateFormBuilder) Dummy() *OutgoingWebhookCreateFormBuilder {
-	ab.form.Provider = "dummy"
-	ab.form.Config = "{\"foo\": \"bar\"}"
+	ab.form.Provider = "generic"
+	ab.form.Config = "{\"endpoint\": \"http://example.org\"}"
 	ab.form.Secrets["foo"] = "bar"
 	return ab
 }

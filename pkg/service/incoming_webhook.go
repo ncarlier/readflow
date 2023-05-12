@@ -8,7 +8,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-const unableToCreateInComingWebhookErrorMsg = "unable to create incoming webhook"
+const unableToCreateIncomingWebhookErrorMsg = "unable to create incoming webhook"
 
 // GetIncomingWebhookByToken returns an incoming webhook by its token
 func (reg *Registry) GetIncomingWebhookByToken(token string) (*model.IncomingWebhook, error) {
@@ -58,12 +58,12 @@ func (reg *Registry) CreateIncomingWebhook(ctx context.Context, form model.Incom
 	if plan != nil {
 		totalWebhooks, err := reg.db.CountIncomingWebhooksByUser(uid)
 		if err != nil {
-			logger.Info().Err(err).Msg(unableToCreateInComingWebhookErrorMsg)
+			logger.Info().Err(err).Msg(unableToCreateIncomingWebhookErrorMsg)
 			return nil, err
 		}
-		if totalWebhooks >= plan.TotalWebhooks {
+		if totalWebhooks >= plan.IncomingWebhooksLimit {
 			err = ErrUserQuotaReached
-			logger.Info().Err(err).Uint("total", plan.TotalCategories).Msg(unableToCreateInComingWebhookErrorMsg)
+			logger.Info().Err(err).Uint("total", totalWebhooks).Msg(unableToCreateIncomingWebhookErrorMsg)
 			return nil, err
 		}
 	}
@@ -71,7 +71,7 @@ func (reg *Registry) CreateIncomingWebhook(ctx context.Context, form model.Incom
 	logger.Debug().Msg("creating incoming webhook...")
 	result, err := reg.db.CreateIncomingWebhookForUser(uid, form)
 	if err != nil {
-		logger.Info().Err(err).Msg(unableToCreateInComingWebhookErrorMsg)
+		logger.Info().Err(err).Msg(unableToCreateIncomingWebhookErrorMsg)
 		return nil, err
 	}
 	logger.Info().Uint("id", *result.ID).Msg("incoming webhook created")
