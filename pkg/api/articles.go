@@ -32,6 +32,40 @@ func assertLimitations(articles []model.ArticleCreateForm) error {
 	return nil
 }
 
+func getStatusCodeFromCreatedArticlesResponse(resp *model.CreatedArticlesResponse) int {
+	if len(resp.Articles) > 0 {
+		if len(resp.Errors) > 0 {
+			// some articles created, some not
+			return http.StatusPartialContent
+		} else {
+			// article(s) created
+			return http.StatusCreated
+		}
+	}
+	var globalError error
+	for _, err := range resp.Errors {
+		if globalError != nil && globalError != err {
+			// send internal error if errors are different
+			return http.StatusInternalServerError
+		}
+		globalError = err
+	}
+	switch globalError {
+	case nil:
+		// no errors
+		return http.StatusNoContent
+	case model.ErrAlreadyExists:
+		// article already exists
+		return http.StatusNotModified
+	case service.ErrUserQuotaReached:
+		// quota reached
+		return http.StatusPaymentRequired
+	default:
+		// unknown error
+		return http.StatusInternalServerError
+	}
+}
+
 // articles is the handler to post articles using API keys.
 func articles() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -84,19 +118,7 @@ func articles() http.Handler {
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		status := http.StatusNoContent
-		if len(articles.Errors) == 0 && len(articles.Articles) > 0 {
-			status = http.StatusCreated
-		} else if len(articles.Errors) > 0 {
-			if len(articles.Articles) > 0 {
-				status = http.StatusPartialContent
-			} else if len(articles.Errors) == 1 && articles.Errors[0] == model.ErrAlreadyExists {
-				status = http.StatusNotModified
-			} else {
-				status = http.StatusBadRequest
-			}
-		}
-		w.WriteHeader(status)
+		w.WriteHeader(getStatusCodeFromCreatedArticlesResponse(articles))
 		w.Write(data)
 	})
 }
