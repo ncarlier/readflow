@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 
-import { API_BASE_URL } from '../constants'
 import { useMedia } from '../hooks'
-import { classNames } from '../helpers'
+import { classNames, getAPIURL } from '../helpers'
 
 import styles from './LazyImage.module.css'
 
@@ -11,8 +10,7 @@ interface Props {
   alt?: string
 }
 
-const proxifyImageURL = (url: string, width: number) =>
-  `${API_BASE_URL}/img?url=${encodeURIComponent(url)}&width=${width}`
+const proxifyImageURL = (url: string, width: number) => getAPIURL(`/img?url=${encodeURIComponent(url)}&width=${width}`)
 
 export const LazyImage = ({ src, alt = '' }: Props) => {
   const mobileDisplay = useMedia('(max-width: 767px)')

@@ -1,5 +1,9 @@
 import { User } from 'oidc-client-ts'
-import { API_BASE_URL } from '../constants'
+import { API_BASE_URL } from '../config'
+
+const apiBaseUrl = API_BASE_URL.startsWith('/') || API_BASE_URL === '' ? document.location.origin + API_BASE_URL : API_BASE_URL
+
+export const getAPIURL = (path?: string) => path ? `${apiBaseUrl}${path}` : apiBaseUrl
 
 export const withCredentials = (user: User | null, init?: HeadersInit): HeadersInit | undefined => {
   if (user && user.access_token) {
@@ -15,7 +19,7 @@ export const withCredentials = (user: User | null, init?: HeadersInit): HeadersI
 }
 
 export const fetchAPI = async (uri: string, params: any = {}, init: RequestInit) => {
-  const url = new URL(`${API_BASE_URL}${uri}`)
+  const url = new URL(getAPIURL(uri))
   if (params) {
     Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]))
   }

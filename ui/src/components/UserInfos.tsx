@@ -4,7 +4,8 @@ import React from 'react'
 import { TimeAgo } from '.'
 import styles from './UserInfos.module.css'
 import { useCurrentUser } from '../contexts'
-import { API_BASE_URL, AUTHORITY, CLIENT_ID } from '../constants'
+import { AUTHORITY, CLIENT_ID } from '../config'
+import { getAPIURL } from '../helpers'
 
 const getAccountURL = () =>
   AUTHORITY !== 'mock'
@@ -25,7 +26,7 @@ export const UserInfos = () => {
         </small>
       </span>
       <a href={getAccountURL()} target="_blank" title="Go to my profile page">
-        <img src={`${API_BASE_URL}/avatar/${user.hash}`} alt={user.username} crossOrigin='anonymous' />
+        <img src={getAPIURL(`/avatar/${user.hash}`)} alt={user.username} crossOrigin='anonymous' />
       </a>
     </div>
   )

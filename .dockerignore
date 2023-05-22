@@ -1,5 +1,5 @@
 release/
-ui/
+node_modules
 docs/
 landing/
 .env

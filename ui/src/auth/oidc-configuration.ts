@@ -1,5 +1,5 @@
 import { UserManagerSettings } from 'oidc-client-ts'
-import { AUTHORITY, CLIENT_ID } from '../constants'
+import { AUTHORITY, CLIENT_ID } from '../config'
 import { getCleanedRedirectURI } from './helper'
 
 export const config: UserManagerSettings = {

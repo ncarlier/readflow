@@ -10,7 +10,7 @@ import { updateAvailable } from './appStore'
 import configureStore from './configureStore'
 import { isTrustedWebActivity } from './helpers'
 import * as serviceWorker from './serviceWorkerRegistration'
-import { REDIRECT_URL, AUTHORITY } from './constants'
+import { AUTHORITY, REDIRECT_URL } from './config'
 import { ApplicationState } from './store'
 
 const lastRunKey = 'readflow.lastRun'
@@ -35,7 +35,10 @@ const run = () => {
 }
 
 const shouldRedirectToPortal = () =>
-  !isTrustedWebActivity() && AUTHORITY !== 'none' && localStorage.getItem(lastRunKey) === null && document.location.pathname !== '/login'
+  !isTrustedWebActivity()
+  && AUTHORITY !== 'none'
+  && localStorage.getItem(lastRunKey) === null
+  && document.location.pathname !== '/login'
 
 if (shouldRedirectToPortal()) {
   document.location.replace(REDIRECT_URL)

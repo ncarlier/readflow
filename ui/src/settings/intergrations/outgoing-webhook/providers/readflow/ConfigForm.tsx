@@ -2,7 +2,7 @@ import React from 'react'
 import { useFormState } from 'react-use-form-state'
 
 import { FormInputField, FormSecretInputField } from '../../../../../components'
-import { API_BASE_URL } from '../../../../../constants'
+import { getAPIURL } from '../../../../../helpers'
 
 interface Config {
   endpoint: string
@@ -26,7 +26,7 @@ interface Props {
 }
 
 const defaultConfig = {
-  endpoint: API_BASE_URL
+  endpoint: getAPIURL()
 }
 
 export const ConfigForm = ({ onChange, config, locked = true }: Props) => {

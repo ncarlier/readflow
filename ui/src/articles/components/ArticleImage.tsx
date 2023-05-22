@@ -1,9 +1,8 @@
 import React, { FC, ImgHTMLAttributes } from 'react'
 
-import { API_BASE_URL } from '../../constants'
+import { getAPIURL } from '../../helpers'
 
-const proxifyImageURL = (url: string, width: number) =>
-  `${API_BASE_URL}/img?url=${encodeURIComponent(url)}&width=${width}`
+const proxifyImageURL = (url: string, width: number) => getAPIURL(`/img?url=${encodeURIComponent(url)}&width=${width}`)
 
 export const ArticleImage: FC<ImgHTMLAttributes<HTMLImageElement>> = ({ src, ...attrs }) => {
   if (src && src.match(/^https?:\/\//)) {

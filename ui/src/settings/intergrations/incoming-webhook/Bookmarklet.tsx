@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { API_BASE_URL } from '../../../constants'
+import { getAPIURL } from '../../../helpers'
 
 function createBookmarkletScript(token: string) {
   const { origin } = document.location
@@ -19,7 +19,7 @@ function createBookmarkletScript(token: string) {
   };
   d.body.appendChild(js);
 })(document, '${origin}/bookmarklet.js', function () {
-  window.rfB.boot('${origin}', '${API_BASE_URL}', '${cred}');
+  window.rfB.boot('${origin}', '${getAPIURL()}', '${cred}');
 });
 `
 }
