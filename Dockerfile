@@ -1,7 +1,26 @@
 #########################################
-# Build stage
+# Build frontend stage
 #########################################
-FROM golang:1.19 AS builder
+FROM node:lts-alpine AS frontend-builder
+
+# Setup env
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+
+# Install dependencies
+COPY ui/package.json /usr/src/app/package.json
+COPY ui/package-lock.json /usr/src/app/package-lock.json
+RUN npm install --silent --legacy-peer-deps
+
+# Build website
+COPY ./ui /usr/src/app
+RUN npm run build
+
+#########################################
+# Build backend stage
+#########################################
+FROM golang:1.19 AS backend-builder
 
 # Repository location
 ARG REPOSITORY=github.com/ncarlier
@@ -29,14 +48,19 @@ ARG REPOSITORY=github.com/ncarlier
 # Artifact name
 ARG ARTIFACT=readflow
 
-# Install binary
-COPY --from=builder /go/src/$REPOSITORY/$ARTIFACT/release/$ARTIFACT /usr/local/bin/$ARTIFACT
+# Install backend binary
+COPY --from=backend-builder /go/src/$REPOSITORY/$ARTIFACT/release/$ARTIFACT /usr/local/bin/$ARTIFACT
+# Install frontend assets
+COPY --from=frontend-builder /usr/src/app/build /var/local/html
 
 # Add configuration file
 ADD ./pkg/config/readflow.toml /etc/readflow.toml
 
 # Set configuration file
 ENV READFLOW_CONFIG /etc/readflow.toml
+
+# Serve UI
+ENV READFLOW_UI /var/local/html
 
 # Exposed ports
 EXPOSE 8080 9090

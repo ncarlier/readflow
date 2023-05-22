@@ -15,6 +15,7 @@ type GlobalConfig struct {
 	ListenAddr        string `toml:"listen_addr"`
 	MetricsListenAddr string `toml:"metrics_listen_addr"`
 	PublicURL         string `toml:"public_url"`
+	UILocation        string `toml:"ui"`
 	SecretSalt        string `toml:"secret_salt"`
 	BlockList         string `toml:"block_list"`
 }

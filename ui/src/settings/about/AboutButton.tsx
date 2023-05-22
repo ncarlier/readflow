@@ -5,7 +5,7 @@ import { useModal } from 'react-modal-hook'
 
 import { ButtonIcon, Logo, Panel } from '../../components'
 import dialogStyles from '../../components/Dialog.module.css'
-import { VERSION } from '../../constants'
+import version from '../../version'
 import styles from './AboutButton.module.css'
 
 interface Props {
@@ -18,7 +18,7 @@ const AboutPanel = ({ closeHandler }: Props) => (
     <h1>
       <Logo name="readflow" />
     </h1>
-    <span>({VERSION})</span>
+    <span>({version})</span>
     <p>Read your Internet article flow in one place with complete peace of mind and freedom.</p>
     <ul>
       <li>

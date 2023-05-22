@@ -4,7 +4,7 @@ import React, { Suspense, useCallback, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
 import { useAuth } from '../auth/AuthProvider'
 
-import { API_BASE_URL } from '../constants'
+import { getAPIURL } from '../helpers'
 
 const GraphiQL = React.lazy(() => import('graphiql'))
 
@@ -23,7 +23,7 @@ export default ({ location }: AllProps) => {
       if (user && user.access_token) {
         headers.set('authorization', 'Bearer ' + user.access_token)
       }
-      return fetch(API_BASE_URL + basePath, {
+      return fetch(getAPIURL(basePath), {
         method: 'post',
         headers,
         credentials: 'same-origin',

@@ -2,7 +2,7 @@ import React, { FC, PropsWithChildren } from 'react'
 import { AuthProvider } from './AuthProvider'
 
 import { AuthenticatedPage } from './AuthenticatedPage'
-import { AUTHORITY } from '../constants'
+import { AUTHORITY } from '../config'
 import { useOnlineStatus } from '../hooks'
 
 const AuthenticationProvider: FC<PropsWithChildren> = ({ children }) => {

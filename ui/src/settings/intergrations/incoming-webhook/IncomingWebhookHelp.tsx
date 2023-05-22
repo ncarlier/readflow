@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { API_BASE_URL } from '../../../constants'
 import { IncomingWebhook } from './models'
 import Bookmarklet from './Bookmarklet'
 import { HelpLink, Logo, Masked } from '../../../components'
 import HelpSection from '../../HelpSection'
 import QRCodeIncomingWebhookButton from './QRCodeIncomingWebhookButton'
+import { getAPIURL } from '../../../helpers'
 
 interface Props {
   data?: IncomingWebhook
@@ -23,7 +23,7 @@ export default ({ data }: Props) => (
           <tbody>
             <tr>
               <th>Ingestion URL</th>
-              <td>{API_BASE_URL + '/articles'}</td>
+              <td>{getAPIURL('/articles')}</td>
             </tr>
             <tr>
               <th>Token</th>
