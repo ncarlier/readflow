@@ -21,27 +21,33 @@ Read your Internet article flow in one place with complete peace of mind and fre
 
 ## Installation
 
-Run the following command:
+Using Go compiler:
 
 ```bash
-$ go install -v github.com/ncarlier/readflow@latest
+go install -v github.com/ncarlier/readflow@latest
 ```
 
-**Or** download the binary regarding your architecture:
+**Or** using pre-compiled binary:
 
 ```bash
-$ curl -sf https://gobinaries.com/ncarlier/readflow | sh
-$ # or
-$ curl -s https://raw.githubusercontent.com/ncarlier/readflow/master/install.sh | bash
+curl -sf https://gobinaries.com/ncarlier/readflow | sh
+# or
+curl -s https://raw.githubusercontent.com/ncarlier/readflow/master/install.sh | bash
 ```
 
-**Or** use Docker:
+**Or** using Docker:
 
 ```bash
-$ docker run -it --rm \
-    -p 8080:8080 \
-    -e READFLOW_DB=<YOUR POSTGERSQL CONNECTION STRING> \
-    ncarlier/readflow:edge
+docker run -it --rm \
+  -p 8080:8080 \
+  -e READFLOW_DB=<YOUR POSTGERSQL CONNECTION STRING> \
+  ncarlier/readflow:edge
+```
+
+**Or** using Docker Compose:
+
+```bash
+docker compose up
 ```
 
 ## Configuration

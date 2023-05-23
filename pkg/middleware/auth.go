@@ -1,24 +1,30 @@
 package middleware
 
 import (
-	"fmt"
+	"strings"
 
 	"github.com/rs/zerolog/log"
 )
 
-const tpl = "using %s as authentication backend"
+const usingAuthNMsg = "using authentication"
 
 // Auth is a middleware to authenticate HTTP request
 func Auth(method string) Middleware {
-	switch method {
-	case "mock":
-		log.Info().Msg(fmt.Sprintf(tpl, "Mock"))
+	switch {
+	case method == "mock":
+		log.Info().Str("method", method).Msg(usingAuthNMsg)
 		return MockAuth
-	case "proxy":
-		log.Info().Msg(fmt.Sprintf(tpl, "Proxy"))
+	case method == "proxy":
+		log.Info().Str("method", method).Msg(usingAuthNMsg)
 		return ProxyAuth
-	default:
-		log.Info().Str("authority", method).Msg(fmt.Sprintf(tpl, "OpenID Connect"))
+	case strings.HasPrefix(method, "file://"):
+		log.Info().Str("method", "basic").Str("htpasswd", method).Msg(usingAuthNMsg)
+		return BasicAuth(method)
+	case strings.HasPrefix(method, "https://"):
+		log.Info().Str("method", "bearer").Str("authority", method).Msg(usingAuthNMsg)
 		return OpenIDConnectJWTAuth(method)
+	default:
+		log.Fatal().Str("method", method).Msg("non supported authentication method")
+		return nil
 	}
 }
