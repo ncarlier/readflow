@@ -42,7 +42,7 @@ func ProxyAuth(inner http.Handler) http.Handler {
 			inner.ServeHTTP(w, r.WithContext(ctx))
 			return
 		}
-		w.Header().Set("WWW-Authenticate", `Basic realm="Ah ah ah, you didn't say the magic word"`)
+		w.Header().Set("Proxy-Authenticate", `Basic realm="readflow"`)
 		jsonErrors(w, "Unauthorized", 401)
 	})
 }

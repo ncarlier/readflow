@@ -74,20 +74,20 @@ func main() {
 	// Configure the DB
 	database, err := db.NewDB(conf.Global.DatabaseURI)
 	if err != nil {
-		log.Fatal().Err(err).Msg("could not configure database")
+		log.Fatal().Err(err).Msg("unable to configure the database")
 	}
 
 	// Configure download cache
 	downloadCache, err := cache.NewDefault("readflow-downloads")
 	if err != nil {
-		log.Fatal().Err(err).Msg("could not configure cache")
+		log.Fatal().Err(err).Msg("unable to configure the cache storage")
 	}
 
 	// Configure the service registry
 	err = service.Configure(*conf, database, downloadCache)
 	if err != nil {
 		database.Close()
-		log.Fatal().Err(err).Msg("could not init service registry")
+		log.Fatal().Err(err).Msg("unable to configure the service registry")
 	}
 
 	// Start job scheduler
@@ -108,7 +108,7 @@ func main() {
 		go func() {
 			log.Info().Str("listen", conf.Global.MetricsListenAddr).Msg("metrics server started")
 			if err := metricsServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				log.Fatal().Err(err).Str("listen", conf.Global.MetricsListenAddr).Msg("could not start metrics server")
+				log.Fatal().Err(err).Str("listen", conf.Global.MetricsListenAddr).Msg("unable to start the metrics server")
 			}
 		}()
 	}
@@ -128,17 +128,17 @@ func main() {
 
 		server.SetKeepAlivesEnabled(false)
 		if err := server.Shutdown(ctx); err != nil {
-			log.Fatal().Err(err).Msg("could not gracefully shutdown the server")
+			log.Fatal().Err(err).Msg("unable to gracefully shutdown the server")
 		}
 		if metricsServer != nil {
 			metric.StopCollectors()
 			if err := metricsServer.Shutdown(ctx); err != nil {
-				log.Fatal().Err(err).Msg("could not gracefully shutdown metrics server")
+				log.Fatal().Err(err).Msg("unable to gracefully shutdown the metrics server")
 			}
 		}
 
 		if err := downloadCache.Close(); err != nil {
-			log.Error().Err(err).Msg("could not gracefully shutdown cache provider")
+			log.Error().Err(err).Msg("unable to gracefully shutdown the cache storage")
 		}
 
 		if err := database.Close(); err != nil {
@@ -153,7 +153,7 @@ func main() {
 	log.Info().Str("listen", conf.Global.ListenAddr).Msg("server started")
 
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatal().Err(err).Str("listen", conf.Global.ListenAddr).Msg("could not start the server")
+		log.Fatal().Err(err).Str("listen", conf.Global.ListenAddr).Msg("unable to start the server")
 	}
 
 	<-done

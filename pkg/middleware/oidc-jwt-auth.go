@@ -24,7 +24,7 @@ func OpenIDConnectJWTAuth(authority string) Middleware {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
 
-			w.Header().Set("WWW-Authenticate", `Bearer realm="Restricted"`)
+			w.Header().Set("WWW-Authenticate", `Bearer realm="readflow"`)
 
 			token, err := jwtRequest.ParseFromRequest(r, jwtRequest.OAuth2Extractor, func(token *jwt.Token) (i interface{}, e error) {
 				if id, ok := token.Header["kid"]; ok {

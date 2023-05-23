@@ -43,7 +43,9 @@ services:
       - READFLOW_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-secret}@db/${POSTGRES_DB:-readflow}?sslmode=disable
       - READFLOW_LISTEN_METRICS=:9090
       - READFLOW_IMAGE_PROXY_URL=http://imaginary:9000
-      - READFLOW_AUTHN=mock
+      - READFLOW_AUTHN=file:///var/local/demo.htpasswd
+    volumes:
+      - ${PWD}/var/demo.htpasswd:/var/local/demo.htpasswd
 
 networks:
   default:
