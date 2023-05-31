@@ -6,6 +6,7 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/event"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/scripting"
 
@@ -102,8 +103,10 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	logger.Info().Uint("id", article.ID).Msg("article created")
 	// exec asynchronously other operations
 	go func() {
-		if err := reg.execOtherOperations(ctx, ops, article); err != nil {
-			logger.Info().Err(err).Msg(unableToCreateArticleErrorMsg)
+		bgCtx, cancel := helper.NewBackgroundContextWithValues(ctx, constant.DefaultTimeout)
+		defer cancel()
+		if err := reg.execOtherOperations(bgCtx, ops, article); err != nil {
+			logger.Info().Err(err).Msg("error while applying script operations")
 		}
 	}()
 	// emit article creation event
