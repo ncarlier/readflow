@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode, Ref } from 'react'
+import React, { forwardRef, ReactNode, Ref, useCallback, useState } from 'react'
 import Editor from 'react-simple-code-editor'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
@@ -29,7 +29,8 @@ interface Props {
 type AllProps = Props & Omit<BaseInputProps<any>, 'type'>
 
 export const FormCodeEditorField = forwardRef((props: AllProps, ref: Ref<any>) => {
-  const { error, label, children, language = 'text', ...rest } = { ...props, ref }
+  const { error, label, children, language = 'text', value, ...rest } = { ...props, ref }
+  const [code, setCode] = useState(value)
 
   const className = classNames('form-group', error ? 'has-error' : null)
 
@@ -40,7 +41,8 @@ export const FormCodeEditorField = forwardRef((props: AllProps, ref: Ref<any>) =
       </label>
       <Editor
         {...rest}
-        onValueChange={code => rest.value = code}
+        value={code}
+        onValueChange={code => setCode(code)}
         highlight={code => hljs.highlight(code, {language}).value}
       />
       <i className="bar" />
