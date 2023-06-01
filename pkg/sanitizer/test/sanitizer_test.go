@@ -13,8 +13,8 @@ var tests = []struct {
 }{
 	{`<a href="https://001print.com/foo.html" alt="test">foo</a>`, `foo`},
 	{`<a href="https://print.com/foo.html" alt="test">foo</a>`, `<a href="https://print.com/foo.html" rel="nofollow noopener" target="_blank">foo</a>`},
-	{`<img src="test.png" class="test"  alt="test" />`, `<img src="test.png" alt="test"/>`},
-	{`<img src="test.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs= 2x" class="test"  alt="test" />`, `<img src="test.png" alt="test"/>`},
+	{`<img src="test.png" class="test"  alt="test" />`, `<img src="test.png" alt="test">`},
+	{`<img src="test.png" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs= 2x" class="test"  alt="test" />`, `<img src="test.png" alt="test">`},
 }
 
 func TestSanitizer(t *testing.T) {

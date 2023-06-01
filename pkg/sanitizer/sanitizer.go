@@ -8,6 +8,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/tdewolff/minify/v2"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
@@ -17,6 +18,7 @@ type Sanitizer struct {
 	logger    zerolog.Logger
 	blockList *BlockList
 	policy    *bluemonday.Policy
+	minifier  *minify.M
 }
 
 // NewSanitizer create new HTML sanitizer
@@ -38,6 +40,7 @@ func NewSanitizer(blockList *BlockList) *Sanitizer {
 		logger:    logger,
 		blockList: blockList,
 		policy:    policy,
+		minifier:  newDefaultMinifier(),
 	}
 }
 
@@ -90,6 +93,11 @@ func (s *Sanitizer) Sanitize(content string) string {
 			s.cleanURLs(doc)
 			content = dom.InnerHTML(doc)
 		}
+	}
+
+	min, err := s.minifier.String("text/html", content)
+	if err == nil {
+		content = min
 	}
 
 	return s.policy.Sanitize(content)
