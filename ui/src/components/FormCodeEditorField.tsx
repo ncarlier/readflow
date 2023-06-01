@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode, Ref, useCallback, useState } from 'react'
+import React, { forwardRef, ReactNode, Ref, useState } from 'react'
 import Editor from 'react-simple-code-editor'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'

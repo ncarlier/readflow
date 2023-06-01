@@ -26,7 +26,7 @@ var updateArticleMutationField = &graphql.Field{
 			Type: graphql.String,
 		},
 		"category_id": &graphql.ArgumentConfig{
-			Type: graphql.Int,
+			Type: graphql.ID,
 		},
 		"status": &graphql.ArgumentConfig{
 			Type: articleStatus,
