@@ -103,6 +103,7 @@ consumer_key = "${READFLOW_POCKET_CONSUMER_KEY}"
 #categories_limit = 10
 #incoming_webhooks_limit = 1
 #outgoing_webhooks_limit = 1
+#outgoing_webhooks_timeout = "2s"
 
 #[[user_plans]]
 #name = "friends and family"
@@ -110,3 +111,4 @@ consumer_key = "${READFLOW_POCKET_CONSUMER_KEY}"
 #categories_limit = 50
 #incoming_webhooks_limit = 5
 #outgoing_webhooks_limit = 5
+#outgoing_webhooks_timeout = "10s"

@@ -50,7 +50,7 @@ func (reg *Registry) CreateOutgoingWebhook(ctx context.Context, form model.Outgo
 	uid := getCurrentUserIDFromContext(ctx)
 
 	logger := reg.logger.With().Uint("uid", uid).Str("alias", form.Alias).Logger()
-	
+
 	// Validate user quota
 	plan, err := reg.GetCurrentUserPlan(ctx)
 	if err != nil {
@@ -233,8 +233,12 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 	}
 	if _, isDeadline := ctx.Deadline(); !isDeadline {
 		// no outgoing webhook deadline defined... setting one
+		timeout := constant.DefaultTimeout
+		if plan, err := reg.GetCurrentUserPlan(ctx); err == nil && plan != nil {
+			timeout = plan.OutgoingWebhooksTimeout.Duration
+		}
 		var cancel context.CancelFunc
-		webhookContext, cancel = context.WithTimeout(webhookContext, 3*constant.DefaultTimeout)
+		webhookContext, cancel = context.WithTimeout(webhookContext, timeout)
 		defer cancel()
 	}
 

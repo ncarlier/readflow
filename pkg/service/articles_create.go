@@ -103,9 +103,8 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	logger.Info().Uint("id", article.ID).Msg("article created")
 	// exec asynchronously other operations
 	go func() {
-		bgCtx, cancel := helper.NewBackgroundContextWithValues(ctx, constant.DefaultTimeout)
-		defer cancel()
-		if err := reg.execOtherOperations(bgCtx, ops, article); err != nil {
+		execCtx := helper.NewBackgroundContextWithValues(ctx)
+		if err := reg.execOtherOperations(execCtx, ops, article); err != nil {
 			logger.Info().Err(err).Msg("error while applying script operations")
 		}
 	}()
