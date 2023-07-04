@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/exporter"
@@ -12,6 +13,7 @@ import (
 // DownloadArticle get article as a binary file
 func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format string) (*downloader.WebAsset, error) {
 	uid := getCurrentUserIDFromContext(ctx)
+	start := time.Now()
 
 	logger := reg.logger.With().Uint(
 		"uid", uid,
@@ -72,7 +74,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 	}
 
-	logger.Info().Msg("article downloadable asset created")
+	logger.Info().Str("took", time.Since(start).String()).Msg("article downloadable asset created")
 
 	return result, nil
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/integration/webhook"
@@ -180,6 +181,7 @@ func (reg *Registry) DeleteOutgoingWebhooks(ctx context.Context, ids []uint) (in
 
 // SendArticle send an article to outgoing webhook
 func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *string) (*webhook.Result, error) {
+	start := time.Now()
 	user, err := reg.GetCurrentUser(ctx)
 	if err != nil {
 		return nil, err
@@ -248,6 +250,6 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
 		return nil, err
 	}
-	logger.Info().Msg("article sent to outgoing webhook")
+	logger.Info().Str("took", time.Since(start).String()).Msg("article sent to outgoing webhook")
 	return result, nil
 }

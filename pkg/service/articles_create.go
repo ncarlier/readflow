@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/event"
@@ -24,6 +25,7 @@ type ArticleCreationOptions struct {
 // CreateArticle creates new article
 func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreateForm, opts ArticleCreationOptions) (*model.Article, error) {
 	uid := getCurrentUserIDFromContext(ctx)
+	start := time.Now()
 	logger := reg.logger.With().Uint("uid", uid).Str("title", form.TruncatedTitle()).Logger()
 
 	plan, err := reg.GetCurrentUserPlan(ctx)
@@ -100,7 +102,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		logger.Error().Err(err).Msg(unableToCreateArticleErrorMsg)
 		return nil, err
 	}
-	logger.Info().Uint("id", article.ID).Msg("article created")
+	logger.Info().Uint("id", article.ID).Str("took", time.Since(start).String()).Msg("article created")
 	// exec asynchronously other operations
 	go func() {
 		execCtx := helper.NewBackgroundContextWithValues(ctx)
