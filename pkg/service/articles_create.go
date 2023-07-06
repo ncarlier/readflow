@@ -102,7 +102,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 		logger.Error().Err(err).Msg(unableToCreateArticleErrorMsg)
 		return nil, err
 	}
-	logger.Info().Uint("id", article.ID).Str("took", time.Since(start).String()).Msg("article created")
+	logger.Info().Uint("id", article.ID).Dur("took", time.Since(start)).Msg("article created")
 	// exec asynchronously other operations
 	go func() {
 		execCtx := helper.NewBackgroundContextWithValues(ctx)

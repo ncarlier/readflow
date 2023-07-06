@@ -250,6 +250,6 @@ func (reg *Registry) SendArticle(ctx context.Context, idArticle uint, alias *str
 		logger.Info().Err(err).Msg(ErrOutgoingWebhookSend.Error())
 		return nil, err
 	}
-	logger.Info().Str("took", time.Since(start).String()).Msg("article sent to outgoing webhook")
+	logger.Info().Dur("took", time.Since(start)).Msg("article sent to outgoing webhook")
 	return result, nil
 }

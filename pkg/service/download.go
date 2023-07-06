@@ -74,7 +74,7 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		logger.Info().Err(err).Msg(ErrArticleDownload.Error())
 	}
 
-	logger.Info().Str("took", time.Since(start).String()).Msg("article downloadable asset created")
+	logger.Info().Dur("took", time.Since(start)).Msg("article downloadable asset created")
 
 	return result, nil
 }

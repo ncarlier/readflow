@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/helper"
@@ -15,6 +16,7 @@ const unableToUpdateArticleErrorMsg = "unable to update article"
 // UpdateArticle update article
 func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdateForm) (*model.Article, error) {
 	uid := getCurrentUserIDFromContext(ctx)
+	start := time.Now()
 
 	logger := reg.logger.With().Uint("uid", uid).Uint("id", form.ID).Logger()
 
@@ -44,7 +46,7 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 		return nil, err
 	}
 
-	logger.Info().Msg("article updated")
+	logger.Info().Dur("took", time.Since(start)).Msg("article updated")
 
 	// Emit update event
 	reg.events.Publish(event.NewEvent(EventUpdateArticle, *article))

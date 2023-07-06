@@ -11,6 +11,7 @@ import (
 // Configure logger level and output format
 func Configure(level string, pretty bool, sentryDSN string) {
 	zerolog.TimeFieldFormat = ""
+	zerolog.DurationFieldInteger = true
 	l := zerolog.InfoLevel
 	switch level {
 	case "debug":
