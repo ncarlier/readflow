@@ -32,15 +32,21 @@ const contactForm = async (req, res) => {
     return res.redirect(302, `/result?variant=contact-error&reason=${message}`)
   }
 
+  const endpoint = new URL(serviceURL)
+  const {username, password} = endpoint
+  endpoint.username = ''
+  endpoint.password = ''
+
   const form = new URLSearchParams()
   form.append('subject', '[readflow-contact] ' + subject)
   form.append('to', contactMail)
   form.append('from', from)
   form.append('text', body)
-  const resp = await fetch(serviceURL, {
+  const resp = await fetch(endpoint, {
     method: 'POST',
     headers: new Headers({
       'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Basic ${btoa(username + ':' + password)}`,
     }),
     body: form
   })
