@@ -21,6 +21,10 @@ listen_addr = "${READFLOW_LISTEN_ADDR}"
 # Example: ":9090"
 metrics_listen_addr = "${READFLOW_LISTEN_METRICS}"
 
+## SMTP listen address, deactivated if empty
+# Examples: "localhost:1025" or ":1025" for all interfaces 
+smtp_listen_addr = "${READFLOW_SMTP_LISTEN_ADDR}"
+
 ## Authentication method
 # - `mock`: Generic user use for testing
 # - `proxy`: For proxied authentication that use "X-WEBAUTH-USER", "X-Auth-Username", "Remote-User" or "Remote-Name" HTTP header as username

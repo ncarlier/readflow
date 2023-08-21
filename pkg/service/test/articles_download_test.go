@@ -11,7 +11,7 @@ import (
 )
 
 func TestDownloadArticle(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
+	teardownTestCase := SetupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Create new article

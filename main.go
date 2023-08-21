@@ -7,7 +7,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -21,6 +20,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/job"
 	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/ncarlier/readflow/pkg/metric"
+	"github.com/ncarlier/readflow/pkg/server"
 	"github.com/ncarlier/readflow/pkg/service"
 	"github.com/ncarlier/readflow/pkg/version"
 	"github.com/rs/zerolog/log"
@@ -35,20 +35,20 @@ func init() {
 }
 
 func main() {
-	// Get executable flags
+	// get executable flags
 	flags := config.Flags{}
 	configflag.Bind(&flags, "READFLOW")
 
-	// Parse command line (and environment variables)
+	// parse command line (and environment variables)
 	flag.Parse()
 
-	// Show version if asked
+	// show version if asked
 	if *version.ShowVersion {
 		version.Print()
 		os.Exit(0)
 	}
 
-	// Init config file
+	// init config file
 	if config.InitConfigFile != nil && *config.InitConfigFile != "" {
 		if err := config.WriteConfigFile(*config.InitConfigFile); err != nil {
 			log.Fatal().Err(err).Msg("unable to init configuration file")
@@ -63,54 +63,50 @@ func main() {
 		}
 	}
 
-	// Export configurations vars
+	// export configurations vars
 	config.ExportVars(conf)
 
-	// Configure the logger
+	// configure the logger
 	logger.Configure(flags.LogLevel, flags.LogPretty, conf.Integration.Sentry.DSN)
 
-	log.Debug().Msg("starting readflow server...")
+	log.Debug().Msg("starting readflow...")
 
-	// Configure the DB
+	// configure the DB
 	database, err := db.NewDB(conf.Global.DatabaseURI)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to configure the database")
 	}
 
-	// Configure download cache
+	// configure download cache
 	downloadCache, err := cache.NewDefault("readflow-downloads")
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to configure the cache storage")
 	}
 
-	// Configure the service registry
+	// configure the service registry
 	err = service.Configure(*conf, database, downloadCache)
 	if err != nil {
 		database.Close()
 		log.Fatal().Err(err).Msg("unable to configure the service registry")
 	}
 
-	// Start job scheduler
+	// ctart job scheduler
 	scheduler := job.StartNewScheduler(database)
 
-	server := &http.Server{
-		Addr:    conf.Global.ListenAddr,
-		Handler: api.NewRouter(conf),
+	// create HTTP server
+	httpServer := server.NewHTTPServer(conf)
+
+	// create and start metrics server
+	metricsServer := server.NewMetricsServer(conf)
+	if metricsServer != nil {
+		metric.StartCollectors(database)
+		go metricsServer.ListenAndServe()
 	}
 
-	var metricsServer *http.Server
-	if conf.Global.MetricsListenAddr != "" {
-		metricsServer = &http.Server{
-			Addr:    conf.Global.MetricsListenAddr,
-			Handler: api.NewMetricsRouter(),
-		}
-		metric.StartCollectors(database)
-		go func() {
-			log.Info().Str("listen", conf.Global.MetricsListenAddr).Msg("metrics server started")
-			if err := metricsServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				log.Fatal().Err(err).Str("listen", conf.Global.MetricsListenAddr).Msg("unable to start the metrics server")
-			}
-		}()
+	// create and start SMTP server
+	smtpServer := server.NewSMTPHTTPServer(conf)
+	if smtpServer != nil {
+		go smtpServer.ListenAndServe()
 	}
 
 	done := make(chan bool)
@@ -119,16 +115,20 @@ func main() {
 
 	go func() {
 		<-quit
-		log.Debug().Msg("server is shutting down...")
+		log.Debug().Msg("shutting down readflow...")
 		scheduler.Shutdown()
 		api.Shutdown()
 
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
 
-		server.SetKeepAlivesEnabled(false)
-		if err := server.Shutdown(ctx); err != nil {
-			log.Fatal().Err(err).Msg("unable to gracefully shutdown the server")
+		if err := httpServer.Shutdown(ctx); err != nil {
+			log.Fatal().Err(err).Msg("unable to gracefully shutdown the HTTP server")
+		}
+		if smtpServer != nil {
+			if err := smtpServer.Shutdown(ctx); err != nil {
+				log.Fatal().Err(err).Msg("unable to gracefully shutdown the SMTP server")
+			}
 		}
 		if metricsServer != nil {
 			metric.StopCollectors()
@@ -148,14 +148,12 @@ func main() {
 		close(done)
 	}()
 
+	// set API health check as started
 	api.Start()
 
-	log.Info().Str("listen", conf.Global.ListenAddr).Msg("server started")
-
-	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatal().Err(err).Str("listen", conf.Global.ListenAddr).Msg("unable to start the server")
-	}
+	// start HTTP server
+	httpServer.ListenAndServe()
 
 	<-done
-	log.Debug().Msg("server stopped")
+	log.Debug().Msg("readflow stopped")
 }

@@ -27,3 +27,8 @@ func (hid *HashIDHandler) Encode(values []int) string {
 	result, _ := hid.provider.Encode(values)
 	return result
 }
+
+// Decode value from hashid
+func (hid *HashIDHandler) Decode(hash string) ([]int, error) {
+	return hid.provider.DecodeWithError(hash)
+}

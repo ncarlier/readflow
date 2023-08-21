@@ -11,7 +11,7 @@ import (
 )
 
 func TestUpdateArticle(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
+	teardownTestCase := SetupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Create new article
@@ -35,7 +35,7 @@ func TestUpdateArticle(t *testing.T) {
 }
 
 func TestUpdateArticleWithErrors(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
+	teardownTestCase := SetupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Create new article
@@ -56,7 +56,7 @@ func TestUpdateArticleWithErrors(t *testing.T) {
 }
 
 func TestUpdateArticleWithBadCategory(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
+	teardownTestCase := SetupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Create new article

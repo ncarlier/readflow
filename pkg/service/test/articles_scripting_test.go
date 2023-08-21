@@ -12,7 +12,7 @@ import (
 )
 
 func TestCreateArticleWithScriptEngine(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
+	teardownTestCase := SetupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Create category

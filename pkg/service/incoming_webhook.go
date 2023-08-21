@@ -44,6 +44,20 @@ func (reg *Registry) GetIncomingWebhook(ctx context.Context, id uint) (*model.In
 	return result, nil
 }
 
+// GetIncomingWebhookByAlias get an incoming webhook of the current user
+func (reg *Registry) GetIncomingWebhookByAlias(ctx context.Context, alias string) (*model.IncomingWebhook, error) {
+	uid := getCurrentUserIDFromContext(ctx)
+
+	result, err := reg.db.GetIncomingWebhookByUserAndAlias(uid, alias)
+	if err != nil || result == nil || result.UserID != uid {
+		if err == nil {
+			err = ErrIncomingWebhookNotFound
+		}
+		return nil, err
+	}
+	return result, nil
+}
+
 // CreateIncomingWebhook create an incoming webhook for current user
 func (reg *Registry) CreateIncomingWebhook(ctx context.Context, form model.IncomingWebhookCreateForm) (*model.IncomingWebhook, error) {
 	uid := getCurrentUserIDFromContext(ctx)

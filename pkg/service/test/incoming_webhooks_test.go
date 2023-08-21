@@ -11,7 +11,7 @@ import (
 )
 
 func TestCreateIncomingWebhook(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
+	teardownTestCase := SetupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Create new webhook
@@ -29,7 +29,7 @@ func TestCreateIncomingWebhook(t *testing.T) {
 }
 
 func TestCreateIncomingWebhooksExceedingQuota(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
+	teardownTestCase := SetupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Create 3 webhooks (quota is 2)

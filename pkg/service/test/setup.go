@@ -43,7 +43,8 @@ func assertUserExists(t *testing.T, username string) *model.User {
 	return user
 }
 
-func setupTestCase(t *testing.T) func(t *testing.T) {
+// SetupTestCase setup service test env
+func SetupTestCase(t *testing.T) func(t *testing.T) {
 	t.Log("setup test case")
 	conf := config.NewConfig()
 	if err := conf.LoadFile("test.toml"); err != nil {
@@ -74,6 +75,16 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 		defer downloadCache.Close()
 		testDB.DeleteUser(*testUser)
 	}
+}
+
+// GetTestContext returns test context
+func GetTestContext() context.Context {
+	return testContext
+}
+
+// GetTestUser returns test user
+func GetTestUser() *model.User {
+	return testUser
 }
 
 func init() {

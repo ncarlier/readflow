@@ -113,7 +113,7 @@ func (reg *Registry) GetUserByID(ctx context.Context, uid uint) (*model.User, er
 			err = errors.New("user not found")
 		}
 		reg.logger.Info().Err(err).Uint(
-			"id", uid,
+			"uid", uid,
 		).Msg("unable to find user")
 		return nil, err
 	}
@@ -140,6 +140,16 @@ func (reg *Registry) GetUserByUsername(ctx context.Context, username string) (*m
 	}
 
 	return user, nil
+}
+
+// GetUserByHashID get user by hash ID
+func (reg *Registry) GetUserByHashID(ctx context.Context, hashid string) (*model.User, error) {
+	ids, err := reg.hashid.Decode(hashid)
+	if err != nil {
+		return nil, err
+	}
+	uid := uint(ids[0])
+	return reg.GetUserByID(ctx, uid)
 }
 
 // UpdateUser update user account (required admin access)

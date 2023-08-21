@@ -14,6 +14,7 @@ type GlobalConfig struct {
 	DatabaseURI       string `toml:"db"`
 	ListenAddr        string `toml:"listen_addr"`
 	MetricsListenAddr string `toml:"metrics_listen_addr"`
+	SMTPListenAddr    string `toml:"smtp_listen_addr"`
 	PublicURL         string `toml:"public_url"`
 	UILocation        string `toml:"ui"`
 	SecretSalt        string `toml:"secret_salt"`

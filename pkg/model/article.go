@@ -199,6 +199,12 @@ func (b *ArticleCreateFormBuilder) Text(text string) *ArticleCreateFormBuilder {
 	return b
 }
 
+// HTML set article HTML
+func (b *ArticleCreateFormBuilder) HTML(html string) *ArticleCreateFormBuilder {
+	b.form.HTML = &html
+	return b
+}
+
 // Origin set article origin
 func (b *ArticleCreateFormBuilder) Origin(origin string) *ArticleCreateFormBuilder {
 	b.form.Origin = &origin

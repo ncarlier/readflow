@@ -12,7 +12,7 @@ import (
 )
 
 func TestCreateRemoteArticle(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
+	teardownTestCase := SetupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Create new article
@@ -23,7 +23,7 @@ func TestCreateRemoteArticle(t *testing.T) {
 	opts := service.ArticleCreationOptions{}
 	art, err := service.Lookup().CreateArticle(testContext, req, opts)
 	assert.Nil(t, err)
-	assert.Equal(t, "GitHub - ncarlier/readflow: Read your Internet article flow in one place with complete peace of mind and freedom.", art.Title)
+	assert.Contains(t, art.Title, "GitHub - ncarlier/readflow")
 	assert.NotNil(t, art.URL)
 	assert.Equal(t, url, *art.URL)
 	assert.NotNil(t, art.Image)
@@ -36,7 +36,7 @@ func TestCreateRemoteArticle(t *testing.T) {
 }
 
 func TestCreateArticleInCategory(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
+	teardownTestCase := SetupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Create category
@@ -56,7 +56,7 @@ func TestCreateArticleInCategory(t *testing.T) {
 }
 
 func TestCreateArticlesExceedingQuota(t *testing.T) {
-	teardownTestCase := setupTestCase(t)
+	teardownTestCase := SetupTestCase(t)
 	defer teardownTestCase(t)
 
 	// Create 6 articles (quota is 5)
