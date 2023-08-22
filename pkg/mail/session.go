@@ -3,12 +3,12 @@ package mail
 import (
 	"context"
 	"io"
-	"mime"
 	"net/mail"
 	"strings"
 
 	"github.com/emersion/go-smtp"
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/service"
 	"github.com/rs/zerolog"
@@ -83,39 +83,31 @@ func (s *Session) Data(r io.Reader) error {
 		return ErrBadSequence
 	}
 	s.logger.Debug().Msg("receiving mail using incoming webhook...")
+	// read message
 	msg, err := mail.ReadMessage(r)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("unable to read message")
 		return ErrActionAborted
 	}
-	// extract Media Type
-	contentType := msg.Header.Get("Content-Type")
-	mediaType, _, err := mime.ParseMediaType(contentType)
+	// extract content
+	html, text, err := helper.ExtractMailContent(msg)
 	if err != nil {
-		s.logger.Error().Err(err).Msg("invalid Content-Type")
-		return ErrActionAborted
-	}
-	// TODO support multipart
-	if !(strings.HasPrefix(mediaType, "text/plain") || strings.HasPrefix(mediaType, "text/html")) {
-		s.logger.Error().Str("type", mediaType).Msg("invalid Media-Type")
-		return ErrActionAborted
-	}
-	// read body
-	// TODO limit body size
-	b, err := io.ReadAll(msg.Body)
-	if err != nil {
-		s.logger.Error().Err(err).Msg("unable to read body")
+		s.logger.Error().Err(err).Msg("unable to read message content")
 		return ErrActionAborted
 	}
 
+	// extract headers
+	from, subject := helper.ExtractMailHeader(msg.Header)
+
 	// build article
 	builder := model.NewArticleCreateFormBuilder()
-	builder.Origin(msg.Header.Get("From"))
-	builder.Title(msg.Header.Get("Subject"))
-	if strings.HasPrefix(mediaType, "text/plain") {
-		builder.Text(string(b))
-	} else {
-		builder.HTML(string(b))
+	builder.Origin(from)
+	builder.Title(subject)
+	if html != "" {
+		builder.HTML(html)
+	}
+	if text != "" {
+		builder.Text(text)
 	}
 
 	// create article
