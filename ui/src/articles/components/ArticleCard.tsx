@@ -41,7 +41,7 @@ export const ArticleCard = withRouter((props: AllProps) => {
         {article.text && <p>{article.text}</p>}
       </Link>
       <footer>
-        {article.url !== '' && (
+        {article.url && (
           <a href={article.url} target="_blank" rel="noopener noreferrer" title="Open original article">
             <Icon name="open_in_new" />
             {getHostname(article.url)}
