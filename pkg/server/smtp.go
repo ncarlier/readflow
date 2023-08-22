@@ -6,6 +6,7 @@ import (
 	"github.com/emersion/go-smtp"
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/mail"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -41,8 +42,7 @@ func NewSMTPHTTPServer(cfg *config.Config) *SMTPServer {
 	s := smtp.NewServer(backend)
 
 	s.Addr = addr
-	// TODO customize the domain ?
-	s.Domain = "localhost"
+	s.Domain = helper.GetMailHostname()
 	s.ReadTimeout = constant.DefaultTimeout
 	s.WriteTimeout = constant.DefaultTimeout
 	s.MaxMessageBytes = 1024 * 1024
