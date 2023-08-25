@@ -9,17 +9,19 @@ import (
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
+var downloadProblem = "unable to download article"
+
 // download is the handler for downloading articles.
 func download() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := strings.TrimPrefix(r.URL.Path, "/articles/")
 		if id == "" {
-			http.Error(w, "missing article ID", http.StatusBadRequest)
+			helper.WriteProblemDetail(w, downloadProblem, "missing article ID", http.StatusBadRequest)
 			return
 		}
 		idArticle, ok := helper.ConvGQLStringToUint(id)
 		if !ok {
-			http.Error(w, "invalid article ID", http.StatusBadRequest)
+			helper.WriteProblemDetail(w, downloadProblem, "invalid article ID", http.StatusBadRequest)
 			return
 		}
 		// Extract and validate token parameter
@@ -32,7 +34,7 @@ func download() http.Handler {
 		// Archive the article
 		asset, err := service.Lookup().DownloadArticle(r.Context(), idArticle, format)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			helper.WriteProblemDetail(w, downloadProblem, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
