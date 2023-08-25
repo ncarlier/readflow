@@ -2,6 +2,7 @@ export interface IncomingWebhook {
   id: number
   alias: string
   token: string
+  email: string
   script: string
   last_usage_at: string
   created_at?: string

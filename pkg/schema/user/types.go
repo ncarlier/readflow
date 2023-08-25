@@ -26,7 +26,7 @@ var userType = graphql.NewObject(
 						return nil, errors.New("unsuported type received by hashid resolver")
 					}
 					if user.ID != nil {
-						return service.Lookup().GetUserHashID(user), nil
+						return service.Lookup().GetUserHashID(*user.ID), nil
 					}
 					return nil, nil
 				},

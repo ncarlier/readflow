@@ -20,6 +20,7 @@ export const GetIncomingWebhook = gql`
       id
       alias
       token
+      email
       script
       last_usage_at
       created_at
@@ -40,6 +41,7 @@ export const CreateOrUpdateIncomingWebhook = gql`
       id
       alias
       token
+      email
       script
       last_usage_at
       created_at

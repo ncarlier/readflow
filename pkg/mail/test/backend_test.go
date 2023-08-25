@@ -83,7 +83,7 @@ func TestSendMail(t *testing.T) {
 
 	// build destination
 	user := serviceT.GetTestUser()
-	to := fmt.Sprintf("%s-%s@example.com", alias, service.Lookup().GetUserHashID(user))
+	to := fmt.Sprintf("%s-%s@example.com", alias, service.Lookup().GetUserHashID(*user.ID))
 	// build mail
 	msg, from := buildFakeMail(to)
 

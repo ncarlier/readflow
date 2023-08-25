@@ -209,11 +209,8 @@ func (reg *Registry) UpdateUser(ctx context.Context, form model.UserForm) (*mode
 }
 
 // GetUserHashID returns user hashid
-func (reg *Registry) GetUserHashID(user *model.User) string {
-	if user != nil && user.ID != nil {
-		return reg.hashid.Encode([]int{int(*user.ID)})
-	}
-	return ""
+func (reg *Registry) GetUserHashID(uid uint) string {
+	return reg.hashid.Encode([]int{int(uid)})
 }
 
 // GetUserPlans returns user plans

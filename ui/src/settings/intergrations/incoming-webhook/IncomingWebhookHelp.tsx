@@ -2,7 +2,7 @@ import React from 'react'
 
 import { IncomingWebhook } from './models'
 import Bookmarklet from './Bookmarklet'
-import { HelpLink, Logo, Masked } from '../../../components'
+import { HelpLink, Logo, CopyableField } from '../../../components'
 import HelpSection from '../../HelpSection'
 import QRCodeIncomingWebhookButton from './QRCodeIncomingWebhookButton'
 import { getAPIURL } from '../../../helpers'
@@ -25,10 +25,18 @@ export default ({ data }: Props) => (
               <th>Ingestion URL</th>
               <td>{getAPIURL('/articles')}</td>
             </tr>
+            {data.email &&
+              <tr>
+                <th>Ingestion email</th>
+                <td>
+                  <CopyableField value={data.email} />
+                </td>
+              </tr>
+            }
             <tr>
               <th>Token</th>
               <td>
-                <Masked value={data.token} />
+                <CopyableField masked value={data.token} />
               </td>
             </tr>
             <tr>
