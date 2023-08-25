@@ -78,7 +78,7 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 
 	var ops scripting.OperationStack
 	if webhook, ok := ctx.Value(constant.ContextIncomingWebhook).(*model.IncomingWebhook); ok {
-		// process article by the script engine if comming from webhook
+		// process article by the script engine if coming from webhook
 		if ops, err = reg.processArticleByScriptEngine(ctx, webhook, &form); err != nil {
 			logger.Debug().Err(err).Msg("unable to process article by script engine")
 			text := err.Error()

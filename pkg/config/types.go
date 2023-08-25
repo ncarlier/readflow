@@ -26,6 +26,7 @@ type IntegrationConfig struct {
 	ExternalEventBrokerURI string `toml:"external_event_broker_uri"`
 	ExternalWebScraperURL  string `toml:"external_web_scraper_url"`
 	ImageProxyURL          string `toml:"image_proxy_url"`
+	PDFGeneratorURL        string `toml:"pdf_generator_url"`
 	AvatarProvider         string `toml:"avatar_provider"`
 	SecretsEngineProvider  string `toml:"secrets_engine_provider"`
 	Sentry                 SentryConfiguration

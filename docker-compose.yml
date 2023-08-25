@@ -28,6 +28,13 @@ services:
         max-size: "1m"
     restart: always
 
+  #######################################
+  # Gotengerg: PDF generator
+  #######################################
+  gotenberg:
+    image: gotenberg/gotenberg:7
+    restart: always
+
   ########################################
   # readflow
   ########################################

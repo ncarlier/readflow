@@ -17,6 +17,8 @@ import (
 	"github.com/ncarlier/readflow/pkg/config"
 	configflag "github.com/ncarlier/readflow/pkg/config/flag"
 	"github.com/ncarlier/readflow/pkg/db"
+	"github.com/ncarlier/readflow/pkg/exporter"
+	"github.com/ncarlier/readflow/pkg/exporter/pdf"
 	"github.com/ncarlier/readflow/pkg/job"
 	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/ncarlier/readflow/pkg/metric"
@@ -90,7 +92,13 @@ func main() {
 		log.Fatal().Err(err).Msg("unable to configure the service registry")
 	}
 
-	// ctart job scheduler
+	// register external exporters...
+	if conf.Integration.PDFGeneratorURL != "" {
+		log.Info().Str("uri", conf.Integration.PDFGeneratorURL).Msg("using PDF generator service")
+		exporter.Register("pdf", pdf.NewPDFExporter(conf.Integration.PDFGeneratorURL))
+	}
+
+	// start job scheduler
 	scheduler := job.StartNewScheduler(database)
 
 	// create HTTP server

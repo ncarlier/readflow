@@ -65,6 +65,10 @@ external_web_scraper_url = "${READFLOW_WEB_SCRAPER_URL}"
 # Example: "http://imaginary:9000"
 image_proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
 
+## PDF generator URL, deactivated if empty
+# Example: "http://gotenberg:3000/forms/chromium/convert/html"
+pdf_generator_url = "${READFLOW_PDF_GENERATOR_URL}"
+
 ## Avatar local or remote provider
 # If using a remote provider, {seed} is a placehoder for the avatar seed.
 # Default: "https://robohash.org/{seed}?set=set4&size=48x48"

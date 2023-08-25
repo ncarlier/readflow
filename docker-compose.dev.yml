@@ -21,3 +21,10 @@ services:
     command: -enable-url-source
     ports:
       - "${IMAGINARY:-9000}:9000"
+  #######################################
+  # Goenberg: PDF generator
+  #######################################
+  gotenberg:
+    image: gotenberg/gotenberg:7
+    ports:
+      - "${GOTENBERG:-3001}:3000"
