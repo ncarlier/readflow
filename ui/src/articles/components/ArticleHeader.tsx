@@ -26,7 +26,7 @@ export const ArticleHeader: FC<Props> = ({ article, to, children }) => (
         )}
       </span>
       <small>
-        {article.url !== '' && (
+        {article.url && (
           <a href={article.url} target="_blank" rel="noopener noreferrer" title="Open original article">
             {getHostname(article.url)}
             <Icon name="open_in_new" />

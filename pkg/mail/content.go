@@ -1,26 +1,47 @@
-package helper
+package mail
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
 	"mime"
 	"mime/multipart"
+	"mime/quotedprintable"
 	"net/mail"
 	"strings"
 )
 
 var wordDecoder = new(mime.WordDecoder)
 
-// ExtractMailHeader extract some mail header
-func ExtractMailHeader(header mail.Header) (from string, subject string) {
+// extractMailHeader extract some mail header
+func extractMailHeader(header mail.Header) (from string, subject string) {
 	from, _ = wordDecoder.DecodeHeader(header.Get("From"))
 	subject, _ = wordDecoder.DecodeHeader(header.Get("Subject"))
 	return
 }
 
-// ParseMultipart parse multipart mail body
-func ParseMultipart(body io.Reader, boundary string) (html string, text string, err error) {
+func decodeEmailBody(body io.Reader, encoding string) (string, error) {
+	var reader io.Reader
+	switch strings.ToLower(encoding) {
+	case "quoted-printable":
+		reader = quotedprintable.NewReader(body)
+	case "base64":
+		reader = base64.NewDecoder(base64.StdEncoding, body)
+	case "", "8bit", "7bit":
+		reader = body
+	default:
+		return "", fmt.Errorf("unsuported encoding: %s", encoding)
+	}
+	b, err := io.ReadAll(reader)
+	if err != nil {
+		return "", fmt.Errorf("unable to read body: %w", err)
+	}
+	return string(b), nil
+}
+
+// parseMultipart parse multipart mail body
+func parseMultipart(body io.Reader, boundary string) (html string, text string, err error) {
 	reader := multipart.NewReader(body, boundary)
 	if reader == nil {
 		err = errors.New("unable to create mutipart reader")
@@ -58,8 +79,8 @@ func ParseMultipart(body io.Reader, boundary string) (html string, text string, 
 	return
 }
 
-// ExtractMailContent extract HTML and TEXT part of a mail body
-func ExtractMailContent(msg *mail.Message) (html string, text string, err error) {
+// extractMailContent extract HTML and TEXT part of a mail body
+func extractMailContent(msg *mail.Message) (html string, text string, err error) {
 	// extract Media Type
 	contentType := msg.Header.Get("Content-Type")
 	var mediaType string
@@ -76,22 +97,24 @@ func ExtractMailContent(msg *mail.Message) (html string, text string, err error)
 		err = fmt.Errorf("unsuported Media Type: %s", mediaType)
 		return
 	}
+
+	encoding := msg.Header.Get("Content-Transfer-Encoding")
+
 	// read body
 	// TODO limit body size
 	if isMultiPart {
-		return ParseMultipart(msg.Body, params["boundary"])
+		return parseMultipart(msg.Body, params["boundary"])
 	}
 	// decode TEXT and HTML content
-	var b []byte
-	b, err = io.ReadAll(msg.Body)
+	body, err := decodeEmailBody(msg.Body, encoding)
 	if err != nil {
 		err = fmt.Errorf("unable to read body: %w", err)
 		return
 	}
 	if isHTML {
-		html = string(b)
+		html = body
 	} else {
-		text = string(b)
+		text = body
 	}
 	return
 }

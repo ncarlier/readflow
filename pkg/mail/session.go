@@ -8,7 +8,6 @@ import (
 
 	"github.com/emersion/go-smtp"
 	"github.com/ncarlier/readflow/pkg/constant"
-	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/service"
 	"github.com/rs/zerolog"
@@ -90,14 +89,14 @@ func (s *Session) Data(r io.Reader) error {
 		return ErrActionAborted
 	}
 	// extract content
-	html, text, err := helper.ExtractMailContent(msg)
+	html, text, err := extractMailContent(msg)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("unable to read message content")
 		return ErrActionAborted
 	}
 
 	// extract headers
-	from, subject := helper.ExtractMailHeader(msg.Header)
+	from, subject := extractMailHeader(msg.Header)
 
 	// build article
 	builder := model.NewArticleCreateFormBuilder()
