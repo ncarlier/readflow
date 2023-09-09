@@ -23,8 +23,8 @@ var userQueryField = &graphql.Field{
 }
 
 func userResolver(p graphql.ResolveParams) (interface{}, error) {
-	uid := helper.GetGQLUintParameter("uid", p.Args)
-	username := helper.GetGQLStringParameter("username", p.Args)
+	uid := helper.ParseGraphQLID(p.Args, "uid")
+	username := helper.ParseGraphQLArgument[string](p.Args, "username")
 	if uid != nil {
 		return service.Lookup().GetUserByID(p.Context, *uid)
 	} else if username != nil {

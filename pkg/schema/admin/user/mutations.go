@@ -1,8 +1,6 @@
 package user
 
 import (
-	"errors"
-
 	"github.com/graphql-go/graphql"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -22,7 +20,10 @@ var registerUserMutationField = &graphql.Field{
 }
 
 func registerUserResolver(p graphql.ResolveParams) (interface{}, error) {
-	username := helper.GetGQLStringParameter("username", p.Args)
+	username := helper.ParseGraphQLArgument[string](p.Args, "username")
+	if username == nil {
+		return nil, helper.RequireParameterError("username")
+	}
 	return service.Lookup().GetOrRegisterUser(p.Context, *username)
 }
 
@@ -47,24 +48,15 @@ var updateUserMutationField = &graphql.Field{
 }
 
 func updateUserResolver(p graphql.ResolveParams) (interface{}, error) {
-	uid, ok := helper.ConvGQLStringToUint(p.Args["uid"])
-	if !ok {
-		return nil, errors.New("invalid user ID")
+	uid := helper.ParseGraphQLID(p.Args, "uid")
+	if uid == nil {
+		return nil, helper.InvalidParameterError("uid")
 	}
 	form := model.UserForm{
-		ID: uid,
-	}
-	if val, ok := p.Args["enabled"]; ok {
-		b := val.(bool)
-		form.Enabled = &b
-	}
-	if val, ok := p.Args["plan"]; ok {
-		s := val.(string)
-		form.Plan = &s
-	}
-	if val, ok := p.Args["customer_id"]; ok {
-		s := val.(string)
-		form.CustomerID = &s
+		ID:         *uid,
+		Enabled:    helper.ParseGraphQLArgument[bool](p.Args, "enabled"),
+		Plan:       helper.ParseGraphQLArgument[string](p.Args, "plan"),
+		CustomerID: helper.ParseGraphQLArgument[string](p.Args, "customer_id"),
 	}
 	return service.Lookup().UpdateUser(p.Context, form)
 }

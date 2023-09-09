@@ -1,8 +1,6 @@
 package article
 
 import (
-	"errors"
-
 	"github.com/graphql-go/graphql"
 
 	"github.com/ncarlier/readflow/pkg/helper"
@@ -39,18 +37,18 @@ var updateArticleMutationField = &graphql.Field{
 }
 
 func updateArticleResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
-	if !ok {
-		return nil, errors.New("invalid article ID")
+	id := helper.ParseGraphQLID(p.Args, "id")
+	if id == nil {
+		return nil, helper.InvalidParameterError("id")
 	}
 
 	form := model.ArticleUpdateForm{
-		ID:         id,
-		Title:      helper.GetGQLStringParameter("title", p.Args),
-		Text:       helper.GetGQLStringParameter("text", p.Args),
-		CategoryID: helper.GetGQLUintParameter("category_id", p.Args),
-		Status:     helper.GetGQLStringParameter("status", p.Args),
-		Stars:      helper.GetGQLUintParameter("stars", p.Args),
+		ID:         *id,
+		Title:      helper.ParseGraphQLArgument[string](p.Args, "title"),
+		Text:       helper.ParseGraphQLArgument[string](p.Args, "text"),
+		CategoryID: helper.ParseGraphQLID(p.Args, "category_id"),
+		Status:     helper.ParseGraphQLArgument[string](p.Args, "status"),
+		Stars:      helper.ParseGraphQLArgument[uint](p.Args, "stars"),
 	}
 
 	article, err := service.Lookup().UpdateArticle(p.Context, form)
@@ -79,13 +77,10 @@ var markAllArticlesAsReadMutationField = &graphql.Field{
 }
 
 func markAllArticlesAsReadResolver(p graphql.ResolveParams) (interface{}, error) {
-	var categoryID *uint
-	if val, ok := helper.ConvGQLStringToUint(p.Args["category"]); ok {
-		categoryID = &val
-	}
-	status := helper.GetGQLStringParameter("status", p.Args)
+	categoryID := helper.ParseGraphQLID(p.Args, "category")
+	status := helper.ParseGraphQLArgument[string](p.Args, "status")
 	if status == nil || *status == "read" {
-		return nil, errors.New("invalid status")
+		return nil, helper.InvalidParameterError("status")
 	}
 
 	_, err := service.Lookup().MarkAllArticlesAsRead(p.Context, *status, categoryID)
@@ -110,14 +105,9 @@ var addArticleMutationField = &graphql.Field{
 }
 
 func addArticleResolver(p graphql.ResolveParams) (interface{}, error) {
-	var categoryID *uint
-	if val, ok := helper.ConvGQLStringToUint(p.Args["category"]); ok {
-		categoryID = &val
-	}
-	url, _ := p.Args["url"].(string)
 	form := model.ArticleCreateForm{
-		URL:        &url,
-		CategoryID: categoryID,
+		URL:        helper.ParseGraphQLArgument[string](p.Args, "url"),
+		CategoryID: helper.ParseGraphQLID(p.Args, "category"),
 	}
 
 	return service.Lookup().CreateArticle(p.Context, form, service.ArticleCreationOptions{})

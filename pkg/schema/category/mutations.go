@@ -1,8 +1,6 @@
 package category
 
 import (
-	"errors"
-
 	"github.com/graphql-go/graphql"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -27,16 +25,16 @@ var createOrUpdateCategoryMutationField = &graphql.Field{
 }
 
 func createOrUpdateCategoryResolver(p graphql.ResolveParams) (interface{}, error) {
-	title := helper.GetGQLStringParameter("title", p.Args)
-	if id, ok := helper.ConvGQLStringToUint(p.Args["id"]); ok {
+	title := helper.ParseGraphQLArgument[string](p.Args, "title")
+	if id := helper.ParseGraphQLID(p.Args, "id"); id != nil {
 		form := model.CategoryUpdateForm{
-			ID:    id,
+			ID:    *id,
 			Title: title,
 		}
 		return service.Lookup().UpdateCategory(p.Context, form)
 	}
 	if title == nil {
-		return nil, errors.New("title is required when creating a new category")
+		return nil, helper.RequireParameterError("title")
 	}
 	form := model.CategoryCreateForm{
 		Title: *title,
@@ -58,12 +56,12 @@ var deleteCategoriesMutationField = &graphql.Field{
 func deleteCategoriesResolver(p graphql.ResolveParams) (interface{}, error) {
 	idsArg, ok := p.Args["ids"].([]interface{})
 	if !ok {
-		return nil, errors.New("invalid category ID")
+		return nil, helper.InvalidParameterError("ids")
 	}
 	var ids []uint
 	for _, v := range idsArg {
-		if id, ok := helper.ConvGQLStringToUint(v); ok {
-			ids = append(ids, id)
+		if id := helper.ConvGraphQLID(v); id != nil {
+			ids = append(ids, *id)
 		}
 	}
 

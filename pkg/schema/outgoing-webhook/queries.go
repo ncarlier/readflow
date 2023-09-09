@@ -1,8 +1,6 @@
 package outboundservice
 
 import (
-	"errors"
-
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/schema"
 
@@ -30,11 +28,11 @@ var outgoingWebhookQueryField = &graphql.Field{
 }
 
 func outgoingWebhookResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
-	if !ok {
-		return nil, errors.New("invalid outgoing webhook ID")
+	id := helper.ParseGraphQLID(p.Args, "id")
+	if id == nil {
+		return nil, helper.InvalidParameterError("id")
 	}
-	return service.Lookup().GetOutgoingWebhook(p.Context, id)
+	return service.Lookup().GetOutgoingWebhook(p.Context, *id)
 }
 
 func init() {

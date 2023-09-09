@@ -1,8 +1,6 @@
 package incomingwebhook
 
 import (
-	"errors"
-
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/schema"
 
@@ -30,11 +28,11 @@ var incomingWebhookQueryField = &graphql.Field{
 }
 
 func incomingWebhookResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
-	if !ok {
-		return nil, errors.New("invalid incoming webhook ID")
+	id := helper.ParseGraphQLID(p.Args, "id")
+	if id == nil {
+		return nil, helper.InvalidParameterError("id")
 	}
-	return service.Lookup().GetIncomingWebhook(p.Context, id)
+	return service.Lookup().GetIncomingWebhook(p.Context, *id)
 }
 
 func init() {

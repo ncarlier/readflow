@@ -1,62 +1,38 @@
 package helper
 
-import "strconv"
+import (
+	"math/big"
+)
 
-// ConvGQLStringToUint converts ID GraphQL interface object to unsigned integer
-func ConvGQLStringToUint(id interface{}) (uint, bool) {
-	str, ok := id.(string)
-	if !ok {
-		return 0, ok
-	}
-	ui64, err := strconv.ParseUint(str, 10, 32)
-	if err != nil {
-		return 0, false
-	}
-	return uint(ui64), true
-}
-
-// ConvGQLIntToUint converts GraphQL int to unsigned integer
-func ConvGQLIntToUint(val interface{}) (uint, bool) {
-	if iVal, ok := val.(int); ok {
-		return uint(iVal), true
-	}
-	return 0, false
-}
-
-// GetGQLStringParameter return GraphQL string parameter
-func GetGQLStringParameter(name string, args map[string]interface{}) *string {
-	if val, ok := args[name]; ok {
-		s := val.(string)
-		return &s
+// ParseGraphQLArgument parse GraphQL argument
+func ParseGraphQLArgument[T string | bool | uint](args map[string]interface{}, name string) *T {
+	if arg, exist := args[name]; exist {
+		if val, ok := arg.(T); ok {
+			return &val
+		}
 	}
 	return nil
 }
 
-// GetGQLBoolParameter return GraphQL string parameter
-func GetGQLBoolParameter(name string, args map[string]interface{}) *bool {
-	if val, ok := args[name]; ok {
-		s := val.(bool)
-		return &s
+// ParseGraphQLID parse GraphQL argument as uint
+func ParseGraphQLID(args map[string]interface{}, name string) *uint {
+	if arg, exist := args[name]; exist {
+		return ConvGraphQLID(arg)
 	}
 	return nil
 }
 
-// GetGQLUintParameter return GraphQL string parameter
-func GetGQLUintParameter(name string, args map[string]interface{}) *uint {
-	if val, ok := args[name]; ok {
-		switch v := val.(type) {
-		case int:
-			s := uint(v)
-			return &s
-		case string:
-			ui64, err := strconv.ParseUint(v, 10, 32)
-			if err != nil {
-				return nil
-			}
-			s := uint(ui64)
-			return &s
-		default:
-			return nil
+// ParseGraphQLID parse GraphQL argument as uint
+func ConvGraphQLID(id interface{}) *uint {
+	switch val := id.(type) {
+	case int:
+		v := uint(val)
+		return &v
+	case string:
+		if f, _, err := big.ParseFloat(val, 10, 0, big.ToNearestEven); err == nil {
+			v64, _ := f.Uint64()
+			v := uint(v64)
+			return &v
 		}
 	}
 	return nil

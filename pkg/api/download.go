@@ -19,8 +19,8 @@ func download() http.Handler {
 			helper.WriteProblemDetail(w, downloadProblem, "missing article ID", http.StatusBadRequest)
 			return
 		}
-		idArticle, ok := helper.ConvGQLStringToUint(id)
-		if !ok {
+		idArticle := helper.ConvGraphQLID(id)
+		if idArticle == nil {
 			helper.WriteProblemDetail(w, downloadProblem, "invalid article ID", http.StatusBadRequest)
 			return
 		}
@@ -32,7 +32,7 @@ func download() http.Handler {
 		}
 
 		// Archive the article
-		asset, err := service.Lookup().DownloadArticle(r.Context(), idArticle, format)
+		asset, err := service.Lookup().DownloadArticle(r.Context(), *idArticle, format)
 		if err != nil {
 			helper.WriteProblemDetail(w, downloadProblem, err.Error(), http.StatusInternalServerError)
 			return

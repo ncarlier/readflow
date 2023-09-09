@@ -1,7 +1,6 @@
 package outboundservice
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/ncarlier/readflow/pkg/helper"
@@ -41,13 +40,13 @@ var createOrUpdateOutgoingWebhookMutationField = &graphql.Field{
 }
 
 func createOrUpdateOutgoingWebhookResolver(p graphql.ResolveParams) (interface{}, error) {
-	alias := helper.GetGQLStringParameter("alias", p.Args)
-	provider := helper.GetGQLStringParameter("provider", p.Args)
-	config := helper.GetGQLStringParameter("config", p.Args)
-	isDefault := helper.GetGQLBoolParameter("is_default", p.Args)
+	alias := helper.ParseGraphQLArgument[string](p.Args, "alias")
+	provider := helper.ParseGraphQLArgument[string](p.Args, "provider")
+	config := helper.ParseGraphQLArgument[string](p.Args, "config")
+	isDefault := helper.ParseGraphQLArgument[bool](p.Args, "is_default")
 
 	// decode secrets
-	secretsParams := helper.GetGQLStringParameter("secrets", p.Args)
+	secretsParams := helper.ParseGraphQLArgument[string](p.Args, "secrets")
 	secrets := make(secret.Secrets)
 	if secretsParams != nil {
 		if err := secrets.Scan(*secretsParams); err != nil {
@@ -55,9 +54,9 @@ func createOrUpdateOutgoingWebhookResolver(p graphql.ResolveParams) (interface{}
 		}
 	}
 
-	if id, ok := helper.ConvGQLStringToUint(p.Args["id"]); ok {
+	if id := helper.ParseGraphQLID(p.Args, "id"); id != nil {
 		form := model.OutgoingWebhookUpdateForm{
-			ID:        id,
+			ID:        *id,
 			Alias:     alias,
 			Provider:  provider,
 			Config:    config,
@@ -90,12 +89,12 @@ var deleteOutgoingWebhooksMutationField = &graphql.Field{
 func deleteOutgoingWebhooksResolver(p graphql.ResolveParams) (interface{}, error) {
 	idsArg, ok := p.Args["ids"].([]interface{})
 	if !ok {
-		return nil, errors.New("invalid outgoing webhook ID")
+		return nil, helper.InvalidParameterError("ids")
 	}
 	var ids []uint
 	for _, v := range idsArg {
-		if id, ok := helper.ConvGQLStringToUint(v); ok {
-			ids = append(ids, id)
+		if id := helper.ConvGraphQLID(v); id != nil {
+			ids = append(ids, *id)
 		}
 	}
 
@@ -119,17 +118,12 @@ var sendArticleToOutgoingWebhookMutationField = &graphql.Field{
 }
 
 func sendArticleToOutgoingWebhookResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
-	if !ok {
-		return nil, errors.New("invalid article ID")
+	id := helper.ParseGraphQLID(p.Args, "id")
+	if id == nil {
+		return nil, helper.InvalidParameterError("id")
 	}
-	var alias *string
-	if val, ok := p.Args["alias"]; ok {
-		sVal := val.(string)
-		alias = &sVal
-	}
-
-	return service.Lookup().SendArticle(p.Context, id, alias)
+	alias := helper.ParseGraphQLArgument[string](p.Args, "alias")
+	return service.Lookup().SendArticle(p.Context, *id, alias)
 }
 
 func init() {

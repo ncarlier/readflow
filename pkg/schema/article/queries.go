@@ -1,8 +1,6 @@
 package article
 
 import (
-	"errors"
-
 	"github.com/graphql-go/graphql"
 
 	"github.com/ncarlier/readflow/pkg/helper"
@@ -55,14 +53,14 @@ var articlesQueryField = &graphql.Field{
 
 func articlesResolver(p graphql.ResolveParams) (interface{}, error) {
 	pageRequest := model.ArticlesPageRequest{
-		Limit:       helper.GetGQLUintParameter("limit", p.Args),
-		SortOrder:   helper.GetGQLStringParameter("sortOrder", p.Args),
-		SortBy:      helper.GetGQLStringParameter("sortBy", p.Args),
-		AfterCursor: helper.GetGQLUintParameter("afterCursor", p.Args),
-		Category:    helper.GetGQLUintParameter("category", p.Args),
-		Status:      helper.GetGQLStringParameter("status", p.Args),
-		Starred:     helper.GetGQLBoolParameter("starred", p.Args),
-		Query:       helper.GetGQLStringParameter("query", p.Args),
+		Limit:       helper.ParseGraphQLArgument[uint](p.Args, "limit"),
+		SortOrder:   helper.ParseGraphQLArgument[string](p.Args, "sortOrder"),
+		SortBy:      helper.ParseGraphQLArgument[string](p.Args, "sortBy"),
+		AfterCursor: helper.ParseGraphQLArgument[uint](p.Args, "afterCursor"),
+		Category:    helper.ParseGraphQLArgument[uint](p.Args, "category"),
+		Status:      helper.ParseGraphQLArgument[string](p.Args, "status"),
+		Starred:     helper.ParseGraphQLArgument[bool](p.Args, "starred"),
+		Query:       helper.ParseGraphQLArgument[string](p.Args, "query"),
 	}
 
 	return service.Lookup().GetArticles(p.Context, pageRequest)
@@ -79,12 +77,12 @@ var articleQueryField = &graphql.Field{
 }
 
 func articleResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
-	if !ok {
-		return nil, errors.New("invalid article ID")
+	id := helper.ParseGraphQLID(p.Args, "id")
+	if id == nil {
+		return nil, helper.InvalidParameterError("id")
 	}
 
-	return service.Lookup().GetArticle(p.Context, id)
+	return service.Lookup().GetArticle(p.Context, *id)
 }
 
 func init() {

@@ -1,8 +1,6 @@
 package category
 
 import (
-	"errors"
-
 	"github.com/graphql-go/graphql"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
@@ -39,11 +37,11 @@ var categoryQueryField = &graphql.Field{
 }
 
 func categoryResolver(p graphql.ResolveParams) (interface{}, error) {
-	id, ok := helper.ConvGQLStringToUint(p.Args["id"])
-	if !ok {
-		return nil, errors.New("invalid category ID")
+	id := helper.ParseGraphQLID(p.Args, "id")
+	if id == nil {
+		return nil, helper.InvalidParameterError("id")
 	}
-	return service.Lookup().GetCategory(p.Context, id)
+	return service.Lookup().GetCategory(p.Context, *id)
 }
 
 func init() {

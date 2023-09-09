@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"time"
 
@@ -42,6 +43,11 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 	logger.Debug().Msg("updating article...")
 	article, err := reg.db.UpdateArticleForUser(uid, form)
 	if err != nil {
+		logger.Err(err).Msg(unableToUpdateArticleErrorMsg)
+		return nil, err
+	}
+	if article == nil {
+		err := errors.New("article not found")
 		logger.Err(err).Msg(unableToUpdateArticleErrorMsg)
 		return nil, err
 	}
