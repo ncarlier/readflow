@@ -48,7 +48,7 @@ func updateArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 		Text:       helper.ParseGraphQLArgument[string](p.Args, "text"),
 		CategoryID: helper.ParseGraphQLID(p.Args, "category_id"),
 		Status:     helper.ParseGraphQLArgument[string](p.Args, "status"),
-		Stars:      helper.ParseGraphQLArgument[uint](p.Args, "stars"),
+		Stars:      helper.ParseGraphQLArgument[int](p.Args, "stars"),
 	}
 
 	article, err := service.Lookup().UpdateArticle(p.Context, form)

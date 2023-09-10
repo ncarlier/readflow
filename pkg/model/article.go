@@ -69,7 +69,7 @@ type ArticleUpdateForm struct {
 	Text       *string
 	CategoryID *uint
 	Status     *string
-	Stars      *uint
+	Stars      *int
 }
 
 // CreatedArticlesResponse structure definition
@@ -124,7 +124,7 @@ type ArticlesPageRequest struct {
 	AfterCursor *uint
 	SortOrder   *string
 	SortBy      *string
-	Limit       *uint
+	Limit       *int
 }
 
 // ArticlesPageResponse response structure for a paginated list of articles

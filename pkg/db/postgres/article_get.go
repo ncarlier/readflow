@@ -65,7 +65,7 @@ func (pg *DB) CountArticlesByUser(uid uint, req model.ArticlesPageRequest) (uint
 // GetPaginatedArticlesByUser returns a paginated list of user's articles from the DB
 func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest) (*model.ArticlesPageResponse, error) {
 	// Set defaults
-	limit := uint(20)
+	limit := 20
 	if req.Limit != nil {
 		limit = *req.Limit
 	}
@@ -151,7 +151,7 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 	defer rows.Close()
 
 	// Read resultset...
-	var index uint
+	var index int
 	for rows.Next() {
 		index++
 		article := &model.Article{}
@@ -161,7 +161,7 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 		if index <= limit {
 			result.Entries = append(result.Entries, article)
 			if isFullText || isSortedBy {
-				result.EndCursor = offset + index
+				result.EndCursor = offset + uint(index)
 			} else {
 				result.EndCursor = article.ID
 			}

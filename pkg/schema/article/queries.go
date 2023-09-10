@@ -53,11 +53,11 @@ var articlesQueryField = &graphql.Field{
 
 func articlesResolver(p graphql.ResolveParams) (interface{}, error) {
 	pageRequest := model.ArticlesPageRequest{
-		Limit:       helper.ParseGraphQLArgument[uint](p.Args, "limit"),
+		Limit:       helper.ParseGraphQLArgument[int](p.Args, "limit"),
 		SortOrder:   helper.ParseGraphQLArgument[string](p.Args, "sortOrder"),
 		SortBy:      helper.ParseGraphQLArgument[string](p.Args, "sortBy"),
-		AfterCursor: helper.ParseGraphQLArgument[uint](p.Args, "afterCursor"),
-		Category:    helper.ParseGraphQLArgument[uint](p.Args, "category"),
+		AfterCursor: helper.ParseGraphQLID(p.Args, "afterCursor"),
+		Category:    helper.ParseGraphQLID(p.Args, "category"),
 		Status:      helper.ParseGraphQLArgument[string](p.Args, "status"),
 		Starred:     helper.ParseGraphQLArgument[bool](p.Args, "starred"),
 		Query:       helper.ParseGraphQLArgument[string](p.Args, "query"),

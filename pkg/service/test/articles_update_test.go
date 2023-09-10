@@ -42,7 +42,7 @@ func TestUpdateArticleWithErrors(t *testing.T) {
 	art := assertNewArticle(t, "article update test with errors")
 
 	title := gofakeit.Sentence(99)
-	stars := uint(10)
+	stars := 10
 	update := model.ArticleUpdateForm{
 		ID:    art.ID,
 		Title: &title,

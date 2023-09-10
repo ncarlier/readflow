@@ -66,7 +66,7 @@ func addLoggerContextForUpdateArticle(logger zerolog.Logger, form model.ArticleU
 		ctx = ctx.Uint("category_id", *form.CategoryID)
 	}
 	if form.Stars != nil {
-		ctx = ctx.Uint("stars", *form.Stars)
+		ctx = ctx.Int("stars", *form.Stars)
 	}
 	if form.Status != nil {
 		ctx = ctx.Str("status", *form.Status)

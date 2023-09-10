@@ -148,7 +148,7 @@ func TestStarredArticle(t *testing.T) {
 
 	// Update article
 	status := "read"
-	stars := uint(2)
+	stars := 2
 	update := model.ArticleUpdateForm{
 		ID:     article.ID,
 		Status: &status,

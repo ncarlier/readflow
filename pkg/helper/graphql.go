@@ -5,7 +5,7 @@ import (
 )
 
 // ParseGraphQLArgument parse GraphQL argument
-func ParseGraphQLArgument[T string | bool | uint](args map[string]interface{}, name string) *T {
+func ParseGraphQLArgument[T string | bool | int](args map[string]interface{}, name string) *T {
 	if arg, exist := args[name]; exist {
 		if val, ok := arg.(T); ok {
 			return &val
