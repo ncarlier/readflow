@@ -12,7 +12,7 @@ import (
 func NewConfig() *Config {
 	c := &Config{
 		Global: GlobalConfig{
-			AuthN:       "https://login.nunux.org/auth/realms/readflow",
+			AuthN:       "https://accounts.readflow.app",
 			DatabaseURI: "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable",
 			ListenAddr:  ":8080",
 			PublicURL:   "https://readflow.app",

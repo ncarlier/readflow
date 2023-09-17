@@ -7,10 +7,16 @@ import { useCurrentUser } from '../contexts'
 import { AUTHORITY, CLIENT_ID } from '../config'
 import { getAPIURL } from '../helpers'
 
-const getAccountURL = () =>
-  AUTHORITY !== 'mock'
-    ? AUTHORITY + '/account?referrer=' + CLIENT_ID + '&referrer_uri=' + encodeURI(document.location.href)
-    : ''
+const getAccountURL = () => {
+  if (AUTHORITY === 'mock') {
+    return ''
+  }
+  if (AUTHORITY.includes('realms')) {
+    // keycloak specifics
+    return `${AUTHORITY}/account?referrer=${CLIENT_ID}&referrer_uri=${encodeURI(document.location.href)}`
+  }
+  return AUTHORITY
+}
 
 export const UserInfos = () => {
   const user = useCurrentUser()
