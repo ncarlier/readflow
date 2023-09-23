@@ -39,6 +39,9 @@ makefiles:=$(root_dir)/makefiles
 include $(makefiles)/help.Makefile
 include $(makefiles)/docker/compose.Makefile
 
+# Some variables
+db_service?=readflow_db_1
+
 ## Clean built files
 clean:
 	echo ">>> Removing generated files..."
@@ -148,10 +151,10 @@ undeploy: compose-down
 
 ## Backup database
 backup:
-	archive=backup/db-`date -I`.dump
-	echo "Backuping PosgreSQL database ($$archive)..."
+	archive=backup/$(db_service)-`date -I`.dump
+	echo "Backuping PosgreSQL database ($(db_service) ==> $$archive)..."
 	mkdir -p backup
-	docker exec -u postgres readflow_db_1 pg_dumpall > $$archive
+	docker exec -u postgres $(db_service) pg_dumpall > $$archive
 	gzip -f $$archive
 	echo "done."
 .ONESHELL:
