@@ -19,7 +19,6 @@ import (
 	"github.com/ncarlier/readflow/pkg/db"
 	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/exporter/pdf"
-	"github.com/ncarlier/readflow/pkg/job"
 	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/ncarlier/readflow/pkg/metric"
 	"github.com/ncarlier/readflow/pkg/server"
@@ -98,9 +97,6 @@ func main() {
 		exporter.Register("pdf", pdf.NewPDFExporter(conf.Integration.PDFGeneratorURL))
 	}
 
-	// start job scheduler
-	scheduler := job.StartNewScheduler(database)
-
 	// create HTTP server
 	httpServer := server.NewHTTPServer(conf)
 
@@ -124,7 +120,6 @@ func main() {
 	go func() {
 		<-quit
 		log.Debug().Msg("shutting down readflow...")
-		scheduler.Shutdown()
 		api.Shutdown()
 
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -144,6 +139,8 @@ func main() {
 				log.Fatal().Err(err).Msg("unable to gracefully shutdown the metrics server")
 			}
 		}
+
+		service.Shutdown()
 
 		if err := downloadCache.Close(); err != nil {
 			log.Error().Err(err).Msg("unable to gracefully shutdown the cache storage")

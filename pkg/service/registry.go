@@ -9,6 +9,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/event/dispatcher"
 	"github.com/ncarlier/readflow/pkg/helper"
+	"github.com/ncarlier/readflow/pkg/job"
 	"github.com/ncarlier/readflow/pkg/model"
 	ratelimiter "github.com/ncarlier/readflow/pkg/rate-limiter"
 	"github.com/ncarlier/readflow/pkg/sanitizer"
@@ -38,6 +39,7 @@ type Registry struct {
 	scriptEngine            *scripting.ScriptEngine
 	sanitizer               *sanitizer.Sanitizer
 	events                  *event.Manager
+	scheduler               *job.Scheduler
 	dispatcher              dispatcher.Dispatcher
 	secretsEngineProvider   secret.EngineProvider
 }
@@ -68,6 +70,9 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	if err != nil {
 		return err
 	}
+	scheduler := job.NewScheduler(
+		db.NewCleanupDatabaseJob(database),
+	)
 
 	instance = &Registry{
 		conf:                    conf,
@@ -82,10 +87,18 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 		scriptEngine:            scripting.NewScriptEngine(128),
 		dispatcher:              dispatcher,
 		events:                  event.NewEventManager(),
+		scheduler:               scheduler,
 		secretsEngineProvider:   secretsEngineProvider,
 	}
 	instance.registerEventHandlers()
 	return instance.initProperties()
+}
+
+// Shutdown service internals jobs
+func Shutdown() {
+	if instance != nil {
+		instance.scheduler.Shutdown()
+	}
 }
 
 // Lookup returns the global service registry

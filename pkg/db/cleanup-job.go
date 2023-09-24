@@ -1,10 +1,9 @@
-package job
+package db
 
 import (
 	"time"
 
-	"github.com/ncarlier/readflow/pkg/db"
-
+	"github.com/ncarlier/readflow/pkg/job"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -14,25 +13,25 @@ const (
 	maximumDeviceInactivityDuration = 30 * 24 * time.Hour
 )
 
-// CleanDatabaseJob is a job to clean the database
-type CleanDatabaseJob struct {
-	db     db.DB
+// CleanupDatabaseJob is a job to clean the database
+type CleanupDatabaseJob struct {
+	db     DB
 	ticker *time.Ticker
 	logger zerolog.Logger
 }
 
-// NewCleanDatabaseJob create and start new job to clean the database
-func NewCleanDatabaseJob(_db db.DB) *CleanDatabaseJob {
-	job := &CleanDatabaseJob{
-		db:     _db,
+// NewCleanupDatabaseJob create and start new job to clean the database
+func NewCleanupDatabaseJob(db DB) job.Job {
+	job := &CleanupDatabaseJob{
+		db:     db,
 		ticker: time.NewTicker(time.Hour),
 		logger: log.With().Str("component", "scheduler").Str("job", "clean-db").Logger(),
 	}
-	go job.start()
 	return job
 }
 
-func (cdj *CleanDatabaseJob) start() {
+// Start the cleanup job
+func (cdj *CleanupDatabaseJob) Start() {
 	cdj.logger.Debug().Msg("job started")
 	for range cdj.ticker.C {
 		cdj.logger.Debug().Msg("running job...")
@@ -40,7 +39,6 @@ func (cdj *CleanDatabaseJob) start() {
 		if err != nil {
 			cdj.logger.Error().Err(err).Msg("unable to clean old articles from the database")
 			break
-
 		}
 		// Using info level only for effective cleanup
 		evt := cdj.logger.Debug()
@@ -62,8 +60,8 @@ func (cdj *CleanDatabaseJob) start() {
 	}
 }
 
-// Stop job
-func (cdj *CleanDatabaseJob) Stop() {
+// Stop the cleanup job
+func (cdj *CleanupDatabaseJob) Stop() {
 	cdj.ticker.Stop()
 	cdj.logger.Debug().Msg("job stopped")
 }

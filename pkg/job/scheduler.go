@@ -1,20 +1,31 @@
 package job
 
-import "github.com/ncarlier/readflow/pkg/db"
-
 // Scheduler is a job scheduler
 type Scheduler struct {
-	cleanDatabaseJob *CleanDatabaseJob
+	jobs []Job
 }
 
-// StartNewScheduler create and start new job scheduler
-func StartNewScheduler(_db db.DB) *Scheduler {
-	return &Scheduler{
-		cleanDatabaseJob: NewCleanDatabaseJob(_db),
+// NewScheduler create new job scheduler
+func NewScheduler(jobs ...Job) *Scheduler {
+	result := &Scheduler{
+		jobs: jobs,
 	}
+	for _, job := range result.jobs {
+		go job.Start()
+	}
+
+	return result
+}
+
+// Add and start job
+func (s *Scheduler) Add(job Job) {
+	job.Start()
+	s.jobs = append(s.jobs, job)
 }
 
 // Shutdown job scheduler
 func (s *Scheduler) Shutdown() {
-	s.cleanDatabaseJob.Stop()
+	for _, job := range s.jobs {
+		job.Stop()
+	}
 }
