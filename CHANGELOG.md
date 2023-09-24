@@ -1,3 +1,12 @@
+## [0.2.1](https://github.com/ncarlier/readflow/compare/v0.2.0...v0.2.1) (2023-09-24)
+
+
+### Bug Fixes
+
+* **oidc:** refresh JWKS endpoint on demand ([154d706](https://github.com/ncarlier/readflow/commit/154d706e1a10dbf257d32b787624c8730f7f3f9b))
+
+
+
 # [0.2.0](https://github.com/ncarlier/readflow/compare/v0.1.0...v0.2.0) (2023-09-24)
 
 
