@@ -23,7 +23,6 @@ func OpenIDConnectJWTAuth(authority string) Middleware {
 	if err != nil {
 		log.Fatal().Err(err).Str("authority", authority).Msg("unable to get OIDC keys from JWKS endpoint")
 	}
-	service.Lookup().AddJob(keystore)
 	return func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()

@@ -4,19 +4,17 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"sync"
-	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/ncarlier/readflow/pkg/constant"
 )
 
 // Keystore OIDC keystore
 type Keystore struct {
-	conf   Configuration
-	keys   []JSONWebKey
-	store  sync.Map
-	ticker *time.Ticker
+	conf  Configuration
+	store sync.Map
+	lock  sync.Mutex
 }
 
 // NewOIDCKeystore create a new OIDC keystore
@@ -24,14 +22,17 @@ func NewOIDCKeystore(conf Configuration) (*Keystore, error) {
 	ks := &Keystore{
 		conf: conf,
 	}
-	if err := ks.refresh(); err != nil {
+	if err := ks.fetch(); err != nil {
 		return nil, err
 	}
 	return ks, nil
 }
 
-func (k *Keystore) refresh() error {
-	resp, err := http.Get(k.conf.JwksURI)
+func (k *Keystore) fetch() error {
+	k.lock.Lock()
+	defer k.lock.Unlock()
+
+	resp, err := constant.DefaultClient.Get(k.conf.JwksURI)
 	if err != nil {
 		return err
 	}
@@ -41,59 +42,35 @@ func (k *Keystore) refresh() error {
 		return fmt.Errorf("bad status code: %d", resp.StatusCode)
 	}
 
-	err = json.NewDecoder(resp.Body).Decode(&k.keys)
+	var jwks = JSONWebKeySet{}
+	err = json.NewDecoder(resp.Body).Decode(&jwks)
 	if err != nil {
 		return err
 	}
+
+	for _, jwk := range jwks.Keys {
+		if pem, err := jwkToPEM(jwk); err == nil {
+			if pubkey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(pem)); err == nil {
+				k.store.Store(jwk.Kid, pubkey)
+			}
+		}
+	}
+
 	return nil
 }
 
 // GetKey retrieve a key from the keystore
 func (k *Keystore) GetKey(id string) (*rsa.PublicKey, error) {
-	key, ok := k.store.Load(id)
-	if ok {
+	if key, ok := k.store.Load(id); ok {
 		return key.(*rsa.PublicKey), nil
 	}
 
-	pubKey, err := k.getKey(id)
-	if err == nil {
-		k.store.Store(id, pubKey)
-	}
-	return pubKey, err
-}
-
-func (k *Keystore) getKey(id string) (*rsa.PublicKey, error) {
-	var pem = ""
-	for _, jwk := range k.keys {
-		if jwk.Kid == id {
-			var err error
-			pem, err = jwkToPEM(jwk)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-
-	if pem == "" {
-		err := fmt.Errorf("unable to fing key #%s in OIDC configuration", id)
+	// refresh store in case of key rotation...
+	if err := k.fetch(); err != nil {
 		return nil, err
 	}
-
-	return jwt.ParseRSAPublicKeyFromPEM([]byte(pem))
-}
-
-// Start keystore periodic refresh job
-func (k *Keystore) Start() {
-	if k.ticker != nil {
-		return
+	if key, ok := k.store.Load(id); ok {
+		return key.(*rsa.PublicKey), nil
 	}
-	k.ticker = time.NewTicker(time.Hour)
-	for range k.ticker.C {
-		k.refresh()
-	}
-}
-
-// Stop keystore periodic refresh job
-func (k *Keystore) Stop() {
-	k.ticker.Stop()
+	return nil, fmt.Errorf("unable to fing key #%s in OIDC configuration", id)
 }

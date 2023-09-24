@@ -5,11 +5,11 @@ import (
 	"net/http"
 )
 
-// GetOIDCConfiguration get OIDC configuration from authority discovery endpoint
-func GetOIDCConfiguration(authority string) (Configuration, error) {
+// GetOIDCConfiguration get OIDC configuration from issuer discovery endpoint
+func GetOIDCConfiguration(issuer string) (Configuration, error) {
 	var cfg = Configuration{}
 
-	resp, err := http.Get(authority + "/.well-known/openid-configuration")
+	resp, err := http.Get(issuer + "/.well-known/openid-configuration")
 	if err != nil {
 		return cfg, err
 	}
