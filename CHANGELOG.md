@@ -1,4 +1,13 @@
-# 0.1.0 (2023-09-24)
+# [0.2.0](https://github.com/ncarlier/readflow/compare/v0.1.0...v0.2.0) (2023-09-24)
+
+
+### Features
+
+* **job:** periodic JWKS refresh ([f1b3e82](https://github.com/ncarlier/readflow/commit/f1b3e82931a930078dd89d9c0dbe2920fb8aac32))
+
+
+
+# [0.1.0](https://github.com/ncarlier/readflow/compare/82512418d232fcb7fde324623220d5c6d5cbbc8f...v0.1.0) (2023-09-24)
 
 
 ### Bug Fixes
