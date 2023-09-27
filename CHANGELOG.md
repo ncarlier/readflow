@@ -1,3 +1,17 @@
+# [1.0.0](https://github.com/ncarlier/readflow/compare/v0.2.1...v1.0.0) (2023-09-27)
+
+
+### Code Refactoring
+
+* **config:** configuration refactoring ([292d75a](https://github.com/ncarlier/readflow/commit/292d75abaf3b61cbb3d41efc7afa44294605cc01))
+
+
+### BREAKING CHANGES
+
+* **config:** Good starting point for a 1.0
+
+
+
 ## [0.2.1](https://github.com/ncarlier/readflow/compare/v0.2.0...v0.2.1) (2023-09-24)
 
 
