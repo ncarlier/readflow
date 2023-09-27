@@ -8,9 +8,6 @@ import { AUTHORITY, CLIENT_ID } from '../config'
 import { getAPIURL } from '../helpers'
 
 const getAccountURL = () => {
-  if (AUTHORITY === 'mock') {
-    return ''
-  }
   if (AUTHORITY.includes('realms')) {
     // keycloak specifics
     return `${AUTHORITY}/account?referrer=${CLIENT_ID}&referrer_uri=${encodeURI(document.location.href)}`
@@ -31,9 +28,14 @@ export const UserInfos = () => {
           Member <TimeAgo dateTime={user.created_at} />
         </small>
       </span>
-      <a href={getAccountURL()} target="_blank" title="Go to my profile page">
-        <img src={getAPIURL(`/avatar/${user.hash}`)} alt={user.username} crossOrigin='anonymous' />
-      </a>
+      {
+        AUTHORITY !== 'none' ?
+          <a href={getAccountURL()} target="_blank" title="Go to my profile page">
+            <img src={getAPIURL(`/avatar/${user.hash}`)} alt={user.username} crossOrigin='anonymous' />
+          </a>
+          :
+          <img src={getAPIURL(`/avatar/${user.hash}`)} alt={user.username} crossOrigin='anonymous' />
+      }
     </div>
   )
 }

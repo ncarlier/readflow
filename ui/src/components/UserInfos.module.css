@@ -18,7 +18,7 @@
   background-color: rgba(0, 0, 0, 0.08);
 }
 
-.userInfos > a > img {
+.userInfos img {
   border-radius: 50%;
   max-width: 48px;
 }
