@@ -37,7 +37,7 @@ func TestReadflowWebhook(t *testing.T) {
 		Secrets:  secrets,
 	}
 	conf := config.NewConfig()
-	conf.Global.PublicURL = "http://localhost:3000"
+	conf.HTTP.PublicURL = "http://localhost:3000"
 
 	provider, err := webhook.NewOutgoingWebhookProvider(outgoingWebhook, *conf)
 	require.Nil(t, err)

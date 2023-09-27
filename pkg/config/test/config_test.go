@@ -10,8 +10,8 @@ import (
 
 func TestDefaultConfig(t *testing.T) {
 	conf := config.NewConfig()
-	assert.Equal(t, ":8080", conf.Global.ListenAddr)
-	assert.Empty(t, conf.Integration.ImageProxyURL)
+	assert.Equal(t, ":8080", conf.HTTP.ListenAddr)
+	assert.Empty(t, conf.Image.ProxyURL)
 	assert.Nil(t, conf.GetUserPlan("test"), "plan should not be found")
 }
 
@@ -20,11 +20,11 @@ func TestLaodConfigFromFile(t *testing.T) {
 	err := conf.LoadFile("test.toml")
 	assert.Nil(t, err)
 	// Default overide
-	assert.Equal(t, "localhost:8081", conf.Global.ListenAddr)
+	assert.Equal(t, "localhost:8081", conf.HTTP.ListenAddr)
 	// Env variable substitution
-	assert.NotEqual(t, "${USER}", conf.Global.SecretSalt)
+	assert.NotEqual(t, "${USER}", conf.Hash.SecretSalt)
 	// Default if empty
-	assert.Equal(t, "https://readflow.app", conf.Global.PublicURL)
+	assert.Equal(t, "http://localhost:8080", conf.HTTP.PublicURL)
 	// Sub attribute
 	assert.Equal(t, "https://1..9:1..9@sentry.io/1..9", conf.Integration.Sentry.DSN)
 }

@@ -8,7 +8,8 @@ import (
 )
 
 // Content assets
-//go:embed readflow.toml
+//
+//go:embed defaults.toml
 var ConfigFile embed.FS
 
 // InitConfigFile initialize the config file
@@ -16,7 +17,7 @@ var InitConfigFile = flag.String("init-config", "", "Initialize configuration fi
 
 // WriteConfigFile write configuration file
 func WriteConfigFile(filename string) error {
-	src, err := ConfigFile.Open("readflow.toml")
+	src, err := ConfigFile.Open("defaults.toml")
 	if err != nil {
 		return err
 	}

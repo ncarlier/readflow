@@ -54,7 +54,7 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 }
 
 func init() {
-	logger.Configure("debug", true, "")
+	logger.Configure("debug", "text", "")
 }
 
 func getEnv(key, fallback string) string {

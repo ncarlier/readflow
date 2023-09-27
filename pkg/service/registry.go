@@ -46,11 +46,11 @@ type Registry struct {
 
 // Configure the global service registry
 func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) error {
-	webScraper, err := scraper.NewWebScraper(constant.DefaultClient, conf.Integration.ExternalWebScraperURL)
+	webScraper, err := scraper.NewWebScraper(constant.DefaultClient, conf.Scraping.ServiceProvider)
 	if err != nil {
 		return err
 	}
-	hashid, err := helper.NewHashIDHandler(conf.Global.SecretSalt)
+	hashid, err := helper.NewHashIDHandler(conf.Hash.SecretSalt)
 	if err != nil {
 		return err
 	}
@@ -58,15 +58,15 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	if err != nil {
 		return err
 	}
-	blockList, err := sanitizer.NewBlockList(conf.Global.BlockList, sanitizer.DefaultBlockList)
+	blockList, err := sanitizer.NewBlockList(conf.Scraping.BlockList, sanitizer.DefaultBlockList)
 	if err != nil {
 		return err
 	}
-	dispatcher, err := dispatcher.NewDispatcher(conf.Integration.ExternalEventBrokerURI)
+	dispatcher, err := dispatcher.NewDispatcher(conf.Event.BrokerURI)
 	if err != nil {
 		return err
 	}
-	secretsEngineProvider, err := secret.NewSecretsEngineProvider(conf.Integration.SecretsEngineProvider)
+	secretsEngineProvider, err := secret.NewSecretsEngineProvider(conf.Secrets.ServiceProvider)
 	if err != nil {
 		return err
 	}
@@ -92,6 +92,10 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	}
 	instance.registerEventHandlers()
 	return instance.initProperties()
+}
+
+func (reg *Registry) GetConfig() config.Config {
+	return reg.conf
 }
 
 // Shutdown service internals jobs

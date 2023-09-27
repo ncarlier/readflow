@@ -68,12 +68,12 @@ func main() {
 	config.ExportVars(conf)
 
 	// configure the logger
-	logger.Configure(flags.LogLevel, flags.LogPretty, conf.Integration.Sentry.DSN)
+	logger.Configure(conf.Log.Level, conf.Log.Format, conf.Integration.Sentry.DSN)
 
 	log.Debug().Msg("starting readflow...")
 
 	// configure the DB
-	database, err := db.NewDB(conf.Global.DatabaseURI)
+	database, err := db.NewDB(conf.Database.URI)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to configure the database")
 	}
@@ -92,9 +92,9 @@ func main() {
 	}
 
 	// register external exporters...
-	if conf.Integration.PDFGeneratorURL != "" {
-		log.Info().Str("uri", conf.Integration.PDFGeneratorURL).Msg("using PDF generator service")
-		exporter.Register("pdf", pdf.NewPDFExporter(conf.Integration.PDFGeneratorURL))
+	if conf.PDF.ServiceProvider != "" {
+		log.Info().Str("provider", conf.PDF.ServiceProvider).Msg("using PDF generator service")
+		exporter.Register("pdf", pdf.NewPDFExporter(conf.PDF.ServiceProvider))
 	}
 
 	// create HTTP server

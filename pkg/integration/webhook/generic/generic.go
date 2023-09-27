@@ -84,7 +84,7 @@ func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 		config:         config,
 		headers:        headers,
 		templateEngine: templateEngine,
-		hrefBase:       conf.Global.PublicURL,
+		hrefBase:       conf.HTTP.PublicURL,
 	}
 
 	return provider, nil

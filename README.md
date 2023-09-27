@@ -40,7 +40,7 @@ curl -s https://raw.githubusercontent.com/ncarlier/readflow/master/install.sh | 
 ```bash
 docker run -it --rm \
   -p 8080:8080 \
-  -e READFLOW_DB=<YOUR POSTGERSQL CONNECTION STRING> \
+  -e READFLOW_DATABASE_URI=<YOUR POSTGERSQL CONNECTION STRING> \
   ncarlier/readflow:edge
 ```
 
@@ -56,7 +56,7 @@ Readflow configuration is a TOML file that you can specify using the `--config` 
 
 You can initialize a configuration file example by using the `--init-config` command line parameter.
 
-A configuration file example can be found [here](./pkg/config/readflow.toml).
+A configuration file example can be found [here](./pkg/config/defaults.toml).
 
 Type `readflow -h` to display all parameters and related environment variables.
 

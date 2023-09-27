@@ -1,0 +1,166 @@
+# readflow configuration file
+#
+# If an attribute has a default value, this value is used if the attribute is not
+# set or empty.
+#
+# Environment variables can be used anywhere in this config file, simply surround
+# them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+# for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+
+[log]
+## Log level
+# Values: "debug", "info", "warn" or "error"
+# Default: "info"
+level = "${READFLOW_LOG_LEVEL}"
+## Log format
+# Values: "json" or "text"
+# Default: "json"
+format = "${REAFLOW_LOG_FORMAT}"
+
+[database]
+## Database connection string
+# Default: "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable"
+uri = "${READFLOW_DATABASE_URI}"
+
+[http]
+## HTTP listen address
+# Default: ":8080"
+# Examples: "localhost:8080" or ":8080" for all interfaces 
+listen_addr = "${READFLOW_HTTP_LISTEN_ADDR}"
+## Public URL
+# Default: "https://localhost:8080"
+# Example: "https://api.readflow.app"
+public_url = "${READFLOW_HTTP_PUBLIC_URL}"
+
+[metrics]
+## Metrics listen address (aka: Prometheus metrics endpoint), disabled if empty
+# Example: ":9090"
+listen_addr = "${READFLOW_METRICS_LISTEN_ADDR}"
+
+[smtp]
+## SMTP listen address, disabled if empty
+# Examples: "localhost:1025" or ":1025" for all interfaces 
+listen_addr = "${READFLOW_SMTP_LISTEN_ADDR}"
+## SMTP hostname
+# Default: "localhost"
+hostname = "${READFLOW_SMTP_HOSTNAME}"
+
+[authn]
+## Autentification method
+# - `mock`: Mocked, aka fake user for testing
+# - `basic`: Basic Authentication using htpasswd file
+# - `proxy`: Proxied authentication using specific header as username
+# - `oidc`: OpenID Connect authentification using JWT access token validation
+# Default: "oidc"
+method = "${READFLOW_AUTHN_METHOD}"
+## Administrators usernames
+# Comma separated list of username
+# Example: "admin,john.doe@example.com"
+admins = "${READFLOW_AUTHN_ADMINS}"
+[authn.basic]
+## htpasswd file
+# Default: "file://.htpasswd"
+htpasswd_file = "${READFLOW_AUTHN_BASIC_HTPASSWD_FILE}"
+[authn.oidc]
+## OpenID Connect issuer
+# Default: "https://accounts.readflow.app"
+issuer = "${READFLOW_AUTHN_OIDC_ISSUER}"
+[authn.proxy]
+## Proxy headers
+# Comma separated list of header carrying the username
+# Default: "X-WEBAUTH-USER", "X-Auth-Username", "Remote-User" or "Remote-Name"
+# Example: "x-auth-username, x-username"
+headers = "${READFLOW_AUTHN_PROXY_HEADERS}"
+
+[ui]
+## UI directory, disabled if empty
+# Example: "/var/local/html"
+directory = "${READFLOW_UI_DIRECTORY}"
+## UI public URL
+# Default: "https://localhost:8080/ui"
+public_url = "${READFLOW_UI_PUBLIC_URL}"
+
+[hash]
+## Secret salt used by hash algorythms
+# Default: "pepper"
+secret_salt = "${READFLOW_HASH_SECRET_SALT}"
+
+[scraping]
+## External Web Scraper URL, using internal if empty
+# Example: "https://example.org/scrap"
+service_provider = "${READFLOW_SCRAPING_SERVICE_PROVIDER}"
+## Block-list local or remote location, disabled if empty
+# Examples:
+# - file:///var/opt/block-list-txt
+# - https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt
+# - https://raw.githubusercontent.com/notracking/hosts-blocklists/master/dnscrypt-proxy/dnscrypt-proxy.blacklist.txt
+block_list = "${READFLOW_SRAPING_BLOCK_LIST}"
+
+[avatar]
+## Avatar local or remote service provider
+# If using a remote service provider, {seed} is a placehoder for the avatar seed.
+# Default: "https://robohash.org/{seed}?set=set4&size=48x48"
+# Examples:
+# - file:///var/opt/avatars?default=cat
+# - https://seccdn.libravatar.org/avatar/{seed}?d=mp&s=48
+service_provider = "${READFLOW_AVATAR_SERVICE_PROVIDER}"
+
+[image]
+## Image proxy URL, disabled if empty
+# Example: "http://imaginary:9000"
+proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
+
+[pdf]
+## PDF generator service provider, disabled if empty
+# Example: "http://gotenberg:3000/forms/chromium/convert/html"
+service_provider = "${READFLOW_PDF_SERVICE_PROVIDER}"
+
+[secrets]
+## Secrets service provider for secrets encryption, disabled if empty (aka: no encryption)
+# Examples:
+# - file:///var/opt/key.txt
+service_provider = "${READFLOW_SECRETS_SERVICE_PROVIDER}"
+
+[event]
+## Event broker URI for outgoing events, disabled if empty
+# Example: "https://example.com/event"
+broker_uri = "${READFLOW_EVENT_BROKER_URI}"
+
+[integration]
+## Sentry integration
+[integration.sentry]
+## DSN URL, disabled if empty
+dsn_url = "${READFLOW_SENTRY_DSN}"
+## Pocker integration
+[integration.pocket]
+## Consumer key, disabled if empty
+consumer_key = "${READFLOW_POCKET_CONSUMER_KEY}"
+
+## Rate limiting for notifications, none by default
+#[rate_limiting.notification]
+#provider = "memory"
+#tokens = 5
+#interval = "24h"
+
+## Rate limiting for incoming webhooks, none by default
+#[rate_limiting.webhook]
+#provider = "memory"
+#tokens = 30
+#interval = "1m"
+
+## User Plans, none by default
+#[[user_plans]]
+#name = "free to play"
+#articles_limit = 200
+#categories_limit = 10
+#incoming_webhooks_limit = 1
+#outgoing_webhooks_limit = 1
+#outgoing_webhooks_timeout = "2s"
+
+#[[user_plans]]
+#name = "friends and family"
+#articles_limit = 2000
+#categories_limit = 50
+#incoming_webhooks_limit = 5
+#outgoing_webhooks_limit = 5
+#outgoing_webhooks_timeout = "10s"

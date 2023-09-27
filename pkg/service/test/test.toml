@@ -1,7 +1,7 @@
 # readflow testing configuration file
 
-[global]
-db = "${READFLOW_DB}"
+[database]
+uri = "${READFLOW_DB}"
 
 ## User Plans
 [[user_plans]]

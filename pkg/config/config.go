@@ -11,15 +11,40 @@ import (
 // NewConfig create new configuration
 func NewConfig() *Config {
 	c := &Config{
-		Global: GlobalConfig{
-			AuthN:       "https://accounts.readflow.app",
-			DatabaseURI: "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable",
-			ListenAddr:  ":8080",
-			PublicURL:   "https://readflow.app",
-			SecretSalt:  "pepper",
+		Log: LogConfig{
+			Level:  "info",
+			Format: "json",
 		},
-		Integration: IntegrationConfig{
-			AvatarProvider: "https://robohash.org/{seed}?set=set4&size=48x48",
+		Database: DatabaseConfig{
+			URI: "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable",
+		},
+		HTTP: HTTPConfig{
+			ListenAddr: ":8080",
+			PublicURL:  "http://localhost:8080",
+		},
+		SMTP: SMTPConfig{
+			Hostname: "localhost",
+		},
+		AuthN: AuthNConfig{
+			Method: "oidc",
+			OIDC: AuthNOIDCConfig{
+				Issuer: "https://accounts.readflow.app",
+			},
+			Basic: AuthNBasicConfig{
+				HtpasswdFile: "file://.htpasswd",
+			},
+			Proxy: AuthNProxyConfig{
+				Headers: "X-WEBAUTH-USER, X-Auth-Username, Remote-User, Remote-Name",
+			},
+		},
+		UI: UIConfig{
+			PublicURL: "http://localhost:8080",
+		},
+		Hash: HashConfig{
+			SecretSalt: "pepper",
+		},
+		Avatar: AvatarConfig{
+			ServiceProvider: "https://robohash.org/{seed}?set=set4&size=48x48",
 		},
 		RateLimiting: RateLimitingConfig{
 			Notification: RateLimiting{
