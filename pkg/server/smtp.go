@@ -6,7 +6,6 @@ import (
 	"github.com/emersion/go-smtp"
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
-	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/mail"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -33,7 +32,7 @@ func (s *SMTPServer) Shutdown(ctx context.Context) error {
 
 // NewSMTPServer create new SMTP server
 func NewSMTPHTTPServer(cfg *config.Config) *SMTPServer {
-	addr := cfg.Global.SMTPListenAddr
+	addr := cfg.SMTP.ListenAddr
 	if addr == "" {
 		return nil
 	}
@@ -42,7 +41,7 @@ func NewSMTPHTTPServer(cfg *config.Config) *SMTPServer {
 	s := smtp.NewServer(backend)
 
 	s.Addr = addr
-	s.Domain = helper.GetMailHostname()
+	s.Domain = cfg.SMTP.Hostname
 	s.ReadTimeout = constant.DefaultTimeout
 	s.WriteTimeout = constant.DefaultTimeout
 	s.MaxMessageBytes = 1024 * 1024

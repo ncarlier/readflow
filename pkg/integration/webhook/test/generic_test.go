@@ -41,7 +41,7 @@ func TestGenericWebhook(t *testing.T) {
 		Config:   fmt.Sprintf(`{"endpoint": "%s", "headers": %s, "body": "%s"}`, srv.URL, headers, body),
 	}
 	conf := config.NewConfig()
-	conf.Global.PublicURL = "http://localhost:3000"
+	conf.HTTP.PublicURL = "http://localhost:3000"
 
 	provider, err := webhook.NewOutgoingWebhookProvider(outgoingWebhook, *conf)
 	require.Nil(t, err)

@@ -19,9 +19,11 @@ type Info struct {
 // info is the handler to show API details.
 func info(conf *config.Config) http.Handler {
 	v := Info{
-		Version:   version.Version,
-		Authority: conf.Global.AuthN,
-		VAPID:     service.Lookup().GetProperties().VAPIDPublicKey,
+		Version: version.Version,
+		VAPID:   service.Lookup().GetProperties().VAPIDPublicKey,
+	}
+	if conf.AuthN.Method == "oidc" {
+		v.Authority = conf.AuthN.OIDC.Issuer
 	}
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

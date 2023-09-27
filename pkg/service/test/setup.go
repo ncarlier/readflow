@@ -50,12 +50,12 @@ func SetupTestCase(t *testing.T) func(t *testing.T) {
 	if err := conf.LoadFile("test.toml"); err != nil {
 		t.Fatalf("unable to setup database: %v", err)
 	}
-	if conf.Global.DatabaseURI == "" {
-		conf.Global.DatabaseURI = defaultDBConnString
+	if conf.Database.URI == "" {
+		conf.Database.URI = defaultDBConnString
 	}
 
 	var err error
-	testDB, err = db.NewDB(conf.Global.DatabaseURI)
+	testDB, err = db.NewDB(conf.Database.URI)
 	if err != nil {
 		t.Fatalf("unable to setup database: %v", err)
 	}
@@ -88,5 +88,5 @@ func GetTestUser() *model.User {
 }
 
 func init() {
-	logger.Configure("debug", true, "")
+	logger.Configure("debug", "text", "")
 }

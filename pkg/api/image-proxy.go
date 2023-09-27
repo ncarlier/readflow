@@ -60,14 +60,14 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 		}
 
 		// Redirect if image proxy service not configured
-		if conf.Integration.ImageProxyURL == "" {
+		if conf.Image.ProxyURL == "" {
 			http.Redirect(w, r, img, http.StatusMovedPermanently)
 			return
 		}
 
 		// Build image proxy client
 		client := &http.Client{Timeout: constant.DefaultTimeout}
-		req, err := http.NewRequest("GET", conf.Integration.ImageProxyURL+"/resize?"+q.Encode(), nil)
+		req, err := http.NewRequest("GET", conf.Image.ProxyURL+"/resize?"+q.Encode(), nil)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadGateway)
 			return

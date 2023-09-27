@@ -1,30 +1,30 @@
 package middleware
 
 import (
-	"strings"
-
+	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/rs/zerolog/log"
 )
 
 const usingAuthNMsg = "using authentication"
 
 // Auth is a middleware to authenticate HTTP request
-func Auth(method string) Middleware {
-	switch {
-	case method == "mock":
-		log.Info().Str("method", method).Msg(usingAuthNMsg)
-		return MockAuth
-	case method == "proxy":
-		log.Info().Str("method", method).Msg(usingAuthNMsg)
-		return ProxyAuth
-	case strings.HasPrefix(method, "file://"):
-		log.Info().Str("method", "basic").Str("htpasswd", method).Msg(usingAuthNMsg)
-		return BasicAuth(method)
-	case strings.HasPrefix(method, "https://"):
-		log.Info().Str("method", "bearer").Str("authority", method).Msg(usingAuthNMsg)
-		return OpenIDConnectJWTAuth(method)
+func Auth(cfg config.AuthNConfig) Middleware {
+	logger := log.With().Str("method", cfg.Method).Logger()
+	var authn Middleware
+	switch cfg.Method {
+	case "mock":
+		authn = MockAuth
+	case "proxy":
+		authn = ProxyAuth(cfg.Proxy)
+	case "basic":
+		logger = logger.With().Str("htpasswd", cfg.Basic.HtpasswdFile).Logger()
+		authn = BasicAuth(cfg.Basic)
+	case "oidc":
+		logger = logger.With().Str("issuer", cfg.OIDC.Issuer).Logger()
+		authn = OpenIDConnectJWTAuth(cfg.OIDC)
 	default:
-		log.Fatal().Str("method", method).Msg("non supported authentication method")
-		return nil
+		log.Fatal().Str("method", cfg.Method).Msg("non supported authentication method")
 	}
+	logger.Info().Msg(usingAuthNMsg)
+	return authn
 }

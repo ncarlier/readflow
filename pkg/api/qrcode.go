@@ -31,7 +31,7 @@ func qrcodeHandler(conf *config.Config) http.Handler {
 		// Build UI outgoing webhook configuration URL
 		payload := fmt.Sprintf(
 			"%s/settings/integrations/outgoing-webhooks/add?provider=readflow&endpoint=%s&api_key=%s",
-			conf.Global.PublicURL,
+			conf.UI.PublicURL,
 			url.QueryEscape(endpoint.String()),
 			token,
 		)

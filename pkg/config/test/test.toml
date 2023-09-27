@@ -1,9 +1,11 @@
 # readflow testing configuration file
 
-[global]
+[http]
 listen_addr = "localhost:8081"
-secret_salt = "${USER}"
 public_url = "${AN_EMPTY_VARIABLE}"
+
+[hsah]
+secret_salt = "${USER}"
 
 [integration.sentry]
 dsn_url = "https://1..9:1..9@sentry.io/1..9"

@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/service"
@@ -11,10 +12,10 @@ import (
 )
 
 // BasicAuth is a middleware to checks HTTP request credentials from Basic AuthN method
-func BasicAuth(location string) Middleware {
-	htpasswd, err := helper.NewHtpasswdFromFile(location)
+func BasicAuth(cfg config.AuthNBasicConfig) Middleware {
+	htpasswd, err := helper.NewHtpasswdFromFile(cfg.HtpasswdFile)
 	if err != nil {
-		log.Fatal().Err(err).Str("location", location).Msg("unable to read htpasswd file")
+		log.Fatal().Err(err).Str("location", cfg.HtpasswdFile).Msg("unable to read htpasswd file")
 	}
 
 	return func(inner http.Handler) http.Handler {

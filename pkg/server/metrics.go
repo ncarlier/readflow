@@ -32,7 +32,7 @@ func (s *MetricsServer) Shutdown(ctx context.Context) error {
 
 // NewMetricsServer create new metrics server
 func NewMetricsServer(cfg *config.Config) *MetricsServer {
-	addr := cfg.Global.MetricsListenAddr
+	addr := cfg.Metrics.ListenAddr
 	if addr == "" {
 		return nil
 	}

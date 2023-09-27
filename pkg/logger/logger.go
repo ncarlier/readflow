@@ -9,7 +9,7 @@ import (
 )
 
 // Configure logger level and output format
-func Configure(level string, pretty bool, sentryDSN string) {
+func Configure(level, format, sentryDSN string) {
 	zerolog.TimeFieldFormat = ""
 	zerolog.DurationFieldInteger = true
 	l := zerolog.InfoLevel
@@ -23,7 +23,7 @@ func Configure(level string, pretty bool, sentryDSN string) {
 	}
 	zerolog.SetGlobalLevel(l)
 	var w io.Writer = os.Stdout
-	if pretty {
+	if format == "text" {
 		w = zerolog.ConsoleWriter{Out: os.Stdout}
 	}
 	if sentryDSN != "" {

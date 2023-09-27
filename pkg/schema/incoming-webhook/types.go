@@ -6,7 +6,6 @@ import (
 	"net/mail"
 
 	"github.com/graphql-go/graphql"
-	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/service"
 )
@@ -32,7 +31,8 @@ var incomingWebhookType = graphql.NewObject(
 						return nil, errors.New("unsuported type received by email resolver")
 					}
 					hashid := service.Lookup().GetUserHashID(webhook.UserID)
-					email := fmt.Sprintf("%s-%s@%s", webhook.Alias, hashid, helper.GetMailHostname())
+					hostname := service.Lookup().GetConfig().SMTP.Hostname
+					email := fmt.Sprintf("%s-%s@%s", webhook.Alias, hashid, hostname)
 					if _, err := mail.ParseAddress(email); err != nil {
 						return nil, nil
 					}

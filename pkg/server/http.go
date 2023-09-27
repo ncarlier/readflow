@@ -32,7 +32,7 @@ func (s *HTTPServer) Shutdown(ctx context.Context) error {
 
 // NewHTTPServer create new HTTP server
 func NewHTTPServer(cfg *config.Config) *HTTPServer {
-	addr := cfg.Global.ListenAddr
+	addr := cfg.HTTP.ListenAddr
 	handler := api.NewRouter(cfg)
 	logger := log.With().Str("component", "http").Str("addr", addr).Logger()
 	return &HTTPServer{

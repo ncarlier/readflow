@@ -7,6 +7,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	jwtRequest "github.com/golang-jwt/jwt/v4/request"
+	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/oidc"
 	"github.com/ncarlier/readflow/pkg/service"
@@ -14,14 +15,14 @@ import (
 )
 
 // OpenIDConnectJWTAuth is a middleware to checks HTTP request with a valid JWT
-func OpenIDConnectJWTAuth(authority string) Middleware {
-	cfg, err := oidc.GetOIDCConfiguration(authority)
+func OpenIDConnectJWTAuth(cfg config.AuthNOIDCConfig) Middleware {
+	oidcConfig, err := oidc.GetOIDCConfiguration(cfg.Issuer)
 	if err != nil {
-		log.Fatal().Err(err).Str("authority", authority).Msg("unable to get OIDC configuration from authority")
+		log.Fatal().Err(err).Str("issuer", cfg.Issuer).Msg("unable to get OIDC configuration from authority")
 	}
-	keystore, err := oidc.NewOIDCKeystore(cfg)
+	keystore, err := oidc.NewOIDCKeystore(oidcConfig)
 	if err != nil {
-		log.Fatal().Err(err).Str("authority", authority).Msg("unable to get OIDC keys from JWKS endpoint")
+		log.Fatal().Err(err).Str("issuer", cfg.Issuer).Msg("unable to get OIDC keys from JWKS endpoint")
 	}
 	return func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

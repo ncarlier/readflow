@@ -32,11 +32,11 @@ func newAvatarGenerator(provider string) (*avatar.Generator, error) {
 }
 
 func avatarHandler(conf *config.Config) http.Handler {
-	generator, err := newAvatarGenerator(conf.Integration.AvatarProvider)
+	generator, err := newAvatarGenerator(conf.Avatar.ServiceProvider)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to create avatar generator")
 	}
-	log.Info().Str("component", "api").Str("provider", conf.Integration.AvatarProvider).Msg("using Avatar provider")
+	log.Info().Str("component", "api").Str("provider", conf.Avatar.ServiceProvider).Msg("using Avatar provider")
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		seed := strings.TrimPrefix(r.URL.Path, "/avatar/")
 		if seed == "" {
@@ -44,7 +44,7 @@ func avatarHandler(conf *config.Config) http.Handler {
 			return
 		}
 		if generator == nil {
-			redirect := strings.ReplaceAll(conf.Integration.AvatarProvider, "{seed}", seed)
+			redirect := strings.ReplaceAll(conf.Avatar.ServiceProvider, "{seed}", seed)
 			http.Redirect(w, r, redirect, http.StatusTemporaryRedirect)
 			return
 		}
