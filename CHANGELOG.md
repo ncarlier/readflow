@@ -1,3 +1,13 @@
+## [1.0.1](https://github.com/ncarlier/readflow/compare/v1.0.0...v1.0.1) (2023-09-27)
+
+
+### Bug Fixes
+
+* **docker:** fix configuration location ([b961fca](https://github.com/ncarlier/readflow/commit/b961fcad7fc7fd7c05b80b512a790d4ed41c8cfc))
+* **ui:** non clickable avatar if no issuer ([6fdf255](https://github.com/ncarlier/readflow/commit/6fdf255ace853da75dffa415f1aedf685771f3cb))
+
+
+
 # [1.0.0](https://github.com/ncarlier/readflow/compare/v0.2.1...v1.0.0) (2023-09-27)
 
 
