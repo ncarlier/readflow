@@ -15,13 +15,13 @@ func Auth(cfg config.AuthNConfig) Middleware {
 	case "mock":
 		authn = MockAuth
 	case "proxy":
-		authn = ProxyAuth(cfg.Proxy)
+		authn = ProxyAuth(cfg)
 	case "basic":
 		logger = logger.With().Str("htpasswd", cfg.Basic.HtpasswdFile).Logger()
-		authn = BasicAuth(cfg.Basic)
+		authn = BasicAuth(cfg)
 	case "oidc":
 		logger = logger.With().Str("issuer", cfg.OIDC.Issuer).Logger()
-		authn = OpenIDConnectJWTAuth(cfg.OIDC)
+		authn = OpenIDConnectJWTAuth(cfg)
 	default:
 		log.Fatal().Str("method", cfg.Method).Msg("non supported authentication method")
 	}

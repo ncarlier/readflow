@@ -7,6 +7,7 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/service"
 )
 
@@ -21,8 +22,9 @@ func getUsernameFromHeader(header http.Header, keys []string) string {
 }
 
 // ProxyAuth is a middleware to checks HTTP request credentials from proxied headers
-func ProxyAuth(cfg config.AuthNProxyConfig) Middleware {
-	usernameHeaderNames := strings.Split(cfg.Headers, ",")
+func ProxyAuth(cfg config.AuthNConfig) Middleware {
+	admins := strings.Split(cfg.Admins, ",")
+	usernameHeaderNames := strings.Split(cfg.Proxy.Headers, ",")
 	return func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
@@ -33,9 +35,10 @@ func ProxyAuth(cfg config.AuthNProxyConfig) Middleware {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+
 				ctx = context.WithValue(ctx, constant.ContextUser, *user)
 				ctx = context.WithValue(ctx, constant.ContextUserID, *user.ID)
-				ctx = context.WithValue(ctx, constant.ContextIsAdmin, false)
+				ctx = context.WithValue(ctx, constant.ContextIsAdmin, helper.ContainsString(admins, username))
 				inner.ServeHTTP(w, r.WithContext(ctx))
 				return
 			}

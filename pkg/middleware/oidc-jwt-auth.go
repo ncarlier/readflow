@@ -4,25 +4,28 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/golang-jwt/jwt/v4"
 	jwtRequest "github.com/golang-jwt/jwt/v4/request"
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/oidc"
 	"github.com/ncarlier/readflow/pkg/service"
 	"github.com/rs/zerolog/log"
 )
 
 // OpenIDConnectJWTAuth is a middleware to checks HTTP request with a valid JWT
-func OpenIDConnectJWTAuth(cfg config.AuthNOIDCConfig) Middleware {
-	oidcConfig, err := oidc.GetOIDCConfiguration(cfg.Issuer)
+func OpenIDConnectJWTAuth(cfg config.AuthNConfig) Middleware {
+	admins := strings.Split(cfg.Admins, ",")
+	oidcConfig, err := oidc.GetOIDCConfiguration(cfg.OIDC.Issuer)
 	if err != nil {
-		log.Fatal().Err(err).Str("issuer", cfg.Issuer).Msg("unable to get OIDC configuration from authority")
+		log.Fatal().Err(err).Str("issuer", cfg.OIDC.Issuer).Msg("unable to get OIDC configuration from authority")
 	}
 	keystore, err := oidc.NewOIDCKeystore(oidcConfig)
 	if err != nil {
-		log.Fatal().Err(err).Str("issuer", cfg.Issuer).Msg("unable to get OIDC keys from JWKS endpoint")
+		log.Fatal().Err(err).Str("issuer", cfg.OIDC.Issuer).Msg("unable to get OIDC keys from JWKS endpoint")
 	}
 	return func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -56,20 +59,9 @@ func OpenIDConnectJWTAuth(cfg config.AuthNOIDCConfig) Middleware {
 					jsonErrors(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				isAdmin := false
-				if val, ok := claims["realm_access"]; ok {
-					if val, ok = val.(map[string]interface{})["roles"]; ok {
-						for _, role := range val.([]interface{}) {
-							if role.(string) == "admin" {
-								isAdmin = true
-								break
-							}
-						}
-					}
-				}
 				ctx = context.WithValue(ctx, constant.ContextUser, *user)
 				ctx = context.WithValue(ctx, constant.ContextUserID, *user.ID)
-				ctx = context.WithValue(ctx, constant.ContextIsAdmin, isAdmin)
+				ctx = context.WithValue(ctx, constant.ContextIsAdmin, helper.ContainsString(admins, username))
 				inner.ServeHTTP(w, r.WithContext(ctx))
 				return
 			}

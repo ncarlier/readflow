@@ -52,6 +52,7 @@ type SMTPConfig struct {
 // AuthNConfig for authentication configuration section
 type AuthNConfig struct {
 	Method string `toml:"method"`
+	Admins string `toml:"admins"`
 	Basic  AuthNBasicConfig
 	OIDC   AuthNOIDCConfig
 	Proxy  AuthNProxyConfig
