@@ -63,6 +63,29 @@ build: autogen
 
 release/$(EXECUTABLE): build
 
+# Check code style
+check-style:
+	echo ">>> Checking code style..."
+	go vet ./...
+	go run honnef.co/go/tools/cmd/staticcheck@latest ./...
+.PHONY: check-style
+
+# Check code criticity
+check-criticity:
+	echo ">>> Checking code criticity..."
+	go run github.com/go-critic/go-critic/cmd/gocritic@latest check -enableAll ./...
+.PHONY: check-criticity
+
+# Check code security
+check-security:
+	echo ">>> Checking code security..."
+	go run github.com/securego/gosec/v2/cmd/gosec@latest -quiet ./...
+.PHONY: check-security
+
+## Code quality checks
+checks: check-style check-criticity
+.PHONY: checks
+
 ## Run tests
 test:
 	echo ">>> Running tests..."
@@ -88,10 +111,9 @@ image:
 	docker build --rm -t ncarlier/$(APPNAME) .
 .PHONY: image
 
-## Generate changelog
-changelog:
+# Generate changelog
+CHANGELOG.md:
 	standard-changelog --first-release
-.PHONY: changelog
 
 ## Generate documentation website
 docs:
@@ -120,7 +142,7 @@ bookmarklet:
 .PHONY: bookmarklet
 
 ## Create archive
-archive: release/$(EXECUTABLE)
+archive: release/$(EXECUTABLE) CHANGELOG.md
 	echo ">>> Creating release/$(ARCHIVE) archive..."
 	tar czf release/$(ARCHIVE) README.md LICENSE -C release/ $(EXECUTABLE)
 	rm release/$(EXECUTABLE)

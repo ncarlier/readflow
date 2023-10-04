@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/ncarlier/readflow/pkg/model"
@@ -74,7 +74,7 @@ func articles() http.Handler {
 		articleForm := model.ArticleCreateForm{}
 
 		// Decode body payload
-		body, err := ioutil.ReadAll(r.Body)
+		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

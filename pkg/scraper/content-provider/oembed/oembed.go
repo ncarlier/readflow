@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"regexp"
@@ -35,7 +35,7 @@ type oEmbedContentProvider struct {
 func (cp oEmbedContentProvider) Get(ctx context.Context, rawurl string) (*scraper.WebPage, error) {
 	oembedURL := cp.endpoint + queryParams + rawurl
 
-	req, err := http.NewRequest("GET", oembedURL, nil)
+	req, err := http.NewRequest("GET", oembedURL, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (cp oEmbedContentProvider) Get(ctx context.Context, rawurl string) (*scrape
 		defer res.Body.Close()
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}

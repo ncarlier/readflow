@@ -30,13 +30,15 @@ func linking(conf *config.Config) http.Handler {
 		}
 
 		action := path.Base(stub)
-		if action == "request" {
+		switch action {
+		case "request":
 			err = provider.RequestHandler(w, r)
-		} else if action == "authorize" {
+		case "authorize":
 			err = provider.AuthorizeHandler(w, r)
-		} else {
+		default:
 			err = errors.New("action non supported")
 		}
+
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

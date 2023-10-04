@@ -31,7 +31,7 @@ func assertNewCategory(t *testing.T) *model.Category {
 	return cat
 }
 
-func assertNewIncomingWebhook(t *testing.T, alias string, script string) *model.IncomingWebhook {
+func assertNewIncomingWebhook(t *testing.T, alias, script string) *model.IncomingWebhook {
 	builder := model.NewIncomingWebhookCreateFormBuilder()
 	form := builder.Alias(alias).Script(script).Build()
 	webhook, err := service.Lookup().CreateIncomingWebhook(testContext, *form)

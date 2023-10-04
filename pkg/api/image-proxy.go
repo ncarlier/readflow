@@ -67,7 +67,7 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 
 		// Build image proxy client
 		client := &http.Client{Timeout: constant.DefaultTimeout}
-		req, err := http.NewRequest("GET", conf.Image.ProxyURL+"/resize?"+q.Encode(), nil)
+		req, err := http.NewRequest("GET", conf.Image.ProxyURL+"/resize?"+q.Encode(), http.NoBody)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadGateway)
 			return

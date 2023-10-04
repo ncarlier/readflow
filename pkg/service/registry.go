@@ -62,7 +62,7 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	if err != nil {
 		return err
 	}
-	dispatcher, err := dispatcher.NewDispatcher(conf.Event.BrokerURI)
+	_dispatcher, err := dispatcher.NewDispatcher(conf.Event.BrokerURI)
 	if err != nil {
 		return err
 	}
@@ -85,7 +85,7 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 		notificationRateLimiter: notificationRateLimiter,
 		sanitizer:               sanitizer.NewSanitizer(blockList),
 		scriptEngine:            scripting.NewScriptEngine(128),
-		dispatcher:              dispatcher,
+		dispatcher:              _dispatcher,
 		events:                  event.NewEventManager(),
 		scheduler:               scheduler,
 		secretsEngineProvider:   secretsEngineProvider,

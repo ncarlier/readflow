@@ -62,16 +62,16 @@ func (w *Writer) NewContainer() error {
 }
 
 // NewItem create new ePub container item
-func (w *Writer) NewItem(filename string, ContentType string) (io.Writer, error) {
+func (w *Writer) NewItem(filename, contentType string) (io.Writer, error) {
 	w.items = append(w.items, epubItem{
 		Filename:    filename,
-		ContentType: ContentType,
+		ContentType: contentType,
 	})
 	return w.archive.Create(contentDir + filename)
 }
 
 // WriteOPF write ePub file
-func (w *Writer) WriteOPF(filename string, spineRef string) error {
+func (w *Writer) WriteOPF(filename, spineRef string) error {
 	f, err := w.archive.Create(contentDir + filename)
 	if err != nil {
 		return err

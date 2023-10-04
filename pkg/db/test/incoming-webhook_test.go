@@ -8,7 +8,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-func assertIncomingWebhookExists(t *testing.T, uid uint, alias string, script string) *model.IncomingWebhook {
+func assertIncomingWebhookExists(t *testing.T, uid uint, alias, script string) *model.IncomingWebhook {
 	webhook, err := testDB.GetIncomingWebhookByUserAndAlias(uid, alias)
 	assert.Nil(t, err)
 	if webhook != nil {

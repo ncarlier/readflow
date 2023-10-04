@@ -126,7 +126,7 @@ func (exp *EpubExporter) processURLAttribute(ctx context.Context, output *Writer
 	return nil
 }
 
-func (exp *EpubExporter) processURL(ctx context.Context, url string, parentURL string) (*downloader.WebAsset, error) {
+func (exp *EpubExporter) processURL(ctx context.Context, url, parentURL string) (*downloader.WebAsset, error) {
 	// Ignore special URLs
 	url = strings.TrimSpace(url)
 	if url == "" || strings.HasPrefix(url, "data:") || strings.HasPrefix(url, "#") {

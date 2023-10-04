@@ -37,7 +37,7 @@ func mapRowToDevice(row *sql.Row) (*model.Device, error) {
 	} else if err != nil {
 		return nil, mapError(err)
 	}
-	if err = device.SetSubscription(sub); err != nil {
+	if err := device.SetSubscription(sub); err != nil {
 		return nil, err
 	}
 	return device, nil

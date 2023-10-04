@@ -9,7 +9,6 @@ import (
 	"image"
 	"image/draw"
 	"image/png"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -86,31 +85,32 @@ func (g *Generator) Generate(seed, set string) (*bytes.Buffer, error) {
 }
 
 // NewServer creates new server instance
-func NewGenerator(dir string, defaultSet string) (*Generator, error) {
+func NewGenerator(dir, defaultSet string) (*Generator, error) {
 	if _, err := os.Stat(dir); err != nil {
 		return nil, err
 	}
 	avatars := make(Avatars)
-	files, err := ioutil.ReadDir(dir)
+	files, err := os.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}
 
 	defaultSetExists := false
 	for _, file := range files {
-		if file.IsDir() {
-			avatar, e := readAvatarDir(filepath.Join(dir, file.Name()))
-			if e != nil {
-				return nil, err
-			}
-			if defaultSet == "" {
-				defaultSet = file.Name()
-			}
-			if file.Name() == defaultSet {
-				defaultSetExists = true
-			}
-			avatars[file.Name()] = avatar
+		if !file.IsDir() {
+			continue
 		}
+		avatar, e := readAvatarDir(filepath.Join(dir, file.Name()))
+		if e != nil {
+			return nil, err
+		}
+		if defaultSet == "" {
+			defaultSet = file.Name()
+		}
+		if file.Name() == defaultSet {
+			defaultSetExists = true
+		}
+		avatars[file.Name()] = avatar
 	}
 	if !defaultSetExists {
 		return nil, fmt.Errorf("avatar default set not found: %s", defaultSet)
@@ -124,13 +124,13 @@ func NewGenerator(dir string, defaultSet string) (*Generator, error) {
 }
 
 func readAvatarDir(dir string) (*Avatar, error) {
-	content, err := ioutil.ReadFile(filepath.Join(dir, "_avatar.json"))
+	content, err := os.ReadFile(filepath.Join(dir, "_avatar.json"))
 	if err != nil {
 		return nil, err
 	}
 
 	avatar := Avatar{}
-	if err = json.Unmarshal([]byte(content), &avatar); err != nil {
+	if err := json.Unmarshal([]byte(content), &avatar); err != nil {
 		return nil, err
 	}
 	return &avatar, nil

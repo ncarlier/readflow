@@ -72,7 +72,7 @@ func (exp *SingleHTMLExporter) exportWithEmbededAssets(ctx context.Context, inpu
 	}
 
 	// Wait until all nodes processed
-	if err = g.Wait(); err != nil {
+	if err := g.Wait(); err != nil {
 		return nil, err
 	}
 
@@ -112,7 +112,7 @@ func (exp *SingleHTMLExporter) processURLAttribute(ctx context.Context, node *ht
 	return nil
 }
 
-func (exp *SingleHTMLExporter) processURL(ctx context.Context, url string, parentURL string) (*downloader.WebAsset, error) {
+func (exp *SingleHTMLExporter) processURL(ctx context.Context, url, parentURL string) (*downloader.WebAsset, error) {
 	// Ignore special URLs
 	url = strings.TrimSpace(url)
 	if url == "" || strings.HasPrefix(url, "data:") || strings.HasPrefix(url, "#") {

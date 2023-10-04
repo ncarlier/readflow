@@ -19,7 +19,7 @@ import (
 )
 
 func isValidContentType(contentType string) bool {
-	switch true {
+	switch {
 	case
 		contentType == "",
 		strings.HasPrefix(contentType, constant.ContentTypeForm),
@@ -46,20 +46,20 @@ type Provider struct {
 }
 
 func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
-	config := ProviderConfig{}
-	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
+	cfg := ProviderConfig{}
+	if err := json.Unmarshal([]byte(srv.Config), &cfg); err != nil {
 		return nil, err
 	}
 
 	// Validate endpoint URL
-	_, err := url.ParseRequestURI(config.Endpoint)
+	_, err := url.ParseRequestURI(cfg.Endpoint)
 	if err != nil {
 		return nil, err
 	}
 
 	// Extract headers
 	headers := http.Header{}
-	for k, v := range config.Headers {
+	for k, v := range cfg.Headers {
 		headers.Set(k, v)
 	}
 
@@ -69,9 +69,9 @@ func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 	}
 
 	var templateEngine template.Provider
-	if strings.TrimSpace(config.Body) != "" {
+	if strings.TrimSpace(cfg.Body) != "" {
 		// Use template engine if body is not empty
-		templateEngine, err = template.NewTemplateEngine("fast", config.Body)
+		templateEngine, err = template.NewTemplateEngine("fast", cfg.Body)
 		if err != nil {
 			return nil, err
 		}
@@ -81,7 +81,7 @@ func newWebhookProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 	}
 
 	provider := &Provider{
-		config:         config,
+		config:         cfg,
 		headers:        headers,
 		templateEngine: templateEngine,
 		hrefBase:       conf.UI.PublicURL,
@@ -149,7 +149,7 @@ func buildWebhookResultFromResponse(resp *http.Response) (result *webhook.Result
 	isText := strings.HasPrefix(contentType, "application/json")
 	isJSON := strings.HasPrefix(contentType, "text/")
 	var body []byte
-	switch true {
+	switch {
 	case isJSON || isText:
 		if body, err = io.ReadAll(resp.Body); err != nil {
 			return

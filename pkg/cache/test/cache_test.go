@@ -30,7 +30,7 @@ func TestCache(t *testing.T) {
 }
 
 func TestCacheEviction(t *testing.T) {
-	cacheFileName := filepath.ToSlash(os.TempDir() + string(os.PathSeparator) + "readflow-tests.cache")
+	cacheFileName := filepath.ToSlash(filepath.Join(os.TempDir(), "readflow-tests.cache"))
 	os.Remove(cacheFileName)
 	conn := "boltdb://" + cacheFileName + "?maxEntries=5"
 	c, err := cache.New(conn)

@@ -36,13 +36,13 @@ type Provider struct {
 }
 
 func newS3Provider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
-	config := ProviderConfig{}
-	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
+	cfg := ProviderConfig{}
+	if err := json.Unmarshal([]byte(srv.Config), &cfg); err != nil {
 		return nil, err
 	}
 
 	// Validate endpoint URL
-	endpoint, err := url.ParseRequestURI(config.Endpoint)
+	endpoint, err := url.ParseRequestURI(cfg.Endpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func newS3Provider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provi
 
 	// Create S3 client
 	client, err := minio.New(endpoint.Host, &minio.Options{
-		Creds:  credentials.NewStaticV4(config.AccessKeyID, accessKeySecret, ""),
+		Creds:  credentials.NewStaticV4(cfg.AccessKeyID, accessKeySecret, ""),
 		Secure: endpoint.Scheme == "https",
 	})
 	if err != nil {
@@ -63,7 +63,7 @@ func newS3Provider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provi
 	}
 
 	provider := &Provider{
-		config: config,
+		config: cfg,
 		client: client,
 	}
 

@@ -22,12 +22,11 @@ type CleanupDatabaseJob struct {
 
 // NewCleanupDatabaseJob create and start new job to clean the database
 func NewCleanupDatabaseJob(db DB) job.Job {
-	job := &CleanupDatabaseJob{
+	return &CleanupDatabaseJob{
 		db:     db,
 		ticker: time.NewTicker(time.Hour),
 		logger: log.With().Str("component", "scheduler").Str("job", "clean-db").Logger(),
 	}
-	return job
 }
 
 // Start the cleanup job

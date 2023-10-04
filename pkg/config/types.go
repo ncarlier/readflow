@@ -141,7 +141,7 @@ type RateLimitingConfig struct {
 type RateLimiting struct {
 	// Provider of the rate limiting store
 	Provider string `toml:"provider"`
-	//Tokens allowed per interval
+	// Tokens allowed per interval
 	Tokens int `toml:"tokens"`
 	// Interval until tokens reset
 	Interval duration `toml:"interval"`
@@ -158,7 +158,7 @@ type UserPlan struct {
 }
 
 // GetUserPlan return an user plan by its name and fallback to first plan if missing
-func (c Config) GetUserPlan(name string) (result *UserPlan) {
+func (c *Config) GetUserPlan(name string) (result *UserPlan) {
 	if len(c.UserPlans) == 0 {
 		return nil
 	}

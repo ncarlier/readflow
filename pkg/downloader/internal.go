@@ -105,13 +105,12 @@ func (dl *InternalDownloader) Download(ctx context.Context, url string) (*WebAss
 }
 
 func (dl *InternalDownloader) download(url string) (*http.Response, error) {
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
 
 	req.Header.Set("User-Agent", constant.UserAgent)
-	// req.Header.Set("Referer", parentURL)
 
 	resp, err := dl.httpClient.Do(req)
 	if err != nil {

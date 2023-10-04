@@ -27,13 +27,13 @@ type Provider struct {
 }
 
 func newReadflowProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
-	config := ProviderConfig{}
-	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
+	cfg := ProviderConfig{}
+	if err := json.Unmarshal([]byte(srv.Config), &cfg); err != nil {
 		return nil, err
 	}
 
 	// Validate endpoint URL
-	endpoint, err := url.ParseRequestURI(config.Endpoint)
+	endpoint, err := url.ParseRequestURI(cfg.Endpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func newReadflowProvider(srv model.OutgoingWebhook, conf config.Config) (webhook
 	}
 
 	provider := &Provider{
-		config:   config,
+		config:   cfg,
 		APIKey:   apiKey,
 		endpoint: endpoint,
 	}

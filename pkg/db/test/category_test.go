@@ -8,7 +8,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
-func assertCategoryExists(t *testing.T, uid uint, title string, notif string) *model.Category {
+func assertCategoryExists(t *testing.T, uid uint, title, notif string) *model.Category {
 	category, err := testDB.GetCategoryByUserAndTitle(uid, title)
 	assert.Nil(t, err)
 	if category != nil {

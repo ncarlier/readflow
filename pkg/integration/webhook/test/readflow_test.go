@@ -33,7 +33,7 @@ func TestReadflowWebhook(t *testing.T) {
 
 	outgoingWebhook := model.OutgoingWebhook{
 		Provider: "readflow",
-		Config:   fmt.Sprintf(`{"endpoint": "%s"}`, srv.URL),
+		Config:   fmt.Sprintf(`{"endpoint": %q}`, srv.URL),
 		Secrets:  secrets,
 	}
 	conf := config.NewConfig()

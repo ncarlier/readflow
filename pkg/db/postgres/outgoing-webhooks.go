@@ -248,7 +248,7 @@ func (pg *DB) CountOutgoingWebhooksByUser(uid uint) (uint, error) {
 }
 
 // DeleteOutgoingWebhookByUser removes an outgoing webhook from the DB
-func (pg *DB) DeleteOutgoingWebhookByUser(uid uint, id uint) error {
+func (pg *DB) DeleteOutgoingWebhookByUser(uid, id uint) error {
 	query, args, _ := pg.psql.Delete("outgoing_webhooks").Where(
 		sq.Eq{"id": id},
 	).Where(

@@ -3,7 +3,6 @@ package helper
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"unicode/utf8"
 
 	"golang.org/x/net/html/charset"
@@ -24,7 +23,7 @@ func ToUTF8(iso string) string {
 
 // NewUTF8Reader converts a reader from a charset to UTF-8
 func NewUTF8Reader(reader io.Reader, sourceCharset string) (io.Reader, error) {
-	b, err := ioutil.ReadAll(reader)
+	b, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, err
 	}

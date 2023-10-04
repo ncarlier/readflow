@@ -15,7 +15,7 @@ import (
 var wordDecoder = new(mime.WordDecoder)
 
 // extractMailHeader extract some mail header
-func extractMailHeader(header mail.Header) (from string, subject string) {
+func extractMailHeader(header mail.Header) (from, subject string) {
 	from, _ = wordDecoder.DecodeHeader(header.Get("From"))
 	subject, _ = wordDecoder.DecodeHeader(header.Get("Subject"))
 	return
@@ -41,7 +41,7 @@ func decodeEmailBody(body io.Reader, encoding string) (string, error) {
 }
 
 // parseMultipart parse multipart mail body
-func parseMultipart(body io.Reader, boundary string) (html string, text string, err error) {
+func parseMultipart(body io.Reader, boundary string) (html, text string, err error) {
 	reader := multipart.NewReader(body, boundary)
 	if reader == nil {
 		err = errors.New("unable to create mutipart reader")
@@ -80,7 +80,7 @@ func parseMultipart(body io.Reader, boundary string) (html string, text string, 
 }
 
 // extractMailContent extract HTML and TEXT part of a mail body
-func extractMailContent(msg *mail.Message) (html string, text string, err error) {
+func extractMailContent(msg *mail.Message) (html, text string, err error) {
 	// extract Media Type
 	contentType := msg.Header.Get("Content-Type")
 	var mediaType string

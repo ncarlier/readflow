@@ -40,13 +40,13 @@ type shaarliProvider struct {
 }
 
 func newShaarliProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
-	config := shaarliProviderConfig{}
-	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
+	cfg := shaarliProviderConfig{}
+	if err := json.Unmarshal([]byte(srv.Config), &cfg); err != nil {
 		return nil, err
 	}
 
 	// Validate endpoint URL
-	endpoint, err := url.ParseRequestURI(config.Endpoint)
+	endpoint, err := url.ParseRequestURI(cfg.Endpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func newShaarliProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.
 	}
 
 	provider := &shaarliProvider{
-		config:   config,
+		config:   cfg,
 		endpoint: endpoint,
 		secret:   secret,
 	}

@@ -149,9 +149,9 @@ func (pg *DB) CountCategoriesByUser(uid uint) (uint, error) {
 }
 
 // DeleteCategoryByUser removes an category from the DB
-func (pg *DB) DeleteCategoryByUser(uid uint, ID uint) error {
+func (pg *DB) DeleteCategoryByUser(uid, id uint) error {
 	query, args, _ := pg.psql.Delete("categories").Where(
-		sq.Eq{"id": ID},
+		sq.Eq{"id": id},
 	).Where(
 		sq.Eq{"user_id": uid},
 	).ToSql()

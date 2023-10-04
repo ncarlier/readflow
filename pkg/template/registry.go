@@ -16,7 +16,7 @@ func Register(provider string, creator TemplateEngineCreator) {
 }
 
 // NewTemplateEngine create new template engine
-func NewTemplateEngine(providerName string, text string) (Provider, error) {
+func NewTemplateEngine(providerName, text string) (Provider, error) {
 	creator, ok := registry[providerName]
 	if !ok {
 		return nil, fmt.Errorf("unsupported template engine provider: %s", providerName)

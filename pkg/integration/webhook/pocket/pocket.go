@@ -35,13 +35,13 @@ type pocketProvider struct {
 }
 
 func newPocketProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
-	config := pocketProviderConfig{}
-	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
+	cfg := pocketProviderConfig{}
+	if err := json.Unmarshal([]byte(srv.Config), &cfg); err != nil {
 		return nil, err
 	}
 
 	// Validate username
-	if config.Username == "" {
+	if cfg.Username == "" {
 		return nil, fmt.Errorf("missing username")
 	}
 
@@ -52,7 +52,7 @@ func newPocketProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.P
 	}
 
 	provider := &pocketProvider{
-		config:      config,
+		config:      cfg,
 		consumerKey: conf.Integration.Pocket.ConsumerKey,
 		accessToken: accessToken,
 	}

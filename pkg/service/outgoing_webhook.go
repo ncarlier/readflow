@@ -36,14 +36,14 @@ func (reg *Registry) GetOutgoingWebhooks(ctx context.Context) (*[]model.Outgoing
 func (reg *Registry) GetOutgoingWebhook(ctx context.Context, id uint) (*model.OutgoingWebhook, error) {
 	uid := getCurrentUserIDFromContext(ctx)
 
-	webhook, err := reg.db.GetOutgoingWebhookByID(id)
-	if err != nil || webhook == nil || *webhook.UserID != uid {
+	whk, err := reg.db.GetOutgoingWebhookByID(id)
+	if err != nil || whk == nil || *whk.UserID != uid {
 		if err == nil {
 			err = ErrOutgoingWebhookNotFound
 		}
 		return nil, err
 	}
-	return webhook, nil
+	return whk, nil
 }
 
 // CreateOutgoingWebhook create an outgoing webhook for current user
@@ -147,7 +147,7 @@ func (reg *Registry) DeleteOutgoingWebhook(ctx context.Context, id uint) (*model
 
 	logger := reg.logger.With().Uint("uid", uid).Uint("id", id).Logger()
 
-	webhook, err := reg.GetOutgoingWebhook(ctx, id)
+	whk, err := reg.GetOutgoingWebhook(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +159,7 @@ func (reg *Registry) DeleteOutgoingWebhook(ctx context.Context, id uint) (*model
 		return nil, err
 	}
 	logger.Info().Msg("outgoing webhook deleted")
-	return webhook, nil
+	return whk, nil
 }
 
 // DeleteOutgoingWebhooks delete outgoing webhooks of the current user

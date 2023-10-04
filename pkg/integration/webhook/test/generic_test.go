@@ -22,7 +22,7 @@ var article = model.Article{
 
 var body = "title={{ title | urlquery }}"
 
-var headers = fmt.Sprintf(`{"Content-Type": "%s", "X-API-Key": "xxx"}`, constant.ContentTypeForm)
+var headers = fmt.Sprintf(`{"Content-Type": %q, "X-API-Key": "xxx"}`, constant.ContentTypeForm)
 
 func TestGenericWebhook(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +38,7 @@ func TestGenericWebhook(t *testing.T) {
 
 	outgoingWebhook := model.OutgoingWebhook{
 		Provider: "generic",
-		Config:   fmt.Sprintf(`{"endpoint": "%s", "headers": %s, "body": "%s"}`, srv.URL, headers, body),
+		Config:   fmt.Sprintf(`{"endpoint": %q, "headers": %s, "body": %q}`, srv.URL, headers, body),
 	}
 	conf := config.NewConfig()
 	conf.HTTP.PublicURL = "http://localhost:3000"

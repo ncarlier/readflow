@@ -49,7 +49,7 @@ func NewHtpasswdFromFile(location string) (*HtpasswdFile, error) {
 	}, nil
 }
 
-func (h *HtpasswdFile) Authenticate(username string, password string) bool {
+func (h *HtpasswdFile) Authenticate(username, password string) bool {
 	pwd, exists := h.users[username]
 	if !exists {
 		return false

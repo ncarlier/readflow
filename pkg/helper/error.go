@@ -13,7 +13,7 @@ type problemObject struct {
 }
 
 // WriteProblemDetail write error as JSON Problem Details format
-func WriteProblemDetail(w http.ResponseWriter, title string, detail string, status int) {
+func WriteProblemDetail(w http.ResponseWriter, title, detail string, status int) {
 	err := problemObject{
 		Title:  title,
 		Detail: detail,

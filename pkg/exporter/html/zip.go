@@ -113,7 +113,7 @@ func (exp *ZIPExporter) processURLAttribute(ctx context.Context, output *zip.Wri
 	return nil
 }
 
-func (exp *ZIPExporter) processURL(ctx context.Context, url string, parentURL string) (*downloader.WebAsset, error) {
+func (exp *ZIPExporter) processURL(ctx context.Context, url, parentURL string) (*downloader.WebAsset, error) {
 	// Ignore special URLs
 	url = strings.TrimSpace(url)
 	if url == "" || strings.HasPrefix(url, "data:") || strings.HasPrefix(url, "#") {

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -59,7 +58,7 @@ func (p *pocketProvider) RequestHandler(w http.ResponseWriter, r *http.Request) 
 	if resp.StatusCode >= 300 {
 		return fmt.Errorf("bad status code: %d", resp.StatusCode)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}

@@ -32,7 +32,7 @@ type BoltLRUCache struct {
 
 // New LRU cache using BoltDB as storage backend
 func New(path string, params url.Values) (*BoltLRUCache, error) {
-	db, err := bolt.Open(path, 0640, nil)
+	db, err := bolt.Open(path, 0o640, nil)
 	if err != nil {
 		return nil, err
 	}

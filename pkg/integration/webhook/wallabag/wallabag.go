@@ -47,13 +47,13 @@ type wallabagProvider struct {
 }
 
 func newWallabagProvider(srv model.OutgoingWebhook, conf config.Config) (webhook.Provider, error) {
-	config := wallabagProviderConfig{}
-	if err := json.Unmarshal([]byte(srv.Config), &config); err != nil {
+	cfg := wallabagProviderConfig{}
+	if err := json.Unmarshal([]byte(srv.Config), &cfg); err != nil {
 		return nil, err
 	}
 
 	// Validate endpoint URL
-	endpoint, err := url.ParseRequestURI(config.Endpoint)
+	endpoint, err := url.ParseRequestURI(cfg.Endpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -69,12 +69,12 @@ func newWallabagProvider(srv model.OutgoingWebhook, conf config.Config) (webhook
 	}
 
 	// Validate credentials
-	if config.ClientID == "" || config.Username == "" {
+	if cfg.ClientID == "" || cfg.Username == "" {
 		return nil, fmt.Errorf("wallabag: missing credentials")
 	}
 
 	provider := &wallabagProvider{
-		config:       config,
+		config:       cfg,
 		endpoint:     endpoint,
 		clientSecret: clientSecret,
 		password:     password,
