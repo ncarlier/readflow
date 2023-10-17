@@ -1,9 +1,9 @@
 
 const authParams = ['code', 'state', 'session_state', 'error'] as const
 
-export const clearAuthParams = (params: URLSearchParams): URLSearchParams => {
+export const clearAuthParams = (params: URLSearchParams): string => {
   authParams.forEach(param => params.delete(param))
-  return params
+  return params.toString()
 }
 
 export const hasAuthParams = (params: URLSearchParams): boolean => {
@@ -13,11 +13,4 @@ export const hasAuthParams = (params: URLSearchParams): boolean => {
     }
   }
   return false
-}
-
-export const getCleanedRedirectURI = (href: string): string => {
-  const url = new URL(href)
-  clearAuthParams(url.searchParams)
-  console.debug('computed redirect URI:', url.href)
-  return url.href
 }

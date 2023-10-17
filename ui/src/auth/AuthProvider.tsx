@@ -17,6 +17,8 @@ interface AuthContextType {
   logout: (args?: SignoutRedirectArgs) => Promise<void>
 }
 
+const redirectKey = 'readflow.redirect'
+
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -27,7 +29,15 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const { search } = useLocation()
   const history = useHistory()
   
-  const login = useCallback(userManager.signinRedirect.bind(userManager), [userManager])
+  const login = useCallback(async () => {
+    try {
+      localStorage.setItem(redirectKey, JSON.stringify(history.location))
+      console.debug('saving location', JSON.stringify(history.location))
+      await userManager.signinRedirect()
+    } catch (err) {
+      setError(err)
+    }
+  }, [userManager])
   const logout = useCallback(userManager.signoutRedirect.bind(userManager), [userManager])
   const handleLoginFlow = useCallback(async () => {
     setIsLoading(true)
@@ -45,30 +55,34 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
         console.info('callback from Authority server: sign in...')
         const user = await userManager.signinCallback()
         if (user) {
-          console.debug('logged user:', user.profile?.preferred_username)
-          clearAuthParams(params)
+          console.debug('logged user:', user.profile?.sub)
           setUser(user)
-          history.replace({
-            search: params.toString(),
+          const redirect = localStorage.getItem(redirectKey)
+          if (redirect) {
+            localStorage.removeItem(redirectKey)
+            console.debug('restoring location', redirect)
+            return history.replace(JSON.parse(redirect))
+          }
+          return history.replace({
+            search: clearAuthParams(params),
           })
-          return
         }
       }
       // otherwise handle user state:
       const user = await userManager.getUser()
       if (user) {
-        console.debug('authenticated user:', user?.profile.preferred_username)
+        console.debug('authenticated user:', user?.profile.sub)
         setUser(user)
       } else {
         console.info('user not authenticated, redirecting to sign-in page...')
-        await userManager.signinRedirect()
+        login()
       }
     } catch (err) {
       setError(err)
     } finally {
       setIsLoading(false)
     }
-  }, [userManager, search])
+  }, [userManager, search, login])
 
   // main login flow
   const didInitialize = useRef<boolean>(false)
