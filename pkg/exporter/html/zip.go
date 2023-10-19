@@ -96,7 +96,10 @@ func (exp *ZIPExporter) processURLAttribute(ctx context.Context, output *zip.Wri
 
 	url := dom.GetAttribute(node, attrName)
 	asset, err := exp.processURL(ctx, url, baseURL.String())
-	if err != nil && err != errSkippedURL {
+	if err != nil {
+		if err == errSkippedURL {
+			return nil
+		}
 		return err
 	}
 
