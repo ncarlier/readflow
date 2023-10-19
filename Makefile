@@ -40,7 +40,7 @@ include $(makefiles)/help.Makefile
 include $(makefiles)/docker/compose.Makefile
 
 # Some variables
-db_service?=readflow_db_1
+db_service?=readflow-db-1
 
 ## Clean built files
 clean:
@@ -184,17 +184,16 @@ backup:
 
 ## Restore database
 restore:
-	echo "Restoring $(archive) database dump ..."
+	echo "Restoring $(archive) database dump to $(db_service) ..."
 	@while [ -z "$$CONTINUE" ]; do \
 		read -r -p "Are you sure? [y/N]: " CONTINUE; \
 	done ; \
-	[ $$CONTINUE = "y" ] || [ $$CONTINUE = "Y" ] || (echo "Exiting."; exit 1;)
-	docker exec -i -u postgres readflow_db_1 psql -U postgres -d postgres < $(archive)
+	[ $$CONTINUE = "y" ] && docker exec -i -u postgres $(db_service) psql -U postgres -d postgres < $(archive)
 .PHONY: restore
 
 ## Open database client
 db-client:
-	docker exec -it -u postgres readflow_db_1 psql -U postgres
+	docker exec -it -u postgres $(db_service) psql -U postgres
 .PHONY: db-client
 
 var/block-list.txt:
