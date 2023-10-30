@@ -107,8 +107,12 @@ service_provider = "${READFLOW_AVATAR_SERVICE_PROVIDER}"
 
 [image]
 ## Image proxy URL, disabled if empty
-# Example: "http://imaginary:9000"
+# Example: "http://imagor:8080"
 proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
+## Image proxy supported sizes
+# Comma separated list of image size
+# Default: "320x200,768x576"
+sizes = "${READFLOW_IMAGE_PROXY_SIZES}"
 
 [pdf]
 ## PDF generator service provider, disabled if empty

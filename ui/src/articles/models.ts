@@ -6,6 +6,7 @@ export interface Article {
   html: string
   text: string
   image: string
+  thumbnails?: ArticleThumbnail[]
   url: string
   status: ArticleStatus
   stars: number
@@ -14,6 +15,11 @@ export interface Article {
   published_at: string
   created_at: string
   updated_at: string
+}
+
+export interface ArticleThumbnail {
+  size: string
+  hash: string
 }
 
 export type ArticleStatus = 'inbox' | 'read' | 'to_read'

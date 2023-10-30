@@ -46,6 +46,9 @@ func NewConfig() *Config {
 		Avatar: AvatarConfig{
 			ServiceProvider: "https://robohash.org/{seed}?set=set4&size=48x48",
 		},
+		Image: ImageConfig{
+			ProxySizes: "320x200,768x576",
+		},
 		RateLimiting: RateLimitingConfig{
 			Notification: RateLimiting{
 				Provider: "none",

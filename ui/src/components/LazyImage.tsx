@@ -1,18 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, ImgHTMLAttributes, FC } from 'react'
 
 import { useMedia } from '../hooks'
 import { classNames, getAPIURL } from '../helpers'
 
 import styles from './LazyImage.module.css'
 
-interface Props {
-  src: string
-  alt?: string
-}
-
 const proxifyImageURL = (url: string, width: number) => getAPIURL(`/img?url=${encodeURIComponent(url)}&width=${width}`)
 
-export const LazyImage = ({ src, alt = '' }: Props) => {
+export const LazyImage: FC<ImgHTMLAttributes<HTMLImageElement>> = ({ src, ...attrs }) => {
   const mobileDisplay = useMedia('(max-width: 767px)')
   const [loaded, setLoaded] = useState(false)
   const imgRef = useRef<HTMLImageElement>(null)
@@ -22,16 +17,20 @@ export const LazyImage = ({ src, alt = '' }: Props) => {
     }
   }, [])
 
+  if (!src) {
+    return <img {...attrs} />
+  }
+
   return (
     <div className={styles.wrapper}>
-      <img src={proxifyImageURL(src, 64)} aria-hidden="true" alt={alt} className={styles.lqip} />
+      <img {...attrs} src={proxifyImageURL(src, 64)} aria-hidden="true" className={styles.lqip} />
       <img
         ref={imgRef}
+        {...attrs}
         src={src}
         srcSet={`${proxifyImageURL(src, 320)} 320w,
                 ${proxifyImageURL(src, 767)} 767w`}
         sizes={mobileDisplay ? '100vw' : '320px'}
-        alt={alt}
         loading="lazy"
         className={classNames(styles.source, loaded ? styles.loaded : null)}
         onLoad={() => setLoaded(true)}

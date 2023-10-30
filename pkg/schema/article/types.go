@@ -65,6 +65,20 @@ var articleStatus = graphql.NewEnum(
 	},
 )
 
+var thumbnailType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "Thumbnail",
+		Fields: graphql.Fields{
+			"size": &graphql.Field{
+				Type: graphql.String,
+			},
+			"hash": &graphql.Field{
+				Type: graphql.String,
+			},
+		},
+	},
+)
+
 var articleType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Article",
@@ -86,6 +100,10 @@ var articleType = graphql.NewObject(
 			},
 			"image": &graphql.Field{
 				Type: graphql.String,
+			},
+			"thumbnails": &graphql.Field{
+				Type:    graphql.NewList(thumbnailType),
+				Resolve: thumbnailsResolver,
 			},
 			"status": &graphql.Field{
 				Type: articleStatus,
