@@ -10,7 +10,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/constant"
 )
 
-const userAgent = "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0"
+const defaultUserAgent = "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0"
 
 var hopHeaders = []string{
 	"Connection",
@@ -50,30 +50,32 @@ func appendHostToXForwardHeader(header http.Header, host string) {
 // imgProxyHandler is the handler for proxying images.
 func imgProxyHandler(conf *config.Config) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := strings.TrimPrefix(r.URL.Path, "/img")
 		q := r.URL.Query()
-
-		// Extract and validate url parameter
-		img := q.Get("url")
-		if img == "" {
-			http.Error(w, "bad parameter", http.StatusBadRequest)
+		// Redirect if image proxy service not configured or using old UI
+		if q.Has("url") && q.Has("size") {
+			img := q.Get("url")
+			// legacy UI, redirect
+			http.Redirect(w, r, img, http.StatusMovedPermanently)
 			return
 		}
-
-		// Redirect if image proxy service not configured
 		if conf.Image.ProxyURL == "" {
-			http.Redirect(w, r, img, http.StatusMovedPermanently)
+			http.Error(w, http.StatusText(http.StatusNoContent), http.StatusNotFound)
 			return
 		}
 
 		// Build image proxy client
-		client := &http.Client{Timeout: constant.DefaultTimeout}
-		req, err := http.NewRequest("GET", conf.Image.ProxyURL+"/resize?"+q.Encode(), http.NoBody)
+		req, err := http.NewRequest("GET", conf.Image.ProxyURL+path, http.NoBody)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadGateway)
 			return
 		}
 
 		// Manage request headers
+		userAgent := r.Header.Get("User-Agent")
+		if userAgent == "" {
+			userAgent = defaultUserAgent
+		}
 		req.Header.Set("User-Agent", userAgent)
 		if clientIP, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
 			appendHostToXForwardHeader(req.Header, clientIP)
@@ -81,18 +83,12 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 		delHopHeaders(r.Header)
 
 		// Do proxy request
-		resp, err := client.Do(req)
+		resp, err := constant.DefaultClient.Do(req)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadGateway)
 			return
 		}
 		defer resp.Body.Close()
-
-		// Redirect if image proxy failed
-		if resp.StatusCode >= 400 {
-			http.Redirect(w, r, img, http.StatusTemporaryRedirect)
-			return
-		}
 
 		// Create proxy response
 		delHopHeaders(resp.Header)

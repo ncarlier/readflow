@@ -32,7 +32,7 @@ export const ArticleCard = withRouter((props: AllProps) => {
     <article className={classNames(styles.card, activeClass)}>
       {article.image && (
         <Link to={readMorePath} title={'View details' + kbs} className={styles.illustration}>
-          <ArticleImage src={article.image} alt={article.title} />
+          <ArticleImage article={article} />
         </Link>
       )}
       <Link to={readMorePath} title={'View details' + kbs} className={styles.content}>

@@ -14,13 +14,15 @@ services:
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
   #######################################
-  # Imaginary: Image proxy
+  # Imagor: Image proxy
   #######################################
-  imaginary:
-    image: h2non/imaginary:latest
-    command: -enable-url-source
+  imagor:
+    image: shumc/imagor
+    command: -debug -imagor-auto-webp
+    environment:
+      IMAGOR_SECRET: ${READFLOW_HASH_SECRET_SALT:-pepper}
     ports:
-      - "${IMAGINARY:-9000}:9000"
+      - "${IMAGOR_PORT:-8081}:8000"
   #######################################
   # Goenberg: PDF generator
   #######################################

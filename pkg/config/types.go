@@ -97,7 +97,8 @@ type AvatarConfig struct {
 
 // ImageConfig for image configuration section
 type ImageConfig struct {
-	ProxyURL string `toml:"proxy_url"`
+	ProxyURL   string `toml:"proxy_url"`
+	ProxySizes string `toml:"proxy_sizes"`
 }
 
 // PDFConfig for PDF configuration section

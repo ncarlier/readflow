@@ -30,6 +30,10 @@ export const GetArticles = gql`
         text
         url
         image
+        thumbnails {
+          size
+          hash
+        }
         status
         stars
         category {
@@ -70,6 +74,10 @@ export const GetFullArticle = gql`
       html
       url
       image
+      thumbnails {
+        size
+        hash
+      }
       status
       stars
       category {
@@ -132,6 +140,10 @@ export const AddNewArticle = gql`
       html
       url
       image
+      thumbnails {
+        size
+        hash
+      }
       status
       stars
       category {

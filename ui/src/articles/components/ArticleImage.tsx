@@ -1,18 +1,36 @@
 import React, { FC, ImgHTMLAttributes } from 'react'
 
+import { Article, ArticleThumbnail } from '../models'
 import { getAPIURL } from '../../helpers'
 
-const proxifyImageURL = (url: string, width: number) => getAPIURL(`/img?url=${encodeURIComponent(url)}&width=${width}`)
+const imgResToWidth = (res: string) => res.split('x')[0] + 'w'
+const getThumbnailURL = (thumbnail: ArticleThumbnail, src: string) => `${getAPIURL()}/img/${thumbnail.hash}/${src.replace(/^https?:\/\//, '')}`
 
-export const ArticleImage: FC<ImgHTMLAttributes<HTMLImageElement>> = ({ src, ...attrs }) => {
-  if (src && src.match(/^https?:\/\//)) {
-    attrs.srcSet = `${proxifyImageURL(src, 320)} 320w, ${proxifyImageURL(src, 767)} 767w`
+
+const getThumbnailAttributes = ({thumbnails, image}: Article) => {
+  const attrs :ImgHTMLAttributes<HTMLImageElement> = {}
+  if (!thumbnails || thumbnails.length == 0) {
+    return attrs
+  }
+  const sizes = thumbnails.reverse().map(thumb => thumb.size.split('x')[0] + 'px')
+  attrs.sizes = `(max-width: ${sizes[0]}) ${sizes.join(', ')}`
+  attrs.srcSet = thumbnails?.map(thumb => `${getThumbnailURL(thumb, image)} ${imgResToWidth(thumb.size)}`).join(',')
+  return attrs
+}
+
+interface Props {
+  article: Article
+}
+
+export const ArticleImage: FC<Props> = ({ article }) => {
+  let attrs :ImgHTMLAttributes<HTMLImageElement> = {}
+  if (article.image && article.image.match(/^https?:\/\//)) {
+    attrs = getThumbnailAttributes(article)
   }
   return (
     <img
       {...attrs}
-      sizes="(max-width: 767px) 767px, 320px"
-      src={src}
+      src={article.image}
       onError={(e) => (e.currentTarget.style.display = 'none')}
       crossOrigin='anonymous'
     />

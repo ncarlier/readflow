@@ -82,7 +82,7 @@ func routes(conf *config.Config) Routes {
 			middleware.Cors(origin),
 		),
 		route(
-			"/img",
+			"/img/",
 			imgProxyHandler(conf),
 			middleware.Methods(http.MethodGet),
 			middleware.Cors(origin),
