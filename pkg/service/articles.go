@@ -2,11 +2,8 @@ package service
 
 import (
 	"context"
-	"crypto/sha1"
 	"errors"
-	"strings"
 
-	"github.com/ncarlier/readflow/pkg/helper"
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
@@ -94,15 +91,4 @@ func (reg *Registry) CleanHistory(ctx context.Context) (int64, error) {
 	).Msg("history purged")
 
 	return nb, nil
-}
-
-// GetArticleThumbnail return article thumbnail URL
-func (reg *Registry) GetArticleThumbnailHash(article *model.Article, size string) string {
-	if article.Image == nil || *article.Image == "" {
-		return ""
-	}
-	size += "/top"
-	path := size + "/" + strings.TrimPrefix(strings.TrimPrefix(*article.Image, "https://"), "http://")
-	hash := helper.Sign(sha1.New, path, reg.conf.Hash.SecretSalt, 0)
-	return hash + "/" + size
 }

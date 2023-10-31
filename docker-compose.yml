@@ -15,13 +15,13 @@ services:
       - db-data:/var/lib/postgresql/data
 
   #######################################
-  # Imagor: Image proxy
+  # Imgproxy: Image proxy
   #######################################
-  imagor:
-    image: shumc/imagor
-    command: -imagor-auto-webp
+  imgproxy:
+    image: darthsim/imgproxy
     environment:
-      IMAGOR_SECRET: ${READFLOW_HASH_SECRET_SALT:-pepper}
+      IMGPROXY_KEY: ${READFLOW_HASH_SECRET_KEY:-736563726574}
+      IMGPROXY_SALT: ${READFLOW_HASH_SECRET_SALT:-706570706572} 
     logging:
       driver: "json-file"
       options:

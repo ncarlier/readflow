@@ -10,9 +10,9 @@ type HashIDHandler struct {
 }
 
 // NewHashIDHandler creates hashid handler
-func NewHashIDHandler(salt string) (*HashIDHandler, error) {
+func NewHashIDHandler(salt []byte) (*HashIDHandler, error) {
 	hd := hashids.NewData()
-	hd.Salt = salt
+	hd.Salt = string(salt)
 	provider, err := hashids.NewWithData(hd)
 	if err != nil {
 		return nil, err

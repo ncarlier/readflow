@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/ncarlier/readflow/pkg/config"
 )
@@ -18,11 +19,11 @@ func TestDefaultConfig(t *testing.T) {
 func TestLaodConfigFromFile(t *testing.T) {
 	conf := config.NewConfig()
 	err := conf.LoadFile("test.toml")
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	// Default overide
 	assert.Equal(t, "localhost:8081", conf.HTTP.ListenAddr)
 	// Env variable substitution
-	assert.NotEqual(t, "${USER}", conf.Hash.SecretSalt)
+	assert.Equal(t, []byte("test"), conf.Hash.SecretSalt.Value)
 	// Default if empty
 	assert.Equal(t, "http://localhost:8080", conf.HTTP.PublicURL)
 	// Sub attribute

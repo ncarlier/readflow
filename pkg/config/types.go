@@ -81,7 +81,8 @@ type UIConfig struct {
 
 // HashConfig for hash configuration section
 type HashConfig struct {
-	SecretSalt string `toml:"secret_salt"`
+	SecretKey  hex_string `toml:"secret_key"`
+	SecretSalt hex_string `toml:"secret_salt"`
 }
 
 // ScrapingConfig for scraping configuration section

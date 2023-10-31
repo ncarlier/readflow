@@ -41,13 +41,18 @@ func NewConfig() *Config {
 			PublicURL: "http://localhost:8080",
 		},
 		Hash: HashConfig{
-			SecretSalt: "pepper",
+			SecretKey: hex_string{
+				Value: []byte("secret"),
+			},
+			SecretSalt: hex_string{
+				Value: []byte("pepper"),
+			},
 		},
 		Avatar: AvatarConfig{
 			ServiceProvider: "https://robohash.org/{seed}?set=set4&size=48x48",
 		},
 		Image: ImageConfig{
-			ProxySizes: "320x200,768x576",
+			ProxySizes: "320,768",
 		},
 		RateLimiting: RateLimitingConfig{
 			Notification: RateLimiting{
