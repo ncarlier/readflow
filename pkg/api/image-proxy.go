@@ -8,9 +8,8 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/helper"
 )
-
-const defaultUserAgent = "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0"
 
 var hopHeaders = []string{
 	"Connection",
@@ -26,7 +25,11 @@ var hopHeaders = []string{
 func copyHeader(dst, src http.Header) {
 	for k, vv := range src {
 		for _, v := range vv {
-			dst.Add(k, v)
+			if dst.Get(k) != "" {
+				dst.Set(k, v)
+			} else {
+				dst.Add(k, v)
+			}
 		}
 	}
 }
@@ -71,16 +74,12 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 			return
 		}
 
-		// Manage request headers
-		userAgent := r.Header.Get("User-Agent")
-		if userAgent == "" {
-			userAgent = defaultUserAgent
-		}
-		req.Header.Set("User-Agent", userAgent)
+		// Manage request headers: copy, add x-forward, del hop
+		copyHeader(req.Header, r.Header)
 		if clientIP, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
 			appendHostToXForwardHeader(req.Header, clientIP)
 		}
-		delHopHeaders(r.Header)
+		delHopHeaders(req.Header)
 
 		// Do proxy request
 		resp, err := constant.DefaultClient.Do(req)
@@ -89,6 +88,17 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 			return
 		}
 		defer resp.Body.Close()
+
+		// Redirect if image proxy failed
+		if resp.StatusCode >= 400 {
+			// decode image URL from proxy path
+			if img, err := helper.DecodeImageProxyPath(path); err != nil {
+				http.Error(w, err.Error(), http.StatusBadGateway)
+			} else {
+				http.Redirect(w, r, string(img), http.StatusTemporaryRedirect)
+			}
+			return
+		}
 
 		// Create proxy response
 		delHopHeaders(resp.Header)

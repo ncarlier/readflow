@@ -21,6 +21,7 @@ services:
     environment:
       IMGPROXY_KEY: ${READFLOW_HASH_SECRET_KEY:-736563726574}
       IMGPROXY_SALT: ${READFLOW_HASH_SECRET_SALT:-706570706572} 
+      IMGPROXY_ENABLE_WEBP_DETECTION: true 
     ports:
       - "${IMAGOR_PORT:-8081}:8080"
   #######################################
