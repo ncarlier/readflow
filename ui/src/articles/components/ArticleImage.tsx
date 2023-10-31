@@ -3,18 +3,16 @@ import React, { FC, ImgHTMLAttributes } from 'react'
 import { Article, ArticleThumbnail } from '../models'
 import { getAPIURL } from '../../helpers'
 
-const imgResToWidth = (res: string) => res.split('x')[0] + 'w'
-const getThumbnailURL = (thumbnail: ArticleThumbnail, src: string) => `${getAPIURL()}/img/${thumbnail.hash}/${src.replace(/^https?:\/\//, '')}`
-
+const getThumbnailURL = (thumbnail: ArticleThumbnail, src: string) => `${getAPIURL()}/img/${thumbnail.hash}/resize:fit:${thumbnail.size}/${btoa(src)}`
 
 const getThumbnailAttributes = ({thumbnails, image}: Article) => {
   const attrs :ImgHTMLAttributes<HTMLImageElement> = {}
   if (!thumbnails || thumbnails.length == 0) {
     return attrs
   }
-  const sizes = thumbnails.reverse().map(thumb => thumb.size.split('x')[0] + 'px')
+  const sizes = thumbnails.reverse().map(thumb => `${thumb.size}px`)
   attrs.sizes = `(max-width: ${sizes[0]}) ${sizes.join(', ')}`
-  attrs.srcSet = thumbnails?.map(thumb => `${getThumbnailURL(thumb, image)} ${imgResToWidth(thumb.size)}`).join(',')
+  attrs.srcSet = thumbnails?.map(thumb => `${getThumbnailURL(thumb, image)} ${thumb.size}w`).join(',')
   return attrs
 }
 

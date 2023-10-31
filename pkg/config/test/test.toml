@@ -4,8 +4,8 @@
 listen_addr = "localhost:8081"
 public_url = "${AN_EMPTY_VARIABLE}"
 
-[hsah]
-secret_salt = "${USER}"
+[hash]
+secret_salt = "74657374"
 
 [integration.sentry]
 dsn_url = "https://1..9:1..9@sentry.io/1..9"

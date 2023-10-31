@@ -16,13 +16,13 @@ services:
   #######################################
   # Imagor: Image proxy
   #######################################
-  imagor:
-    image: shumc/imagor
-    command: -debug -imagor-auto-webp
+  imgproxy:
+    image: darthsim/imgproxy
     environment:
-      IMAGOR_SECRET: ${READFLOW_HASH_SECRET_SALT:-pepper}
+      IMGPROXY_KEY: ${READFLOW_HASH_SECRET_KEY:-736563726574}
+      IMGPROXY_SALT: ${READFLOW_HASH_SECRET_SALT:-706570706572} 
     ports:
-      - "${IMAGOR_PORT:-8081}:8000"
+      - "${IMAGOR_PORT:-8081}:8080"
   #######################################
   # Goenberg: PDF generator
   #######################################

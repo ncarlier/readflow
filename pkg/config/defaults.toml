@@ -81,8 +81,11 @@ directory = "${READFLOW_UI_DIRECTORY}"
 public_url = "${READFLOW_UI_PUBLIC_URL}"
 
 [hash]
-## Secret salt used by hash algorythms
-# Default: "pepper"
+## Secret key used by hash algorythms (hex-encoded)
+# Default: "736563726574" (aka "secret")
+secret_key = "${READFLOW_HASH_SECRET_KEY}"
+## Secret salt used by hash algorythms (hex-encoded)
+# Default: "706570706572" (aka "pepper")
 secret_salt = "${READFLOW_HASH_SECRET_SALT}"
 
 [scraping]
@@ -111,7 +114,7 @@ service_provider = "${READFLOW_AVATAR_SERVICE_PROVIDER}"
 proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
 ## Image proxy supported sizes
 # Comma separated list of image size
-# Default: "320x200,768x576"
+# Default: "320,768"
 sizes = "${READFLOW_IMAGE_PROXY_SIZES}"
 
 [pdf]

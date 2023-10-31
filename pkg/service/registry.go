@@ -50,7 +50,7 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 	if err != nil {
 		return err
 	}
-	hashid, err := helper.NewHashIDHandler(conf.Hash.SecretSalt)
+	hashid, err := helper.NewHashIDHandler(conf.Hash.SecretSalt.Value)
 	if err != nil {
 		return err
 	}

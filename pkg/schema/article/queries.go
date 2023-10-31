@@ -93,6 +93,9 @@ func thumbnailsResolver(p graphql.ResolveParams) (interface{}, error) {
 	if !ok {
 		return nil, errors.New("thumbnails resolver is expecting an article")
 	}
+	if article.Image == nil || *article.Image == "" {
+		return nil, nil
+	}
 	if service.Lookup().GetConfig().Image.ProxyURL == "" {
 		return nil, nil
 	}
