@@ -10,9 +10,10 @@ const getThumbnailAttributes = ({thumbnails, image}: Article) => {
   if (!thumbnails || thumbnails.length == 0) {
     return attrs
   }
-  const sizes = thumbnails.reverse().map(thumb => `${thumb.size}px`)
+  thumbnails.sort((a, b) => parseInt(b.size) - parseInt(a.size))
+  const sizes = thumbnails.map(thumb => `${thumb.size}px`)
   attrs.sizes = `(max-width: ${sizes[0]}) ${sizes.join(', ')}`
-  attrs.srcSet = thumbnails?.map(thumb => `${getThumbnailURL(thumb, image)} ${thumb.size}w`).join(',')
+  attrs.srcSet = thumbnails.reverse().map(thumb => `${getThumbnailURL(thumb, image)} ${thumb.size}w`).join(',')
   return attrs
 }
 
@@ -23,7 +24,11 @@ interface Props {
 export const ArticleImage: FC<Props> = ({ article }) => {
   let attrs :ImgHTMLAttributes<HTMLImageElement> = {}
   if (article.image && article.image.match(/^https?:\/\//)) {
-    attrs = getThumbnailAttributes(article)
+    try {
+      attrs = getThumbnailAttributes(article)
+    } catch (err) {
+      console.error('unable to get article thumbnail attributes', article, err)
+    }
   }
   return (
     <img
