@@ -12,9 +12,12 @@ func EncodeImageProxyPath(url, size string) string {
 
 // Decode image URL from Image Proxy Path
 func DecodeImageProxyPath(path string) (url string, err error) {
-	url = path[strings.LastIndex(path, "/")+1:]
+	_, encoded, ok := strings.Cut(path[1:], "/")
+	if !ok {
+		return
+	}
 	var decoded []byte
-	decoded, err = base64.StdEncoding.DecodeString(url)
+	decoded, err = base64.StdEncoding.DecodeString(encoded)
 	if err == nil {
 		url = string(decoded)
 	}
