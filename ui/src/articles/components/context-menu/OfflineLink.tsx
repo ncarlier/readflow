@@ -6,6 +6,7 @@ import { connectOffline, OfflineProps } from '../../../containers/OfflineContain
 import { useMessage } from '../../../contexts'
 import { Article } from '../../models'
 import { useAPI } from '../../../hooks'
+import { fetchAPI } from '../../../helpers'
 
 interface Props {
   article: Article
@@ -23,7 +24,6 @@ const blobToDataURL = async (blob: Blob): Promise<string> => new Promise((resolv
 export const OfflineLink = (props: AllProps) => {
   const { article, keyboard = false, saveOfflineArticle, removeOfflineArticle, offlineArticles } = props
   const fetchArticleContent = useAPI(`/articles/${article.id}`, { method: 'GET' })
-  const fetchArticleImage = useAPI('/img', { method: 'GET' })
   const { showMessage, showErrorMessage } = useMessage()
   const [loading, setLoading] = useState(false)
 
@@ -36,9 +36,10 @@ export const OfflineLink = (props: AllProps) => {
       if (res) {
         if (res.ok && res.body) {
           offlineArticle.html = await res.text()
-          if (article.image) {
+          if (article.image && article.thumbnails) {
+            const thumbnail = [...article.thumbnails].sort((a, b) => parseInt(b.size) - parseInt(a.size))[0]
             // download article image
-            const img = await fetchArticleImage({ url: article.image, width: '720' })
+            const img = await fetchAPI(`/img/${thumbnail.hash}/resize:fit:${thumbnail.size}/${btoa(article.image)}`)
             if (img && img.ok && img.body) {
               const blob = await img.blob()
               offlineArticle.image = await blobToDataURL(blob)

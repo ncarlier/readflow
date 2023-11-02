@@ -5,15 +5,16 @@ import { getAPIURL } from '../../helpers'
 
 const getThumbnailURL = (thumbnail: ArticleThumbnail, src: string) => `${getAPIURL()}/img/${thumbnail.hash}/resize:fit:${thumbnail.size}/${btoa(src)}`
 
-const getThumbnailAttributes = ({thumbnails, image}: Article) => {
+const getThumbnailAttributes = (article: Article) => {
   const attrs :ImgHTMLAttributes<HTMLImageElement> = {}
-  if (!thumbnails || thumbnails.length == 0) {
+  if (!article.thumbnails || article.thumbnails.length == 0) {
     return attrs
   }
-  thumbnails.sort((a, b) => parseInt(b.size) - parseInt(a.size))
+
+  const thumbnails = [...article.thumbnails].sort((a, b) => parseInt(b.size) - parseInt(a.size))
   const sizes = thumbnails.map(thumb => `${thumb.size}px`)
   attrs.sizes = `(max-width: ${sizes[0]}) ${sizes.join(', ')}`
-  attrs.srcSet = thumbnails.reverse().map(thumb => `${getThumbnailURL(thumb, image)} ${thumb.size}w`).join(',')
+  attrs.srcSet = thumbnails.reverse().map(thumb => `${getThumbnailURL(thumb, article.image)} ${thumb.size}w`).join(',')
   return attrs
 }
 

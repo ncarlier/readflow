@@ -18,7 +18,7 @@ export const withCredentials = (user: User | null, init?: HeadersInit): HeadersI
   return init
 }
 
-export const fetchAPI = async (uri: string, params: any = {}, init: RequestInit) => {
+export const fetchAPI = async (uri: string, params: any = {}, init: RequestInit = {}) => {
   const url = new URL(getAPIURL(uri))
   if (params) {
     Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]))
