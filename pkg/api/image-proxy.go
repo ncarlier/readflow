@@ -1,109 +1,65 @@
 package api
 
 import (
-	"io"
 	"net"
 	"net/http"
 	"strings"
 
+	"github.com/rs/zerolog/log"
+
+	"github.com/ncarlier/readflow/pkg/cache"
 	"github.com/ncarlier/readflow/pkg/config"
 	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/helper"
 )
 
-var hopHeaders = []string{
-	"Connection",
-	"Keep-Alive",
-	"Proxy-Authenticate",
-	"Proxy-Authorization",
-	"Te", // canonicalized version of "TE"
-	"Trailers",
-	"Transfer-Encoding",
-	"Upgrade",
-}
-
-func copyHeader(dst, src http.Header) {
-	for k, vv := range src {
-		for _, v := range vv {
-			if dst.Get(k) != "" {
-				dst.Set(k, v)
-			} else {
-				dst.Add(k, v)
-			}
-		}
-	}
-}
-
-func delHopHeaders(header http.Header) {
-	for _, h := range hopHeaders {
-		header.Del(h)
-	}
-}
-
-func appendHostToXForwardHeader(header http.Header, host string) {
-	// If we aren't the first proxy retain prior
-	// X-Forwarded-For information as a comma+space
-	// separated list and fold multiple headers into one.
-	if prior, ok := header["X-Forwarded-For"]; ok {
-		host = strings.Join(prior, ", ") + ", " + host
-	}
-	header.Set("X-Forwarded-For", host)
-}
-
 // imgProxyHandler is the handler for proxying images.
 func imgProxyHandler(conf *config.Config) http.Handler {
+	if conf.Image.ProxyURL == "" {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			http.Error(w, http.StatusText(http.StatusNoContent), http.StatusNotFound)
+		})
+	}
+	c, err := cache.New(conf.Image.Cache)
+	if err != nil {
+		log.Fatal().Err(err).Msg("unable to setup Image Proxy cache")
+	}
+	down := downloader.NewInternalDownloader(constant.DefaultClient, c, 0)
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		path := strings.TrimPrefix(r.URL.Path, "/img")
+		img := strings.TrimPrefix(r.URL.Path, "/img")
 		q := r.URL.Query()
 		// Redirect if image proxy service not configured or using old UI
 		if q.Has("url") && q.Has("size") {
-			img := q.Get("url")
+			img = q.Get("url")
 			// legacy UI, redirect
 			http.Redirect(w, r, img, http.StatusMovedPermanently)
 			return
 		}
-		if conf.Image.ProxyURL == "" {
-			http.Error(w, http.StatusText(http.StatusNoContent), http.StatusNotFound)
-			return
-		}
 
-		// Build image proxy client
-		req, err := http.NewRequest("GET", conf.Image.ProxyURL+path, http.NoBody)
+		if host, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
+			helper.AddXForwardHeader(&r.Header, host)
+		}
+		asset, resp, err := down.Get(r.Context(), conf.Image.ProxyURL+img, &r.Header)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadGateway)
-			return
-		}
-
-		// Manage request headers: copy, add x-forward, del hop
-		copyHeader(req.Header, r.Header)
-		if clientIP, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
-			appendHostToXForwardHeader(req.Header, clientIP)
-		}
-		delHopHeaders(req.Header)
-
-		// Do proxy request
-		resp, err := constant.DefaultClient.Do(req)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadGateway)
-			return
-		}
-		defer resp.Body.Close()
-
-		// Redirect if image proxy failed
-		if resp.StatusCode >= 400 {
-			// decode image URL from proxy path
-			if img, err := helper.DecodeImageProxyPath(path); err != nil {
+			// Redirect if image proxy failed
+			if decoded, err := decodeImageProxyPath(img); resp == nil || err != nil {
 				http.Error(w, err.Error(), http.StatusBadGateway)
 			} else {
-				http.Redirect(w, r, strings.Replace(img, "http://", "https://", 1), http.StatusTemporaryRedirect)
+				http.Redirect(w, r, strings.Replace(decoded, "http://", "https://", 1), http.StatusTemporaryRedirect)
 			}
 			return
 		}
 
-		// Create proxy response
-		delHopHeaders(resp.Header)
-		copyHeader(w.Header(), resp.Header)
-		w.WriteHeader(resp.StatusCode)
-		io.Copy(w, resp.Body)
+		header := http.Header{}
+		if resp != nil {
+			header = resp.Header
+		}
+
+		// Write response
+		w.WriteHeader(http.StatusOK)
+		helper.AddCacheHeader(&header, constant.CacheMaxAge)
+		asset.Write(w, header)
 	})
 }

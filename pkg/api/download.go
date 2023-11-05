@@ -2,7 +2,6 @@ package api
 
 import (
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/ncarlier/readflow/pkg/helper"
@@ -38,11 +37,11 @@ func download() http.Handler {
 			return
 		}
 
+		// Manage response header
+		header := http.Header{}
+		header.Add("Transfer-Encoding", "chunked")
 		// Write response
-		w.Header().Set("Content-Type", asset.ContentType)
-		// HACK: no Content-Length because of Transfer-Encoding=chunked
-		w.Header().Set("X-Content-Length", strconv.Itoa(len(asset.Data)))
-		w.Header().Set("Content-Disposition", "inline; filename=\""+asset.Name+"\"")
-		w.Write(asset.Data)
+		w.WriteHeader(http.StatusOK)
+		asset.Write(w, header)
 	})
 }

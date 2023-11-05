@@ -122,6 +122,25 @@ func (c *BoltLRUCache) Put(key string, value []byte) error {
 	})
 }
 
+// Clear cache (for testing usage)
+func (c *BoltLRUCache) Clear() error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	return c.db.Update(func(tx *bolt.Tx) error {
+		if err := tx.DeleteBucket(bucketName); err != nil {
+			return err
+		}
+		if _, err := tx.CreateBucketIfNotExists(bucketName); err != nil {
+			return err
+
+		}
+		c.evictionList = list.New()
+		c.entries = make(map[string]*list.Element, c.maxEntries)
+		c.size = 0
+		return nil
+	})
+}
+
 func (c *BoltLRUCache) runEviction(tx *bolt.Tx) error {
 	bucket := tx.Bucket(bucketName)
 	for c.evictionList.Len() > c.maxEntries || c.size > c.maxSize {

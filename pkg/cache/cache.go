@@ -14,6 +14,7 @@ import (
 type Cache interface {
 	Put(key string, value []byte) error
 	Get(key string) ([]byte, error)
+	Clear() error
 	Close() error
 }
 

@@ -8,6 +8,9 @@ import (
 // UserAgent used by HTTP client
 const UserAgent = "Mozilla/5.0 (compatible; Readflow/1.0; +https://github.com/ncarlier/readflow)"
 
+// CacheMaxAge (~3 months)
+const CacheMaxAge = 86400 * 90
+
 // DefaultTimeout for HTTP requests
 const DefaultTimeout = time.Duration(5 * time.Second)
 

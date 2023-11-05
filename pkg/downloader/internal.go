@@ -3,6 +3,7 @@ package downloader
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	nurl "net/url"
@@ -43,36 +44,41 @@ func NewInternalDownloader(client *http.Client, downloadCache cache.Cache, maxCo
 }
 
 // Download web asset from its URL
-func (dl *InternalDownloader) Download(ctx context.Context, url string) (*WebAsset, error) {
+func (dl *InternalDownloader) Get(ctx context.Context, url string, header *http.Header) (*WebAsset, *http.Response, error) {
 	// Ignore special URLs
 	url = strings.TrimSpace(url)
 	if url == "" || strings.HasPrefix(url, "data:") || strings.HasPrefix(url, "#") {
-		return nil, errInvalidURL
+		return nil, nil, errInvalidURL
 	}
 	// Validate URL
 	parsedURL, err := nurl.ParseRequestURI(url)
 	if err != nil || parsedURL.Scheme == "" || parsedURL.Hostname() == "" {
-		return nil, errInvalidURL
+		return nil, nil, errInvalidURL
 	}
 
 	// Get the asset from cache
 	hurl := helper.Hash(url)
 	data, _ := dl.cache.Get(hurl)
 	if data != nil {
-		return NewWebAsset(data)
+		asset, err := NewWebAsset(data)
+		return asset, nil, err
 	}
 
 	// Download the asset, use semaphore to limit concurrent downloads
 	err = dl.dlSemaphore.Acquire(ctx, 1)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	resp, err := dl.download(url)
+	resp, err := dl.get(url, header)
 	dl.dlSemaphore.Release(1)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		return nil, resp, fmt.Errorf("invalide HTTP response: %d", resp.StatusCode)
+	}
 
 	// Get content type
 	contentType := resp.Header.Get("Content-Type")
@@ -84,7 +90,7 @@ func (dl *InternalDownloader) Download(ctx context.Context, url string) (*WebAss
 	// Get response body
 	bodyContent, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, resp, err
 	}
 
 	// Put asset into the cache
@@ -95,27 +101,33 @@ func (dl *InternalDownloader) Download(ctx context.Context, url string) (*WebAss
 	}
 	data, err = asset.Encode()
 	if err != nil {
-		return nil, err
+		return nil, resp, err
 	}
 	if err := dl.cache.Put(hurl, data); err != nil {
-		return nil, err
+		return nil, resp, err
 	}
 
-	return asset, nil
+	return asset, resp, nil
 }
 
-func (dl *InternalDownloader) download(url string) (*http.Response, error) {
+func (dl *InternalDownloader) get(url string, header *http.Header) (*http.Response, error) {
 	req, err := http.NewRequest("GET", url, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
 
+	// Manage request headers: defaults, merge, del hop
 	req.Header.Set("User-Agent", constant.UserAgent)
+	mergeHeader(&req.Header, header)
+	delHopByHopheaders(&req.Header)
 
 	resp, err := dl.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
+
+	// Clear hop headers
+	delHopByHopheaders(&req.Header)
 
 	return resp, nil
 }

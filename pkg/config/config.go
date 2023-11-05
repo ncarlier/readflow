@@ -53,6 +53,7 @@ func NewConfig() *Config {
 		},
 		Image: ImageConfig{
 			ProxySizes: "320,768",
+			Cache:      "boltdb:///tmp/readflow-images.cache?maxSize=256,maxEntries=1024,maxEntrySize=2",
 		},
 		RateLimiting: RateLimitingConfig{
 			Notification: RateLimiting{

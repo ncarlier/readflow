@@ -2,6 +2,7 @@ package downloader
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/ncarlier/readflow/pkg/cache"
 	"github.com/ncarlier/readflow/pkg/constant"
@@ -9,7 +10,7 @@ import (
 
 // Downloader is a service used to download assets.
 type Downloader interface {
-	Download(ctx context.Context, url string) (*WebAsset, error)
+	Get(ctx context.Context, url string, header *http.Header) (*WebAsset, *http.Response, error)
 }
 
 // NewDefaultDownloader create new downloader with defaults

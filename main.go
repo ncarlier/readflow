@@ -81,7 +81,7 @@ func main() {
 	// configure download cache
 	downloadCache, err := cache.NewDefault("readflow-downloads")
 	if err != nil {
-		log.Fatal().Err(err).Msg("unable to configure the cache storage")
+		log.Fatal().Err(err).Msg("unable to configure the downloader cache storage")
 	}
 
 	// configure the service registry

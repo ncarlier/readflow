@@ -125,7 +125,7 @@ func (exp *SingleHTMLExporter) processURL(ctx context.Context, url, parentURL st
 	}
 
 	// Download URL
-	asset, err := exp.dl.Download(ctx, url)
+	asset, _, err := exp.dl.Get(ctx, url, nil)
 	if err != nil {
 		return nil, errSkippedURL
 	}

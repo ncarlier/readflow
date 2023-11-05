@@ -115,7 +115,10 @@ proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
 ## Image proxy supported sizes
 # Comma separated list of image size
 # Default: "320,768"
-sizes = "${READFLOW_IMAGE_PROXY_SIZES}"
+proxy_sizes = "${READFLOW_IMAGE_PROXY_SIZES}"
+## Cache paramters
+# Default: "boltdb:///tmp/readflow-images.cache?maxSize=256,maxEntries=1024,maxEntrySize=2"
+cache = "${READFLOW_IMAGE_CACHE}"
 
 [pdf]
 ## PDF generator service provider, disabled if empty

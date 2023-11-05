@@ -9,11 +9,8 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/avatar"
 	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/rs/zerolog/log"
-)
-
-const (
-	MaxAge = 864000
 )
 
 func newAvatarGenerator(provider string) (*avatar.Generator, error) {
@@ -56,11 +53,11 @@ func avatarHandler(conf *config.Config) http.Handler {
 			http.Error(w, "unable to generate avatar image", http.StatusInternalServerError)
 			return
 		}
-		expires := time.Now().Add(MaxAge * time.Second)
+		expires := time.Now().Add(constant.CacheMaxAge * time.Second)
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "image/png")
 		w.Header().Set("Pragma", "public")
-		w.Header().Set("Cache-Control", fmt.Sprintf("max-age=%d", MaxAge))
+		w.Header().Set("Cache-Control", fmt.Sprintf("max-age=%d", constant.CacheMaxAge))
 		w.Header().Set("Expires", expires.Local().String())
 		img.WriteTo(w)
 	})
