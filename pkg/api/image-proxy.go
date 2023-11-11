@@ -44,7 +44,7 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 		asset, resp, err := down.Get(r.Context(), conf.Image.ProxyURL+img, &r.Header)
 		if err != nil {
 			// Redirect if image proxy failed
-			if decoded, err := decodeImageProxyPath(img); resp == nil || err != nil {
+			if decoded, err := decodeImageProxyPath(img); err != nil {
 				http.Error(w, err.Error(), http.StatusBadGateway)
 			} else {
 				http.Redirect(w, r, strings.Replace(decoded, "http://", "https://", 1), http.StatusTemporaryRedirect)

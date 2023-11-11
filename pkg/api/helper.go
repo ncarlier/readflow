@@ -2,9 +2,9 @@ package api
 
 import (
 	"encoding/base64"
+	"errors"
 	"regexp"
 )
-
 
 var proxyPathRe = regexp.MustCompile(`^/([^/]+)/([^/]+)/(.+)`)
 
@@ -12,6 +12,7 @@ var proxyPathRe = regexp.MustCompile(`^/([^/]+)/([^/]+)/(.+)`)
 func decodeImageProxyPath(path string) (url string, err error) {
 	parts := proxyPathRe.FindStringSubmatch(path)
 	if len(parts) != 4 {
+		err = errors.New("invalid image proxy path")
 		return
 	}
 	encoded := parts[3]
