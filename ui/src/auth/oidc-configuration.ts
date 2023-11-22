@@ -1,5 +1,6 @@
-import { UserManagerSettings } from 'oidc-client-ts'
+import { UserManagerSettings, WebStorageStateStore } from 'oidc-client-ts'
 import { AUTHORITY, CLIENT_ID } from '../config'
+import { isInstalled } from '../helpers'
 
 export const config: UserManagerSettings = {
   authority: AUTHORITY,
@@ -8,4 +9,5 @@ export const config: UserManagerSettings = {
   monitorSession: document.location.hostname !== 'localhost',
   response_type: 'code',
   scope: 'openid',
+  userStore: isInstalled() ? new WebStorageStateStore({ store: window.localStorage }) : undefined
 }
