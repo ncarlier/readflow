@@ -4,6 +4,7 @@ import (
 	"net"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/rs/zerolog/log"
 
@@ -28,21 +29,16 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 	down := downloader.NewInternalDownloader(constant.DefaultClient, c, 0)
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
 		img := strings.TrimPrefix(r.URL.Path, "/img")
-		q := r.URL.Query()
-		// Redirect if image proxy service not configured or using old UI
-		if q.Has("url") && q.Has("size") {
-			img = q.Get("url")
-			// legacy UI, redirect
-			http.Redirect(w, r, img, http.StatusMovedPermanently)
-			return
-		}
 
 		if host, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
 			helper.AddXForwardHeader(&r.Header, host)
 		}
 		asset, resp, err := down.Get(r.Context(), conf.Image.ProxyURL+img, &r.Header)
 		if err != nil {
+			log.Info().Err(err).Dur("took", time.Since(start)).Msg("unable to get image via proxy")
 			// Redirect if image proxy failed
 			if decoded, err := decodeImageProxyPath(img); err != nil {
 				http.Error(w, err.Error(), http.StatusBadGateway)
@@ -61,5 +57,6 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 		w.WriteHeader(http.StatusOK)
 		helper.AddCacheHeader(&header, constant.CacheMaxAge)
 		asset.Write(w, header)
+		log.Info().Str("name", asset.Name).Dur("took", time.Since(start)).Msg("got image via proxy")
 	})
 }
