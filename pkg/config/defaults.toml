@@ -117,7 +117,7 @@ proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
 # Default: "320,768"
 proxy_sizes = "${READFLOW_IMAGE_PROXY_SIZES}"
 ## Cache paramters
-# Default: "boltdb:///tmp/readflow-images.cache?maxSize=256,maxEntries=1024,maxEntrySize=2"
+# Default: "boltdb:///tmp/readflow-images.cache?maxSize=256,maxEntries=5000,maxEntrySize=1"
 cache = "${READFLOW_IMAGE_CACHE}"
 
 [pdf]
