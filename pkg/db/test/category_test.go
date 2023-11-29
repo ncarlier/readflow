@@ -3,14 +3,14 @@ package dbtest
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/ncarlier/readflow/pkg/model"
 )
 
 func assertCategoryExists(t *testing.T, uid uint, title, notif string) *model.Category {
 	category, err := testDB.GetCategoryByUserAndTitle(uid, title)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	if category != nil {
 		return category
 	}
@@ -20,10 +20,10 @@ func assertCategoryExists(t *testing.T, uid uint, title, notif string) *model.Ca
 	}
 
 	category, err = testDB.CreateCategoryForUser(uid, createForm)
-	assert.Nil(t, err)
-	assert.NotNil(t, category)
-	assert.NotNil(t, category.ID)
-	assert.Equal(t, title, category.Title)
+	require.Nil(t, err)
+	require.NotNil(t, category)
+	require.NotNil(t, category.ID)
+	require.Equal(t, title, category.Title)
 	return category
 }
 func TestCreateAndUpdateCategory(t *testing.T) {
@@ -42,15 +42,15 @@ func TestCreateAndUpdateCategory(t *testing.T) {
 		Title: &title,
 	}
 	category, err := testDB.UpdateCategoryForUser(uid, update)
-	assert.Nil(t, err)
-	assert.NotNil(t, category)
-	assert.NotNil(t, category.ID)
-	assert.Equal(t, title, category.Title)
+	require.Nil(t, err)
+	require.NotNil(t, category)
+	require.NotNil(t, category.ID)
+	require.Equal(t, title, category.Title)
 
 	// Count categories of test user
 	nb, err := testDB.CountCategoriesByUser(uid)
-	assert.Nil(t, err)
-	assert.Positive(t, nb)
+	require.Nil(t, err)
+	require.Positive(t, nb)
 }
 
 func TestDeleteCategory(t *testing.T) {
@@ -63,13 +63,13 @@ func TestDeleteCategory(t *testing.T) {
 	category := assertCategoryExists(t, uid, title, "none")
 
 	categories, err := testDB.GetCategoriesByUser(uid)
-	assert.Nil(t, err)
-	assert.Positive(t, len(categories), "categories should not be empty")
+	require.Nil(t, err)
+	require.Positive(t, len(categories), "categories should not be empty")
 
 	err = testDB.DeleteCategoryByUser(uid, *category.ID)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	category, err = testDB.GetCategoryByUserAndTitle(uid, title)
-	assert.Nil(t, err)
-	assert.Nil(t, category)
+	require.Nil(t, err)
+	require.Nil(t, category)
 }

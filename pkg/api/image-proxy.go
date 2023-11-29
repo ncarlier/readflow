@@ -32,19 +32,21 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 		start := time.Now()
 
 		img := strings.TrimPrefix(r.URL.Path, "/img")
+		_, opts, src, err := decodeImageProxyPath(img)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+		logger := log.With().Str("src", src).Str("opts", opts).Logger()
 
 		if host, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
 			helper.AddXForwardHeader(&r.Header, host)
 		}
+		logger.Debug().Msg("getting image via proxy")
 		asset, resp, err := down.Get(r.Context(), conf.Image.ProxyURL+img, &r.Header)
 		if err != nil {
-			log.Info().Err(err).Dur("took", time.Since(start)).Msg("unable to get image via proxy")
+			logger.Info().Err(err).Dur("took", time.Since(start)).Msg("unable to get image via proxy")
 			// Redirect if image proxy failed
-			if decoded, err := decodeImageProxyPath(img); err != nil {
-				http.Error(w, err.Error(), http.StatusBadGateway)
-			} else {
-				http.Redirect(w, r, strings.Replace(decoded, "http://", "https://", 1), http.StatusTemporaryRedirect)
-			}
+			http.Redirect(w, r, strings.Replace(src, "http://", "https://", 1), http.StatusTemporaryRedirect)
 			return
 		}
 
@@ -57,6 +59,6 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 		w.WriteHeader(http.StatusOK)
 		helper.AddCacheHeader(&header, constant.CacheMaxAge)
 		asset.Write(w, header)
-		log.Info().Str("name", asset.Name).Dur("took", time.Since(start)).Msg("got image via proxy")
+		logger.Info().Dur("took", time.Since(start)).Msg("got image via proxy")
 	})
 }
