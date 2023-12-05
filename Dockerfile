@@ -60,7 +60,7 @@ ADD ./pkg/config/defaults.toml /etc/readflow.toml
 ENV READFLOW_CONFIG /etc/readflow.toml
 
 # Serve UI
-ENV READFLOW_UI /var/local/html
+ENV READFLOW_UI_DIRECTORY /var/local/html
 
 # Exposed ports
 EXPOSE 8080 9090
