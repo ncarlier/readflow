@@ -20,7 +20,7 @@ func Logger(next http.Handler) http.Handler {
 				requestID = ""
 			}
 			event := log.Debug()
-			if o.status >= 400 {
+			if o.status >= http.StatusBadRequest && o.status != http.StatusPaymentRequired {
 				event = log.Info()
 			}
 			event.Str(
