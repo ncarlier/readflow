@@ -41,7 +41,7 @@ services:
   ########################################
   readflow:
     #build: .
-    image: "ncarlier/readflow:latest"
+    image: "ncarlier/readflow:edge"
     restart: always
     depends_on:
       - db
