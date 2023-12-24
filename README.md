@@ -50,6 +50,8 @@ docker run -it --rm \
 docker compose up
 ```
 
+> The default Docker Compose file mounts a passwd file with a `demo` user having `demo` as password.
+
 ## Configuration
 
 Readflow configuration is a TOML file that you can specify using the `--config` command line parameter or by setting the `READFLOW_CONFIG` environment variable.

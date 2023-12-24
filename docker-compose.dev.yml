@@ -14,7 +14,7 @@ services:
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
   #######################################
-  # Imagor: Image proxy
+  # Imgproxy: Image proxy
   #######################################
   imgproxy:
     image: darthsim/imgproxy
@@ -23,7 +23,7 @@ services:
       IMGPROXY_SALT: ${READFLOW_HASH_SECRET_SALT:-706570706572} 
       IMGPROXY_ENABLE_WEBP_DETECTION: true 
     ports:
-      - "${IMAGOR_PORT:-8081}:8080"
+      - "${IMGPROXY_PORT:-8081}:8080"
   #######################################
   # Goenberg: PDF generator
   #######################################

@@ -14,6 +14,28 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
+  #######################################
+  # Imgproxy: Image proxy
+  #######################################
+  imgproxy:
+    image: darthsim/imgproxy
+    environment:
+      IMGPROXY_KEY: ${READFLOW_HASH_SECRET_KEY:-736563726574}
+      IMGPROXY_SALT: ${READFLOW_HASH_SECRET_SALT:-706570706572}
+      IMGPROXY_ENABLE_WEBP_DETECTION: true 
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+    restart: always
+
+  #######################################
+  # Gotengerg: PDF generator
+  #######################################
+  gotenberg:
+    image: gotenberg/gotenberg:7
+    restart: always
+
   ########################################
   # readflow
   ########################################
@@ -27,6 +49,9 @@ services:
       - "${PORT:-8080}:8080"
     environment:
       - READFLOW_DATABASE_URI=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-secret}@db/${POSTGRES_DB:-readflow}?sslmode=disable
+      - READFLOW_METRICS_LISTEN_ADDR=:9090
+      - READFLOW_IMAGE_PROXY_URL=http://imagor:8080
+      - READFLOW_PDF_SERVICE_PROVIDER=http://gotenberg:3000/forms/chromium/convert/html
       - READFLOW_AUTHN_METHOD=basic
       - READFLOW_AUTHN_BASIC_HTPASSWD_FILE=file:///var/local/demo.htpasswd # "demo" as username and password
     volumes:
