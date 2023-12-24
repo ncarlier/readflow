@@ -48,7 +48,7 @@ services:
     ports:
       - "${PORT:-8080}:8080"
     environment:
-      - READFLOW_DB=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-secret}@db/${POSTGRES_DB:-readflow}?sslmode=disable
+      - READFLOW_DATABASE_URI=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-secret}@db/${POSTGRES_DB:-readflow}?sslmode=disable
       - READFLOW_LISTEN_METRICS=:9090
       - READFLOW_IMAGE_PROXY_URL=http://imagor:8080
       - READFLOW_AUTHN=file:///var/local/demo.htpasswd
