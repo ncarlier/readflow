@@ -12,8 +12,8 @@ import (
 //go:embed defaults.toml
 var ConfigFile embed.FS
 
-// InitConfigFile initialize the config file
-var InitConfigFile = flag.String("init-config", "", "Initialize configuration file")
+// InitConfigFlag is the flag used to initialize the config file
+var InitConfigFlag = flag.String("init-config", "", "Initialize configuration file")
 
 // WriteConfigFile write configuration file
 func WriteConfigFile(filename string) error {

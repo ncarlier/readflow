@@ -1,12 +1,16 @@
 package config
 
 import (
+	"flag"
 	"io"
 	"os"
 
 	"github.com/BurntSushi/toml"
 	"github.com/imdario/mergo"
 )
+
+// ConfigFile is the flag used to load the config file
+var ConfigFileFlag *string
 
 // NewConfig create new configuration
 func NewConfig() *Config {
@@ -87,4 +91,12 @@ func (c *Config) LoadFile(path string) error {
 	mergo.Merge(c, NewConfig())
 
 	return nil
+}
+
+func init() {
+	defaultValue := ""
+	if value, ok := os.LookupEnv("READFLOW_CONFIG"); ok {
+		defaultValue = value
+	}
+	ConfigFileFlag = flag.String("config", defaultValue, "Configuration file to load [ENV: READFLOW_CONFIG]")
 }

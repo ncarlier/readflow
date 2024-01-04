@@ -15,7 +15,6 @@ import (
 	"github.com/ncarlier/readflow/pkg/api"
 	"github.com/ncarlier/readflow/pkg/cache"
 	"github.com/ncarlier/readflow/pkg/config"
-	configflag "github.com/ncarlier/readflow/pkg/config/flag"
 	"github.com/ncarlier/readflow/pkg/db"
 	"github.com/ncarlier/readflow/pkg/exporter"
 	"github.com/ncarlier/readflow/pkg/exporter/pdf"
@@ -36,11 +35,7 @@ func init() {
 }
 
 func main() {
-	// get executable flags
-	flags := config.Flags{}
-	configflag.Bind(&flags, "READFLOW")
-
-	// parse command line (and environment variables)
+	// parse command line
 	flag.Parse()
 
 	// show version if asked
@@ -49,17 +44,18 @@ func main() {
 		os.Exit(0)
 	}
 
-	// init config file
-	if config.InitConfigFile != nil && *config.InitConfigFile != "" {
-		if err := config.WriteConfigFile(*config.InitConfigFile); err != nil {
+	// init configuration file
+	if config.InitConfigFlag != nil && *config.InitConfigFlag != "" {
+		if err := config.WriteConfigFile(*config.InitConfigFlag); err != nil {
 			log.Fatal().Err(err).Msg("unable to init configuration file")
 		}
 		os.Exit(0)
 	}
 
+	// load configuration file
 	conf := config.NewConfig()
-	if flags.Config != "" {
-		if err := conf.LoadFile(flags.Config); err != nil {
+	if config.ConfigFileFlag != nil && *config.ConfigFileFlag != "" {
+		if err := conf.LoadFile(*config.ConfigFileFlag); err != nil {
 			log.Fatal().Err(err).Msg("unable to load configuration file")
 		}
 	}
