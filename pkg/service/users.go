@@ -154,6 +154,7 @@ func (reg *Registry) GetUserByHashID(ctx context.Context, hashid string) (*model
 
 // UpdateUser update user account (required admin access)
 func (reg *Registry) UpdateUser(ctx context.Context, form model.UserForm) (*model.User, error) {
+	start := time.Now()
 	uid := getCurrentUserIDFromContext(ctx)
 	if !isAdmin(ctx) {
 		err := errors.New("forbidden")
@@ -201,7 +202,9 @@ func (reg *Registry) UpdateUser(ctx context.Context, form model.UserForm) (*mode
 	}
 	reg.logger.Info().Uint(
 		"uid", *user.ID,
-	).Str("username", user.Username).Msg("user updated")
+	).Str(
+		"username", user.Username,
+	).Dur("took", time.Since(start)).Msg("user updated")
 
 	reg.events.Publish(event.NewEvent(EventUpdateUser, *user))
 

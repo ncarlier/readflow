@@ -16,8 +16,8 @@ const unableToUpdateArticleErrorMsg = "unable to update article"
 
 // UpdateArticle update article
 func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdateForm) (*model.Article, error) {
-	uid := getCurrentUserIDFromContext(ctx)
 	start := time.Now()
+	uid := getCurrentUserIDFromContext(ctx)
 
 	logger := reg.logger.With().Uint("uid", uid).Uint("id", form.ID).Logger()
 

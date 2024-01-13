@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/ncarlier/readflow/pkg/model"
 )
@@ -59,6 +60,7 @@ func (reg *Registry) GetArticle(ctx context.Context, id uint) (*model.Article, e
 
 // MarkAllArticlesAsRead set status to read for all user's articles of a specific status and category
 func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, status string, categoryID *uint) (int64, error) {
+	start := time.Now()
 	uid := getCurrentUserIDFromContext(ctx)
 
 	nb, err := reg.db.MarkAllArticlesAsReadByUser(uid, status, categoryID)
@@ -70,6 +72,8 @@ func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, status string, c
 	}
 	reg.logger.Debug().Uint(
 		"uid", uid,
+	).Dur(
+		"took", time.Since(start),
 	).Msg("all articles marked as read")
 
 	return nb, nil
@@ -77,6 +81,7 @@ func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, status string, c
 
 // CleanHistory remove all read articles
 func (reg *Registry) CleanHistory(ctx context.Context) (int64, error) {
+	start := time.Now()
 	uid := getCurrentUserIDFromContext(ctx)
 
 	nb, err := reg.db.DeleteAllReadArticlesByUser(uid)
@@ -88,6 +93,8 @@ func (reg *Registry) CleanHistory(ctx context.Context) (int64, error) {
 	}
 	reg.logger.Debug().Uint(
 		"uid", uid,
+	).Dur(
+		"took", time.Since(start),
 	).Msg("history purged")
 
 	return nb, nil

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
 
@@ -135,6 +136,7 @@ func (reg *Registry) NotifyDevices(ctx context.Context, payload *model.DeviceNot
 	}
 	counter := 0
 	for _, device := range *devices {
+		start := time.Now()
 		logger = reg.logger.With().Uint("uid", uid).Uint("device", *device.ID).Logger()
 		// Rate limiting
 		if _, _, _, ok, err := reg.notificationRateLimiter.Take(ctx, user.Username); err != nil || !ok {
@@ -162,11 +164,11 @@ func (reg *Registry) NotifyDevices(ctx context.Context, payload *model.DeviceNot
 			continue
 		}
 		if res.StatusCode >= 400 {
-			logger.Info().Err(errors.New(res.Status)).Int("status", res.StatusCode).Msg(errNotification)
+			logger.Info().Err(errors.New(res.Status)).Int("status", res.StatusCode).Dur("took", time.Since(start)).Msg(errNotification)
 			continue
 		}
 		counter++
-		logger.Info().Str("title", payload.Title).Msg("notification sent to user device")
+		logger.Info().Str("title", payload.Title).Dur("took", time.Since(start)).Msg("notification sent to user device")
 	}
 	return counter, nil
 }

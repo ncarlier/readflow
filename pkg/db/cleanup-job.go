@@ -33,6 +33,7 @@ func NewCleanupDatabaseJob(db DB) job.Job {
 func (cdj *CleanupDatabaseJob) Start() {
 	cdj.logger.Debug().Msg("job started")
 	for range cdj.ticker.C {
+		start := time.Now()
 		cdj.logger.Debug().Msg("running job...")
 		nb, err := cdj.db.DeleteReadArticlesOlderThan(maximumArticleRetentionDuration)
 		if err != nil {
@@ -44,7 +45,8 @@ func (cdj *CleanupDatabaseJob) Start() {
 		if nb > 0 {
 			evt = cdj.logger.Info()
 		}
-		evt.Int64("removed_articles", nb).Msg("cleanup done")
+		evt.Int64("removed_articles", nb).Dur("took", time.Since(start)).Msg("cleanup done")
+		start = time.Now()
 		nb, err = cdj.db.DeleteInactiveDevicesOlderThan(maximumDeviceInactivityDuration)
 		if err != nil {
 			cdj.logger.Error().Err(err).Msg("unable to clean old devices from the database")
@@ -55,7 +57,7 @@ func (cdj *CleanupDatabaseJob) Start() {
 		if nb > 0 {
 			evt = cdj.logger.Info()
 		}
-		evt.Int64("removed_devices", nb).Msg("cleanup done")
+		evt.Int64("removed_devices", nb).Dur("took", time.Since(start)).Msg("cleanup done")
 	}
 }
 
