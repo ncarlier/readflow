@@ -44,7 +44,7 @@
     "gitpod": "GENERATE_SOURCEMAP=false REACT_APP_AUTHORITY=none REACT_APP_API_ROOT=https://8080-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST} react-scripts start",
     "build": "npm run lint && react-scripts build",
     "test": "react-scripts test",
-    "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/"
   },
   "eslintConfig": {
     "extends": "react-app"
