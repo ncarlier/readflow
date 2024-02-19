@@ -110,7 +110,7 @@ func (ws internalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage
 }
 
 func (ws internalWebScraper) getContentType(ctx context.Context, rawurl string) (string, error) {
-	req, err := http.NewRequest("HEAD", rawurl, nil)
+	req, err := http.NewRequest("HEAD", rawurl, http.NoBody)
 	if err != nil {
 		return "", err
 	}
@@ -124,7 +124,7 @@ func (ws internalWebScraper) getContentType(ctx context.Context, rawurl string) 
 }
 
 func (ws internalWebScraper) get(ctx context.Context, rawurl string) (*http.Response, error) {
-	req, err := http.NewRequest("GET", rawurl, nil)
+	req, err := http.NewRequest("GET", rawurl, http.NoBody)
 	if err != nil {
 		return nil, err
 	}

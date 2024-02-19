@@ -158,8 +158,8 @@ func (b *ArticleCreateFormBuilder) Random() *ArticleCreateFormBuilder {
 	b.form.Title = gofakeit.Sentence(3)
 	text := gofakeit.Paragraph(2, 2, 5, ".")
 	b.form.Text = &text
-	html := fmt.Sprintf("<p>%s</p>", *b.form.Text)
-	b.form.HTML = &html
+	_html := fmt.Sprintf("<p>%s</p>", *b.form.Text)
+	b.form.HTML = &_html
 	image := gofakeit.ImageURL(320, 200)
 	b.form.Image = &image
 	url := gofakeit.URL()
@@ -200,8 +200,8 @@ func (b *ArticleCreateFormBuilder) Text(text string) *ArticleCreateFormBuilder {
 }
 
 // HTML set article HTML
-func (b *ArticleCreateFormBuilder) HTML(html string) *ArticleCreateFormBuilder {
-	b.form.HTML = &html
+func (b *ArticleCreateFormBuilder) HTML(_html string) *ArticleCreateFormBuilder {
+	b.form.HTML = &_html
 	return b
 }
 

@@ -77,6 +77,7 @@ type AuthNBasicConfig struct {
 type UIConfig struct {
 	Directory string `toml:"directory"`
 	PublicURL string `toml:"public_url"`
+	ClientID  string `toml:"client_id"`
 }
 
 // HashConfig for hash configuration section

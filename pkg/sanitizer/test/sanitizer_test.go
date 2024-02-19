@@ -20,19 +20,19 @@ var tests = []struct {
 func TestSanitizer(t *testing.T) {
 	bl, err := sanitizer.NewBlockList("file://block-list.txt", sanitizer.DefaultBlockList)
 	assert.Nil(t, err)
-	sanitizer := sanitizer.NewSanitizer(bl)
+	san := sanitizer.NewSanitizer(bl)
 
 	for _, tt := range tests {
-		cleaned := sanitizer.Sanitize(tt.content)
+		cleaned := san.Sanitize(tt.content)
 		assert.Equal(t, tt.expectation, cleaned)
 	}
 }
 
 func TestSanitizerWithoutBlockList(t *testing.T) {
-	sanitizer := sanitizer.NewSanitizer(nil)
+	san := sanitizer.NewSanitizer(nil)
 
 	for idx, tt := range tests {
-		cleaned := sanitizer.Sanitize(tt.content)
+		cleaned := san.Sanitize(tt.content)
 		if idx == 0 || idx == 3 {
 			assert.NotEqual(t, tt.expectation, cleaned)
 		} else {

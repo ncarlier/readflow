@@ -68,7 +68,7 @@ func evalTemplateFilters(value string, filters []string) (string, error) {
 	return value, err
 }
 
-func evalTemplateFilter(value string, filter string) (string, error) {
+func evalTemplateFilter(value, filter string) (string, error) {
 	switch filter {
 	case "urlquery":
 		return url.QueryEscape(value), nil

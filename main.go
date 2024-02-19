@@ -4,59 +4,27 @@ package main
 //go:generate gofmt -s -w autogen/db/postgres/db_sql_migration.go
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
-	"github.com/ncarlier/readflow/pkg/api"
-	"github.com/ncarlier/readflow/pkg/cache"
+	"github.com/ncarlier/readflow/cmd"
 	"github.com/ncarlier/readflow/pkg/config"
-	"github.com/ncarlier/readflow/pkg/db"
-	"github.com/ncarlier/readflow/pkg/exporter"
-	"github.com/ncarlier/readflow/pkg/exporter/pdf"
 	"github.com/ncarlier/readflow/pkg/logger"
-	"github.com/ncarlier/readflow/pkg/metric"
-	"github.com/ncarlier/readflow/pkg/server"
-	"github.com/ncarlier/readflow/pkg/service"
-	"github.com/ncarlier/readflow/pkg/version"
 	"github.com/rs/zerolog/log"
-)
 
-func init() {
-	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: readflow OPTIONS\n\n")
-		fmt.Fprintf(os.Stderr, "Options:\n")
-		flag.PrintDefaults()
-	}
-}
+	_ "github.com/ncarlier/readflow/cmd/all"
+)
 
 func main() {
 	// parse command line
 	flag.Parse()
 
-	// show version if asked
-	if *version.ShowVersion {
-		version.Print()
-		os.Exit(0)
-	}
-
-	// init configuration file
-	if config.InitConfigFlag != nil && *config.InitConfigFlag != "" {
-		if err := config.WriteConfigFile(*config.InitConfigFlag); err != nil {
-			log.Fatal().Err(err).Msg("unable to init configuration file")
-		}
-		os.Exit(0)
-	}
-
-	// load configuration file
+	// load configuration
 	conf := config.NewConfig()
-	if config.ConfigFileFlag != nil && *config.ConfigFileFlag != "" {
-		if err := conf.LoadFile(*config.ConfigFileFlag); err != nil {
-			log.Fatal().Err(err).Msg("unable to load configuration file")
+	if cmd.ConfigFlag != "" {
+		if err := conf.LoadFile(cmd.ConfigFlag); err != nil {
+			log.Fatal().Err(err).Str("filename", cmd.ConfigFlag).Msg("unable to load configuration file")
 		}
 	}
 
@@ -66,95 +34,18 @@ func main() {
 	// configure the logger
 	logger.Configure(conf.Log.Level, conf.Log.Format, conf.Integration.Sentry.DSN)
 
-	log.Debug().Msg("starting readflow...")
+	args := flag.Args()
+	commandLabel, idx := cmd.GetFirstCommand(args)
 
-	// configure the DB
-	database, err := db.NewDB(conf.Database.URI)
-	if err != nil {
-		log.Fatal().Err(err).Msg("unable to configure the database")
-	}
-
-	// configure download cache
-	downloadCache, err := cache.NewDefault("readflow-downloads")
-	if err != nil {
-		log.Fatal().Err(err).Msg("unable to configure the downloader cache storage")
-	}
-
-	// configure the service registry
-	err = service.Configure(*conf, database, downloadCache)
-	if err != nil {
-		database.Close()
-		log.Fatal().Err(err).Msg("unable to configure the service registry")
-	}
-
-	// register external exporters...
-	if conf.PDF.ServiceProvider != "" {
-		log.Info().Str("provider", conf.PDF.ServiceProvider).Msg("using PDF generator service")
-		exporter.Register("pdf", pdf.NewPDFExporter(conf.PDF.ServiceProvider))
-	}
-
-	// create HTTP server
-	httpServer := server.NewHTTPServer(conf)
-
-	// create and start metrics server
-	metricsServer := server.NewMetricsServer(conf)
-	if metricsServer != nil {
-		metric.StartCollectors(database)
-		go metricsServer.ListenAndServe()
-	}
-
-	// create and start SMTP server
-	smtpServer := server.NewSMTPHTTPServer(conf)
-	if smtpServer != nil {
-		go smtpServer.ListenAndServe()
-	}
-
-	done := make(chan bool)
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
-
-	go func() {
-		<-quit
-		log.Debug().Msg("shutting down readflow...")
-		api.Shutdown()
-
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer cancel()
-
-		if err := httpServer.Shutdown(ctx); err != nil {
-			log.Fatal().Err(err).Msg("unable to gracefully shutdown the HTTP server")
+	if command, ok := cmd.Commands[commandLabel]; ok {
+		if err := command.Exec(args[idx+1:], conf); err != nil {
+			log.Fatal().Err(err).Str("command", commandLabel).Msg("error during command execution")
 		}
-		if smtpServer != nil {
-			if err := smtpServer.Shutdown(ctx); err != nil {
-				log.Fatal().Err(err).Msg("unable to gracefully shutdown the SMTP server")
-			}
+	} else {
+		if commandLabel != "" {
+			fmt.Fprintf(os.Stderr, "undefined command: %s\n", commandLabel)
 		}
-		if metricsServer != nil {
-			metric.StopCollectors()
-			if err := metricsServer.Shutdown(ctx); err != nil {
-				log.Fatal().Err(err).Msg("unable to gracefully shutdown the metrics server")
-			}
-		}
-
-		service.Shutdown()
-
-		if err := downloadCache.Close(); err != nil {
-			log.Error().Err(err).Msg("unable to gracefully shutdown the cache storage")
-		}
-
-		if err := database.Close(); err != nil {
-			log.Fatal().Err(err).Msg("could not gracefully shutdown database connection")
-		}
-
-		close(done)
-	}()
-
-	// set API health check as started
-	api.Start()
-
-	// start HTTP server
-	httpServer.ListenAndServe()
-
-	<-done
-	log.Debug().Msg("readflow stopped")
+		flag.Usage()
+		os.Exit(0)
+	}
 }

@@ -5,7 +5,7 @@ export const API_BASE_URL = __READFLOW_CONFIG__.apiBaseUrl || process.env.REACT_
 export const AUTHORITY = __READFLOW_CONFIG__.authority || process.env.REACT_APP_AUTHORITY || 'none'
 
 // OIDC client ID
-export const CLIENT_ID = process.env.REACT_APP_CLIENT_ID || '232148523175444487@readflow.app'
+export const CLIENT_ID = __READFLOW_CONFIG__.client_id || process.env.REACT_APP_CLIENT_ID || ''
 
 // Unauthenticated user redirect
 export const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL || '/login'

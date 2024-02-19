@@ -159,8 +159,8 @@ distribution:
 
 ## Start development server (aka: a test database instance)
 dev-server:
-	docker-compose -f docker-compose.dev.yml down
-	docker-compose -f docker-compose.dev.yml up
+	docker compose -f docker-compose.dev.yml down
+	docker compose -f docker-compose.dev.yml up
 .PHONY: dev-server
 
 ## Deploy containers to Docker host

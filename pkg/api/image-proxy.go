@@ -35,6 +35,7 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 		_, opts, src, err := decodeImageProxyPath(img)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
 		logger := log.With().Str("src", src).Str("opts", opts).Logger()
 
