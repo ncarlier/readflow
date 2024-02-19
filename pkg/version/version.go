@@ -1,7 +1,6 @@
 package version
 
 import (
-	"flag"
 	"fmt"
 )
 
@@ -13,9 +12,6 @@ var GitCommit = "n/a"
 
 // Built is the built date
 var Built = "n/a"
-
-// ShowVersion is the flag used to print version
-var ShowVersion = flag.Bool("version", false, "Print version")
 
 // Print version to stdout
 func Print() {

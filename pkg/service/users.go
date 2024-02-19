@@ -93,7 +93,7 @@ func (reg *Registry) DeleteAccount(ctx context.Context) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if err = reg.db.DeleteUser(*user); err != nil {
+	if err := reg.db.DeleteUser(*user); err != nil {
 		return false, err
 	}
 	reg.events.Publish(event.NewEvent(EventDeleteUser, *user))

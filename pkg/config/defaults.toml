@@ -51,7 +51,7 @@ hostname = "${READFLOW_SMTP_HOSTNAME}"
 # - `basic`: Basic Authentication using htpasswd file
 # - `proxy`: Proxied authentication using specific header as username
 # - `oidc`: OpenID Connect authentification using JWT access token validation
-# Default: "oidc"
+# Default: "mock"
 method = "${READFLOW_AUTHN_METHOD}"
 ## Administrators usernames
 # Comma separated list of username
@@ -79,6 +79,8 @@ directory = "${READFLOW_UI_DIRECTORY}"
 ## UI public URL
 # Default: "https://localhost:8080/ui"
 public_url = "${READFLOW_UI_PUBLIC_URL}"
+## UI client ID (when using OpenID Connect issuer)
+client_id = "${READFLOW_UI_CLIENT_ID}"
 
 [hash]
 ## Secret key used by hash algorythms (hex-encoded)

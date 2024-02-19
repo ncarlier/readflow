@@ -10,7 +10,7 @@ You can configure the UI building process by setting environment variables:
 |----------|---------|-------------|
 | `REACT_APP_API_ROOT` | `/` | API base URL to use by default if runtime configuration is not set. |
 | `REACT_APP_AUTHORITY` | `none` | Authorithy to use by default if runtime configuration is not set. OpenID Connect authority provider URL or `none` if the authentication is delegated to another system (ex: Basic Auth). |
-| `REACT_APP_CLIENT_ID` | `readflow-ui` | OpenID Connect client ID. |
+| `REACT_APP_CLIENT_ID` | '' | OpenID Connect client ID. |
 | `REACT_APP_REDIRECT_URL` | `/login` | Page to redirect unauthenticated clients to. |
 
 Example:

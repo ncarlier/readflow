@@ -67,3 +67,6 @@ EXPOSE 8080 9090
 
 # Define entrypoint
 ENTRYPOINT [ "readflow" ]
+
+# Define command
+CMD [ "serve" ]

@@ -30,7 +30,7 @@ func HTML2Text(content string) (string, error) {
 				continue
 			}
 			content := html.UnescapeString(string(tokenizer.Text()))
-			if len(content) > 0 {
+			if content != "" {
 				text.WriteString(content)
 			}
 			if newLineTags.MatchString(token.Data) {

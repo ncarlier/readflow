@@ -43,7 +43,7 @@ func (ws extrenalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage
 }
 
 func (ws extrenalWebScraper) scrap(ctx context.Context, rawurl string) (*WebPage, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", ws.uri, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", ws.uri, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
