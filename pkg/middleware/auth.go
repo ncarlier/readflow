@@ -21,7 +21,7 @@ func Auth(cfg config.AuthNConfig) Middleware {
 		authn = BasicAuth(cfg)
 	case "oidc":
 		logger = logger.With().Str("issuer", cfg.OIDC.Issuer).Logger()
-		authn = OpenIDConnectJWTAuth(cfg)
+		authn = OpenIDConnectAuth(cfg)
 	default:
 		log.Fatal().Str("method", cfg.Method).Msg("non supported authentication method")
 	}

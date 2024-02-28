@@ -8,6 +8,6 @@ export const config: UserManagerSettings = {
   redirect_uri: `${document.location.origin}/login`,
   monitorSession: document.location.hostname !== 'localhost',
   response_type: 'code',
-  scope: 'openid',
+  scope: 'openid profile',
   userStore: isInstalled() ? new WebStorageStateStore({ store: window.localStorage }) : undefined
 }

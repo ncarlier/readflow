@@ -60,7 +60,9 @@ type AuthNConfig struct {
 
 // AuthNOIDCConfig for OpenID Connect authentication configuration section
 type AuthNOIDCConfig struct {
-	Issuer string `toml:"issuer"`
+	Issuer       string `toml:"issuer"`
+	ClientID     string `toml:"client_id"`
+	ClientSecret string `toml:"client_secret"`
 }
 
 // AuthNProxyConfig for proxy authentication configuration section

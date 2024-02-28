@@ -54,17 +54,17 @@ docker compose up
 
 ## Configuration
 
-Readflow configuration is a TOML file that you can specify using the `--config` command line parameter or by setting the `READFLOW_CONFIG` environment variable.
+Readflow configuration is a TOML file that you can specify using the `-c` command line parameter or by setting the `READFLOW_CONFIG` environment variable.
 
-You can initialize a configuration file example by using the `--init-config` command line parameter.
+You can initialize a configuration file example by using the `init-config -f config.toml` command.
 
 A configuration file example can be found [here](./pkg/config/defaults.toml).
 
-Type `readflow -h` to display all parameters and related environment variables.
+Type `readflow --help` to display available commands.
 
 ## UI
 
-You can access Web UI on http://localhost:8080/ui
+You can access Web UI on http://localhost:8080
 
 ![Screenshot](screenshot.png)
 

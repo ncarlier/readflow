@@ -12,13 +12,13 @@ import (
 
 // Keystore OIDC keystore
 type Keystore struct {
-	conf  Configuration
+	conf  *Configuration
 	store sync.Map
 	lock  sync.Mutex
 }
 
 // NewOIDCKeystore create a new OIDC keystore
-func NewOIDCKeystore(conf Configuration) (*Keystore, error) {
+func NewOIDCKeystore(conf *Configuration) (*Keystore, error) {
 	ks := &Keystore{
 		conf: conf,
 	}

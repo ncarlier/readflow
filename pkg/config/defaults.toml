@@ -50,7 +50,7 @@ hostname = "${READFLOW_SMTP_HOSTNAME}"
 # - `mock`: Mocked, aka fake user for testing
 # - `basic`: Basic Authentication using htpasswd file
 # - `proxy`: Proxied authentication using specific header as username
-# - `oidc`: OpenID Connect authentification using JWT access token validation
+# - `oidc`: OpenID Connect authentification
 # Default: "mock"
 method = "${READFLOW_AUTHN_METHOD}"
 ## Administrators usernames
@@ -65,6 +65,10 @@ htpasswd_file = "${READFLOW_AUTHN_BASIC_HTPASSWD_FILE}"
 ## OpenID Connect issuer
 # Default: "https://accounts.readflow.app"
 issuer = "${READFLOW_AUTHN_OIDC_ISSUER}"
+## OpenID client ID (used only for opaque token introspection)
+client_id = "${READFLOW_AUTHN_OIDC_CLIENT_ID}"
+## OpenID client secret (used only for opaque token introspection)
+client_secret = "${READFLOW_AUTHN_OIDC_CLIENT_SECRET}"
 [authn.proxy]
 ## Proxy headers
 # Comma separated list of header carrying the username
@@ -77,9 +81,9 @@ headers = "${READFLOW_AUTHN_PROXY_HEADERS}"
 # Example: "/var/local/html"
 directory = "${READFLOW_UI_DIRECTORY}"
 ## UI public URL
-# Default: "https://localhost:8080/ui"
+# Default: "https://localhost:8080"
 public_url = "${READFLOW_UI_PUBLIC_URL}"
-## UI client ID (when using OpenID Connect issuer)
+## UI client ID (when using OpenID Connect authentication method)
 client_id = "${READFLOW_UI_CLIENT_ID}"
 
 [hash]

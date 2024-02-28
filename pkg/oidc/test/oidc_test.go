@@ -10,12 +10,8 @@ import (
 const issuer = "https://accounts.readflow.app"
 
 func TestOIDCDiscovery(t *testing.T) {
-	cfg, err := oidc.GetOIDCConfiguration(issuer)
+	client, err := oidc.NewOIDCClient(issuer, "", "")
 	require.Nil(t, err)
-	require.Equal(t, issuer, cfg.Issuer)
-
-	keystore, err := oidc.NewOIDCKeystore(cfg)
-	require.Nil(t, err)
-	require.NotNil(t, keystore)
-
+	require.Equal(t, issuer, client.Config.Issuer)
+	require.NotNil(t, client.Keystore)
 }
