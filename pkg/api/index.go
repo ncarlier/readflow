@@ -15,7 +15,7 @@ func index(conf *config.Config) http.Handler {
 		// build UI config file from env variables
 		configFilename := path.Join(conf.UI.Directory, "config.js")
 		if err := conf.WriteUIConfigFile(configFilename); err != nil {
-			log.Fatal().Err(err).Str("filename", configFilename).Msg("failed to create UI config file")
+			log.Warn().Err(err).Str("filename", configFilename).Msg("unable to generate UI config file")
 		}
 		return http.FileServer(http.Dir(conf.UI.Directory))
 	}
