@@ -5,8 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ncarlier/readflow/pkg/constant"
-	"github.com/rs/zerolog/log"
+	"github.com/ncarlier/readflow/pkg/logger"
 )
 
 // Logger is a middleware to log HTTP request
@@ -15,13 +14,13 @@ func Logger(next http.Handler) http.Handler {
 		o := &responseObserver{ResponseWriter: w}
 		start := time.Now()
 		defer func() {
-			requestID, ok := r.Context().Value(constant.ContextRequestID).(string)
+			requestID, ok := r.Context().Value(ContextRequestID).(string)
 			if !ok {
 				requestID = ""
 			}
-			event := log.Debug()
+			event := logger.Debug()
 			if o.status >= http.StatusBadRequest && o.status != http.StatusPaymentRequired {
-				event = log.Info()
+				event = logger.Info()
 			}
 			event.Str(
 				"req-id", requestID,

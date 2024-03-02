@@ -19,7 +19,6 @@ func TestGoTemplateEngine(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, provider)
 	var buf bytes.Buffer
-	data := article.ToMap()
 	err = provider.Execute(&buf, data)
 	assert.Nil(t, err)
 	result := buf.String()

@@ -5,8 +5,8 @@ import (
 	"io"
 	"text/template"
 
-	"github.com/ncarlier/readflow/pkg/helper"
 	templateEngine "github.com/ncarlier/readflow/pkg/template"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 // goTemplateProvider is the structure definition of the Go template provider
@@ -15,7 +15,7 @@ type goTemplateProvider struct {
 }
 
 func newGoTemplateProvider(text string) (templateEngine.Provider, error) {
-	tplName := fmt.Sprintf("gotemplate-%s", helper.Hash(text))
+	tplName := fmt.Sprintf("gotemplate-%s", utils.Hash(text))
 	tpl, err := template.New(tplName).Parse(text)
 	if err != nil {
 		return nil, err

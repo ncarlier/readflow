@@ -12,8 +12,7 @@ import (
 	"golang.org/x/sync/semaphore"
 
 	"github.com/ncarlier/readflow/pkg/cache"
-	"github.com/ncarlier/readflow/pkg/constant"
-	"github.com/ncarlier/readflow/pkg/helper"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 const (
@@ -27,17 +26,19 @@ type InternalDownloader struct {
 	cache                 cache.Cache
 	maxConcurrentDownload int64
 	httpClient            *http.Client
+	userAgent             string
 	dlSemaphore           *semaphore.Weighted
 }
 
 // NewInternalDownloader create new downloader instance
-func NewInternalDownloader(client *http.Client, downloadCache cache.Cache, maxConcurrentDownload int64) Downloader {
+func NewInternalDownloader(client *http.Client, userAgent string, downloadCache cache.Cache, maxConcurrentDownload int64) Downloader {
 	if maxConcurrentDownload <= 0 {
 		maxConcurrentDownload = defaultMaxConcurentDownload
 	}
 	return &InternalDownloader{
 		cache:                 downloadCache,
 		httpClient:            client,
+		userAgent:             userAgent,
 		maxConcurrentDownload: maxConcurrentDownload,
 		dlSemaphore:           semaphore.NewWeighted(maxConcurrentDownload),
 	}
@@ -57,7 +58,7 @@ func (dl *InternalDownloader) Get(ctx context.Context, url string, header *http.
 	}
 
 	// Get the asset from cache
-	hurl := helper.Hash(url)
+	hurl := utils.Hash(url)
 	data, _ := dl.cache.Get(hurl)
 	if data != nil {
 		asset, err := NewWebAsset(data)
@@ -117,7 +118,7 @@ func (dl *InternalDownloader) get(url string, header *http.Header) (*http.Respon
 	}
 
 	// Manage request headers: defaults, merge, del hop
-	req.Header.Set("User-Agent", constant.UserAgent)
+	req.Header.Set("User-Agent", dl.userAgent)
 	mergeHeader(&req.Header, header)
 	delHopByHopheaders(&req.Header)
 

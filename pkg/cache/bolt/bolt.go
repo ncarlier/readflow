@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"sync"
 
-	"github.com/ncarlier/readflow/pkg/helper"
+	"github.com/ncarlier/readflow/pkg/values"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -43,9 +43,9 @@ func New(path string, params url.Values) (*BoltLRUCache, error) {
 	if err != nil {
 		return nil, err
 	}
-	maxSize := helper.GetIntOrDefault(params, "maxSize", defaultMaxSize)
-	maxEntries := helper.GetIntOrDefault(params, "maxEntries", defaultMaxEntries)
-	maxEntrySize := helper.GetIntOrDefault(params, "maxEntrySize", defaultMaxEntrySize)
+	maxSize := values.GetIntOrDefault(params, "maxSize", defaultMaxSize)
+	maxEntries := values.GetIntOrDefault(params, "maxEntries", defaultMaxEntries)
+	maxEntrySize := values.GetIntOrDefault(params, "maxEntrySize", defaultMaxEntrySize)
 	c := &BoltLRUCache{
 		maxSize:      maxSize * 1024 * 1024,
 		maxEntries:   maxEntries,
