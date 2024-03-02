@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/ncarlier/readflow/pkg/model"
 	"github.com/ncarlier/readflow/pkg/template"
 	_ "github.com/ncarlier/readflow/pkg/template/all"
 	"github.com/stretchr/testify/assert"
@@ -16,14 +15,11 @@ Article link: {{ url }}
 Article text: {{ text | json }}
 `
 
-var url = "http://foo.bar"
-var text = `let's call this a "test"`
-
-var article = model.Article{
-	ID:    uint(1),
-	Title: "Foo & Bar",
-	Text:  &text,
-	URL:   &url,
+var data = map[string]interface{}{
+	"id":    uint(1),
+	"title": "Foo & Bar",
+	"text":  `let's call this a "test"`,
+	"url":   "http://foo.bar",
 }
 
 func TestFastTemplateEngine(t *testing.T) {
@@ -31,7 +27,6 @@ func TestFastTemplateEngine(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, provider)
 	var buf bytes.Buffer
-	data := article.ToMap()
 	err = provider.Execute(&buf, data)
 	assert.Nil(t, err)
 	result := buf.String()

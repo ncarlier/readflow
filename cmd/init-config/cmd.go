@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ncarlier/readflow/cmd"
-	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/internal/config"
 )
 
 const cmdName = "init-config"

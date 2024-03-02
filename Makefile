@@ -20,7 +20,7 @@ ARCHIVE=$(APPNAME)-$(GOOS)-$(GOARCH).tgz
 EXECUTABLE=$(APPNAME)$(EXT)
 
 # Extract version infos
-PKG_VERSION:=github.com/ncarlier/$(APPNAME)/pkg/version
+PKG_VERSION:=github.com/ncarlier/$(APPNAME)/internal/version
 VERSION:=`git describe --always --dirty`
 GIT_COMMIT:=`git rev-list -1 HEAD --abbrev-commit`
 BUILT:=`date`

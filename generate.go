@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package main
@@ -119,6 +120,6 @@ func main() {
 		"autogen/db/postgres/db_sql_migration.go",
 		"postgres",
 		"DatabaseSQLMigration",
-		glob("pkg/db/postgres/sql/*.sql"),
+		glob("internal/db/postgres/sql/*.sql"),
 	)
 }

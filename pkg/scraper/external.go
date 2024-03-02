@@ -8,28 +8,30 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
 type extrenalWebScraper struct {
 	uri        string
 	httpClient *http.Client
+	userAgent  string
 	logger     zerolog.Logger
 }
 
 // NewExternalWebScraper create an external web scrapping service
-func NewExternalWebScraper(httpClient *http.Client, uri string) (WebScraper, error) {
+func NewExternalWebScraper(httpClient *http.Client, userAgent, uri string) (WebScraper, error) {
 	if _, err := url.ParseRequestURI(uri); err != nil {
 		return nil, fmt.Errorf("invalid Web Scraping service URI: %s", uri)
 	}
-	logger := log.With().Str("component", "webscraper").Str("uri", uri).Logger()
-	logger.Debug().Msg("using external service")
+	log := logger.With().Str("component", "webscraper").Str("uri", uri).Logger()
+	log.Debug().Msg("using external service")
 
 	return &extrenalWebScraper{
 		uri:        uri,
+		userAgent:  userAgent,
 		httpClient: httpClient,
-		logger:     logger,
+		logger:     log,
 	}, nil
 }
 
@@ -37,7 +39,7 @@ func (ws extrenalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage
 	webPage, err := ws.scrap(ctx, rawurl)
 	if err != nil {
 		ws.logger.Error().Err(err).Msg("unable to scrap web page with external service, fallback on internal service")
-		return NewInternalWebScraper(ws.httpClient).Scrap(ctx, rawurl)
+		return NewInternalWebScraper(ws.httpClient, ws.userAgent).Scrap(ctx, rawurl)
 	}
 	return webPage, nil
 }

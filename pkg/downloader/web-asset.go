@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ncarlier/readflow/pkg/helper"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 // WebAsset is a structure used to store file properties.
@@ -45,7 +45,7 @@ func (wa *WebAsset) Write(w http.ResponseWriter, header http.Header) (int, error
 	}
 	w.Header().Set("Content-Type", wa.ContentType)
 	length := strconv.Itoa(len(wa.Data))
-	if values := header.Values("Transfer-Encoding"); helper.ContainsString(values, "chunked") {
+	if values := header.Values("Transfer-Encoding"); utils.ContainsString(values, "chunked") {
 		// HACK: no Content-Length because of Transfer-Encoding=chunked
 		w.Header().Set("X-Content-Length", length)
 	} else {

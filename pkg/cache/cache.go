@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	boltcache "github.com/ncarlier/readflow/pkg/cache/bolt"
-	"github.com/rs/zerolog/log"
+	"github.com/ncarlier/readflow/pkg/logger"
 )
 
 // Cache interface
@@ -33,7 +33,7 @@ func New(conn string) (Cache, error) {
 		if err != nil {
 			return nil, err
 		}
-		log.Info().Str("component", "cache").Str("uri", u.Redacted()).Msg("using BoltDB cache")
+		logger.Info().Str("component", "cache").Str("uri", u.Redacted()).Msg("using BoltDB cache")
 	default:
 		return nil, fmt.Errorf("unsupported cache provider: %s", provider)
 	}

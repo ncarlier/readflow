@@ -9,19 +9,20 @@ import (
 
 	"github.com/go-shiori/dom"
 	read "github.com/go-shiori/go-readability"
-	"github.com/ncarlier/readflow/pkg/constant"
 	"github.com/ncarlier/readflow/pkg/html"
 	"golang.org/x/net/html/charset"
 )
 
 type internalWebScraper struct {
 	httpClient *http.Client
+	userAgent  string
 }
 
 // NewInternalWebScraper create an internal web scrapping service
-func NewInternalWebScraper(httpClient *http.Client) WebScraper {
+func NewInternalWebScraper(httpClient *http.Client, userAgent string) WebScraper {
 	return &internalWebScraper{
 		httpClient: httpClient,
+		userAgent:  userAgent,
 	}
 }
 
@@ -114,7 +115,7 @@ func (ws internalWebScraper) getContentType(ctx context.Context, rawurl string) 
 	if err != nil {
 		return "", err
 	}
-	req.Header.Set("User-Agent", constant.UserAgent)
+	req.Header.Set("User-Agent", ws.userAgent)
 	req = req.WithContext(ctx)
 	res, err := ws.httpClient.Do(req)
 	if err != nil {
@@ -128,7 +129,7 @@ func (ws internalWebScraper) get(ctx context.Context, rawurl string) (*http.Resp
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", constant.UserAgent)
+	req.Header.Set("User-Agent", ws.userAgent)
 	req = req.WithContext(ctx)
 	return ws.httpClient.Do(req)
 }

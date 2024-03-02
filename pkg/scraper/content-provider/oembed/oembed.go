@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/defaults"
 	"github.com/ncarlier/readflow/pkg/scraper"
 )
 
@@ -39,7 +39,7 @@ func (cp oEmbedContentProvider) Get(ctx context.Context, rawurl string) (*scrape
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", constant.UserAgent)
+	req.Header.Set("User-Agent", defaults.UserAgent)
 	req = req.WithContext(ctx)
 	res, err := cp.httpClient.Do(req)
 	if err != nil || res.StatusCode >= 300 {
@@ -79,7 +79,7 @@ func (cp oEmbedContentProvider) Match(rawurl string) bool {
 
 func init() {
 	httpClient := &http.Client{
-		Timeout: constant.DefaultTimeout,
+		Timeout: defaults.Timeout,
 	}
 
 	for _, provider := range Providers {

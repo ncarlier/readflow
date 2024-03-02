@@ -1,0 +1,23 @@
+package api
+
+import (
+	"net/http"
+	"path"
+
+	"github.com/ncarlier/readflow/internal/config"
+	"github.com/ncarlier/readflow/pkg/logger"
+)
+
+// index is the handler to show API details.
+func index(conf *config.Config) http.Handler {
+	if conf.UI.Directory != "" {
+		logger.Debug().Str("location", conf.UI.Directory).Msg("serving UI")
+		// build UI config file from env variables
+		configFilename := path.Join(conf.UI.Directory, "config.js")
+		if err := conf.WriteUIConfigFile(configFilename); err != nil {
+			logger.Warn().Err(err).Str("filename", configFilename).Msg("unable to generate UI config file")
+		}
+		return http.FileServer(http.Dir(conf.UI.Directory))
+	}
+	return http.RedirectHandler("/info", http.StatusSeeOther)
+}

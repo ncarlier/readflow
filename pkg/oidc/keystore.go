@@ -7,7 +7,7 @@ import (
 	"sync"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/ncarlier/readflow/pkg/constant"
+	"github.com/ncarlier/readflow/pkg/defaults"
 )
 
 // Keystore OIDC keystore
@@ -32,7 +32,7 @@ func (k *Keystore) fetch() error {
 	k.lock.Lock()
 	defer k.lock.Unlock()
 
-	resp, err := constant.DefaultClient.Get(k.conf.JwksURI)
+	resp, err := defaults.HTTPClient.Get(k.conf.JwksURI)
 	if err != nil {
 		return err
 	}

@@ -24,9 +24,9 @@ type WebScraper interface {
 }
 
 // NewWebScraper create new Web Scraping service
-func NewWebScraper(httpClient *http.Client, uri string) (WebScraper, error) {
+func NewWebScraper(httpClient *http.Client, userAgent, uri string) (WebScraper, error) {
 	if uri == "" {
-		return NewInternalWebScraper(httpClient), nil
+		return NewInternalWebScraper(httpClient, userAgent), nil
 	}
-	return NewExternalWebScraper(httpClient, uri)
+	return NewExternalWebScraper(httpClient, userAgent, uri)
 }

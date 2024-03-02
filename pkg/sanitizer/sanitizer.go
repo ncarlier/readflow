@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-shiori/dom"
 	"github.com/microcosm-cc/bluemonday"
+	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/tdewolff/minify/v2"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
@@ -23,7 +23,7 @@ type Sanitizer struct {
 
 // NewSanitizer create new HTML sanitizer
 func NewSanitizer(blockList *BlockList) *Sanitizer {
-	logger := log.With().Str("component", "sanitizer").Logger()
+	logger := logger.With().Str("component", "sanitizer").Logger()
 	policy := bluemonday.UGCPolicy()
 	policy.AddTargetBlankToFullyQualifiedLinks(true)
 	policy.AllowAttrs("width", "height", "src", "allowfullscreen", "sandbox").OnElements("iframe")

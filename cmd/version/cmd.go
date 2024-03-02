@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/ncarlier/readflow/cmd"
-	"github.com/ncarlier/readflow/pkg/config"
-	"github.com/ncarlier/readflow/pkg/version"
+	"github.com/ncarlier/readflow/internal/config"
+	"github.com/ncarlier/readflow/internal/version"
 )
 
 const cmdName = "version"
