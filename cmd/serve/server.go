@@ -8,20 +8,20 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ncarlier/readflow/pkg/api"
+	"github.com/ncarlier/readflow/internal/api"
+	"github.com/ncarlier/readflow/internal/config"
+	"github.com/ncarlier/readflow/internal/db"
+	"github.com/ncarlier/readflow/internal/exporter"
+	"github.com/ncarlier/readflow/internal/exporter/pdf"
+	"github.com/ncarlier/readflow/internal/metric"
+	"github.com/ncarlier/readflow/internal/server"
+	"github.com/ncarlier/readflow/internal/service"
 	"github.com/ncarlier/readflow/pkg/cache"
-	"github.com/ncarlier/readflow/pkg/config"
-	"github.com/ncarlier/readflow/pkg/db"
-	"github.com/ncarlier/readflow/pkg/exporter"
-	"github.com/ncarlier/readflow/pkg/exporter/pdf"
-	"github.com/ncarlier/readflow/pkg/metric"
-	"github.com/ncarlier/readflow/pkg/server"
-	"github.com/ncarlier/readflow/pkg/service"
-	"github.com/rs/zerolog/log"
+	"github.com/ncarlier/readflow/pkg/logger"
 )
 
 func startServer(conf *config.Config) error {
-	log.Debug().Msg("starting readflow...")
+	logger.Debug().Msg("starting readflow...")
 
 	// configure the DB
 	database, err := db.NewDB(conf.Database.URI)
@@ -44,7 +44,7 @@ func startServer(conf *config.Config) error {
 
 	// register external exporters...
 	if conf.PDF.ServiceProvider != "" {
-		log.Info().Str("provider", conf.PDF.ServiceProvider).Msg("using PDF generator service")
+		logger.Info().Str("provider", conf.PDF.ServiceProvider).Msg("using PDF generator service")
 		exporter.Register("pdf", pdf.NewPDFExporter(conf.PDF.ServiceProvider))
 	}
 
@@ -70,35 +70,35 @@ func startServer(conf *config.Config) error {
 
 	go func() {
 		<-quit
-		log.Debug().Msg("shutting down readflow...")
+		logger.Debug().Msg("shutting down readflow...")
 		api.Shutdown()
 
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
 
 		if err := httpServer.Shutdown(ctx); err != nil {
-			log.Fatal().Err(err).Msg("unable to gracefully shutdown the HTTP server")
+			logger.Fatal().Err(err).Msg("unable to gracefully shutdown the HTTP server")
 		}
 		if smtpServer != nil {
 			if err := smtpServer.Shutdown(ctx); err != nil {
-				log.Fatal().Err(err).Msg("unable to gracefully shutdown the SMTP server")
+				logger.Fatal().Err(err).Msg("unable to gracefully shutdown the SMTP server")
 			}
 		}
 		if metricsServer != nil {
 			metric.StopCollectors()
 			if err := metricsServer.Shutdown(ctx); err != nil {
-				log.Fatal().Err(err).Msg("unable to gracefully shutdown the metrics server")
+				logger.Fatal().Err(err).Msg("unable to gracefully shutdown the metrics server")
 			}
 		}
 
 		service.Shutdown()
 
 		if err := downloadCache.Close(); err != nil {
-			log.Error().Err(err).Msg("unable to gracefully shutdown the cache storage")
+			logger.Error().Err(err).Msg("unable to gracefully shutdown the cache storage")
 		}
 
 		if err := database.Close(); err != nil {
-			log.Fatal().Err(err).Msg("could not gracefully shutdown database connection")
+			logger.Fatal().Err(err).Msg("could not gracefully shutdown database connection")
 		}
 
 		close(done)
@@ -111,7 +111,7 @@ func startServer(conf *config.Config) error {
 	httpServer.ListenAndServe()
 
 	<-done
-	log.Debug().Msg("readflow stopped")
+	logger.Debug().Msg("readflow stopped")
 
 	return nil
 }

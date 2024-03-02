@@ -6,15 +6,15 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 
-	"github.com/ncarlier/readflow/pkg/helper"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 type fileSecretProvider struct {
 	key []byte
 }
 
-func newLocalSecretsEngineProvider(uri string) (EngineProvider, error) {
-	input, err := helper.OpenResource(uri)
+func newLocalSecretsEngineProvider(location string) (EngineProvider, error) {
+	input, err := utils.OpenResource(location)
 	if err != nil {
 		return nil, err
 	}

@@ -9,9 +9,8 @@ import (
 	"os"
 
 	"github.com/ncarlier/readflow/cmd"
-	"github.com/ncarlier/readflow/pkg/config"
+	"github.com/ncarlier/readflow/internal/config"
 	"github.com/ncarlier/readflow/pkg/logger"
-	"github.com/rs/zerolog/log"
 
 	_ "github.com/ncarlier/readflow/cmd/all"
 )
@@ -24,7 +23,7 @@ func main() {
 	conf := config.NewConfig()
 	if cmd.ConfigFlag != "" {
 		if err := conf.LoadFile(cmd.ConfigFlag); err != nil {
-			log.Fatal().Err(err).Str("filename", cmd.ConfigFlag).Msg("unable to load configuration file")
+			logger.Fatal().Err(err).Str("filename", cmd.ConfigFlag).Msg("unable to load configuration file")
 		}
 	}
 
@@ -39,7 +38,7 @@ func main() {
 
 	if command, ok := cmd.Commands[commandLabel]; ok {
 		if err := command.Exec(args[idx+1:], conf); err != nil {
-			log.Fatal().Err(err).Str("command", commandLabel).Msg("error during command execution")
+			logger.Fatal().Err(err).Str("command", commandLabel).Msg("error during command execution")
 		}
 	} else {
 		if commandLabel != "" {
