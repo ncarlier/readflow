@@ -7,5 +7,5 @@ export const AUTHORITY = __READFLOW_CONFIG__.authority || process.env.REACT_APP_
 // OIDC client ID
 export const CLIENT_ID = __READFLOW_CONFIG__.client_id || process.env.REACT_APP_CLIENT_ID || ''
 
-// Unauthenticated user redirect
-export const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL || '/login'
+// Portal URL
+export const PORTAL_URL = process.env.REACT_APP_PORTAL_URL || ''
