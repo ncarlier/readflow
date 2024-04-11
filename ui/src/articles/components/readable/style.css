@@ -56,11 +56,12 @@ pre {
   display: block;
   white-space: pre;
   margin: 1em 0;
+  overflow-x: auto;
 }
 pre > code {
   padding: .5em;
   display: block;
-  overflow-x: auto;
+  overflow-x: inherit;
 }
 code {
   line-height: inherit;

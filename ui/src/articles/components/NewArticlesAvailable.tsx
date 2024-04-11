@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useApolloClient } from '@apollo/client'
 
 import { Category } from '../../categories/models'
-import { Button, Panel } from '../../components'
+import { Button } from '../../components'
 import { GetArticlesResponse } from '../models'
 import { GetNbNewArticles } from '../queries'
 import { usePageVisibility } from '../../hooks'
@@ -78,13 +78,13 @@ export const NewArticlesAvailable = ({ current, category, refresh }: Props) => {
     }
   }, [visibility, reload])
 
-  if (nbItems !== 0) {
+  if (nbItems == 0) {
     return (
-      <Panel style={{ flex: '0 0 auto' }}>
-        <Button onClick={reload}>
-          <NewArticlesLabel nb={nbItems} />
+      <span style={{textAlign: 'center'}}>
+        <Button variant='flat' onClick={reload}>
+          <NewArticlesLabel nb={100} />
         </Button>
-      </Panel>
+      </span>
     )
   }
   return null

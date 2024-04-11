@@ -77,23 +77,21 @@
 }
 
 .illustration {
-  border-top-left-radius: inherit;
-  border-top-right-radius: inherit;
   flex-direction: column;
+  display: flex; 
 }
 
 .illustration > img {
   align-self: center;
-  border-radius: inherit;
-  max-width: 100%;
+  max-width: 320px;
 }
 
-@media (min-width: 767px) {
+@media (max-width: 767px) {
   .illustration {
-    display: flex; 
-    border-top-right-radius: initial;
+    padding: 1em 1em 0 1em;
   }
   .illustration > img {
-    max-width: 320px;
+    max-width: 100%;
+    border-radius: 1em;
   }
 }
