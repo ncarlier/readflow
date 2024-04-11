@@ -19,9 +19,10 @@ import (
 	"github.com/ncarlier/readflow/pkg/utils"
 )
 
+var bearerExtractor = &jwtRequest.BearerExtractor{}
+
 // newOIDCAuthMiddleware create a middleware to checks HTTP request with a valid OIDC token
 func newOIDCAuthMiddleware(cfg *config.AuthNConfig) (middleware.Middleware, error) {
-	bearerExtractor := &jwtRequest.BearerExtractor{}
 	admins := strings.Split(cfg.Admins, ",")
 	oidcClient, err := oidc.NewOIDCClient(cfg.OIDC.Issuer, cfg.OIDC.ClientID, cfg.OIDC.ClientSecret)
 	if err != nil {
@@ -34,55 +35,20 @@ func newOIDCAuthMiddleware(cfg *config.AuthNConfig) (middleware.Middleware, erro
 			ctx := r.Context()
 
 			w.Header().Set("WWW-Authenticate", `Bearer realm="readflow"`)
-			tokenString, err := bearerExtractor.ExtractToken(r)
-			if err != nil {
-				utils.WriteJSONProblem(w, "", err.Error(), http.StatusBadRequest)
-				return
-			}
-
-			username := ""
-			claims := jwt.MapClaims{}
-			token, err := jwt.ParseWithClaims(tokenString, claims, keyFunc)
-			switch {
-			case err != nil && errors.Is(err, jwt.ErrTokenMalformed):
-				// asume that the token is an opaque token
-				// validate token using introspection endpoint and try to get username from it
-				username, err = getUsernameFormOpaqueToken(tokenString, oidcClient)
-			case token != nil && token.Valid:
-				// try to get username from JWT
-				username, err = getUsernameFromJWT(token)
-			default:
-				// error or token invalid
-				if err == nil {
-					err = errors.New("Unauthorized")
-				}
-			}
-
+			// retrieve username from access_token
+			username, err := getUsernameFromBearer(r, oidcClient, keyFunc)
 			if err != nil {
 				utils.WriteJSONProblem(w, "", err.Error(), http.StatusUnauthorized)
-				return
 			}
 
-			if username == "" {
-				// call UserInfo endpoint to retrive username
-				// TODO use cache with subject
-				username, err = getUsernameFromUserInfo(tokenString, oidcClient)
-				if err != nil {
-					utils.WriteJSONProblem(w, "", err.Error(), http.StatusForbidden)
-					return
-				}
-			}
-
-			if username == "" {
-				utils.WriteJSONProblem(w, "", "unable to retrieve username from OIDC endpoints", http.StatusForbidden)
-				return
-			}
-
+			// retrieve or register user
 			user, err := service.Lookup().GetOrRegisterUser(ctx, username)
 			if err != nil {
 				utils.WriteJSONProblem(w, "", err.Error(), http.StatusInternalServerError)
 				return
 			}
+
+			// build user context
 			ctx = context.WithValue(ctx, global.ContextUser, *user)
 			ctx = context.WithValue(ctx, global.ContextUserID, *user.ID)
 			ctx = context.WithValue(ctx, global.ContextIsAdmin, utils.ContainsString(admins, username))
@@ -91,13 +57,46 @@ func newOIDCAuthMiddleware(cfg *config.AuthNConfig) (middleware.Middleware, erro
 	}, nil
 }
 
-func buildKeyFunc(client *oidc.Client) jwt.Keyfunc {
-	return func(token *jwt.Token) (i interface{}, e error) {
-		if id, ok := token.Header["kid"]; ok {
-			return client.Keystore.GetKey(id.(string))
-		}
-		return nil, errors.New("kid header not found in token")
+func getUsernameFromBearer(r *http.Request, oidcClient *oidc.Client, keyFunc jwt.Keyfunc) (username string, err error) {
+	tokenString, err := bearerExtractor.ExtractToken(r)
+	if err != nil {
+		return
 	}
+	claims := jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, keyFunc)
+	switch {
+	case err != nil && errors.Is(err, jwt.ErrTokenMalformed):
+		// asume that the token is an opaque token
+		// validate token using introspection endpoint and try to get username from it
+		username, err = getUsernameFormOpaqueToken(tokenString, oidcClient)
+	case token != nil && token.Valid:
+		// try to get username from JWT
+		username, err = getUsernameFromJWT(token)
+	default:
+		// error or token invalid
+		if err == nil {
+			err = errors.New("Unauthorized")
+		}
+	}
+
+	if err != nil {
+		return
+	}
+
+	if username == "" {
+		// call UserInfo endpoint to retrive username
+		// TODO use cache with subject
+		username, err = getUsernameFromUserInfo(tokenString, oidcClient)
+		if err != nil {
+			return
+		}
+	}
+
+	if username == "" {
+		err = errors.New("unable to retrieve username from OIDC endpoints")
+	}
+
+	return
 }
 
 func getUsernameFormOpaqueToken(token string, oidcClient *oidc.Client) (username string, err error) {
@@ -141,6 +140,15 @@ func getUsernameFromUserInfo(token string, oidcClient *oidc.Client) (username st
 	}
 
 	return
+}
+
+func buildKeyFunc(client *oidc.Client) jwt.Keyfunc {
+	return func(token *jwt.Token) (i interface{}, e error) {
+		if id, ok := token.Header["kid"]; ok {
+			return client.Keystore.GetKey(id.(string))
+		}
+		return nil, errors.New("kid header not found in token")
+	}
 }
 
 func init() {
