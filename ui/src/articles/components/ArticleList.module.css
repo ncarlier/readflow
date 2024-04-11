@@ -26,7 +26,7 @@
 }
 
 .grid .item {
-  margin: .5em;
+  margin: 0.5em;
 }
 
 .item {
@@ -42,13 +42,16 @@
 @media (max-width: 767px) {
   .grid, .list {
     padding: 0;
+    display: initial;
+  }
+  .list .item,
+  .grid .item {
+    margin: 0;
+    border-radius: 0;
+    border-bottom: 2px solid var(--main-bg-color);
   }
   .grid article {
     max-width: inherit;
-  }
-  .item {
-    margin: 1em;
-    box-shadow: 0 2px 15px 2px var(--panel-shadow-color);
   }
   .item header, .item footer {
     border: none;
