@@ -58,7 +58,7 @@ Readflow configuration is a TOML file that you can specify using the `-c` comman
 
 You can initialize a configuration file example by using the `init-config -f config.toml` command.
 
-A configuration file example can be found [here](./pkg/config/defaults.toml).
+A configuration file example can be found [here](./internal/config/defaults.toml).
 
 Type `readflow --help` to display available commands.
 
