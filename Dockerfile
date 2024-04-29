@@ -54,7 +54,7 @@ COPY --from=backend-builder /go/src/$REPOSITORY/$ARTIFACT/release/$ARTIFACT /usr
 COPY --from=frontend-builder /usr/src/app/build /var/local/html
 
 # Add configuration file
-ADD ./pkg/config/defaults.toml /etc/readflow.toml
+ADD ./internal/config/defaults.toml /etc/readflow.toml
 
 # Set configuration file
 ENV READFLOW_CONFIG /etc/readflow.toml
