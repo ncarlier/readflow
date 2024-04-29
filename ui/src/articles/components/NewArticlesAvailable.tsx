@@ -78,11 +78,11 @@ export const NewArticlesAvailable = ({ current, category, refresh }: Props) => {
     }
   }, [visibility, reload])
 
-  if (nbItems == 0) {
+  if (nbItems !== 0) {
     return (
       <span style={{textAlign: 'center'}}>
         <Button variant='flat' onClick={reload}>
-          <NewArticlesLabel nb={100} />
+          <NewArticlesLabel nb={nbItems} />
         </Button>
       </span>
     )
