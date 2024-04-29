@@ -11,7 +11,10 @@ const Screenshot = () => {
         <hr />
       </header>
       <figure>
-        <img src="./img/screenshot.png" alt="screenshot" />
+        <picture>
+          <source srcset="./img/screenshot.webp" type="image/webp" />
+          <img src="./img/screenshot.png" alt="screenshot" />
+        </picture>
       </figure>
       <header className={styles.try}>
         <h1>{t('try')}</h1>
