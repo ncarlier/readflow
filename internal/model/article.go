@@ -193,6 +193,12 @@ func (b *ArticleCreateFormBuilder) Title(title string) *ArticleCreateFormBuilder
 	return b
 }
 
+// URL set article URL
+func (b *ArticleCreateFormBuilder) URL(url string) *ArticleCreateFormBuilder {
+	b.form.URL = &url
+	return b
+}
+
 // Text set article text
 func (b *ArticleCreateFormBuilder) Text(text string) *ArticleCreateFormBuilder {
 	b.form.Text = &text
