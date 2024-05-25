@@ -78,12 +78,15 @@
 
 .illustration {
   flex-direction: column;
-  display: flex; 
+  display: flex;
+  background: #ebebeb;
+  height: fit-content;
 }
 
 .illustration > img {
   align-self: center;
   max-width: 320px;
+  mix-blend-mode: darken;
 }
 
 @media (max-width: 767px) {
