@@ -79,7 +79,7 @@
 .illustration {
   flex-direction: column;
   display: flex;
-  background: #ebebeb;
+  background: #efefef;
   height: fit-content;
 }
 
@@ -91,10 +91,11 @@
 
 @media (max-width: 767px) {
   .illustration {
-    padding: 1em 1em 0 1em;
+    margin: 1em 1em 0;
+    border-radius: 1em;
+    overflow: clip;
   }
   .illustration > img {
     max-width: 100%;
-    border-radius: 1em;
   }
 }
