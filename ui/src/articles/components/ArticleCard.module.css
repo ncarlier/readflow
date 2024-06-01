@@ -79,7 +79,7 @@
 .illustration {
   flex-direction: column;
   display: flex;
-  background: #efefef;
+  background: hsl(0deg 0% 97%);
   height: fit-content;
 }
 
