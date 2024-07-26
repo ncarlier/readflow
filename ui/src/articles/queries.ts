@@ -30,6 +30,7 @@ export const GetArticles = gql`
         text
         url
         image
+        thumbhash
         thumbnails {
           size
           hash
@@ -74,6 +75,7 @@ export const GetFullArticle = gql`
       html
       url
       image
+      thumbhash
       thumbnails {
         size
         hash

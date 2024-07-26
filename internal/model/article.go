@@ -88,6 +88,7 @@ type Article struct {
 	HTML        *string    `json:"html,omitempty"`
 	URL         *string    `json:"url,omitempty"`
 	Image       *string    `json:"image,omitempty"`
+	ThumbHash   *string    `json:"thumbhash,omitempty"`
 	Hash        string     `json:"hash,omitempty"`
 	Status      string     `json:"status,omitempty"`
 	Stars       uint       `json:"stars,omitempty"`

@@ -24,7 +24,7 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 	if err != nil {
 		logger.Fatal().Err(err).Msg("unable to setup Image Proxy cache")
 	}
-	down := downloader.NewInternalDownloader(defaults.HTTPClient, defaults.UserAgent, c, 0)
+	down := downloader.NewInternalDownloader(defaults.HTTPClient, defaults.UserAgent, c, 0, defaults.Timeout)
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()

@@ -34,6 +34,9 @@ func (reg *Registry) registerEventHandlers() {
 	}
 	reg.events.Subscribe(EventCreateArticle, newCreateArticleMetricEventHandler())
 	reg.events.Subscribe(EventCreateArticle, newNotificationEventHandler(reg))
+	thumbhashEventHandler := newThumbhashEventHandler(reg)
+	reg.events.Subscribe(EventCreateArticle, thumbhashEventHandler)
+	reg.events.Subscribe(EventUpdateArticle, thumbhashEventHandler)
 }
 
 func newExternalEventHandler(dis dispatcher.Dispatcher) event.EventHandler {

@@ -83,7 +83,7 @@
   height: fit-content;
 }
 
-.illustration > img {
+.illustration img {
   align-self: center;
   max-width: 320px;
   mix-blend-mode: darken;
@@ -95,7 +95,7 @@
     border-radius: 1em;
     overflow: clip;
   }
-  .illustration > img {
+  .illustration img {
     max-width: 100%;
   }
 }

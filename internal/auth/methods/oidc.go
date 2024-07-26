@@ -38,13 +38,21 @@ func newOIDCAuthMiddleware(cfg *config.AuthNConfig) (middleware.Middleware, erro
 			// retrieve username from access_token
 			username, err := getUsernameFromBearer(r, oidcClient, keyFunc)
 			if err != nil {
-				utils.WriteJSONProblem(w, "", err.Error(), http.StatusUnauthorized)
+				utils.WriteJSONProblem(w, utils.JSONProblem{
+					Detail: err.Error(),
+					Status: http.StatusUnauthorized,
+					Context: map[string]interface{}{
+						"redirect": "/login",
+					},
+				})
 			}
 
 			// retrieve or register user
 			user, err := service.Lookup().GetOrRegisterUser(ctx, username)
 			if err != nil {
-				utils.WriteJSONProblem(w, "", err.Error(), http.StatusInternalServerError)
+				utils.WriteJSONProblem(w, utils.JSONProblem{
+					Detail: err.Error(),
+				})
 				return
 			}
 

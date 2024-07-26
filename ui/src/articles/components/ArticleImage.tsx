@@ -1,7 +1,8 @@
-import React, { FC, ImgHTMLAttributes } from 'react'
+import React, { FC, ImgHTMLAttributes, useEffect, useState } from 'react'
 
 import { Article, ArticleThumbnail } from '../models'
 import { getAPIURL } from '../../helpers'
+import { LazyImage } from '../../components'
 
 const getThumbnailURL = (thumbnail: ArticleThumbnail, src: string) => `${getAPIURL()}/img/${thumbnail.hash}/resize:fit:${thumbnail.size}/${btoa(src)}`
 
@@ -23,20 +24,23 @@ interface Props {
 }
 
 export const ArticleImage: FC<Props> = ({ article }) => {
-  let attrs :ImgHTMLAttributes<HTMLImageElement> = {}
-  if (article.image && article.image.match(/^https?:\/\//)) {
-    try {
-      attrs = getThumbnailAttributes(article)
-    } catch (err) {
-      console.error('unable to get article thumbnail attributes', article, err)
+  const [attrs, setAttrs] = useState<ImgHTMLAttributes<HTMLImageElement>>({})
+  useEffect(() => {
+    if (article.image && article.image.match(/^https?:\/\//)) {
+      try {
+        setAttrs(getThumbnailAttributes(article))
+      } catch (err) {
+        console.error('unable to get article thumbnail attributes', article, err)
+      }
     }
-  }
+  }, [article])
+  
   return (
-    <img
+    <LazyImage
       {...attrs}
+      thumbhash={article.thumbhash}
       src={article.image}
-      onError={(e) => (e.currentTarget.style.display = 'none')}
-      crossOrigin='anonymous'
+      // crossOrigin='anonymous'
     />
   )
 }

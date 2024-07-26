@@ -24,6 +24,7 @@ var articleColumns = []string{
 	"html",
 	"url",
 	"image",
+	"thumbhash",
 	"hash",
 	"status",
 	"stars",
@@ -44,6 +45,7 @@ func mapRowToArticle(row *sql.Row) (*model.Article, error) {
 		&article.HTML,
 		&article.URL,
 		&article.Image,
+		&article.ThumbHash,
 		&article.Hash,
 		&article.Status,
 		&article.Stars,
@@ -69,6 +71,7 @@ func mapRowsToArticle(rows *sql.Rows, article *model.Article) error {
 		&article.HTML,
 		&article.URL,
 		&article.Image,
+		&article.ThumbHash,
 		&article.Hash,
 		&article.Status,
 		&article.Stars,
@@ -252,4 +255,22 @@ func (pg *DB) DeleteAllReadArticlesByUser(uid uint) (int64, error) {
 		return 0, err
 	}
 	return result.RowsAffected()
+}
+
+// SetArticleThumbHash set article thumb hash value
+func (pg *DB) SetArticleThumbHash(id uint, hash string) (*model.Article, error) {
+	update := map[string]interface{}{
+		"updated_at": "NOW()",
+		"thumbhash":  hash,
+	}
+	query, args, _ := pg.psql.Update(
+		"articles",
+	).SetMap(update).Where(
+		sq.Eq{"id": id},
+	).Suffix(
+		"RETURNING " + strings.Join(articleColumns, ","),
+	).ToSql()
+
+	row := pg.db.QueryRow(query, args...)
+	return mapRowToArticle(row)
 }

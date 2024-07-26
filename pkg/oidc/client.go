@@ -104,6 +104,20 @@ func (c *Client) UserInfo(token string) (*UserInfoResponse, error) {
 	return payload, nil
 }
 
+// GetAuthorizationEndpoint return authorization endpoint
+func (c *Client) GetAuthorizationEndpoint(redirectURI string) *url.URL {
+	u, _ := url.Parse(c.Config.AuthorizationEndpoint)
+	q := u.Query()
+	q.Set("response_type", "code")
+	q.Set("scope", "openid")
+	//q.Set("state", "TODO")
+	q.Set("client_id", c.client_id)
+	if redirectURI != "" {
+		q.Set("redirect_uri", redirectURI)
+	}
+	return u
+}
+
 func decodeErrorResponse(resp *http.Response) error {
 	payload := &ErrorResponse{}
 	if err := json.NewDecoder(resp.Body).Decode(payload); err != nil {

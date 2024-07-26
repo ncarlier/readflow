@@ -8,7 +8,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/logger"
 )
 
-const schemaVersion = 14
+const schemaVersion = 15
 
 // Migrate executes database migrations.
 func Migrate(db *sql.DB) {

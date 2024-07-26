@@ -43,7 +43,10 @@ func newBasicAuthMiddlleware(cfg *config.AuthNConfig) (middleware.Middleware, er
 				return
 			}
 			w.Header().Set("WWW-Authenticate", `Basic realm="readflow", charset="UTF-8"`)
-			utils.WriteJSONProblem(w, "", "invalid credentials", http.StatusUnauthorized)
+			utils.WriteJSONProblem(w, utils.JSONProblem{
+				Detail: "invalid credentials",
+				Status: http.StatusUnauthorized,
+			})
 		})
 	}, nil
 }
