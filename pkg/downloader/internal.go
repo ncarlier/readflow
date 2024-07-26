@@ -8,10 +8,12 @@ import (
 	"net/http"
 	nurl "net/url"
 	"strings"
+	"time"
 
 	"golang.org/x/sync/semaphore"
 
 	"github.com/ncarlier/readflow/pkg/cache"
+	"github.com/ncarlier/readflow/pkg/defaults"
 	"github.com/ncarlier/readflow/pkg/utils"
 )
 
@@ -24,23 +26,28 @@ var errInvalidURL = errors.New("invalid URL")
 // InternalDownloader interface
 type InternalDownloader struct {
 	cache                 cache.Cache
-	maxConcurrentDownload int64
+	maxConcurrentDownload uint
+	timeout               time.Duration
 	httpClient            *http.Client
 	userAgent             string
 	dlSemaphore           *semaphore.Weighted
 }
 
 // NewInternalDownloader create new downloader instance
-func NewInternalDownloader(client *http.Client, userAgent string, downloadCache cache.Cache, maxConcurrentDownload int64) Downloader {
-	if maxConcurrentDownload <= 0 {
+func NewInternalDownloader(client *http.Client, userAgent string, downloadCache cache.Cache, maxConcurrentDownload uint, timeout time.Duration) Downloader {
+	if maxConcurrentDownload == 0 {
 		maxConcurrentDownload = defaultMaxConcurentDownload
+	}
+	if timeout == 0 {
+		timeout = defaults.Timeout
 	}
 	return &InternalDownloader{
 		cache:                 downloadCache,
 		httpClient:            client,
 		userAgent:             userAgent,
 		maxConcurrentDownload: maxConcurrentDownload,
-		dlSemaphore:           semaphore.NewWeighted(maxConcurrentDownload),
+		timeout:               timeout,
+		dlSemaphore:           semaphore.NewWeighted(int64(maxConcurrentDownload)),
 	}
 }
 
@@ -65,14 +72,22 @@ func (dl *InternalDownloader) Get(ctx context.Context, url string, header *http.
 		return asset, nil, err
 	}
 
+	if _, ok := ctx.Deadline(); !ok {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, dl.timeout)
+		defer cancel()
+	}
+
 	// Download the asset, use semaphore to limit concurrent downloads
 	err = dl.dlSemaphore.Acquire(ctx, 1)
 	if err != nil {
+		err = fmt.Errorf("unable to acquire download slot (%s)", err)
 		return nil, nil, err
 	}
-	resp, err := dl.get(url, header)
+	resp, err := dl.get(ctx, url, header)
 	dl.dlSemaphore.Release(1)
 	if err != nil {
+		err = fmt.Errorf("unable to download Web asset: %w", err)
 		return nil, nil, err
 	}
 	defer resp.Body.Close()
@@ -111,8 +126,8 @@ func (dl *InternalDownloader) Get(ctx context.Context, url string, header *http.
 	return asset, resp, nil
 }
 
-func (dl *InternalDownloader) get(url string, header *http.Header) (*http.Response, error) {
-	req, err := http.NewRequest("GET", url, http.NoBody)
+func (dl *InternalDownloader) get(ctx context.Context, url string, header *http.Header) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", url, http.NoBody)
 	if err != nil {
 		return nil, err
 	}

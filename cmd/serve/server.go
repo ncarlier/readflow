@@ -16,7 +16,6 @@ import (
 	"github.com/ncarlier/readflow/internal/metric"
 	"github.com/ncarlier/readflow/internal/server"
 	"github.com/ncarlier/readflow/internal/service"
-	"github.com/ncarlier/readflow/pkg/cache"
 	"github.com/ncarlier/readflow/pkg/logger"
 )
 
@@ -29,14 +28,8 @@ func startServer(conf *config.Config) error {
 		return fmt.Errorf("unable to configure the database: %w", err)
 	}
 
-	// configure download cache
-	downloadCache, err := cache.NewDefault("readflow-downloads")
-	if err != nil {
-		return fmt.Errorf("unable to configure the downloader cache storage: %w", err)
-	}
-
 	// configure the service registry
-	err = service.Configure(*conf, database, downloadCache)
+	err = service.Configure(*conf, database)
 	if err != nil {
 		database.Close()
 		return fmt.Errorf("unable to configure the service registry: %w", err)
@@ -92,10 +85,6 @@ func startServer(conf *config.Config) error {
 		}
 
 		service.Shutdown()
-
-		if err := downloadCache.Close(); err != nil {
-			logger.Error().Err(err).Msg("unable to gracefully shutdown the cache storage")
-		}
 
 		if err := database.Close(); err != nil {
 			logger.Fatal().Err(err).Msg("could not gracefully shutdown database connection")

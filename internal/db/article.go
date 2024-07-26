@@ -18,4 +18,5 @@ type ArticleRepository interface {
 	DeleteArticle(id uint) error
 	DeleteReadArticlesOlderThan(delay time.Duration) (int64, error)
 	DeleteAllReadArticlesByUser(uid uint) (int64, error)
+	SetArticleThumbHash(id uint, hash string) (*model.Article, error)
 }

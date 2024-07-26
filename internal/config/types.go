@@ -15,6 +15,7 @@ type Config struct {
 	AuthN        AuthNConfig        `toml:"authn"`
 	UI           UIConfig           `toml:"ui"`
 	Hash         HashConfig         `toml:"hash"`
+	Downloader   DownloaderConfig   `toml:"downloader"`
 	Scraping     ScrapingConfig     `toml:"scraping"`
 	Avatar       AvatarConfig       `toml:"avatar"`
 	Image        ImageConfig        `toml:"image"`
@@ -91,6 +92,15 @@ type UIConfig struct {
 type HashConfig struct {
 	SecretKey  types.HexString `toml:"secret_key"`
 	SecretSalt types.HexString `toml:"secret_salt"`
+}
+
+// DownloaderConfig for downloader configuration
+type DownloaderConfig struct {
+	UserAgent             string         `toml:"user_agent"`
+	Cache                 string         `toml:"cache"`
+	MaxConCache           string         `toml:"cache"`
+	MaxConcurentDownloads uint           `toml:"max_concurent_downloads"`
+	Timeout               types.Duration `toml:"timeout"`
 }
 
 // ScrapingConfig for scraping configuration section

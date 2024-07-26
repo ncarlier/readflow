@@ -15,5 +15,5 @@ type Downloader interface {
 
 // NewDefaultDownloader create new downloader with defaults
 func NewDefaultDownloader(downloadCache cache.Cache) Downloader {
-	return NewInternalDownloader(defaults.HTTPClient, defaults.UserAgent, downloadCache, defaultMaxConcurentDownload)
+	return NewInternalDownloader(defaults.HTTPClient, defaults.UserAgent, downloadCache, defaultMaxConcurentDownload, defaults.Timeout)
 }

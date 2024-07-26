@@ -11,7 +11,6 @@ import (
 	"github.com/ncarlier/readflow/internal/global"
 	"github.com/ncarlier/readflow/internal/model"
 	"github.com/ncarlier/readflow/internal/service"
-	"github.com/ncarlier/readflow/pkg/cache"
 	"github.com/ncarlier/readflow/pkg/logger"
 )
 
@@ -62,17 +61,16 @@ func SetupTestCase(t *testing.T) func(t *testing.T) {
 	testUser = requireUserExists(t, defaultUsername)
 	testContext = context.Background()
 	testContext = context.WithValue(testContext, global.ContextUserID, *testUser.ID)
-	downloadCache, _ := cache.NewDefault("readflow-tests")
 
-	service.Configure(*conf, testDB, downloadCache)
+	service.Configure(*conf, testDB)
 	if err != nil {
 		t.Fatalf("unable to setup service registry: %v", err)
 	}
 
 	return func(t *testing.T) {
 		t.Log("teardown test case")
+		defer service.Shutdown()
 		defer testDB.Close()
-		defer downloadCache.Close()
 		testDB.DeleteUser(*testUser)
 	}
 }

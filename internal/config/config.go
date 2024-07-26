@@ -6,6 +6,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/imdario/mergo"
+	"github.com/ncarlier/readflow/pkg/defaults"
 	ratelimiter "github.com/ncarlier/readflow/pkg/rate-limiter"
 	"github.com/ncarlier/readflow/pkg/types"
 )
@@ -48,6 +49,14 @@ func NewConfig() *Config {
 			},
 			SecretSalt: types.HexString{
 				Value: []byte("pepper"),
+			},
+		},
+		Downloader: DownloaderConfig{
+			UserAgent:             defaults.UserAgent,
+			Cache:                 "boltdb:///tmp/readflow-downloads.cache?maxSize=256,maxEntries=5000,maxEntrySize=1",
+			MaxConcurentDownloads: 10,
+			Timeout: types.Duration{
+				Duration: defaults.Timeout,
 			},
 		},
 		Avatar: AvatarConfig{

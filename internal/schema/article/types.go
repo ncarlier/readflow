@@ -101,6 +101,9 @@ var articleType = graphql.NewObject(
 			"image": &graphql.Field{
 				Type: graphql.String,
 			},
+			"thumbhash": &graphql.Field{
+				Type: graphql.String,
+			},
 			"thumbnails": &graphql.Field{
 				Type:    graphql.NewList(thumbnailType),
 				Resolve: thumbnailsResolver,

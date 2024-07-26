@@ -2,20 +2,38 @@
   display: grid;
   overflow: hidden;
 }
-.lqip {
-  filter: blur(5px);
-  width: -moz-available;
-  width: -webkit-fill-available;
-  width: stretch;
-}
 .wrapper > img {
   grid-area: 1 / 1 / 2 / 2;
 }
+.lqip {
+  opacity: 1;
+}
+.lqip.loaded {
+  animation: fade-out .5s both;
+}
+
 .source {
   opacity: 0;
-  transition: opacity 1s;
-  z-index: 99;
+  z-index: 9;
 }
-.loaded {
-  opacity: 1;
+.source.loaded {
+  animation: fade-in .5s both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }

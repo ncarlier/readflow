@@ -47,7 +47,10 @@ func newProxyAuthMiddleware(cfg *config.AuthNConfig) (middleware.Middleware, err
 				return
 			}
 			w.Header().Set("Proxy-Authenticate", `Basic realm="readflow"`)
-			utils.WriteJSONProblem(w, "", "invalid authentication headers", http.StatusUnauthorized)
+			utils.WriteJSONProblem(w, utils.JSONProblem{
+				Detail: "invalid authentication header",
+				Status: http.StatusUnauthorized,
+			})
 		})
 	}, nil
 }

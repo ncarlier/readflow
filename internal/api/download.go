@@ -15,12 +15,20 @@ func download() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := strings.TrimPrefix(r.URL.Path, "/articles/")
 		if id == "" {
-			utils.WriteJSONProblem(w, downloadProblem, "missing article ID", http.StatusBadRequest)
+			utils.WriteJSONProblem(w, utils.JSONProblem{
+				Title:  downloadProblem,
+				Detail: "missing article ID",
+				Status: http.StatusBadRequest,
+			})
 			return
 		}
 		idArticle := utils.ConvGraphQLID(id)
 		if idArticle == nil {
-			utils.WriteJSONProblem(w, downloadProblem, "invalid article ID", http.StatusBadRequest)
+			utils.WriteJSONProblem(w, utils.JSONProblem{
+				Title:  downloadProblem,
+				Detail: "invalid article ID",
+				Status: http.StatusBadRequest,
+			})
 			return
 		}
 		// Extract and validate token parameter
@@ -33,7 +41,10 @@ func download() http.Handler {
 		// Archive the article
 		asset, err := service.Lookup().DownloadArticle(r.Context(), *idArticle, format)
 		if err != nil {
-			utils.WriteJSONProblem(w, downloadProblem, err.Error(), http.StatusInternalServerError)
+			utils.WriteJSONProblem(w, utils.JSONProblem{
+				Title:  downloadProblem,
+				Detail: err.Error(),
+			})
 			return
 		}
 

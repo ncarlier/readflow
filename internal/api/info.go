@@ -7,6 +7,7 @@ import (
 	"github.com/ncarlier/readflow/internal/config"
 	"github.com/ncarlier/readflow/internal/service"
 	"github.com/ncarlier/readflow/internal/version"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 // Info API informations model structure.
@@ -29,7 +30,9 @@ func info(conf *config.Config) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		data, err := json.Marshal(v)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			utils.WriteJSONProblem(w, utils.JSONProblem{
+				Detail: err.Error(),
+			})
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")

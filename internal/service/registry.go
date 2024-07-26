@@ -45,7 +45,12 @@ type Registry struct {
 }
 
 // Configure the global service registry
-func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) error {
+func Configure(conf config.Config, database db.DB) error {
+	// configure download cache
+	downloadCache, err := cache.New(conf.Downloader.Cache)
+	if err != nil {
+		return err
+	}
 	webScraper, err := scraper.NewWebScraper(defaults.HTTPClient, defaults.UserAgent, conf.Scraping.ServiceProvider)
 	if err != nil {
 		return err
@@ -74,13 +79,21 @@ func Configure(conf config.Config, database db.DB, downloadCache cache.Cache) er
 		db.NewCleanupDatabaseJob(database),
 	)
 
+	dl := downloader.NewInternalDownloader(
+		defaults.HTTPClient,
+		conf.Downloader.UserAgent,
+		downloadCache,
+		conf.Downloader.MaxConcurentDownloads,
+		conf.Downloader.Timeout.Duration,
+	)
+
 	instance = &Registry{
 		conf:                    conf,
 		db:                      database,
 		logger:                  logger.With().Str("component", "service").Logger(),
 		downloadCache:           downloadCache,
 		webScraper:              webScraper,
-		dl:                      downloader.NewDefaultDownloader(downloadCache),
+		dl:                      dl,
 		hashid:                  hid,
 		notificationRateLimiter: notificationRateLimiter,
 		sanitizer:               sanitizer.NewSanitizer(blockList),
@@ -100,8 +113,12 @@ func (reg *Registry) GetConfig() config.Config {
 
 // Shutdown service internals jobs
 func Shutdown() {
-	if instance != nil {
-		instance.scheduler.Shutdown()
+	if instance == nil {
+		return
+	}
+	instance.scheduler.Shutdown()
+	if err := instance.downloadCache.Close(); err != nil {
+		instance.logger.Error().Err(err).Msg("unable to gracefully shutdown the cache storage")
 	}
 }
 

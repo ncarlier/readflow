@@ -6,6 +6,7 @@ export interface Article {
   html: string
   text: string
   image: string
+  thumbhash: string
   thumbnails?: ArticleThumbnail[]
   url: string
   status: ArticleStatus

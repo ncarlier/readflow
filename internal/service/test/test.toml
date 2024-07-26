@@ -3,6 +3,9 @@
 [database]
 uri = "${READFLOW_DB}"
 
+[downloader]
+cache = "boltdb:///tmp/readflow-tests.cache?maxSize=100,maxEntries=100,maxEntrySize=5"
+
 ## User Plans
 [[user_plans]]
 name = "test"
