@@ -12,7 +12,7 @@ interface Props {
 
 const hideFn = (ev: React.SyntheticEvent<HTMLElement, Event>) => {ev.currentTarget.style.display = 'none'}
 
-export const LazyImage: FC<ImgHTMLAttributes<HTMLImageElement> & Props> = ({thumbhash, ...attrs }) => {
+export const LazyImage: FC<ImgHTMLAttributes<HTMLImageElement> & Props> = ({thumbhash, srcSet, ...attrs }) => {
   const [loaded, setLoaded] = useState(false)
   const [data, setData] = useState('')
   const [width, setWidth] = useState('0px')
@@ -54,6 +54,7 @@ export const LazyImage: FC<ImgHTMLAttributes<HTMLImageElement> & Props> = ({thum
       <img
         ref={imgRef}
         {...attrs}
+        srcSet={srcSet}
         loading="lazy"
         className={classNames(styles.source, loaded ? styles.loaded : null)}
         onLoad={() => setLoaded(true)}
