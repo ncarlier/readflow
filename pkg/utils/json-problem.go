@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -24,5 +25,7 @@ func WriteJSONProblem(w http.ResponseWriter, problem JSONProblem) {
 	w.Header().Set("Content-Type", "application/problem+json; charset=utf-8")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(problem.Status)
-	json.NewEncoder(w).Encode(problem)
+	if err := json.NewEncoder(w).Encode(problem); err != nil {
+		fmt.Fprintf(w, `{"title": "%d", "detail": "%s"}`, http.StatusInternalServerError, err.Error())
+	}
 }
