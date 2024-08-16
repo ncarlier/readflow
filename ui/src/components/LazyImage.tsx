@@ -16,6 +16,7 @@ export const LazyImage: FC<ImgHTMLAttributes<HTMLImageElement> & Props> = ({thum
   const [loaded, setLoaded] = useState(false)
   const [data, setData] = useState('')
   const [width, setWidth] = useState('0px')
+  const [aspectRatio, setAspectRatio] = useState<number>()
   const imgRef = useRef<HTMLImageElement>(null)
   const lqipRef = useRef<HTMLImageElement>(null)
   useEffect(() => {
@@ -28,9 +29,13 @@ export const LazyImage: FC<ImgHTMLAttributes<HTMLImageElement> & Props> = ({thum
     if (!thumbhash) {
       return
     }
-    const [width, hash] = thumbhash.split('|')
+    const [size, hash] = thumbhash.split('|')
+    const [width, height] = size.split('x')
     setWidth(`${width}px`)
     try {
+      if (height) {
+        setAspectRatio(parseInt(width) / parseInt(height))
+      }
       setData(thumbHashToDataURL(base64ToBinary(hash)))
     } catch (err) {
       console.error('unable to decode thumbhash', err)
@@ -49,6 +54,7 @@ export const LazyImage: FC<ImgHTMLAttributes<HTMLImageElement> & Props> = ({thum
         src={data}
         aria-hidden="true"
         onAnimationEnd={hideFn}
+        style={{ aspectRatio }}
         className={classNames(styles.lqip, loaded ? styles.loaded : null)}
       />
       <img

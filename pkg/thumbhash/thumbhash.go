@@ -19,10 +19,10 @@ func GetThumbhash(r io.Reader) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	width := img.Bounds().Size().X
+	size := img.Bounds().Size()
 
 	binHash := thumbhash.EncodeImage(img)
 	hash := base64.StdEncoding.EncodeToString(binHash)
 
-	return fmt.Sprintf("%d|%s", width, hash), nil
+	return fmt.Sprintf("%dx%d|%s", size.X, size.Y, hash), nil
 }
