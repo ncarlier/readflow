@@ -43,12 +43,14 @@ func (i *Interpreter) init() {
 	// alter builtins functions
 	i.eval.AddFunction("print", i.fnPrint)
 	i.eval.AddFunction("printf", i.fnPrintf)
+	i.eval.AddFunction("fetch", i.fnFetch)
 	// add custom functions
 	i.eval.AddFunction("triggerWebhook", i.buildSingleArgFunction(OpTriggerWebhook))
 	i.eval.AddFunction("sendNotification", i.buildNoArgFunction(OpSendNotification))
 	i.eval.AddFunction("setCategory", i.buildSingleArgFunction(OpSetCategory))
 	i.eval.AddFunction("setTitle", i.buildSingleArgFunction(OpSetTitle))
 	i.eval.AddFunction("setText", i.buildSingleArgFunction(OpSetTitle))
+	i.eval.AddFunction("setHTML", i.buildSingleArgFunction(OpSetHTML))
 	i.eval.AddFunction("disableGlobalNotification", i.buildNoArgFunction(OpDisableGlobalNotification))
 }
 
@@ -56,6 +58,7 @@ func (i *Interpreter) init() {
 func (i *Interpreter) Exec(ctx context.Context, input ScriptInput) (OperationStack, error) {
 	i.mu.Lock()
 	defer i.mu.Unlock()
+	i.eval.SetContext(ctx)
 	i.operations = &OperationStack{}
 	if result, err := i.eval.Run(input); err != nil {
 		return nil, fmt.Errorf("unable to execute script: %w", err)
