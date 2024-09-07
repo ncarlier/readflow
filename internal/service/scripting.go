@@ -29,7 +29,12 @@ func mapArticleCreateFromToScriptInput(article *model.ArticleCreateForm) *script
 func (reg *Registry) processArticleByScriptEngine(ctx context.Context, webhook *model.IncomingWebhook, article *model.ArticleCreateForm) (scripting.OperationStack, error) {
 	noops := scripting.OperationStack{}
 
+	if webhook == nil {
+		return noops, nil
+	}
+
 	// limit execution time to 1 sec
+	// TODO inherit context timeout
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(time.Second))
 	defer cancel()
 
@@ -55,8 +60,12 @@ func (reg *Registry) execSetOperations(ctx context.Context, ops scripting.Operat
 			category = op.GetFirstArg()
 		case scripting.OpSetText:
 			// set text
-			text := op.GetFirstArg()
-			article.Text = &text
+			value := op.GetFirstArg()
+			article.Text = &value
+		case scripting.OpSetHTML:
+			// set HTML
+			value := op.GetFirstArg()
+			article.HTML = &value
 		case scripting.OpSetTitle:
 			// set title
 			article.Title = op.GetFirstArg()

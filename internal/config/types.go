@@ -97,16 +97,17 @@ type HashConfig struct {
 // DownloaderConfig for downloader configuration
 type DownloaderConfig struct {
 	UserAgent             string         `toml:"user_agent"`
-	Cache                 string         `toml:"cache"`
-	MaxConCache           string         `toml:"cache"`
-	MaxConcurentDownloads uint           `toml:"max_concurent_downloads"`
 	Timeout               types.Duration `toml:"timeout"`
+	Cache                 string         `toml:"cache"`
+	MaxConcurentDownloads uint           `toml:"max_concurent_downloads"`
 }
 
 // ScrapingConfig for scraping configuration section
 type ScrapingConfig struct {
-	ServiceProvider string `toml:"service_provider"`
-	BlockList       string `toml:"block_list"`
+	UserAgent       string         `toml:"user_agent"`
+	Timeout         types.Duration `toml:"timeout"`
+	ServiceProvider string         `toml:"service_provider"`
+	BlockList       string         `toml:"block_list"`
 }
 
 // AvatarConfig for avatar configuration section
@@ -166,6 +167,7 @@ type UserPlan struct {
 	IncomingWebhooksLimit   uint           `toml:"incoming_webhooks_limit" json:"incoming_webhooks_limit"`
 	OutgoingWebhooksLimit   uint           `toml:"outgoing_webhooks_limit" json:"outgoing_webhooks_limit"`
 	OutgoingWebhooksTimeout types.Duration `toml:"outgoing_webhooks_timeout" json:"outgoing_webhooks_timeout"`
+	DownloadTimout          types.Duration `toml:"download_timeout" json:"download_timeout"`
 }
 
 // GetUserPlan return an user plan by its name and fallback to first plan if missing

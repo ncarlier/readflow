@@ -3,13 +3,14 @@ package service
 import (
 
 	// load all exporters
+	"net/http"
+
 	"github.com/ncarlier/readflow/internal/config"
 	"github.com/ncarlier/readflow/internal/db"
 	_ "github.com/ncarlier/readflow/internal/exporter/all"
 	"github.com/ncarlier/readflow/internal/model"
 	"github.com/ncarlier/readflow/internal/scripting"
 	"github.com/ncarlier/readflow/pkg/cache"
-	"github.com/ncarlier/readflow/pkg/defaults"
 	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/event/dispatcher"
@@ -51,7 +52,12 @@ func Configure(conf config.Config, database db.DB) error {
 	if err != nil {
 		return err
 	}
-	webScraper, err := scraper.NewWebScraper(defaults.HTTPClient, defaults.UserAgent, conf.Scraping.ServiceProvider)
+	// configure web scraper
+	webScraper, err := scraper.NewWebScraper(&scraper.WebScraperConfiguration{
+		HttpClient:              &http.Client{Timeout: conf.Scraping.Timeout.Duration},
+		UserAgent:               conf.Scraping.UserAgent,
+		ExternalServiceEndpoint: conf.Scraping.ServiceProvider,
+	})
 	if err != nil {
 		return err
 	}
@@ -79,13 +85,12 @@ func Configure(conf config.Config, database db.DB) error {
 		db.NewCleanupDatabaseJob(database),
 	)
 
-	dl := downloader.NewInternalDownloader(
-		defaults.HTTPClient,
-		conf.Downloader.UserAgent,
-		downloadCache,
-		conf.Downloader.MaxConcurentDownloads,
-		conf.Downloader.Timeout.Duration,
-	)
+	dl := downloader.NewInternalDownloader(&downloader.InternalDownloaderConfig{
+		UserAgent:             conf.Downloader.UserAgent,
+		Cache:                 downloadCache,
+		MaxConcurrentDownload: conf.Downloader.MaxConcurentDownloads,
+		Timeout:               conf.Downloader.Timeout.Duration,
+	})
 
 	instance = &Registry{
 		conf:                    conf,

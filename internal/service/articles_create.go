@@ -9,7 +9,6 @@ import (
 	"github.com/ncarlier/readflow/internal/model"
 	"github.com/ncarlier/readflow/internal/scripting"
 
-	"github.com/ncarlier/readflow/pkg/defaults"
 	"github.com/ncarlier/readflow/pkg/event"
 
 	// activate all content providers
@@ -80,23 +79,29 @@ func (reg *Registry) CreateArticle(ctx context.Context, form model.ArticleCreate
 	}
 
 	var ops scripting.OperationStack
-	if webhook, ok := ctx.Value(global.ContextIncomingWebhook).(*model.IncomingWebhook); ok {
-		// process article by the script engine if coming from webhook
-		if ops, err = reg.processArticleByScriptEngine(ctx, webhook, &form); err != nil {
-			logger.Debug().Err(err).Msg("unable to process article by script engine")
-			text := err.Error()
-			if form.Text != nil {
-				text = fmt.Sprintf("%s\n%s", text, *form.Text)
-			}
-			form.Text = &text
+	// retrieve incoming webhook from context if exists
+	webhook, _ := ctx.Value(global.ContextIncomingWebhook).(*model.IncomingWebhook)
+	// process article by the script engine if using webhook
+	if ops, err = reg.processArticleByScriptEngine(ctx, webhook, &form); err != nil {
+		logger.Debug().Err(err).Msg("unable to process article by script engine")
+		text := err.Error()
+		if form.Text != nil {
+			text = fmt.Sprintf("[⚠️ script execution error: %s]\n%s", text, *form.Text)
 		}
+		form.Text = &text
 	}
+
 	// drop if asked
 	if ops.Contains(scripting.OpDrop) {
 		return nil, nil
 	}
 	// exec set operations
 	reg.execSetOperations(ctx, ops, &form)
+	// sanitize HTML content if updated
+	if ops.Contains(scripting.OpSetHTML) {
+		content := reg.sanitizer.Sanitize(*form.HTML)
+		form.HTML = &content
+	}
 
 	logger.Debug().Msg("creating article...")
 	// persist article
@@ -139,8 +144,6 @@ func (reg *Registry) CreateArticles(ctx context.Context, data []model.ArticleCre
 
 // scrapOriginalArticle add missing attributes form original article
 func (reg *Registry) scrapOriginalArticle(ctx context.Context, article *model.ArticleCreateForm) error {
-	ctx, cancel := context.WithTimeout(ctx, defaults.Timeout)
-	defer cancel()
 	page, err := reg.webScraper.Scrap(ctx, *article.URL)
 	if page == nil {
 		return err

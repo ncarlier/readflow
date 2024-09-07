@@ -7,6 +7,7 @@ import (
 
 	"github.com/ncarlier/readflow/internal/exporter"
 
+	"github.com/ncarlier/readflow/pkg/defaults"
 	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/utils"
 )
@@ -45,6 +46,15 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 		return nil, err
 	}
 
+	// get timeout from user plan
+	var timeout time.Duration
+	if plan, _ := reg.GetCurrentUserPlan(ctx); plan != nil {
+		timeout = plan.DownloadTimout.Duration
+	}
+	if timeout == 0 {
+		timeout = defaults.Timeout
+	}
+
 	// get downloadable article from the cache
 	key := utils.Hash(format, article.Hash)
 	data, err := reg.downloadCache.Get(key)
@@ -58,6 +68,8 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 
 	// export article to the downloadable format
 	logger.Debug().Msg("preparing article downloadable asset...")
+	ctx, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
 	result, err := exp.Export(ctx, article)
 	if err != nil {
 		logger.Info().Err(err).Msg(ErrArticleDownload.Error())

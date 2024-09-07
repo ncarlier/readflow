@@ -33,18 +33,24 @@ type InternalDownloader struct {
 	dlSemaphore           *semaphore.Weighted
 }
 
+// InternalDownloaderConfig configuration for the internal downloader
+type InternalDownloaderConfig struct {
+	HttpClient            *http.Client
+	UserAgent             string
+	Cache                 cache.Cache
+	MaxConcurrentDownload uint
+	Timeout               time.Duration
+}
+
 // NewInternalDownloader create new downloader instance
-func NewInternalDownloader(client *http.Client, userAgent string, downloadCache cache.Cache, maxConcurrentDownload uint, timeout time.Duration) Downloader {
-	if maxConcurrentDownload == 0 {
-		maxConcurrentDownload = defaultMaxConcurentDownload
-	}
-	if timeout == 0 {
-		timeout = defaults.Timeout
-	}
+func NewInternalDownloader(conf *InternalDownloaderConfig) Downloader {
+	maxConcurrentDownload := utils.If(conf.MaxConcurrentDownload == 0, defaultMaxConcurentDownload, conf.MaxConcurrentDownload)
+	timeout := utils.If(conf.Timeout == 0, defaults.Timeout, conf.Timeout)
+
 	return &InternalDownloader{
-		cache:                 downloadCache,
-		httpClient:            client,
-		userAgent:             userAgent,
+		cache:                 conf.Cache,
+		httpClient:            utils.If(conf.HttpClient == nil, &http.Client{Timeout: timeout}, conf.HttpClient),
+		userAgent:             utils.If(conf.UserAgent == "", defaults.UserAgent, conf.UserAgent),
 		maxConcurrentDownload: maxConcurrentDownload,
 		timeout:               timeout,
 		dlSemaphore:           semaphore.NewWeighted(int64(maxConcurrentDownload)),

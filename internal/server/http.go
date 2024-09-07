@@ -6,6 +6,7 @@ import (
 
 	"github.com/ncarlier/readflow/internal/api"
 	"github.com/ncarlier/readflow/internal/config"
+	"github.com/ncarlier/readflow/pkg/defaults"
 	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/rs/zerolog"
 )
@@ -36,8 +37,10 @@ func NewHTTPServer(cfg *config.Config) *HTTPServer {
 	handler := api.NewRouter(cfg)
 	return &HTTPServer{
 		self: &http.Server{
-			Addr:    addr,
-			Handler: handler,
+			Addr:         addr,
+			Handler:      handler,
+			ReadTimeout:  defaults.Timeout,
+			WriteTimeout: 2 * defaults.Timeout,
 		},
 		logger: logger.With().Str("component", "http").Str("addr", addr).Logger(),
 	}

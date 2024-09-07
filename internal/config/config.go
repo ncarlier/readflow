@@ -59,6 +59,12 @@ func NewConfig() *Config {
 				Duration: defaults.Timeout,
 			},
 		},
+		Scraping: ScrapingConfig{
+			UserAgent: defaults.UserAgent,
+			Timeout: types.Duration{
+				Duration: defaults.Timeout,
+			},
+		},
 		Avatar: AvatarConfig{
 			ServiceProvider: "https://robohash.org/{seed}?set=set4&size=48x48",
 		},

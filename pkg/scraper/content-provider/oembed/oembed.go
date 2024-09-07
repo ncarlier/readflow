@@ -78,10 +78,6 @@ func (cp oEmbedContentProvider) Match(rawurl string) bool {
 }
 
 func init() {
-	httpClient := &http.Client{
-		Timeout: defaults.Timeout,
-	}
-
 	for _, provider := range Providers {
 		for _, endpoint := range provider.Endpoints {
 			for _, scheme := range endpoint.Schemes {
@@ -93,7 +89,7 @@ func init() {
 					name:       provider.Name,
 					endpoint:   strings.ReplaceAll(endpoint.URL, "{format}", "json"),
 					re:         re,
-					httpClient: httpClient,
+					httpClient: http.DefaultClient,
 				})
 			}
 		}

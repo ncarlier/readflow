@@ -23,10 +23,17 @@ type WebScraper interface {
 	Scrap(ctx context.Context, rawurl string) (*WebPage, error)
 }
 
+// WebScraperConfiguration to configure a Web scraper
+type WebScraperConfiguration struct {
+	HttpClient              *http.Client
+	UserAgent               string
+	ExternalServiceEndpoint string
+}
+
 // NewWebScraper create new Web Scraping service
-func NewWebScraper(httpClient *http.Client, userAgent, uri string) (WebScraper, error) {
-	if uri == "" {
-		return NewInternalWebScraper(httpClient, userAgent), nil
+func NewWebScraper(conf *WebScraperConfiguration) (WebScraper, error) {
+	if conf.ExternalServiceEndpoint == "" {
+		return NewInternalWebScraper(conf), nil
 	}
-	return NewExternalWebScraper(httpClient, userAgent, uri)
+	return NewExternalWebScraper(conf)
 }

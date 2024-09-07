@@ -23,7 +23,8 @@ func newThumbhashEventHandler(srv *Registry) event.EventHandler {
 			return
 		}
 
-		// download aricle image
+		// download article image
+		// TODO use image proxy service (in order to reduce image size and therfore the memory)
 		asset, res, err := srv.dl.Get(context.Background(), *article.Image, nil)
 		if err != nil {
 			logger.Info().Err(err).Msg(thumbhashErrorMessage)

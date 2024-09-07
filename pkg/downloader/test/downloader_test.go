@@ -19,7 +19,9 @@ func TestCache(t *testing.T) {
 	defer downloadCache.Close()
 
 	url := "https://about.readflow.app/img/logo.svg"
-	dl := downloader.NewDefaultDownloader(downloadCache)
+	dl := downloader.NewInternalDownloader(&downloader.InternalDownloaderConfig{
+		Cache: downloadCache,
+	})
 
 	asset, resp, err := dl.Get(context.Background(), url, nil)
 	require.Nil(t, err)

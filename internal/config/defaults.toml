@@ -95,20 +95,26 @@ secret_key = "${READFLOW_HASH_SECRET_KEY}"
 secret_salt = "${READFLOW_HASH_SECRET_SALT}"
 
 [downloader]
-## User-Agent used by the internal downloader
+## User-Agent of the HTTP client used by the downloader 
 # Default: "Mozilla/5.0 (compatible; Readflow/1.0; +https://github.com/ncarlier/readflow)"
 user_agent = "${READFLOW_DOWNLOADER_USER_AGENT}"
-## Cache paramters
+## Timeout of the HTTP client used by the downloader 
+# Default: 5s
+timeout = "${READFLOW_DOWNLOADER_TIMEOUT}"
+## Cache parameters of the downloader
 # Default: "boltdb:///tmp/readflow-downloads.cache?maxSize=256,maxEntries=5000,maxEntrySize=5"
 cache = "${READFLOW_DOWNLOADER_CACHE}"
 ## Max concurent downloads
 # Default: 10
-#max_concurent_downloads = 10
-## Timeout
-# Default: 5s
-timeout = "${READFLOW_DOWNLOADER_TIMEOUT}"
+#max_concurent_downloads = ${READFLOW_DOWNLOADER_MAX_CONCURENT_DOWNLOADS}
 
 [scraping]
+## User-Agent of the HTTP client used by the Web Scraper
+# Default: "Mozilla/5.0 (compatible; Readflow/1.0; +https://github.com/ncarlier/readflow)"
+user_agent = "${READFLOW_SCRAPING_USER_AGENT}"
+## Timeout of the HTTP client used by the Web Scraper
+# Default: 5s
+timeout = "${READFLOW_SCRAPING_TIMEOUT}"
 ## External Web Scraper URL, using internal if empty
 # Example: "https://example.org/scrap"
 service_provider = "${READFLOW_SCRAPING_SERVICE_PROVIDER}"
@@ -186,6 +192,7 @@ consumer_key = "${READFLOW_POCKET_CONSUMER_KEY}"
 #incoming_webhooks_limit = 1
 #outgoing_webhooks_limit = 1
 #outgoing_webhooks_timeout = "2s"
+#download_timeout = "2s"
 
 #[[user_plans]]
 #name = "friends and family"
@@ -194,3 +201,4 @@ consumer_key = "${READFLOW_POCKET_CONSUMER_KEY}"
 #incoming_webhooks_limit = 5
 #outgoing_webhooks_limit = 5
 #outgoing_webhooks_timeout = "10s"
+#download_timeout = "10s"

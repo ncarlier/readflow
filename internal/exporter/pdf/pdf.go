@@ -8,7 +8,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/ncarlier/readflow/internal/exporter"
 	"github.com/ncarlier/readflow/internal/exporter/html"
@@ -55,8 +54,6 @@ func (exp *PDFExporter) Export(ctx context.Context, article *model.Article) (*do
 		return nil, err
 	}
 
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
-	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, "POST", exp.endpoint, &buf)
 	if err != nil {
 		return nil, err

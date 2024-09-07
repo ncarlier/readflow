@@ -12,6 +12,8 @@ const (
 	OpSendNotification
 	// OpSetText to set article text
 	OpSetText
+	// OpSetHTML to set article HTML content
+	OpSetHTML
 	// OpSetTitle to set article title
 	OpSetTitle
 	// OpSetCategory to set article category
