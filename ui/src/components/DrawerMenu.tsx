@@ -2,18 +2,23 @@ import React, { createRef, CSSProperties, FC, PropsWithChildren, useCallback, us
 import Drawer from 'react-bottom-drawer'
 
 import { ButtonIcon } from '.'
+import { useKeyboard } from '../hooks'
 
 interface Props extends PropsWithChildren {
   style?: CSSProperties
   title?: string
   icon?: string
+  kbs?: string
 }
 
 export const DrawerMenu: FC<Props> = (props) => {
-  const { children, icon = 'more_vert', ...attrs } = props
+  const { children, icon = 'more_vert', kbs, ...attrs } = props
   const [isVisible, setIsVisible] = useState(false)
   const ref = createRef<HTMLDivElement>()
 
+  const toggle = React.useCallback(() => {
+    setIsVisible(!isVisible)
+  }, [isVisible])
   const onClose = React.useCallback(() => {
     setIsVisible(false)
   }, [])
@@ -33,6 +38,9 @@ export const DrawerMenu: FC<Props> = (props) => {
     }
   }, [handleClickOutside])
 
+  useKeyboard(kbs, toggle, !!kbs)
+  attrs.title += kbs ? ` [${kbs}]` : ''
+  
   return (
     <>
       <ButtonIcon icon={icon} {...attrs} onClick={handleClickMenu} />

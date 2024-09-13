@@ -20,7 +20,7 @@ export const ArticleContextMenu = (props: Props) => {
   const isOnline = !props.article.isOffline
   
   return (
-    <DrawerMenu title={title}>
+    <DrawerMenu title={title} kbs={props.keyboard ? 'm' : ''}>
       <ul>
         {props.showEditModal && (
           <li>

@@ -44,13 +44,6 @@ export const DropDownMenu: FC<Props> = (props) => {
       const $el = e.target
       if (!($el instanceof Element)) return
       if (ref.current && !ref.current.contains($el)) {
-        /*
-        const isButton = $el.parentElement && $el.parentElement.tagName === 'BUTTON'
-        const $details = $el.closest('details')
-        if (!isButton || $details !== ref.current) {
-          ref.current.removeAttribute('open')
-        }
-        */
         ref.current.removeAttribute('open')
       }
     },
@@ -70,7 +63,7 @@ export const DropDownMenu: FC<Props> = (props) => {
       document.removeEventListener('click', handleClickOutside, { capture: true })
     }
   }, [handleClickOutside])
-
+  
   return (
     <details ref={ref} className={styles.menu}>
       <summary>

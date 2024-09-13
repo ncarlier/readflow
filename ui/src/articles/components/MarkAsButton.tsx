@@ -29,12 +29,12 @@ const variants: VariantsType = {
   inbox: {
     title: 'Put back to the inbox',
     icon: 'undo',
-    kbs: 'm',
+    kbs: 'ins',
   },
   read: {
     title: 'Mark as read',
     icon: 'done',
-    kbs: 'm',
+    kbs: 'del',
   },
   to_read: {
     title: 'Read it later',

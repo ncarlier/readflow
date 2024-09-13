@@ -131,32 +131,32 @@ export const ArticlesPageMenu = (props: Props) => {
         {!!req.category && (
           <li>
             <DropDownMenuItem label='View'>
-              <ToggleView value={req.starred ? 'starred' : req.status ?? 'inbox'} onChange={handleChangeView} keys="shift+h" />
+              <ToggleView value={req.starred ? 'starred' : req.status ?? 'inbox'} onChange={handleChangeView} kbs="shift+h" />
             </DropDownMenuItem>
           </li>
         )}
         <li>
           <DropDownMenuItem label='Display as'>
-            <ToggleDisplayMode value={getDisplayPreference().mode} onChange={(mode) => setDisplayPreference({mode})} keys="shift+d" />
+            <ToggleDisplayMode value={getDisplayPreference().mode} onChange={(mode) => setDisplayPreference({mode})} kbs="shift+d" />
           </DropDownMenuItem>
         </li>
         {variant === 'starred' && (
           <li>
             <DropDownMenuItem label='Sort by'>
-              <ToggleSortBy value={getDisplayPreference().by} onChange={handleChangeSortBy} keys="shift+b" />
+              <ToggleSortBy value={getDisplayPreference().by} onChange={handleChangeSortBy} kbs="shift+b" />
             </DropDownMenuItem>
           </li>
         )}
         <li>
           <DropDownMenuItem label='Order '>
-            <ToggleSortOrder value={getDisplayPreference().order} onChange={handleChangeSortOrder} keys="shift+o" />
+            <ToggleSortOrder value={getDisplayPreference().order} onChange={handleChangeSortOrder} kbs="shift+o" />
           </DropDownMenuItem>
         </li>
         {req.status === 'inbox' && (
           <li>
             <LinkIcon onClick={showMarkAllAsReadDialog} icon="done_all">
               <span>Mark all as read</span>
-              <Kbd keys="shift+m" onKeypress={showMarkAllAsReadDialog} />
+              <Kbd keys="shift+del" onKeypress={showMarkAllAsReadDialog} />
             </LinkIcon>
           </li>
         )}

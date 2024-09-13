@@ -5,7 +5,7 @@ import { SortBy } from '../models'
 interface Props {
   value: SortBy
   onChange: (by: SortBy) => void
-  keys: string
+  kbs: string
 }
 
 const values: {
@@ -27,9 +27,9 @@ const values: {
 
 const toggle = (value: SortBy) => value === 'key' ? 'stars' : 'key'
 
-export const ToggleSortBy = ({value, onChange, keys}: Props) => (
+export const ToggleSortBy = ({value, onChange, kbs}: Props) => (
   <>
     <ToggleMenuItem name='sort-by' value={value} onChange={onChange} values={values} />
-    <Kbd keys={keys} onKeypress={() => onChange(toggle(value))} />
+    <Kbd keys={kbs} onKeypress={() => onChange(toggle(value))} />
   </>
 )

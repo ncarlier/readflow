@@ -7,7 +7,7 @@ type ViewMode = ArticleStatus | 'starred'
 interface Props {
   value: ViewMode
   onChange: (value: ViewMode) => void
-  keys: string
+  kbs: string
 }
 
 const values: {
@@ -42,9 +42,9 @@ const toggle = (value: ViewMode) => value === 'inbox' ? 'to_read'
   : value === 'read' ? 'starred'
   : 'inbox'
 
-export const ToggleView = ({value, onChange, keys}: Props) => (
+export const ToggleView = ({value, onChange, kbs}: Props) => (
   <>
     <ToggleMenuItem name='view-mode' value={value} onChange={onChange} values={values} />
-    <Kbd keys={keys} onKeypress={() => onChange(toggle(value))} />
+    <Kbd keys={kbs} onKeypress={() => onChange(toggle(value))} />
   </>
 )

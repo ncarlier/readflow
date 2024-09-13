@@ -5,7 +5,7 @@ import { DisplayMode } from '../../contexts'
 interface Props {
   value: DisplayMode
   onChange: (value: DisplayMode) => void
-  keys: string
+  kbs: string
 }
 
 const values: {
@@ -27,9 +27,9 @@ const values: {
 
 const toggle = (value: DisplayMode) => value === 'grid' ? 'list' : 'grid'
 
-export const ToggleDisplayMode = ({value, onChange, keys}: Props) => (
+export const ToggleDisplayMode = ({value, onChange, kbs}: Props) => (
   <>
     <ToggleMenuItem name='display-mode' value={value} onChange={onChange} values={values} />
-    <Kbd keys={keys} onKeypress={() => onChange(toggle(value))} />
+    <Kbd keys={kbs} onKeypress={() => onChange(toggle(value))} />
   </>
 )

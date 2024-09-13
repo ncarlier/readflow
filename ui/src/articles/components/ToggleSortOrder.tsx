@@ -5,7 +5,7 @@ import { SortOrder } from '../models'
 interface Props {
   value: SortOrder
   onChange: (order: SortOrder) => void
-  keys: string
+  kbs: string
 }
 
 const values: {
@@ -27,9 +27,9 @@ const values: {
 
 const toggle = (value: SortOrder) => value === 'asc' ? 'desc' : 'asc'
 
-export const ToggleSortOrder = ({value, onChange, keys}: Props) => (
+export const ToggleSortOrder = ({value, onChange, kbs}: Props) => (
   <>
     <ToggleMenuItem name='sort-order' value={value} onChange={onChange} values={values} />
-    <Kbd keys={keys} onKeypress={() => onChange(toggle(value))} />
+    <Kbd keys={kbs} onKeypress={() => onChange(toggle(value))} />
   </>
 )

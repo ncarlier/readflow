@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 
 export type KeyHandler = (e: mousetrap.ExtendedKeyboardEvent, combo: string) => void
 
-export const useKeyboard = (key: string | string[], handler: KeyHandler, enable = true) => {
+export const useKeyboard = (key: undefined | string | string[], handler: KeyHandler, enable = true) => {
   useEffect(() => {
-    if (enable) {
+    if (key && enable) {
       // console.log('bind', key)
       mousetrap.unbind(key)
       setTimeout(() => {

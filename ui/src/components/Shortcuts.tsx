@@ -17,7 +17,7 @@ export const Shortcuts = () => (
           Toggle sort by (if starred)<kbd>shift+b</kbd>
         </li>
         <li>
-          Mark all as read (if category or main list)<kbd>shift+m</kbd>
+          Mark all as read (if category or main list)<kbd>shift+del</kbd>
         </li>
         <li>
           Toggle history list (if category)<kbd>shift+h</kbd>
@@ -46,7 +46,10 @@ export const Shortcuts = () => (
       <h1>Article</h1>
       <ul>
         <li>
-          Toggle read status<kbd>m</kbd>
+          Mark article as read<kbd>del</kbd>
+        </li>
+        <li>
+          Mark article as unread<kbd>ins</kbd>
         </li>
         <li>
           Read article later<kbd>r</kbd>
@@ -65,6 +68,9 @@ export const Shortcuts = () => (
         </li>
         <li>
           Save to default archive service<kbd>shift+s</kbd>
+        </li>
+        <li>
+          Open article menu<kbd>m</kbd>
         </li>
         <li>
           Back to list<kbd>backspace</kbd>
