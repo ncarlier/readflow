@@ -17,7 +17,7 @@ export function useAddToHomescreenPrompt(): [
     null
   )
 
-  const promptToInstall = () => {
+  const promptToInstall = React.useCallback(() => {
     if (prompt) {
       return prompt.prompt()
     }
@@ -26,7 +26,7 @@ export function useAddToHomescreenPrompt(): [
         'Tried installing before browser sent "beforeinstallprompt" event'
       )
     )
-  }
+  }, [prompt])
 
   React.useEffect(() => {
     const ready = (e: IBeforeInstallPromptEvent) => {

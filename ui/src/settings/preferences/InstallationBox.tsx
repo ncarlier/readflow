@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { Box, Button } from '../../components'
-import { isDisplayMode } from '../../helpers'
-import { useAddToHomescreenPrompt } from '../../hooks'
+import { useDevice } from '../../contexts'
 
 interface InstallProps {
   onClick?: (e: any) => void
@@ -38,18 +37,7 @@ const Uninstallable = () => (
 )
 
 const InstallationBox = () => {
-  const [prompt, promptToInstall] = useAddToHomescreenPrompt()
-  const [isInstalled] = useState(isDisplayMode('standalone'))
-  const [isInstallable, setInstallableState] = useState(false)
-
-  React.useEffect(
-    () => {
-      if (prompt) {
-        setInstallableState(true)
-      }
-    },
-    [prompt]
-  )
+  const {isInstalled, isInstallable, promptToInstall} = useDevice()
 
   return (
     <Box title="Installation">

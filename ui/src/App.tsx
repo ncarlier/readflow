@@ -7,6 +7,7 @@ import { Store } from 'redux'
 
 import {
   CurrentUserProvider,
+  DeviceProvider,
   GraphQLProvider,
   LocalConfigurationProvider,
   MessageProvider,
@@ -37,21 +38,23 @@ export default function App({ store, history /*, theme*/ }: Props) {
       <ConnectedRouter history={history}>
         <AuthenticationProvider>
           <GraphQLProvider>
-            <LocalConfigurationProvider>
-              <MessageProvider>
-                <ModalProvider>
-                  <NavbarProvider>
-                    <ScrollMemoryProvider>
-                      <CurrentUserProvider>
-                        <AppLayout>
-                          <Routes />
-                        </AppLayout>
-                      </CurrentUserProvider>
-                    </ScrollMemoryProvider>
-                  </NavbarProvider>
-                </ModalProvider>
-              </MessageProvider>
-            </LocalConfigurationProvider>
+            <DeviceProvider>
+              <LocalConfigurationProvider>
+                <MessageProvider>
+                  <ModalProvider>
+                    <NavbarProvider>
+                      <ScrollMemoryProvider>
+                        <CurrentUserProvider>
+                          <AppLayout>
+                            <Routes />
+                          </AppLayout>
+                        </CurrentUserProvider>
+                      </ScrollMemoryProvider>
+                    </NavbarProvider>
+                  </ModalProvider>
+                </MessageProvider>
+              </LocalConfigurationProvider>
+            </DeviceProvider>
           </GraphQLProvider>
         </AuthenticationProvider>
       </ConnectedRouter>

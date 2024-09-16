@@ -1,4 +1,5 @@
 export * from './CurrentUserContext'
+export * from './DeviceContext'
 export * from './GraphQLContext'
 export * from './LocalConfigurationContext'
 export * from './MessageContext'
