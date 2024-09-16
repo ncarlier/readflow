@@ -14,7 +14,7 @@ insert_final_newline = true
 charset = utf-8
 
 # 2 space indentation
-[*.{js,css,yml,json,html,svg,jsx,tsx}]
+[*.{js,ts,css,yml,json,html,svg,jsx,tsx}]
 indent_style = space
 indent_size = 2
 

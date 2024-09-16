@@ -26,6 +26,6 @@ const isMobile = {
 
 export const isMobileDevice = () => isMobile.any()
 
-export const isInstalled = () => window.matchMedia('(display-mode: standalone)').matches
+export const isDisplayMode = (mode: 'standalone' | 'fullscreen') => window.matchMedia(`(display-mode: ${mode})`).matches
 
 export const isTrustedWebActivity = () => document.referrer.includes('android-app://')

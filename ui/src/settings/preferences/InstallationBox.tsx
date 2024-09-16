@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Box, Button } from '../../components'
-import { isInstalled } from '../../helpers'
+import { isDisplayMode } from '../../helpers'
+import { useAddToHomescreenPrompt } from '../../hooks'
 
 interface InstallProps {
   onClick?: (e: any) => void
@@ -32,34 +33,31 @@ const Uninstallable = () => (
   <p>
     Oh! readflow can&apos;t be installed on this device.
     <br />
-    Maybe your device is too old or the current readflow configuration does not allow it. Sad.
+    Maybe your device device configuration does not allow it. Sad.
   </p>
 )
 
 const InstallationBox = () => {
-  const [installed, setInstalled] = useState(isInstalled())
-  const { deferredPrompt } = window
+  const [prompt, promptToInstall] = useAddToHomescreenPrompt()
+  const [isInstalled] = useState(isDisplayMode('standalone'))
+  const [isInstallable, setInstallableState] = useState(false)
 
-  const installHandler = useCallback(() => {
-    deferredPrompt.prompt()
-    deferredPrompt.userChoice.then((choice: any) => {
-      if (choice.outcome === 'accepted') {
-        console.log('User accepted the A2HS prompt')
-        setInstalled(true)
-      } else {
-        setInstalled(false)
+  React.useEffect(
+    () => {
+      if (prompt) {
+        setInstallableState(true)
       }
-      window.deferredPrompt = null
-    })
-  }, [deferredPrompt])
+    },
+    [prompt]
+  )
 
   return (
     <Box title="Installation">
       {(() => {
         switch (true) {
-          case !installed && !!deferredPrompt:
-            return <Install onClick={installHandler} />
-          case installed:
+          case !isInstalled && isInstallable:
+            return <Install onClick={promptToInstall} />
+          case isInstalled:
             return <Installed />
           default:
             return <Uninstallable />
