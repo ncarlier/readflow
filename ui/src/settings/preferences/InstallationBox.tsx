@@ -30,21 +30,27 @@ const Installed = () => (
 
 const Uninstallable = () => (
   <p>
-    Oh! readflow can&apos;t be installed on this device.
+    Sadness! readflow can&apos;t be installed on this device from here.
     <br />
-    Maybe your device device configuration does not allow it. Sad.
+    Maybe your device&apos;s browser allows you to do this, but only by using the built-in application menu.
   </p>
 )
 
 const InstallationBox = () => {
-  const {isInstalled, isInstallable, promptToInstall} = useDevice()
+  const { isInstalled, beforeInstallPromptEvent } = useDevice()
+
+  const install = React.useCallback(() => {
+    if (beforeInstallPromptEvent) {
+      beforeInstallPromptEvent.prompt()
+    }
+  }, [beforeInstallPromptEvent])
 
   return (
     <Box title="Installation">
       {(() => {
         switch (true) {
-          case !isInstalled && isInstallable:
-            return <Install onClick={promptToInstall} />
+          case !isInstalled && beforeInstallPromptEvent != null:
+            return <Install onClick={install} />
           case isInstalled:
             return <Installed />
           default:

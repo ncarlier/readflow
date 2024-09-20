@@ -1,34 +1,44 @@
 import React, { createContext, FC, PropsWithChildren, useContext, useState } from 'react'
-import { useAddToHomescreenPrompt } from '../hooks'
 import { isDisplayMode } from '../helpers'
+
+interface IBeforeInstallPromptEvent extends Event {
+  readonly platforms: string[]
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed'
+    platform: string
+  }>
+  prompt(): Promise<void>
+}
 
 interface DeviceContextType {
   isInstalled: boolean
-  isInstallable: boolean
-  promptToInstall: () => void
+  beforeInstallPromptEvent: IBeforeInstallPromptEvent | null
 }
 
 const DeviceContext = createContext<DeviceContextType>({
   isInstalled: false,
-  isInstallable: false,
-  promptToInstall: () => {return},
+  beforeInstallPromptEvent: null,
 })
 
 const DeviceProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [prompt, promptToInstall] = useAddToHomescreenPrompt()
-  const [isInstalled] = useState(isDisplayMode('standalone'))
-  const [isInstallable, setInstallableState] = useState(false)
+  const [beforeInstallPromptEvent, setBeforeInstallPromptEventState] = useState<IBeforeInstallPromptEvent | null>(null)
+  const [isInstalled, setInstalledState] = useState(isDisplayMode('standalone'))
 
-  React.useEffect(
-    () => {
-      if (prompt) {
-        setInstallableState(true)
-      }
-    },
-    [prompt]
-  )
+  React.useEffect(() => {
+    const ready = (e: IBeforeInstallPromptEvent) => {
+      e.preventDefault()
+      setBeforeInstallPromptEventState(e)
+    }
+    const installed = () => setInstalledState(true)
+    window.addEventListener('beforeinstallprompt', ready as any)
+    window.addEventListener('appinstalled', installed)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', ready as any)
+      window.removeEventListener('appinstalled', installed)
+    }
+  }, [])
 
-  return <DeviceContext.Provider value={{ isInstalled, isInstallable, promptToInstall }}>{children}</DeviceContext.Provider>
+  return <DeviceContext.Provider value={{ isInstalled, beforeInstallPromptEvent }}>{children}</DeviceContext.Provider>
 }
 
 export { DeviceProvider }
