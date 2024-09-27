@@ -9,7 +9,11 @@ import (
 	"github.com/ncarlier/readflow/pkg/html"
 )
 
+const MAX_RESPONSE_SIZE = 2 << 20 // 2Mb
+
 func ReadWebPage(body io.Reader, pageUrl *url.URL) (*WebPage, error) {
+	// Set body limit
+	body = io.LimitReader(body, MAX_RESPONSE_SIZE)
 	// Parse DOM
 	doc, err := dom.Parse(body)
 	if err != nil {
@@ -17,9 +21,6 @@ func ReadWebPage(body io.Reader, pageUrl *url.URL) (*WebPage, error) {
 	}
 	// Extract meta
 	meta := html.ExtractMetaFromDOM(doc)
-	if err != nil {
-		return nil, err
-	}
 
 	// Create article with Open Graph attributes
 	result := &WebPage{

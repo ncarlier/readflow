@@ -102,12 +102,18 @@ type DownloaderConfig struct {
 	MaxConcurentDownloads uint           `toml:"max_concurent_downloads"`
 }
 
+// ScrapingForwardProxyConfig for forward proxy configuration
+type ScrapingForwardProxyConfig struct {
+	Endpoint string
+	Hosts    []string
+}
+
 // ScrapingConfig for scraping configuration section
 type ScrapingConfig struct {
-	UserAgent       string         `toml:"user_agent"`
-	Timeout         types.Duration `toml:"timeout"`
-	ServiceProvider string         `toml:"service_provider"`
-	BlockList       string         `toml:"block_list"`
+	UserAgent    string                     `toml:"user_agent"`
+	Timeout      types.Duration             `toml:"timeout"`
+	BlockList    string                     `toml:"block_list"`
+	ForwardProxy ScrapingForwardProxyConfig `toml:"forward_proxy"`
 }
 
 // AvatarConfig for avatar configuration section

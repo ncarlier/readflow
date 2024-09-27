@@ -33,7 +33,7 @@ type Registry struct {
 	logger                  zerolog.Logger
 	downloadCache           cache.Cache
 	properties              *model.Properties
-	webScraper              scraper.WebScraper
+	webScraper              *scraper.WebScraper
 	dl                      downloader.Downloader
 	hashid                  *hashid.HashIDHandler
 	notificationRateLimiter ratelimiter.RateLimiter
@@ -53,14 +53,14 @@ func Configure(conf config.Config, database db.DB) error {
 		return err
 	}
 	// configure web scraper
-	webScraper, err := scraper.NewWebScraper(&scraper.WebScraperConfiguration{
-		HttpClient:              &http.Client{Timeout: conf.Scraping.Timeout.Duration},
-		UserAgent:               conf.Scraping.UserAgent,
-		ExternalServiceEndpoint: conf.Scraping.ServiceProvider,
+	webScraper := scraper.NewWebScraper(&scraper.WebScraperConfiguration{
+		HttpClient: &http.Client{Timeout: conf.Scraping.Timeout.Duration},
+		UserAgent:  conf.Scraping.UserAgent,
+		ForwardProxy: &scraper.ForwardProxyConfiguration{
+			Endpoint: conf.Scraping.ForwardProxy.Endpoint,
+			Hosts:    conf.Scraping.ForwardProxy.Hosts,
+		},
 	})
-	if err != nil {
-		return err
-	}
 	hid, err := hashid.NewHashIDHandler(conf.Hash.SecretSalt.Value)
 	if err != nil {
 		return err

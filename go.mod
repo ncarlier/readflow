@@ -10,8 +10,8 @@ require (
 	github.com/brianvoe/gofakeit v3.18.0+incompatible
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/getsentry/raven-go v0.2.0
-	github.com/go-shiori/dom v0.0.0-20210627111528-4e4722cd0d65
-	github.com/go-shiori/go-readability v0.0.0-20230421032831-c66949dfc0ad
+	github.com/go-shiori/dom v0.0.0-20230515143342-73569d674e1c
+	github.com/go-shiori/go-readability v0.0.0-20240701094332-1070de7e32ef
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
 	github.com/google/uuid v1.3.0
@@ -36,6 +36,8 @@ require (
 	golang.org/x/net v0.14.0
 	golang.org/x/sync v0.7.0
 )
+
+require github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de // indirect
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect

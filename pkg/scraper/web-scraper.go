@@ -12,22 +12,24 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
-type internalWebScraper struct {
-	httpClient *http.Client
-	userAgent  string
+type WebScraper struct {
+	httpClient   *http.Client
+	userAgent    string
+	forwardProxy *ForwardProxyConfiguration
 }
 
-// NewInternalWebScraper create an internal web scrapping service
-func NewInternalWebScraper(conf *WebScraperConfiguration) WebScraper {
-	return &internalWebScraper{
-		httpClient: utils.If(conf.HttpClient == nil, defaults.HTTPClient, conf.HttpClient),
-		userAgent:  utils.If(conf.UserAgent == "", defaults.UserAgent, conf.UserAgent),
+// NewWebScraper create an internal web scrapping service
+func NewWebScraper(conf *WebScraperConfiguration) *WebScraper {
+	return &WebScraper{
+		httpClient:   utils.If(conf.HttpClient == nil, defaults.HTTPClient, conf.HttpClient),
+		userAgent:    utils.If(conf.UserAgent == "", defaults.UserAgent, conf.UserAgent),
+		forwardProxy: conf.ForwardProxy,
 	}
 }
 
-func (ws internalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage, error) {
+func (ws WebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage, error) {
 	// Validate URL
-	_, err := url.ParseRequestURI(rawurl)
+	pageURL, err := url.ParseRequestURI(rawurl)
 	if err != nil {
 		return nil, fmt.Errorf("invalid URL: %v", err)
 	}
@@ -49,7 +51,7 @@ func (ws internalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage
 	}
 
 	// Get URL content
-	res, err := ws.get(ctx, rawurl)
+	res, err := ws.get(ctx, pageURL)
 	if err != nil {
 		return nil, err
 	}
@@ -59,10 +61,10 @@ func (ws internalWebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage
 		return nil, err
 	}
 
-	return ReadWebPage(body, res.Request.URL)
+	return ReadWebPage(body, pageURL)
 }
 
-func (ws internalWebScraper) getContentType(ctx context.Context, rawurl string) (string, error) {
+func (ws WebScraper) getContentType(ctx context.Context, rawurl string) (string, error) {
 	req, err := http.NewRequest("HEAD", rawurl, http.NoBody)
 	if err != nil {
 		return "", err
@@ -76,7 +78,11 @@ func (ws internalWebScraper) getContentType(ctx context.Context, rawurl string) 
 	return res.Header.Get("Content-type"), nil
 }
 
-func (ws internalWebScraper) get(ctx context.Context, rawurl string) (*http.Response, error) {
+func (ws WebScraper) get(ctx context.Context, pageURL *url.URL) (*http.Response, error) {
+	rawurl := pageURL.String()
+	if ws.forwardProxy != nil && ws.forwardProxy.Endpoint != "" && ws.forwardProxy.Match(pageURL.Hostname()) {
+		rawurl = strings.ReplaceAll(ws.forwardProxy.Endpoint, "{url}", rawurl)
+	}
 	req, err := http.NewRequest("GET", rawurl, http.NoBody)
 	if err != nil {
 		return nil, err

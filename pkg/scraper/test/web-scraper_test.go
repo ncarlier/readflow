@@ -13,9 +13,9 @@ import (
 	"github.com/ncarlier/readflow/pkg/scraper"
 )
 
-func TestInternalScraper(t *testing.T) {
+func TestWebScraper(t *testing.T) {
 	ctx := context.TODO()
-	page, err := scraper.NewInternalWebScraper(&scraper.WebScraperConfiguration{}).Scrap(ctx, "https://about.readflow.app/")
+	page, err := scraper.NewWebScraper(&scraper.WebScraperConfiguration{}).Scrap(ctx, "https://about.readflow.app/")
 	assert.Nil(t, err)
 	assert.NotNil(t, page)
 	assert.Equal(t, "https://about.readflow.app/", page.URL)
@@ -28,7 +28,7 @@ func TestInternalScraper(t *testing.T) {
 
 func TestInternalScraperTimeout(t *testing.T) {
 	ctx := context.TODO()
-	_, err := scraper.NewInternalWebScraper(&scraper.WebScraperConfiguration{
+	_, err := scraper.NewWebScraper(&scraper.WebScraperConfiguration{
 		HttpClient: &http.Client{Timeout: time.Second},
 	}).Scrap(ctx, "https://httpstat.us/200?sleep=2000")
 	require.NotNil(t, err)
