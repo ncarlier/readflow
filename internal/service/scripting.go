@@ -81,6 +81,8 @@ func (reg *Registry) execSetOperations(ctx context.Context, ops scripting.Operat
 func (reg *Registry) execOtherOperations(ctx context.Context, ops scripting.OperationStack, article *model.Article) error {
 	// allows only 2 webhook trigger
 	hardLimitCounter := 2
+	// status to update if asked
+	status := ""
 	for _, op := range ops {
 		switch op.Name {
 		case scripting.OpSendNotification:
@@ -106,6 +108,19 @@ func (reg *Registry) execOtherOperations(ctx context.Context, ops scripting.Oper
 			if _, err := reg.SendArticle(ctx, article.ID, &name); err != nil {
 				return err
 			}
+		case scripting.OpMarkAsRead:
+			status = "read"
+		case scripting.OpMarkAsToRead:
+			status = "to_read"
+		}
+	}
+	if status != "" {
+		update := model.ArticleUpdateForm{
+			ID:     article.ID,
+			Status: &status,
+		}
+		if _, err := reg.UpdateArticle(ctx, update); err != nil {
+			return err
 		}
 	}
 	return nil

@@ -11,7 +11,7 @@ export default function(hljs) {
       $pattern: hljs.UNDERSCORE_IDENT_RE,
       literal: 'true false nil',
       keyword: 'case default else for foreach function if in local return switch while',
-      built_in: 'between day float hour int keys len lower match max min minute month now panic printf print reverse seconds sort split sprintf string time trim type upper weekday year setText setTitle setHTML setCategory fetch sendNotification triggerWebhook disableGlobalNotification',
+      built_in: 'between day float hour int keys len lower match max min minute month now panic printf print reverse seconds sort split sprintf string time trim type upper weekday year setText setTitle setHTML setCategory markAsRead markAsToRead sendNotification triggerWebhook disableGlobalNotification',
     },
     contains: [
       hljs.C_NUMBER_MODE,

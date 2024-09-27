@@ -43,7 +43,6 @@ func (i *Interpreter) init() {
 	// alter builtins functions
 	i.eval.AddFunction("print", i.fnPrint)
 	i.eval.AddFunction("printf", i.fnPrintf)
-	i.eval.AddFunction("fetch", i.fnFetch)
 	// add custom functions
 	i.eval.AddFunction("triggerWebhook", i.buildSingleArgFunction(OpTriggerWebhook))
 	i.eval.AddFunction("sendNotification", i.buildNoArgFunction(OpSendNotification))
@@ -51,6 +50,8 @@ func (i *Interpreter) init() {
 	i.eval.AddFunction("setTitle", i.buildSingleArgFunction(OpSetTitle))
 	i.eval.AddFunction("setText", i.buildSingleArgFunction(OpSetTitle))
 	i.eval.AddFunction("setHTML", i.buildSingleArgFunction(OpSetHTML))
+	i.eval.AddFunction("markAsRead", i.buildNoArgFunction(OpMarkAsRead))
+	i.eval.AddFunction("markAsToRead", i.buildNoArgFunction(OpMarkAsToRead))
 	i.eval.AddFunction("disableGlobalNotification", i.buildNoArgFunction(OpDisableGlobalNotification))
 }
 

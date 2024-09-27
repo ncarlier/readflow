@@ -13,6 +13,8 @@ This script gives control over a set of features:
 - Change the title of the article (`setTitle(string)`)
 - Change the text of the article (`setText(string)`)
 - Categorize the article (`setCategory(string)`)
+- Mark article as read (`markAsRead()`)
+- Mark article as to-read (`markAsToRead()`)
 - Notify connected devices of the article (`sendNotification()`)
 - Call an outgoing webhook (`triggerWebhook(string)`)
 - Disable the global notification policy for this webhook (`disableGlobalNotification()`)

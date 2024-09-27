@@ -18,6 +18,10 @@ const (
 	OpSetTitle
 	// OpSetCategory to set article category
 	OpSetCategory
+	// MarkAsRead to set articte status as "read"
+	OpMarkAsRead
+	// MarkAsToRead to set articte status as "to_read"
+	OpMarkAsToRead
 	// OpDisableGlobalNotification to disable global notification
 	OpDisableGlobalNotification
 )

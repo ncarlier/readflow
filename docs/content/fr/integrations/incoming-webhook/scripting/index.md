@@ -13,6 +13,8 @@ Ce script donne la main sur un ensemble de fonctionnalités:
 - Changer le titre de l'article (`setTitle(string)`)
 - Changer le texte de l'article (`setText(string)`)
 - Catégoriser l'article (`setCategory(string)`)
+- Marquer l'article comme lu (`markAsRead()`)
+- Marquer l'article comme à lire (`markAsToRead()`)
 - Notifier l'article aux appareils connectés (`sendNotification()`)
 - Appeler un webhook sortant (`triggerWebhook(string)`)
 - Désactiver la politique de notification globale pour ce webhook (`disableGlobalNotification()`)
