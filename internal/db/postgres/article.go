@@ -129,6 +129,12 @@ func (pg *DB) UpdateArticleForUser(uid uint, form model.ArticleUpdateForm) (*mod
 	if form.Title != nil {
 		update["title"] = *form.Title
 	}
+	if form.Image != nil {
+		update["image"] = *form.Image
+	}
+	if form.HTML != nil {
+		update["html"] = *form.HTML
+	}
 	if form.Text != nil {
 		update["text"] = *form.Text
 	}
