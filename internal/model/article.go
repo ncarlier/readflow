@@ -64,12 +64,15 @@ func (form ArticleCreateForm) TruncatedTitle() string {
 
 // ArticleUpdateForm structure definition
 type ArticleUpdateForm struct {
-	ID         uint
-	Title      *string
-	Text       *string
-	CategoryID *uint
-	Status     *string
-	Stars      *int
+	ID             uint
+	Title          *string
+	Text           *string
+	CategoryID     *uint
+	Status         *string
+	Stars          *int
+	RefreshContent *bool
+	Image          *string
+	HTML           *string
 }
 
 // CreatedArticlesResponse structure definition

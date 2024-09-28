@@ -33,6 +33,9 @@ var updateArticleMutationField = &graphql.Field{
 		"stars": &graphql.ArgumentConfig{
 			Type: graphql.Int,
 		},
+		"refresh": &graphql.ArgumentConfig{
+			Type: graphql.Boolean,
+		},
 	},
 	Resolve: updateArticleResolver,
 }
@@ -44,12 +47,13 @@ func updateArticleResolver(p graphql.ResolveParams) (interface{}, error) {
 	}
 
 	form := model.ArticleUpdateForm{
-		ID:         *id,
-		Title:      utils.ParseGraphQLArgument[string](p.Args, "title"),
-		Text:       utils.ParseGraphQLArgument[string](p.Args, "text"),
-		CategoryID: utils.ParseGraphQLID(p.Args, "category_id"),
-		Status:     utils.ParseGraphQLArgument[string](p.Args, "status"),
-		Stars:      utils.ParseGraphQLArgument[int](p.Args, "stars"),
+		ID:             *id,
+		Title:          utils.ParseGraphQLArgument[string](p.Args, "title"),
+		Text:           utils.ParseGraphQLArgument[string](p.Args, "text"),
+		CategoryID:     utils.ParseGraphQLID(p.Args, "category_id"),
+		Status:         utils.ParseGraphQLArgument[string](p.Args, "status"),
+		Stars:          utils.ParseGraphQLArgument[int](p.Args, "stars"),
+		RefreshContent: utils.ParseGraphQLArgument[bool](p.Args, "refresh"),
 	}
 
 	article, err := service.Lookup().UpdateArticle(p.Context, form)

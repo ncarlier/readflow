@@ -23,7 +23,7 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 	logger := reg.logger.With().Uint("uid", uid).Uint("id", form.ID).Logger()
 
 	// Validate update form
-	if err := validateArticleUpdateForm(form); err != nil {
+	if err := validateArticleUpdateForm(&form); err != nil {
 		logger.Info().Err(err).Msg(unableToUpdateArticleErrorMsg)
 		return nil, err
 	}
@@ -38,10 +38,17 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 	}
 
 	// Update loggers values
-	logger = addLoggerContextForUpdateArticle(logger, form)
+	updateLoggerContextWithUpdateForm(&logger, &form)
+	logger.Debug().Msg("updating article...")
+
+	// Refresh HTML content if asked
+	if form.RefreshContent != nil && *form.RefreshContent {
+		if err := reg.refreshArticleContent(ctx, &form); err != nil {
+			return nil, err
+		}
+	}
 
 	// Update article
-	logger.Debug().Msg("updating article...")
 	article, err := reg.db.UpdateArticleForUser(uid, form)
 	if err != nil {
 		logger.Err(err).Msg(unableToUpdateArticleErrorMsg)
@@ -61,27 +68,59 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 	return article, nil
 }
 
-func addLoggerContextForUpdateArticle(logger zerolog.Logger, form model.ArticleUpdateForm) zerolog.Logger {
-	ctx := logger.With()
-	if form.CategoryID != nil {
-		ctx = ctx.Uint("category_id", *form.CategoryID)
+func (reg *Registry) refreshArticleContent(ctx context.Context, form *model.ArticleUpdateForm) error {
+	article, err := reg.GetArticle(ctx, form.ID)
+	if err != nil {
+		return err
 	}
-	if form.Stars != nil {
-		ctx = ctx.Int("stars", *form.Stars)
+
+	if article.URL == nil || *article.URL == "" {
+		// nothing to refresh
+		return nil
 	}
-	if form.Status != nil {
-		ctx = ctx.Str("status", *form.Status)
+
+	logger := reg.logger.With().Uint("uid", article.UserID).Uint("id", form.ID).Logger()
+	logger.Debug().Msg("refreshing article content...")
+	page, err := reg.webScraper.Scrap(ctx, *article.URL)
+	if err != nil {
+		return err
 	}
-	if form.Title != nil {
-		ctx = ctx.Str("title", utils.Truncate(*form.Title, 24))
+	if form.Title == nil || *form.Title == "" {
+		form.Title = &page.Title
 	}
-	if form.Text != nil {
-		ctx = ctx.Str("text", utils.Truncate(*form.Text, 24))
+	if form.Text == nil || *form.Text == "" {
+		form.Text = &page.Text
 	}
-	return ctx.Logger()
+	form.HTML = &page.HTML
+	form.Image = &page.Image
+	return nil
 }
 
-func validateArticleUpdateForm(form model.ArticleUpdateForm) error {
+func updateLoggerContextWithUpdateForm(logger *zerolog.Logger, form *model.ArticleUpdateForm) {
+	logger.UpdateContext(func(ctx zerolog.Context) zerolog.Context {
+		if form.CategoryID != nil {
+			ctx = ctx.Uint("category_id", *form.CategoryID)
+		}
+		if form.Stars != nil {
+			ctx = ctx.Int("stars", *form.Stars)
+		}
+		if form.Status != nil {
+			ctx = ctx.Str("status", *form.Status)
+		}
+		if form.Title != nil {
+			ctx = ctx.Str("title", utils.Truncate(*form.Title, 24))
+		}
+		if form.Text != nil {
+			ctx = ctx.Str("text", utils.Truncate(*form.Text, 24))
+		}
+		if form.RefreshContent != nil {
+			ctx = ctx.Bool("refresh", *form.RefreshContent)
+		}
+		return ctx
+	})
+}
+
+func validateArticleUpdateForm(form *model.ArticleUpdateForm) error {
 	validations := new(validator.FieldsValidator)
 	validations.Validate("stars", func() bool {
 		return form.Stars == nil || *form.Stars <= 5
@@ -89,14 +128,14 @@ func validateArticleUpdateForm(form model.ArticleUpdateForm) error {
 	validations.Validate("title", func() bool {
 		if form.Title != nil {
 			l := len(strings.TrimSpace(*form.Title))
-			return l > 0 && l <= 256
+			return l <= 256
 		}
 		return true
 	})
 	validations.Validate("text", func() bool {
 		if form.Text != nil {
 			l := len(strings.TrimSpace(*form.Text))
-			return l >= 0 && l <= 512
+			return l <= 512
 		}
 		return true
 	})

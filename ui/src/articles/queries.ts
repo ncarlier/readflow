@@ -113,6 +113,30 @@ export const UpdateArticle = gql`
   }
 `
 
+export const UpdateFullArticle = gql`
+  mutation updateArticle($id: ID!, $title: String, $text: String, $category_id: ID, $status: status, $stars: Int, $refresh: Boolean) {
+    updateArticle(id: $id, title: $title, text: $text, category_id: $category_id, status: $status, stars: $stars, refresh: $refresh) {
+      article {
+        id
+        title
+        text
+        html
+        url
+        status
+        stars
+        category {
+          id
+          inbox
+        }
+        updated_at
+      }
+      _inbox
+      _to_read
+      _starred
+    }
+  }
+`
+
 export const SendArticleToOutgoingWebhook = gql`
   mutation sendArticleToOutgoingWebhook($id: ID!, $alias: String!) {
     sendArticleToOutgoingWebhook(id: $id, alias: $alias) {

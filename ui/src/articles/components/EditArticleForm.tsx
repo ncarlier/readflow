@@ -3,16 +3,17 @@ import { useMutation } from '@apollo/client'
 import { useFormState } from 'react-use-form-state'
 
 import { useMessage } from '../../contexts'
-import { Button, CategoriesOptions, ErrorPanel, FormInputField, FormSelectField, FormTextareaField, Loader, Panel } from '../../components'
+import { Button, CategoriesOptions, ErrorPanel, FormCheckboxField, FormInputField, FormSelectField, FormTextareaField, Loader, Panel } from '../../components'
 import { getGQLError, isValidForm } from '../../helpers'
 import { Article, UpdateArticleRequest, UpdateArticleResponse } from '../models'
-import { UpdateArticle } from '../queries'
+import { UpdateFullArticle } from '../queries'
 import { updateCacheAfterUpdate } from '../cache'
 
 interface EditArticleFormFields {
   title: string
   text: string
   category_id?: number
+  refresh: boolean
 }
 
 interface Props {
@@ -25,12 +26,13 @@ export const EditArticleForm = ({ article, onSuccess, onCancel }: Props) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { showMessage } = useMessage()
-  const [formState, { text, textarea, select }] = useFormState<EditArticleFormFields>({
+  const [formState, { text, textarea, select, checkbox }] = useFormState<EditArticleFormFields>({
     title: article.title,
     text: article.text,
     category_id: article.category?.id,
+    refresh: false,
   })
-  const [editArticleMutation] = useMutation<UpdateArticleResponse, UpdateArticleRequest>(UpdateArticle)
+  const [editArticleMutation] = useMutation<UpdateArticleResponse, UpdateArticleRequest>(UpdateFullArticle)
 
   const editArticle = useCallback(
     async (form: EditArticleFormFields) => {
@@ -76,12 +78,13 @@ export const EditArticleForm = ({ article, onSuccess, onCancel }: Props) => {
       <section>
         {errorMessage != null && <ErrorPanel title="Unable to edit article">{errorMessage}</ErrorPanel>}
         <form onSubmit={handleOnSubmit}>
-          <FormInputField label="Title" {...text('title')} error={formState.errors.title} required pattern=".*\S+.*" maxLength={256} autoFocus />
+          <FormInputField label="Title" {...text('title')} error={formState.errors.title} pattern=".*\S+.*" maxLength={256} autoFocus />
           <FormTextareaField label="Text" {...textarea('text')} error={formState.errors.text} maxLength={512} />
           <FormSelectField label="Category" {...select('category_id')} error={formState.errors.category_id}>
             <option>Optional category</option>
             <CategoriesOptions />
           </FormSelectField>
+          <FormCheckboxField label="Refresh content" {...checkbox('refresh')} />
         </form>
       </section>
       <footer>

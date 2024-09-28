@@ -58,6 +58,7 @@ export interface UpdateArticleRequest {
   status?: ArticleStatus
   stars?: number
   category_id?: number
+  refresh?: boolean
 }
 
 export interface UpdateArticleResponse {

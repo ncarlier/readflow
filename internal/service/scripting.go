@@ -115,6 +115,7 @@ func (reg *Registry) execOtherOperations(ctx context.Context, ops scripting.Oper
 		}
 	}
 	if status != "" {
+		// TODO move this logic to execSetOperations step
 		update := model.ArticleUpdateForm{
 			ID:     article.ID,
 			Status: &status,
