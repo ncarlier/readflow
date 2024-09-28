@@ -91,7 +91,8 @@ func (reg *Registry) refreshArticleContent(ctx context.Context, form *model.Arti
 	if form.Text == nil || *form.Text == "" {
 		form.Text = &page.Text
 	}
-	form.HTML = &page.HTML
+	html := reg.sanitizer.Sanitize(page.HTML)
+	form.HTML = &html
 	form.Image = &page.Image
 	return nil
 }
