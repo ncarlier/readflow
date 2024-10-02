@@ -8,9 +8,23 @@ declare global {
   }
 }
 
+type Article = {
+  id?: number
+  title?: string
+  url?: string
+  html?: string
+  text?: string
+  image?: string
+}
+
+type HistoryItem = {
+  parent: Node | null
+  element: HTMLElement | ChildNode
+  placeholder: Text
+}
+
 const trapMouseEvent = function (callback: (el: HTMLElement, evt?: MouseEvent) => void) {
   return function (ev: MouseEvent) {
-    ev.cancelBubble = true
     ev.stopPropagation()
     ev.preventDefault()
     const el = this as HTMLElement
@@ -18,25 +32,38 @@ const trapMouseEvent = function (callback: (el: HTMLElement, evt?: MouseEvent) =
   }
 }
 
-const setMouserOverStyle = function (el: HTMLElement, evt: MouseEvent) {
-  Object.assign(el.style, evt.ctrlKey ? styles.keep : styles.remove)
+const setMouserOverStyle = function (el: HTMLElement, evt?: MouseEvent) {
+  Object.assign(el.style, evt && evt.ctrlKey ? styles.keep : styles.remove)
 }
 
 const unsetMouseOverStyle = function (el: HTMLElement) {
   Object.assign(el.style, styles.initial)
 }
 
-type Article = {
-  id?: number
-  title: string
-  url: string
-  html?: string
-}
-
-type HistoryItem = {
-  parent: Node
-  element: HTMLElement | ChildNode
-  placeholder: Text
+const addOpenGraphProps = function (doc: Document, article: Article): Article {
+  return Array.from(doc.head.getElementsByTagName('meta')).reduce<Article>(
+    (acc, $meta) => {
+      const content = $meta.getAttribute('content')
+      if (!content) {
+        return acc
+      }
+      switch ($meta.getAttribute('property')) {
+        case 'og:image':
+          acc.image = content
+          break
+        case 'og:description':
+          acc.text = content
+          break
+        case 'og:title':
+          acc.title = content
+          break
+        default:
+          break
+      }
+      return acc
+    },
+    article
+  )
 }
 
 class ReadflowBookmarklet {
@@ -45,7 +72,7 @@ class ReadflowBookmarklet {
   private history: HistoryItem[]
   private endpoint: string
   private key: string
-  private popup: Window
+  private popup: Window | null
   private controls: Node
   private article: Article | null
 
@@ -66,7 +93,7 @@ class ReadflowBookmarklet {
             element: node,
             placeholder,
           })
-          node.parentNode.replaceChild(placeholder, node)
+          node.parentNode?.replaceChild(placeholder, node)
         }
       })
       this.doc.body.appendChild(el)
@@ -77,14 +104,14 @@ class ReadflowBookmarklet {
         element: el,
         placeholder,
       })
-      el.parentNode.replaceChild(placeholder, el)
+      el.parentNode?.replaceChild(placeholder, el)
     }
   }
 
   private undo() {
     if (this.history.length) {
       const item = this.history.pop()
-      item.parent.replaceChild(item.element, item.placeholder)
+      item?.parent?.replaceChild(item.element, item.placeholder)
     }
   }
 
@@ -183,19 +210,23 @@ class ReadflowBookmarklet {
       case 'content':
       case 'page':
         console.debug(`sending ${event}...`)
-        this.popup.postMessage('loading', '*')
-        this.post({
+        this.popup?.postMessage('loading', '*')
+        let article: Article = {
           title: document.title,
           url: document.location.href,
-          html: event === 'content' ? this.getContent() : undefined,
-        }).then(
+        }
+        if (event === 'content') {
+          article.html = this.getContent()
+          article = addOpenGraphProps(this.doc, article)
+        }
+        this.post(article).then(
           (resp) => {
             this.article = resp.Articles[0]
-            this.popup.postMessage('success', '*')
+            this.popup?.postMessage('success', '*')
           },
           (err) => {
             alert(err)
-            this.popup.postMessage('error', '*')
+            this.popup?.postMessage('error', '*')
           }
         )
         break
@@ -210,7 +241,7 @@ class ReadflowBookmarklet {
     }
   }
 
-  boot(origin, baseurl, key: string) {
+  boot(origin: string, baseurl: string, key: string) {
     this.endpoint = baseurl + '/articles'
     this.origin = origin
     this.key = key
