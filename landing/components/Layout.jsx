@@ -40,7 +40,7 @@ const Layout = ({
       <meta property="og:description" content="read your Internet article flow in one place with complete peace of mind and freedom" />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://about.readflow.app" />
-      <meta property="og:image" content="https://about.readflow.app/images/readflow.png" />
+      <meta property="og:image" content="https://about.readflow.app/img/readflow.png" />
       <link rel="icon" type="image/png" href="/favicon.png"></link>
     </Head>
     { authenticated ? <AutheticatedPage>{children}</AutheticatedPage> : <Page>{children}</Page>}
