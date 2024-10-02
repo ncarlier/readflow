@@ -7,6 +7,7 @@ import (
 	"github.com/go-shiori/dom"
 	"github.com/go-shiori/go-readability"
 	"github.com/ncarlier/readflow/pkg/html"
+	htmlrewriter "github.com/ncarlier/readflow/pkg/scraper/html-rewriter"
 )
 
 const MAX_RESPONSE_SIZE = 2 << 20 // 2Mb
@@ -21,6 +22,12 @@ func ReadWebPage(body io.Reader, pageUrl *url.URL) (*WebPage, error) {
 	}
 	// Extract meta
 	meta := html.ExtractMetaFromDOM(doc)
+
+	// Rewrite HTML if needed
+	htmlrewriter.Rewrite(doc, []htmlrewriter.HTMLRewriterFunc{
+		htmlrewriter.RewriteDataSrcToSrcAttribute,
+		htmlrewriter.RewritePictureWithoutImgSrcAttribute,
+	})
 
 	// Create article with Open Graph attributes
 	result := &WebPage{

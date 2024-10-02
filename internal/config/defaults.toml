@@ -129,8 +129,8 @@ block_list = "${READFLOW_SRAPING_BLOCK_LIST}"
 endpoint = "${READFLOW_SCRAPING_FORWARD_PROXY_ENDPOINT}"
 ## Hosts to be proxied
 # The use of a wildcard character ("*") means that ALL URLs will be proxied.
-# Example: [ "medium.com", "dev.to" ]
-hosts = [ "medium.com", "dev.to" ]
+# Example: [ "medium.com", "washingtonpost.com" ]
+hosts = [ "medium.com" ]
 
 [avatar]
 ## Avatar local or remote service provider

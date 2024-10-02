@@ -13,7 +13,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/scraper"
 )
 
-func TestWebScraper(t *testing.T) {
+func TestSimpleWebScraping(t *testing.T) {
 	ctx := context.TODO()
 	page, err := scraper.NewWebScraper(&scraper.WebScraperConfiguration{}).Scrap(ctx, "https://about.readflow.app/")
 	assert.Nil(t, err)
@@ -26,7 +26,7 @@ func TestWebScraper(t *testing.T) {
 	assert.Equal(t, "https://about.readflow.app/favicon.png", page.Favicon)
 }
 
-func TestInternalScraperTimeout(t *testing.T) {
+func TestWebScrapingTimeout(t *testing.T) {
 	ctx := context.TODO()
 	_, err := scraper.NewWebScraper(&scraper.WebScraperConfiguration{
 		HttpClient: &http.Client{Timeout: time.Second},
@@ -35,4 +35,13 @@ func TestInternalScraperTimeout(t *testing.T) {
 	timeoutErr, ok := err.(net.Error)
 	require.True(t, ok)
 	require.True(t, timeoutErr.Timeout())
+}
+
+func TestMediumWebScraping(t *testing.T) {
+	ctx := context.TODO()
+	page, err := scraper.NewWebScraper(&scraper.WebScraperConfiguration{}).Scrap(ctx, "https://blog.medium.com/state-of-medium-c54d1706a9b4")
+	assert.Nil(t, err)
+	assert.NotNil(t, page)
+	assert.Equal(t, "State of Medium", page.Title)
+	assert.Contains(t, page.HTML, "src=\"https://miro.medium.com/v2/resize:fit:640/1*3hgCec7DtnccJd0vQhP2Kw.jpeg\"")
 }

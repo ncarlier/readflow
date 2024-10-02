@@ -8,28 +8,22 @@ import (
 	"github.com/ncarlier/readflow/pkg/html"
 )
 
+var testCases = []struct {
+	input    string
+	expected string
+}{
+	{input: "<div></div>", expected: ""},
+	{input: "<div>simple text</div>", expected: "simple text"},
+	{input: "<ul><li>1</li><li>2</li><li>3</li></ul>", expected: "1\n2\n3\n"},
+	{input: "click <a href=\"test\">here</a>", expected: "click here"},
+	{input: "<html><head><title>今日は</title></head><body>hétérogénéité<script type=\"javascript\">console.log('hello')</script></body>", expected: "今日は\nhétérogénéité"},
+	{input: "&quot;I'm sorry, Dave. I'm afraid I can't do that.&quot; – HAL, 2001: A Space Odyssey", expected: "\"I'm sorry, Dave. I'm afraid I can't do that.\" – HAL, 2001: A Space Odyssey"},
+}
+
 func TestHTML2Text(t *testing.T) {
-	text, err := html.HTML2Text("<div></div>")
-	require.Nil(t, err)
-	require.Equal(t, "", text)
-
-	text, err = html.HTML2Text("<div>simple text</div>")
-	require.Nil(t, err)
-	require.Equal(t, "simple text", text)
-
-	text, err = html.HTML2Text("<ul><li>1</li><li>2</li><li>3</li></ul>")
-	require.Nil(t, err)
-	require.Equal(t, "1\n2\n3\n", text)
-
-	text, err = html.HTML2Text("click <a href=\"test\">here</a>")
-	require.Nil(t, err)
-	require.Equal(t, "click here", text)
-
-	text, err = html.HTML2Text("<html><head><title>今日は</title></head><body>hétérogénéité<script type=\"javascript\">console.log('hello')</script></body>")
-	require.Nil(t, err)
-	require.Equal(t, "今日は\nhétérogénéité", text)
-
-	text, err = html.HTML2Text("&quot;I'm sorry, Dave. I'm afraid I can't do that.&quot; – HAL, 2001: A Space Odyssey")
-	require.Nil(t, err)
-	require.Equal(t, "\"I'm sorry, Dave. I'm afraid I can't do that.\" – HAL, 2001: A Space Odyssey", text)
+	for _, testCase := range testCases {
+		text, err := html.HTML2Text(testCase.input)
+		require.Nil(t, err)
+		require.Equal(t, testCase.expected, text)
+	}
 }
