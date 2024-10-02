@@ -8,8 +8,8 @@ func newHTMLAttribute(key string) html.Attribute {
 	}
 }
 
-func findHTMLAttribute(attributes []html.Attribute, key string) *html.Attribute {
-	for _, attr := range attributes {
+func findHTMLAttribute(node *html.Node, key string) *html.Attribute {
+	for _, attr := range node.Attr {
 		if attr.Key == key {
 			return &attr
 		}

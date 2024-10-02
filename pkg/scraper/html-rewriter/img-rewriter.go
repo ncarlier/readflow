@@ -6,26 +6,19 @@ import (
 )
 
 func RewriteDataSrcToSrcAttribute(node *html.Node) {
-	if node.DataAtom != atom.Img {
+	if node.DataAtom != atom.Img && node.DataAtom != atom.Source {
 		return
 	}
 
-	attrs := []html.Attribute{}
-	srcAttr := newHTMLAttribute("src")
-	dataSrcAttr := newHTMLAttribute("data-src")
-	for _, attr := range node.Attr {
-		switch attr.Key {
-		case srcAttr.Key:
-			srcAttr = attr
-		case dataSrcAttr.Key:
-			dataSrcAttr = attr
-		default:
-			attrs = append(attrs, attr)
+	keys := []string{"src", "srcset"}
+	for _, key := range keys {
+		realAttr := findHTMLAttribute(node, key)
+		if realAttr == nil || realAttr.Val == "" {
+			dataAttr := findHTMLAttribute(node, "data-"+key)
+			if dataAttr != nil && dataAttr.Val != "" {
+				dataAttr.Key = key
+				replaceHTMLAttribute(node, *dataAttr)
+			}
 		}
-	}
-	if dataSrcAttr.Val != "" && srcAttr.Val == "" {
-		srcAttr.Val = dataSrcAttr.Val
-		attrs = append(attrs, srcAttr)
-		node.Attr = attrs
 	}
 }

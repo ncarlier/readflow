@@ -27,7 +27,7 @@ func NewSanitizer(blockList *BlockList) *Sanitizer {
 	policy := bluemonday.UGCPolicy()
 	policy.AddTargetBlankToFullyQualifiedLinks(true)
 	policy.AllowAttrs("width", "height", "src", "allowfullscreen", "sandbox").OnElements("iframe")
-	policy.AllowAttrs("srcset", "sizes", "data-src").OnElements("img", "source")
+	policy.AllowAttrs("srcset", "sizes").OnElements("img", "source")
 	policy.AllowElements("picture", "source")
 
 	if blockList != nil {

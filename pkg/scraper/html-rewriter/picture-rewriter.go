@@ -25,11 +25,11 @@ func RewritePictureWithoutImgSrcAttribute(node *html.Node) {
 		return
 	}
 
-	srcAttr := findHTMLAttribute(imgNode.Attr, "src")
+	srcAttr := findHTMLAttribute(imgNode, "src")
 	if srcAttr != nil && srcAttr.Val != "" {
 		return
 	}
-	srcsetAttr := findHTMLAttribute(sourceNode.Attr, "srcset")
+	srcsetAttr := findHTMLAttribute(sourceNode, "srcset")
 	if srcsetAttr == nil || srcsetAttr.Val == "" {
 		return
 	}

@@ -18,7 +18,7 @@ var testCases = []struct {
 }{
 	{
 		input:    "<html><body><img data-src=\"foo\" /></body></html>",
-		expected: "<html><head></head><body><img src=\"foo\"/></body></html>",
+		expected: "<html><head></head><body><img data-src=\"foo\" src=\"foo\"/></body></html>",
 	},
 	{
 		input:    "<html><body><img data-src=\"foo\" src=\"bar\" /></body></html>",
