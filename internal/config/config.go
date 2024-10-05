@@ -68,9 +68,8 @@ func NewConfig() *Config {
 		Avatar: AvatarConfig{
 			ServiceProvider: "https://robohash.org/{seed}?set=set4&size=48x48",
 		},
-		Image: ImageConfig{
-			ProxySizes: "320,768",
-			Cache:      "boltdb:///tmp/readflow-images.cache?maxSize=256,maxEntries=5000,maxEntrySize=1",
+		ImageProxy: ImageProxyConfig{
+			Sizes: "320,768",
 		},
 		RateLimiting: RateLimitingConfig{
 			Notification: ratelimiter.RateLimiterConfig{

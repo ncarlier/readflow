@@ -9,6 +9,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/ncarlier/readflow/pkg/thumbhash"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 const thumbhashErrorMessage = "unable to create thumbhash"
@@ -16,16 +17,22 @@ const thumbhashErrorMessage = "unable to create thumbhash"
 func newThumbhashEventHandler(srv *Registry) event.EventHandler {
 	return func(evt event.Event) {
 		article, ok := evt.Payload.(model.Article)
-		if !ok || article.Image == nil || article.ThumbHash != nil {
+		if !ok || article.Status == "read" || utils.IsNilOrEmpty(article.Image) || !utils.IsNilOrEmpty(article.ThumbHash) {
 			// Ignore if not a article event
+			// OR if the article is marked as read
 			// OR if the article have no image
 			// OR if the article have already a thumbhash
 			return
 		}
+		logger := logger.With().Uint("id", article.ID).Logger()
 
 		// download article image
-		// TODO use image proxy service (in order to reduce image size and therfore the memory)
-		asset, res, err := srv.dl.Get(context.Background(), *article.Image, nil)
+		src := *article.Image
+		if srv.imageProxy.URL() != "" {
+			src = srv.imageProxy.Encode(src, "")
+		}
+		logger = logger.With().Str("src", src).Logger()
+		asset, res, err := srv.dl.Get(context.Background(), src, nil)
 		if err != nil {
 			logger.Info().Err(err).Msg(thumbhashErrorMessage)
 			return

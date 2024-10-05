@@ -7,35 +7,25 @@ import (
 	"time"
 
 	"github.com/ncarlier/readflow/internal/config"
-	"github.com/ncarlier/readflow/pkg/cache"
+	"github.com/ncarlier/readflow/internal/service"
 	"github.com/ncarlier/readflow/pkg/defaults"
-	"github.com/ncarlier/readflow/pkg/downloader"
+	imageproxy "github.com/ncarlier/readflow/pkg/image-proxy"
 	"github.com/ncarlier/readflow/pkg/logger"
 )
 
 // imgProxyHandler is the handler for proxying images.
 func imgProxyHandler(conf *config.Config) http.Handler {
-	if conf.Image.ProxyURL == "" {
+	if conf.ImageProxy.URL == "" {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(http.StatusNoContent), http.StatusNotFound)
 		})
 	}
-	c, err := cache.New(conf.Image.Cache)
-	if err != nil {
-		logger.Fatal().Err(err).Msg("unable to setup Image Proxy cache")
-	}
-	// TODO add image proxy toe service registry
-	down := downloader.NewInternalDownloader(&downloader.InternalDownloaderConfig{
-		Timeout:               conf.Downloader.Timeout.Duration,
-		MaxConcurrentDownload: conf.Downloader.MaxConcurentDownloads,
-		Cache:                 c,
-	})
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
 		img := strings.TrimPrefix(r.URL.Path, "/img")
-		_, opts, src, err := decodeImageProxyPath(img)
+		_, opts, src, err := imageproxy.Decode(img)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -46,7 +36,7 @@ func imgProxyHandler(conf *config.Config) http.Handler {
 			addXForwardHeader(&r.Header, host)
 		}
 		logger.Debug().Msg("getting image via proxy")
-		asset, resp, err := down.Get(r.Context(), conf.Image.ProxyURL+img, &r.Header)
+		asset, resp, err := service.Lookup().Download(r.Context(), conf.ImageProxy.URL+img, &r.Header)
 		if err != nil {
 			logger.Info().Err(err).Dur("took", time.Since(start)).Msg("unable to get image via proxy")
 			// Redirect if image proxy failed

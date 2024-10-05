@@ -18,7 +18,7 @@ type Config struct {
 	Downloader   DownloaderConfig   `toml:"downloader"`
 	Scraping     ScrapingConfig     `toml:"scraping"`
 	Avatar       AvatarConfig       `toml:"avatar"`
-	Image        ImageConfig        `toml:"image"`
+	ImageProxy   ImageProxyConfig   `toml:"image_proxy"`
 	PDF          PDFConfig          `toml:"pdf"`
 	Secrets      SecretsConfig      `toml:"secrets"`
 	Event        EventConfig        `toml:"event"`
@@ -121,11 +121,10 @@ type AvatarConfig struct {
 	ServiceProvider string `toml:"service_provider"`
 }
 
-// ImageConfig for image configuration section
-type ImageConfig struct {
-	ProxyURL   string `toml:"proxy_url"`
-	ProxySizes string `toml:"proxy_sizes"`
-	Cache      string `toml:"cache"`
+// ImageProxyConfig for image proxy configuration section
+type ImageProxyConfig struct {
+	URL   string `toml:"url"`
+	Sizes string `toml:"sizes"`
 }
 
 // PDFConfig for PDF configuration section

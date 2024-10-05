@@ -2,7 +2,6 @@ package article
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/graphql-go/graphql"
 
@@ -94,28 +93,7 @@ func thumbnailsResolver(p graphql.ResolveParams) (interface{}, error) {
 	if !ok {
 		return nil, errors.New("thumbnails resolver is expecting an article")
 	}
-	if article.Image == nil || *article.Image == "" {
-		return nil, nil
-	}
-	if service.Lookup().GetConfig().Image.ProxyURL == "" {
-		return nil, nil
-	}
-	sizes := strings.Split(service.Lookup().GetConfig().Image.ProxySizes, ",")
-	result := make([]struct {
-		Size string
-		Hash string
-	}, len(sizes))
-	for i, size := range sizes {
-		result[i] = struct {
-			Size string
-			Hash string
-		}{
-			Size: size,
-			Hash: service.Lookup().GetArticleThumbnailHash(article, size),
-		}
-	}
-
-	return result, nil
+	return service.Lookup().GetArticleThumbnailHashSet(article), nil
 }
 
 func init() {

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"net/http"
 	"time"
 
 	"github.com/ncarlier/readflow/internal/exporter"
@@ -90,4 +91,9 @@ func (reg *Registry) DownloadArticle(ctx context.Context, idArticle uint, format
 	logger.Info().Dur("took", time.Since(start)).Msg("article downloadable asset created")
 
 	return result, nil
+}
+
+// Download web asset
+func (reg *Registry) Download(ctx context.Context, url string, header *http.Header) (*downloader.WebAsset, *http.Response, error) {
+	return reg.dl.Get(ctx, url, header)
 }

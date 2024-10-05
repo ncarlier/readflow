@@ -15,6 +15,7 @@ import (
 	"github.com/ncarlier/readflow/pkg/event"
 	"github.com/ncarlier/readflow/pkg/event/dispatcher"
 	"github.com/ncarlier/readflow/pkg/hashid"
+	imageproxy "github.com/ncarlier/readflow/pkg/image-proxy"
 	"github.com/ncarlier/readflow/pkg/job"
 	"github.com/ncarlier/readflow/pkg/logger"
 	ratelimiter "github.com/ncarlier/readflow/pkg/rate-limiter"
@@ -35,6 +36,7 @@ type Registry struct {
 	properties              *model.Properties
 	webScraper              *scraper.WebScraper
 	dl                      downloader.Downloader
+	imageProxy              *imageproxy.ImageProxy
 	hashid                  *hashid.HashIDHandler
 	notificationRateLimiter ratelimiter.RateLimiter
 	scriptEngine            *scripting.ScriptEngine
@@ -52,6 +54,20 @@ func Configure(conf config.Config, database db.DB) error {
 	if err != nil {
 		return err
 	}
+	// configure Downloader
+	dl := downloader.NewInternalDownloader(&downloader.InternalDownloaderConfig{
+		UserAgent:             conf.Downloader.UserAgent,
+		Cache:                 downloadCache,
+		MaxConcurrentDownload: conf.Downloader.MaxConcurentDownloads,
+		Timeout:               conf.Downloader.Timeout.Duration,
+	})
+	// configure Image Proxy
+	imageProxy := imageproxy.NewImageProxy(&imageproxy.ImageProxyConfiguration{
+		URL:        conf.ImageProxy.URL,
+		Sizes:      conf.ImageProxy.Sizes,
+		SecretKey:  conf.Hash.SecretKey.Value,
+		SecretSalt: conf.Hash.SecretSalt.Value,
+	})
 	// configure web scraper
 	webScraper := scraper.NewWebScraper(&scraper.WebScraperConfiguration{
 		HttpClient: &http.Client{Timeout: conf.Scraping.Timeout.Duration},
@@ -85,13 +101,6 @@ func Configure(conf config.Config, database db.DB) error {
 		db.NewCleanupDatabaseJob(database),
 	)
 
-	dl := downloader.NewInternalDownloader(&downloader.InternalDownloaderConfig{
-		UserAgent:             conf.Downloader.UserAgent,
-		Cache:                 downloadCache,
-		MaxConcurrentDownload: conf.Downloader.MaxConcurentDownloads,
-		Timeout:               conf.Downloader.Timeout.Duration,
-	})
-
 	instance = &Registry{
 		conf:                    conf,
 		db:                      database,
@@ -99,6 +108,7 @@ func Configure(conf config.Config, database db.DB) error {
 		downloadCache:           downloadCache,
 		webScraper:              webScraper,
 		dl:                      dl,
+		imageProxy:              imageProxy,
 		hashid:                  hid,
 		notificationRateLimiter: notificationRateLimiter,
 		sanitizer:               sanitizer.NewSanitizer(blockList),

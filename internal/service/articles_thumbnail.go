@@ -1,27 +1,14 @@
 package service
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/base64"
-
 	"github.com/ncarlier/readflow/internal/model"
+	imageproxy "github.com/ncarlier/readflow/pkg/image-proxy"
 )
 
-// encode image URL to Image Proxy path
-func encodeImageProxyPath(url, size string) string {
-	return "/resize:fit:" + size + "/" + base64.StdEncoding.EncodeToString([]byte(url))
-}
-
-// GetArticleThumbnail return article thumbnail URL
-func (reg *Registry) GetArticleThumbnailHash(article *model.Article, size string) string {
-	if article.Image == nil || *article.Image == "" {
-		return ""
+// GetArticleThumbnailHashSet return article thumbnail hash set
+func (reg *Registry) GetArticleThumbnailHashSet(article *model.Article) *[]imageproxy.ImageProxyHashSet {
+	if reg.imageProxy.URL() == "" || article.Image == nil || *article.Image == "" {
+		return nil
 	}
-	path := encodeImageProxyPath(*article.Image, size)
-
-	mac := hmac.New(sha256.New, reg.conf.Hash.SecretKey.Value)
-	mac.Write(reg.conf.Hash.SecretSalt.Value)
-	mac.Write([]byte(path))
-	return base64.RawURLEncoding.EncodeToString(mac.Sum(nil))
+	return reg.imageProxy.GetHashSet(*article.Image)
 }

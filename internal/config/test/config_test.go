@@ -12,7 +12,7 @@ import (
 func TestDefaultConfig(t *testing.T) {
 	conf := config.NewConfig()
 	assert.Equal(t, ":8080", conf.HTTP.ListenAddr)
-	assert.Empty(t, conf.Image.ProxyURL)
+	assert.Empty(t, conf.ImageProxy.URL)
 	assert.Nil(t, conf.GetUserPlan("test"), "plan should not be found")
 }
 

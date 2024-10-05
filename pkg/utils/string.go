@@ -23,3 +23,8 @@ func Truncate(value string, size int) string {
 	}
 	return string(runes)
 }
+
+// IsNilOrEmpty test if string ptr is null or empty
+func IsNilOrEmpty(value *string) bool {
+	return value == nil || *value == ""
+}

@@ -19,5 +19,5 @@ func ExportVars(conf *Config) {
 	exportConfigVar("metrics-listen-addr", conf.Metrics.ListenAddr)
 	exportConfigVar("http-public-url", conf.HTTP.PublicURL)
 	exportConfigVar("ui-public-url", conf.UI.PublicURL)
-	exportConfigVar("image-proxy-url", conf.Image.ProxyURL)
+	exportConfigVar("image-proxy-url", conf.ImageProxy.URL)
 }

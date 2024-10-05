@@ -15,7 +15,7 @@ level = "${READFLOW_LOG_LEVEL}"
 ## Log format
 # Values: "json" or "text"
 # Default: "json"
-format = "${REAFLOW_LOG_FORMAT}"
+format = "${READFLOW_LOG_FORMAT}"
 
 [database]
 ## Database connection string
@@ -141,17 +141,14 @@ hosts = [ "medium.com" ]
 # - https://seccdn.libravatar.org/avatar/{seed}?d=mp&s=48
 service_provider = "${READFLOW_AVATAR_SERVICE_PROVIDER}"
 
-[image]
+[image_proxy]
 ## Image proxy URL, disabled if empty
 # Example: "http://imagor:8080"
-proxy_url = "${READFLOW_IMAGE_PROXY_URL}"
+url = "${READFLOW_IMAGE_PROXY_URL}"
 ## Image proxy supported sizes
 # Comma separated list of image size
 # Default: "320,768"
-proxy_sizes = "${READFLOW_IMAGE_PROXY_SIZES}"
-## Cache paramters
-# Default: "boltdb:///tmp/readflow-images.cache?maxSize=256,maxEntries=5000,maxEntrySize=1"
-cache = "${READFLOW_IMAGE_CACHE}"
+sizes = "${READFLOW_IMAGE_PROXY_SIZES}"
 
 [pdf]
 ## PDF generator service provider, disabled if empty
