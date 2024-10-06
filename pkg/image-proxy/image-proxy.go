@@ -65,8 +65,8 @@ func (ip *ImageProxy) URL() string {
 // Encode image URL to Image Proxy path
 func (ip *ImageProxy) Encode(url, size string) string {
 	if size == "" {
-		// use first size by default
-		size = ip.sizes[0]
+		// use last size by default (aka: highest resolution)
+		size = ip.sizes[len(ip.sizes)-1]
 	}
 	return ip.URL() + "/" + ip.getHash(url, size) + "/resize:fit:" + size + "/" + base64.StdEncoding.EncodeToString([]byte(url))
 }
