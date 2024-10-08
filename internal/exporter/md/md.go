@@ -2,7 +2,6 @@ package md
 
 import (
 	"context"
-	"strings"
 
 	"github.com/ncarlier/readflow/internal/exporter"
 	"github.com/ncarlier/readflow/internal/exporter/html"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/mediatype"
+	"github.com/ncarlier/readflow/pkg/utils"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 )
@@ -42,7 +42,7 @@ func (exp *MarkdownExporter) Export(ctx context.Context, article *model.Article)
 	return &downloader.WebAsset{
 		Data:        data,
 		ContentType: mediatype.HTML,
-		Name:        strings.TrimRight(article.Title, ". ") + ".md",
+		Name:        utils.SanitizeFilename(article.Title) + ".md",
 	}, nil
 }
 

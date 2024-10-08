@@ -17,6 +17,7 @@ import (
 	"github.com/ncarlier/readflow/internal/model"
 
 	"github.com/ncarlier/readflow/pkg/downloader"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 // ZIPExporter convert an article to a ZIP archive
@@ -53,7 +54,7 @@ func (exp *ZIPExporter) Export(ctx context.Context, article *model.Article) (*do
 	return &downloader.WebAsset{
 		Data:        buf.Bytes(),
 		ContentType: "application/zip",
-		Name:        strings.TrimRight(article.Title, ". ") + ".zip",
+		Name:        utils.SanitizeFilename(article.Title) + ".zip",
 	}, nil
 }
 

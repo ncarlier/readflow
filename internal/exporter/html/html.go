@@ -3,7 +3,6 @@ package html
 import (
 	"bytes"
 	"context"
-	"strings"
 	"text/template"
 
 	"github.com/ncarlier/readflow/internal/exporter"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/mediatype"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 var articleAsHTMLTpl = template.Must(template.New("article-as-html").Parse(`
@@ -22,7 +22,7 @@ var articleAsHTMLTpl = template.Must(template.New("article-as-html").Parse(`
 	<meta name="og:title" content="{{ .Title }}"/>
 	<meta name="og:url" content="{{ .URL }}"/>
 	<meta name="og:image" content="{{ .Image }}"/>
-	<meta name="og:revised" content="{{ .PublishedAt }}"/>
+	<meta name="og:revised" content="{{if .PublishedAt}}{{ .PublishedAt }}{{else}}{{ .CreatedAt }}{{end}}"/>
 </head>
 <body>{{ .HTML }}</body>
 </html>
@@ -44,7 +44,7 @@ func (exp *HTMLExporter) Export(ctx context.Context, article *model.Article) (*d
 	return &downloader.WebAsset{
 		Data:        buffer.Bytes(),
 		ContentType: mediatype.HTML,
-		Name:        strings.TrimRight(article.Title, ". ") + ".html",
+		Name:        utils.SanitizeFilename(article.Title) + ".html",
 	}, nil
 }
 

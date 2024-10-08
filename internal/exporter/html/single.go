@@ -14,6 +14,7 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/mediatype"
+	"github.com/ncarlier/readflow/pkg/utils"
 
 	"github.com/go-shiori/dom"
 	"golang.org/x/net/html"
@@ -48,7 +49,7 @@ func (exp *SingleHTMLExporter) Export(ctx context.Context, article *model.Articl
 	return &downloader.WebAsset{
 		Data:        data,
 		ContentType: mediatype.HTML,
-		Name:        strings.TrimRight(article.Title, ". ") + ".html",
+		Name:        utils.SanitizeFilename(article.Title) + ".html",
 	}, nil
 }
 

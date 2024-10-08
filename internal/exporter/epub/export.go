@@ -18,6 +18,7 @@ import (
 
 	"github.com/ncarlier/readflow/pkg/downloader"
 	"github.com/ncarlier/readflow/pkg/mediatype"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 var errSkippedURL = errors.New("skip processing url")
@@ -59,7 +60,7 @@ func (exp *EpubExporter) Export(ctx context.Context, article *model.Article) (*d
 	return &downloader.WebAsset{
 		Data:        buf.Bytes(),
 		ContentType: mediatype.Epub,
-		Name:        strings.TrimRight(article.Title, ". ") + ".epub",
+		Name:        utils.SanitizeFilename(article.Title) + ".epub",
 	}, nil
 }
 

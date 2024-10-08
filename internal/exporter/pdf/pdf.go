@@ -7,13 +7,13 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"strings"
 
 	"github.com/ncarlier/readflow/internal/exporter"
 	"github.com/ncarlier/readflow/internal/exporter/html"
 	"github.com/ncarlier/readflow/internal/model"
 
 	"github.com/ncarlier/readflow/pkg/downloader"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 // PDFExporter convert an article to PDF file
@@ -78,6 +78,6 @@ func (exp *PDFExporter) Export(ctx context.Context, article *model.Article) (*do
 	return &downloader.WebAsset{
 		Data:        body,
 		ContentType: res.Header.Get("Content-Type"),
-		Name:        strings.TrimRight(article.Title, ". ") + ".pdf",
+		Name:        utils.SanitizeFilename(article.Title) + ".pdf",
 	}, nil
 }
