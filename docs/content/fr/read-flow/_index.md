@@ -23,6 +23,7 @@ Une fois votre flux de lecture alimenté vous pouvez :
 
 - [Lire](read) les articles.
 - [Editer](edit) les articles.
+- [Chercher](search) les articles.
 - Conserver une copie (notamment accessible [hors-ligne](offline)).
 - [Partager](mobile/share) le contenu.
 - [Télécharger](download) les articles dans un format désiré.

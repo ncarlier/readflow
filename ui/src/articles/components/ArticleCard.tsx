@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 
-import { Icon, TimeAgo } from '../../components'
+import { HashtagHighlighter, Icon, TimeAgo } from '../../components'
 import { classNames, getHostname } from '../../helpers'
 import { useKeyboard } from '../../hooks'
 import { Article } from '../models'
@@ -37,8 +37,10 @@ export const ArticleCard = withRouter((props: AllProps) => {
       )}
       <Link to={readMorePath} title={'View details' + kbs} className={styles.content}>
         {article.category && <h3>{article.category.title}</h3>}
-        <header>{article.title}</header>
-        {article.text && <p>{article.text}</p>}
+        <header>
+          <HashtagHighlighter text={article.title} />
+        </header>
+        {article.text && <p><HashtagHighlighter text={article.text} /></p>}
       </Link>
       <footer>
         {article.url && (

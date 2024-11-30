@@ -38,7 +38,12 @@ You can access the following attributes within your script:
 - `HTML`: the HTML content of the article
 - `URL`: the URL of the article
 - `Origin`: the article origin
-- `Tags`: the tags of the article (string array)
+- `Tags`: the *tags* **and** *hashtags* of the article (string array)
+
+> Note that *hashtags* are extracted from the article title and text, while *tags* come with the input article.
+> Only hashtags are kept (because they are part of the title and text).
+> Input tags are not kept and are only used by the script.
+> If you want to keep the tags, it's recommended to include them as hashtags in the title or text.
 
 ## Examples
 

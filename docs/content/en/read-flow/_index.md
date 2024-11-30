@@ -23,6 +23,7 @@ Once your reading flow is fed you can:
 
 - [Read](read) the articles.
 - [Edit](edit) the articles.
+- [Search](search) the articles.
 - Keep copy (including [offline](offline) access).
 - [Share](mobile/share) content.
 - [Download](download) the articles in a desired format.

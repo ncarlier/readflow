@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit"
-	"github.com/ncarlier/readflow/pkg/html"
 	"github.com/ncarlier/readflow/pkg/utils"
 )
 
@@ -40,21 +39,14 @@ func (form ArticleCreateForm) Hash() string {
 	return utils.Hash(key)
 }
 
-// Payload return form payload (content without HTML tags)
-func (form ArticleCreateForm) Payload() string {
-	payload := ""
-	if form.HTML != nil {
-		payload = *form.HTML
-		if form.Text != nil && len(*form.Text) > len(payload) {
-			payload = *form.Text
-		}
-	} else if form.Text != nil {
-		payload = *form.Text
+// Hashtags extract hashtags form title and text if present
+func (form *ArticleCreateForm) Hashtags() []string {
+	tags := []string{}
+	tags = append(tags, utils.ExtractHashtags(form.Title)...)
+	if form.Text != nil {
+		tags = append(tags, utils.ExtractHashtags(*form.Text)...)
 	}
-	if text, err := html.HTML2Text(payload); err != nil {
-		payload = text
-	}
-	return payload
+	return tags
 }
 
 // TruncatedTitle return truncated title
@@ -73,6 +65,21 @@ type ArticleUpdateForm struct {
 	RefreshContent *bool
 	Image          *string
 	HTML           *string
+}
+
+// Hashtags extract hashtags form title and text if present
+func (form *ArticleUpdateForm) Hashtags() ([]string, bool) {
+	tags := []string{}
+	updated := false
+	if form.Title != nil {
+		tags = append(tags, utils.ExtractHashtags(*form.Title)...)
+		updated = true
+	}
+	if form.Text != nil {
+		tags = append(tags, utils.ExtractHashtags(*form.Text)...)
+		updated = true
+	}
+	return tags, updated
 }
 
 // CreatedArticlesResponse structure definition

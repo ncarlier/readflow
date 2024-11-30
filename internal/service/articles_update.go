@@ -48,6 +48,12 @@ func (reg *Registry) UpdateArticle(ctx context.Context, form model.ArticleUpdate
 		}
 	}
 
+	// HTML updated? Then clean it!
+	if form.HTML != nil {
+		html := reg.sanitizer.Sanitize(*form.HTML)
+		form.HTML = &html
+	}
+
 	// Update article
 	article, err := reg.db.UpdateArticleForUser(uid, form)
 	if err != nil {
@@ -91,8 +97,7 @@ func (reg *Registry) refreshArticleContent(ctx context.Context, form *model.Arti
 	if form.Text == nil || *form.Text == "" {
 		form.Text = &page.Text
 	}
-	html := reg.sanitizer.Sanitize(page.HTML)
-	form.HTML = &html
+	form.HTML = &page.HTML
 	form.Image = &page.Image
 	return nil
 }
