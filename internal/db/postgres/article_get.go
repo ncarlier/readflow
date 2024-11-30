@@ -6,6 +6,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 
 	"github.com/ncarlier/readflow/internal/model"
+	"github.com/ncarlier/readflow/pkg/utils"
 )
 
 // CountArticles count articles
@@ -50,7 +51,8 @@ func (pg *DB) CountArticlesByUser(uid uint, req model.ArticlesPageRequest) (uint
 	}
 
 	if req.Query != nil && strings.TrimSpace(*req.Query) != "" {
-		counter = counter.Where(sq.Expr("search_vectors @@ websearch_to_tsquery(?)", *req.Query))
+		query := utils.ReplaceHashtagsPrefix(*req.Query, "~")
+		counter = counter.Where(sq.Expr("search @@ websearch_to_tsquery(?)", query))
 	}
 
 	query, args, _ := counter.ToSql()
@@ -112,8 +114,9 @@ func (pg *DB) GetPaginatedArticlesByUser(uid uint, req model.ArticlesPageRequest
 	if isFullText {
 		// Full-text search query:
 		// Classic Limit-Offset pagination (beware of performance issue)
-		selectBuilder = selectBuilder.Where(sq.Expr("search_vectors @@ websearch_to_tsquery(?)", *req.Query))
-		selectBuilder = selectBuilder.OrderByClause("ts_rank(search_vectors, websearch_to_tsquery(?)) DESC", *req.Query)
+		query := utils.ReplaceHashtagsPrefix(*req.Query, "~")
+		selectBuilder = selectBuilder.Where(sq.Expr("search @@ websearch_to_tsquery(?)", query))
+		selectBuilder = selectBuilder.OrderByClause("ts_rank(search, websearch_to_tsquery(?)) DESC", query)
 		if req.AfterCursor != nil {
 			offset = *req.AfterCursor
 			selectBuilder = selectBuilder.Offset(uint64(offset))

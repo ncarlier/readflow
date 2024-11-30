@@ -122,6 +122,21 @@ update outgoing_webhooks set secrets = config;
 `,
 	"db_migration_15": `alter table articles add column thumbhash varchar null;
 `,
+	"db_migration_16": `alter table articles add column tags text[] not null default '{}';
+create index tags_index on articles using gin (tags);
+
+alter table articles add column search tsvector generated always as (
+  setweight(array_to_tsvector(tags), 'A') || ' ' ||
+  setweight(to_tsvector('english', title), 'B') || ' ' ||
+  setweight(to_tsvector('english', coalesce(text, '')), 'C') || ' ' ||
+  setweight(to_tsvector('english', substring(coalesce(html, '') for 1000000)), 'D')
+) STORED;
+
+create index articles_search_idx on articles using gin(search);
+
+drop index articles_search_vectors_idx;
+alter table articles drop column search_vectors;
+`,
 	"db_migration_2": `create table devices (
   id serial not null,
   user_id int not null,
@@ -181,6 +196,7 @@ var DatabaseSQLMigrationChecksums = map[string]string{
 	"db_migration_13": "4a52465eeb50a236d7f7a94cc51cd78238de0f885a6d29da4a548b5c389ebe81",
 	"db_migration_14": "f2c6e03988386e662f943d0f37255cf6db19b69e2c4f63c312f3778b401bb96a",
 	"db_migration_15": "edf9f683832d4b5c8c0d681f479750794ca19aea115a89b69700d4f415104fc3",
+	"db_migration_16": "6a97e3bd2e1b238fb40524f095810703f7c4a873f43723f350b06661eae995b7",
 	"db_migration_2":  "0be0d1ef1e9481d61db425a7d54378f3667c091949525b9c285b18660b6e8a1d",
 	"db_migration_3":  "5cd0d3628d990556c0b85739fd376c42244da7e98b66852b6411d27eda20c3fc",
 	"db_migration_4":  "d5fb83c15b523f15291310ff27d36c099c4ba68de2fd901c5ef5b70a18fedf65",

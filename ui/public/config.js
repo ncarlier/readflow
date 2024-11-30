@@ -1,7 +1,7 @@
 // readflow UI runtime configuration
 const __READFLOW_CONFIG__ = {
     // API base URL, default if empty
-    // Values: URL (ex: `https://api.readflow.ap`)
+    // Values: URL (ex: `https://api.readflow.app`)
     // Default: ''
     // Default can be overridden by setting ${REACT_APP_API_ROOT} env variable during build time
     apiBaseUrl: '',

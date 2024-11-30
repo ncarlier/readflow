@@ -17,4 +17,7 @@ You can then modify:
 - the text
 - and the category
 
+The title and text can contain hashtags (a keyword preceded by a "#").
+Hashtags added in this way are associated with the article and can be used in the search engine.
+
 ![](images/edit.png)

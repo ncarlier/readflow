@@ -22,6 +22,9 @@ func mapArticleCreateFromToScriptInput(article *model.ArticleCreateForm) *script
 	if article.Tags != nil {
 		input.Tags = strings.Split(*article.Tags, ",")
 	}
+	if hashtags := article.Hashtags(); len(hashtags) > 0 {
+		input.Tags = append(input.Tags, hashtags...)
+	}
 	return &input
 }
 
