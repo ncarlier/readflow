@@ -17,7 +17,7 @@ export default ({ data }: Props) => (
     <span>
       Use incoming webhooks to post articles to your Readflow.<br />
       Messages are sent via an HTTP POST request to Readflow integration URL.<br />
-      You can customise your integration with a script.
+      You can customize your integration with a script.
       {data && (
         <table>
           <tbody>
