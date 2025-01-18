@@ -17,6 +17,9 @@ RUN npm install --silent --legacy-peer-deps
 COPY ./ui /usr/src/app
 RUN npm run build
 
+# Set ownership to non-privileged user
+RUN chown -R 1000:1000 /usr/src/app/build /var/local/html
+
 #########################################
 # Build backend stage
 #########################################
@@ -64,6 +67,9 @@ ENV READFLOW_UI_DIRECTORY /var/local/html
 
 # Exposed ports
 EXPOSE 8080 9090
+
+# Set user to unprivileged PID
+USER 1000
 
 # Define entrypoint
 ENTRYPOINT [ "readflow" ]
