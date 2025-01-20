@@ -18,7 +18,7 @@ COPY ./ui /usr/src/app
 RUN npm run build
 
 # Set ownership to non-privileged user
-RUN chown -R 1000:1000 /usr/src/app/build /var/local/html
+RUN chown -R 65532:65532 /usr/src/app/build /var/local/html
 
 #########################################
 # Build backend stage
@@ -43,7 +43,7 @@ RUN make
 #########################################
 # Distribution stage
 #########################################
-FROM gcr.io/distroless/base-debian11
+FROM gcr.io/distroless/base-debian11:nonroot
 
 # Repository location
 ARG REPOSITORY=github.com/ncarlier
@@ -67,9 +67,6 @@ ENV READFLOW_UI_DIRECTORY /var/local/html
 
 # Exposed ports
 EXPOSE 8080 9090
-
-# Set user to unprivileged PID
-USER 1000
 
 # Define entrypoint
 ENTRYPOINT [ "readflow" ]
