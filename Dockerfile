@@ -17,6 +17,9 @@ RUN npm install --silent --legacy-peer-deps
 COPY ./ui /usr/src/app
 RUN npm run build
 
+# Set ownership to non-privileged user
+RUN chown -R 65532:65532 /usr/src/app/build /var/local/html
+
 #########################################
 # Build backend stage
 #########################################
@@ -40,7 +43,7 @@ RUN make
 #########################################
 # Distribution stage
 #########################################
-FROM gcr.io/distroless/base-debian11
+FROM gcr.io/distroless/base-debian11:nonroot
 
 # Repository location
 ARG REPOSITORY=github.com/ncarlier
