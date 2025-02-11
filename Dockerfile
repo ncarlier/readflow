@@ -4,7 +4,7 @@
 FROM node:lts-alpine AS frontend-builder
 
 # Setup env
-RUN mkdir -p /usr/src/app
+RUN mkdir -p /usr/src/app /var/local/html
 WORKDIR /usr/src/app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
