@@ -1,3 +1,4 @@
+@import './styles/icons.css';
 @import './styles/colors-light.css';
 @import './styles/colors-dark.css';
 @import './styles/vars.css';
@@ -52,6 +53,7 @@ input[type=checkbox] {
   -webkit-appearance: none;
   -moz-appearance: none;
   -ms-appearance: none;
+  appearance: none;
 }
 
 input[type=checkbox] {
