@@ -6,7 +6,7 @@ FROM node:lts-alpine AS frontend-builder
 # Setup env
 RUN mkdir -p /usr/src/app /var/local/html
 WORKDIR /usr/src/app
-ENV PATH /usr/src/app/node_modules/.bin:$PATH
+ENV PATH=/usr/src/app/node_modules/.bin:$PATH
 
 # Install dependencies
 COPY ui/package.json /usr/src/app/package.json
@@ -60,10 +60,10 @@ COPY --from=frontend-builder /usr/src/app/build /var/local/html
 ADD ./internal/config/defaults.toml /etc/readflow.toml
 
 # Set configuration file
-ENV READFLOW_CONFIG /etc/readflow.toml
+ENV READFLOW_CONFIG=/etc/readflow.toml
 
 # Serve UI
-ENV READFLOW_UI_DIRECTORY /var/local/html
+ENV READFLOW_UI_DIRECTORY=/var/local/html
 
 # Exposed ports
 EXPOSE 8080 9090
