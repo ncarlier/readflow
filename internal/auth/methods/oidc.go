@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/golang-jwt/jwt/v4"
-	jwtRequest "github.com/golang-jwt/jwt/v4/request"
+	"github.com/golang-jwt/jwt/v5"
+	jwtRequest "github.com/golang-jwt/jwt/v5/request"
 	"github.com/ncarlier/readflow/internal/auth"
 	"github.com/ncarlier/readflow/internal/config"
 	"github.com/ncarlier/readflow/internal/global"

@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -27,10 +28,17 @@ func TestSimpleWebScraping(t *testing.T) {
 }
 
 func TestWebScrapingTimeout(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(2 * time.Second)
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
 	ctx := context.TODO()
 	_, err := scraper.NewWebScraper(&scraper.WebScraperConfiguration{
 		HttpClient: &http.Client{Timeout: time.Second},
-	}).Scrap(ctx, "https://httpstat.us/200?sleep=2000")
+	}).Scrap(ctx, server.URL)
 	require.NotNil(t, err)
 	timeoutErr, ok := err.(net.Error)
 	require.True(t, ok)

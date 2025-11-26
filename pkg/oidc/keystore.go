@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/ncarlier/readflow/pkg/defaults"
 )
 
