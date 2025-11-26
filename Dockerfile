@@ -23,7 +23,7 @@ RUN chown -R 65532:65532 /usr/src/app/build /var/local/html
 #########################################
 # Build backend stage
 #########################################
-FROM golang:1.19 AS backend-builder
+FROM golang:latest AS backend-builder
 
 # Repository location
 ARG REPOSITORY=github.com/ncarlier
