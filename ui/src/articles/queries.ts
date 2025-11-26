@@ -122,6 +122,12 @@ export const UpdateFullArticle = gql`
         text
         html
         url
+        image
+        thumbhash
+        thumbnails {
+          size
+          hash
+        }
         status
         stars
         category {

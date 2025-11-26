@@ -1,21 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import mousetrap from 'mousetrap'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { useLocalConfiguration } from '../../contexts/LocalConfigurationContext'
 import { Article } from '../models'
 import styles from './ArticleContent.module.css'
 import readable from './readable'
-
-const getMql = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
+import { getEffectiveTheme } from '../../helpers'
 
 interface Props {
   article: Article
 }
 
 const getHTMLContent = (body: string, theme: string) => `
-<!DOCTYPE html>
-<html lang="en">
   <head>
     <base target="_blank">
     <meta charset="utf-8" />
@@ -29,7 +26,6 @@ const getHTMLContent = (body: string, theme: string) => `
       ${readable.script}
     </script>
   </body>
-</html>
 `
 
 type KeyMap = {
@@ -41,25 +37,21 @@ const keyMap: KeyMap = {
 }
 
 export const ArticleContent = ({ article }: Props) => {
-  const [alreadyRendered, setAlreadyRendered] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
   const { localConfiguration } = useLocalConfiguration()
-  let { theme } = localConfiguration
-  if (theme === 'auto') {
-    const mql = getMql()
-    theme = mql && mql.matches ? 'dark' : 'light'
-  }
 
   useEffect(() => {
-    if (contentRef.current && !alreadyRendered) {
+    if (contentRef.current) {
       const ifrm = document.createElement('iframe')
-      // console.log('render')
+      //console.log('render')
       contentRef.current.innerHTML = ''
       contentRef.current.appendChild(ifrm)
       const doc = ifrm.contentWindow ? ifrm.contentWindow.document : ifrm.contentDocument
       if (doc) {
         doc.open()
-        doc.write(getHTMLContent(article.html || article.text, theme))
+        const root = doc.createElement('html')
+        root.innerHTML = getHTMLContent(article.html || article.text, getEffectiveTheme(localConfiguration.theme))
+        doc.appendChild(root)
         // Keyboard events have to propagate outside the iframe
         doc.onkeydown = function (e: KeyboardEvent) {
           if (e.key in keyMap) {
@@ -71,9 +63,8 @@ export const ArticleContent = ({ article }: Props) => {
         doc.close()
       }
       ifrm.focus()
-      setAlreadyRendered(true)
     }
-  }, [alreadyRendered, article, theme])
+  }, [article, useLocalConfiguration])
 
   return <article className={styles.content} ref={contentRef} />
 }

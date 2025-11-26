@@ -3,17 +3,16 @@ import { useMutation } from '@apollo/client'
 import { useFormState } from 'react-use-form-state'
 
 import { useMessage } from '../../contexts'
-import { Button, CategoriesOptions, ErrorPanel, FormCheckboxField, FormInputField, FormSelectField, FormTextareaField, Loader, Panel } from '../../components'
+import { Button, CategoriesOptions, ErrorPanel, FormInputField, FormSelectField, FormTextareaField, Loader, Panel } from '../../components'
 import { getGQLError, isValidForm } from '../../helpers'
 import { Article, UpdateArticleRequest, UpdateArticleResponse } from '../models'
-import { UpdateFullArticle } from '../queries'
+import { UpdateArticle } from '../queries'
 import { updateCacheAfterUpdate } from '../cache'
 
 interface EditArticleFormFields {
   title: string
   text: string
   category_id?: number
-  refresh: boolean
 }
 
 interface Props {
@@ -26,13 +25,12 @@ export const EditArticleForm = ({ article, onSuccess, onCancel }: Props) => {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { showMessage } = useMessage()
-  const [formState, { text, textarea, select, checkbox }] = useFormState<EditArticleFormFields>({
+  const [formState, { text, textarea, select }] = useFormState<EditArticleFormFields>({
     title: article.title,
     text: article.text,
-    category_id: article.category?.id,
-    refresh: false,
+    category_id: article.category?.id
   })
-  const [editArticleMutation] = useMutation<UpdateArticleResponse, UpdateArticleRequest>(UpdateFullArticle)
+  const [editArticleMutation] = useMutation<UpdateArticleResponse, UpdateArticleRequest>(UpdateArticle)
 
   const editArticle = useCallback(
     async (form: EditArticleFormFields) => {
@@ -84,7 +82,6 @@ export const EditArticleForm = ({ article, onSuccess, onCancel }: Props) => {
             <option>Optional category</option>
             <CategoriesOptions />
           </FormSelectField>
-          <FormCheckboxField label="Refresh content" {...checkbox('refresh')} />
         </form>
       </section>
       <footer>

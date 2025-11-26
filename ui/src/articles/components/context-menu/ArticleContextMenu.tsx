@@ -1,12 +1,12 @@
 import React from 'react'
 
 import { Article } from '../../models'
+import EditLink from './EditLink'
 import OfflineLink from './OfflineLink'
 import ShareLink from './ShareLink'
 import DownloadAsLink from './DownloadAsLink'
 import OutgoingWebhooksMenuItems from './OutgoingWebhooksMenuItems'
 import { DrawerMenu } from '../../../components'
-import { EditArticleLink } from './EditArticleLink'
 
 interface Props {
   article: Article
@@ -24,7 +24,7 @@ export const ArticleContextMenu = (props: Props) => {
       <ul>
         {props.showEditModal && (
           <li>
-            <EditArticleLink {...props} showEditModal={props.showEditModal} />
+            <EditLink {...props} />
           </li>
         )}
         {nvg.share && (
