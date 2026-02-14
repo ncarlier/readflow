@@ -61,6 +61,13 @@ build: autogen
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -o release/$(EXECUTABLE)
 .PHONY: build
 
+## Build readflow-ctl CLI
+build-ctl:
+	-mkdir -p release
+	echo ">>> Building readflow-ctl $(VERSION) for $(GOOS)-$(GOARCH) ..."
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -o release/readflow-ctl$(EXT) ./ctl
+.PHONY: build-ctl
+
 release/$(EXECUTABLE): build
 
 # Check code style

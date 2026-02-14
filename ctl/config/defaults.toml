@@ -1,0 +1,27 @@
+# readflow-ctl configuration file
+#
+# Environment variables can be used anywhere in this config file, simply surround
+# them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+# for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+
+[api]
+## Readflow server URL
+# Example: "https://api.readflow.app"
+endpoint = "${READFLOW_CTL_API_ENDPOINT}"
+
+[authn]
+## Authentication method
+# Values: "basic" or "oidc"
+method = "${READFLOW_CTL_AUTHN_METHOD}"
+
+[authn.basic]
+## Username for Basic Authentication
+username = "${READFLOW_CTL_AUTHN_BASIC_USERNAME}"
+## Password for Basic Authentication
+password = "${READFLOW_CTL_AUTHN_BASIC_PASSWORD}"
+
+[authn.oidc]
+## OpenID Connect issuer URL
+issuer = "${READFLOW_CTL_AUTHN_OIDC_ISSUER}"
+## OpenID Connect client ID
+client_id = "${READFLOW_CTL_AUTHN_OIDC_CLIENT_ID}"
