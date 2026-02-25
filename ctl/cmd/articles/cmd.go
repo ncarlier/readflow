@@ -136,32 +136,27 @@ func (c *articlesCmd) list(args []string, client *graphql.Client) error {
 
 func (c *articlesCmd) get(args []string, client *graphql.Client) error {
 	fs := flag.NewFlagSet("articles get", flag.ExitOnError)
+	html := fs.Bool("html", false, "Include HTML content in response")
+	markdown := fs.Bool("markdown", false, "Include Markdown content in response")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
 	if fs.NArg() < 1 {
-		return fmt.Errorf("usage: articles get <id>")
+		return fmt.Errorf("usage: articles get [--html] [--markdown] <id>")
 	}
 	id, err := strconv.Atoi(fs.Arg(0))
 	if err != nil {
 		return fmt.Errorf("invalid article ID: %s", fs.Arg(0))
 	}
 
-	q := `query article($id: ID!) {
-		article(id: $id) {
-			id
-			title
-			text
-			url
-			image
-			status
-			stars
-			category { id title }
-			published_at
-			created_at
-			updated_at
-		}
-	}`
+	fields := "id title text url image status stars category { id title } published_at created_at updated_at"
+	if *html {
+		fields += " html"
+	}
+	if *markdown {
+		fields += " markdown"
+	}
+	q := fmt.Sprintf("query article($id: ID!) { article(id: $id) { %s } }", fields)
 
 	var result struct {
 		Article any `json:"article"`
