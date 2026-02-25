@@ -1,6 +1,7 @@
 package md
 
 import (
+	"bytes"
 	"context"
 
 	"github.com/ncarlier/readflow/internal/exporter"
@@ -11,19 +12,17 @@ import (
 	"github.com/ncarlier/readflow/pkg/mediatype"
 	"github.com/ncarlier/readflow/pkg/utils"
 
-	md "github.com/JohannesKaufmann/html-to-markdown"
+	htmltomarkdown "github.com/JohannesKaufmann/html-to-markdown/v2"
 )
 
 // MarkdownExporter convert an article to Markdown format
 type MarkdownExporter struct {
 	htmlExporter *html.HTMLExporter
-	converter    *md.Converter
 }
 
 func newMarkdownExporter(dl downloader.Downloader) (exporter.ArticleExporter, error) {
 	return &MarkdownExporter{
 		htmlExporter: &html.HTMLExporter{},
-		converter:    md.NewConverter("", true, nil),
 	}, nil
 }
 
@@ -33,14 +32,14 @@ func (exp *MarkdownExporter) Export(ctx context.Context, article *model.Article)
 	if err != nil {
 		return nil, err
 	}
-
-	data, err := exp.converter.ConvertBytes(asset.Data)
+	reader := bytes.NewReader(asset.Data)
+	markdown, err := htmltomarkdown.ConvertReader(reader)
 	if err != nil {
 		return nil, err
 	}
 
 	return &downloader.WebAsset{
-		Data:        data,
+		Data:        markdown,
 		ContentType: mediatype.HTML,
 		Name:        utils.SanitizeFilename(article.Title) + ".md",
 	}, nil

@@ -8,6 +8,8 @@ import (
 	"github.com/ncarlier/readflow/internal/model"
 	"github.com/ncarlier/readflow/internal/schema/category"
 	"github.com/ncarlier/readflow/internal/service"
+
+	htmltomarkdown "github.com/JohannesKaufmann/html-to-markdown/v2"
 )
 
 var sortOrder = graphql.NewEnum(
@@ -94,6 +96,23 @@ var articleType = graphql.NewObject(
 			},
 			"html": &graphql.Field{
 				Type: graphql.String,
+			},
+			"markdown": &graphql.Field{
+				Type: graphql.String,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					article, ok := p.Source.(*model.Article)
+					if !ok {
+						return nil, errors.New("no article received by category resolver")
+					}
+					if article.HTML != nil {
+						md, err := htmltomarkdown.ConvertString(*article.HTML)
+						if err != nil {
+							return nil, err
+						}
+						return md, nil
+					}
+					return nil, nil
+				},
 			},
 			"url": &graphql.Field{
 				Type: graphql.String,
