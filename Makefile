@@ -9,6 +9,9 @@ APPNAME=readflow
 GOOS?=$(shell go env GOHOSTOS)
 GOARCH?=$(shell go env GOHOSTARCH)
 
+# use Docker or Podman
+DOCKER?=$(shell which docker || which podman)
+
 # Add exe extension if windows target
 is_windows:=$(filter windows,$(GOOS))
 EXT:=$(if $(is_windows),".exe","")
@@ -166,8 +169,8 @@ distribution:
 
 ## Start development server (aka: a test database instance)
 dev-server:
-	docker compose -f docker-compose.dev.yml down
-	docker compose -f docker-compose.dev.yml up
+	$(DOCKER) compose -f docker-compose.dev.yml down
+	$(DOCKER) compose -f docker-compose.dev.yml up
 .PHONY: dev-server
 
 ## Deploy containers to Docker host
@@ -183,7 +186,7 @@ backup:
 	archive=backup/$(db_service)-`date -I`.dump
 	echo "Backuping PosgreSQL database ($(db_service) ==> $$archive)..."
 	mkdir -p backup
-	docker exec -u postgres $(db_service) pg_dumpall > $$archive
+	$(DOCKER) exec -u postgres $(db_service) pg_dumpall > $$archive
 	gzip -f $$archive
 	echo "done."
 .ONESHELL:
@@ -195,12 +198,12 @@ restore:
 	@while [ -z "$$CONTINUE" ]; do \
 		read -r -p "Are you sure? [y/N]: " CONTINUE; \
 	done ; \
-	[ $$CONTINUE = "y" ] && docker exec -i -u postgres $(db_service) psql -U postgres -d postgres < $(archive)
+	[ $$CONTINUE = "y" ] && $(DOCKER) exec -i -u postgres $(db_service) psql -U postgres -d postgres < $(archive)
 .PHONY: restore
 
 ## Open database client
 db-client:
-	docker exec -it -u postgres $(db_service) psql -U postgres
+	$(DOCKER) exec -it -u postgres $(db_service) psql -U postgres
 .PHONY: db-client
 
 var/block-list.txt:

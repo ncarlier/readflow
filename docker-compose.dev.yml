@@ -4,7 +4,7 @@ services:
   # Postgres: The database
   #######################################
   db:
-    image: postgres:14
+    image: docker.io/library/postgres:14
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-readflow_test}
@@ -16,7 +16,7 @@ services:
   # Imgproxy: Image proxy
   #######################################
   imgproxy:
-    image: darthsim/imgproxy
+    image: docker.io/darthsim/imgproxy
     environment:
       IMGPROXY_KEY: ${READFLOW_HASH_SECRET_KEY:-736563726574}
       IMGPROXY_SALT: ${READFLOW_HASH_SECRET_SALT:-706570706572} 
@@ -27,6 +27,6 @@ services:
   # Goenberg: PDF generator
   #######################################
   gotenberg:
-    image: gotenberg/gotenberg:7
+    image: docker.io/gotenberg/gotenberg:7
     ports:
       - "${GOTENBERG:-3001}:3000"
