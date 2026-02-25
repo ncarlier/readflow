@@ -6,7 +6,6 @@ import (
 
 	"github.com/ncarlier/readflow/ctl/cmd"
 	"github.com/ncarlier/readflow/ctl/cmd/output"
-	"github.com/ncarlier/readflow/ctl/config"
 	"github.com/ncarlier/readflow/ctl/graphql"
 )
 
@@ -16,7 +15,7 @@ type meCmd struct {
 	flagSet *flag.FlagSet
 }
 
-func (c *meCmd) Exec(args []string, client *graphql.Client, conf *config.Config) error {
+func (c *meCmd) Exec(args []string, client *graphql.Client) error {
 	q := `query {
 		me {
 			username

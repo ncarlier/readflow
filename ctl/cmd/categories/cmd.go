@@ -8,7 +8,6 @@ import (
 
 	"github.com/ncarlier/readflow/ctl/cmd"
 	"github.com/ncarlier/readflow/ctl/cmd/output"
-	"github.com/ncarlier/readflow/ctl/config"
 	"github.com/ncarlier/readflow/ctl/graphql"
 )
 
@@ -18,7 +17,7 @@ type categoriesCmd struct {
 	flagSet *flag.FlagSet
 }
 
-func (c *categoriesCmd) Exec(args []string, client *graphql.Client, conf *config.Config) error {
+func (c *categoriesCmd) Exec(args []string, client *graphql.Client) error {
 	subcmd, idx := cmd.GetFirstCommand(args)
 	switch subcmd {
 	case "list":

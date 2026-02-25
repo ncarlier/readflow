@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/ncarlier/readflow/ctl/cmd"
-	"github.com/ncarlier/readflow/ctl/config"
 	"github.com/ncarlier/readflow/ctl/graphql"
 	"github.com/ncarlier/readflow/internal/version"
 )
@@ -16,7 +15,7 @@ type versionCmd struct {
 	flagSet *flag.FlagSet
 }
 
-func (c *versionCmd) Exec(args []string, client *graphql.Client, conf *config.Config) error {
+func (c *versionCmd) Exec(args []string, client *graphql.Client) error {
 	version.Print()
 	return nil
 }

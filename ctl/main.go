@@ -7,7 +7,6 @@ import (
 
 	"github.com/ncarlier/readflow/ctl/auth"
 	"github.com/ncarlier/readflow/ctl/cmd"
-	ctlconfig "github.com/ncarlier/readflow/ctl/config"
 	"github.com/ncarlier/readflow/ctl/graphql"
 
 	// activate all ctl commands
@@ -15,15 +14,25 @@ import (
 )
 
 var (
-	configFlag string
+	endpoint string
+	username string
+	password string
+	clientID string
 )
 
-func init() {
-	defaultValue := ""
-	if value, ok := os.LookupEnv("READFLOW_CTL_CONFIG"); ok {
-		defaultValue = value
+func envDefault(envKey, fallback string) string {
+	if v, ok := os.LookupEnv(envKey); ok {
+		return v
 	}
-	flag.StringVar(&configFlag, "c", defaultValue, "Configuration file to load [ENV: READFLOW_CTL_CONFIG]")
+	return fallback
+}
+
+func init() {
+	flag.StringVar(&endpoint, "endpoint", envDefault("READFLOW_CTL_ENDPOINT", ""), "Readflow API endpoint URL [ENV: READFLOW_CTL_ENDPOINT]")
+	flag.StringVar(&username, "username", envDefault("READFLOW_CTL_USERNAME", ""), "Basic auth username [ENV: READFLOW_CTL_USERNAME]")
+	flag.StringVar(&password, "password", envDefault("READFLOW_CTL_PASSWORD", ""), "Basic auth password [ENV: READFLOW_CTL_PASSWORD]")
+	flag.StringVar(&clientID, "client-id", envDefault("READFLOW_CTL_CLIENT_ID", ""), "OIDC client ID [ENV: READFLOW_CTL_CLIENT_ID]")
+
 	flag.Usage = func() {
 		out := flag.CommandLine.Output()
 		fmt.Fprintf(out, "readflow-ctl is a CLI client for the readflow GraphQL API.\n")
@@ -41,14 +50,6 @@ func init() {
 func main() {
 	flag.Parse()
 
-	conf := ctlconfig.NewConfig()
-	if configFlag != "" {
-		if err := conf.LoadFile(configFlag); err != nil {
-			fmt.Fprintf(os.Stderr, "error: unable to load configuration file %q: %v\n", configFlag, err)
-			os.Exit(1)
-		}
-	}
-
 	args := flag.Args()
 	commandLabel, idx := cmd.GetFirstCommand(args)
 
@@ -62,35 +63,63 @@ func main() {
 	}
 
 	// commands that do not require authentication
-	if commandLabel == "version" || commandLabel == "init-config" {
-		if err := command.Exec(args[idx+1:], nil, conf); err != nil {
+	if commandLabel == "version" {
+		if err := command.Exec(args[idx+1:], nil); err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
 		}
 		return
 	}
 
-	// validate required configuration
-	if conf.API.Endpoint == "" {
-		fmt.Fprintf(os.Stderr, "error: API endpoint is not configured. Set [api] endpoint in config file or READFLOW_CTL_API_ENDPOINT env var.\n")
-		os.Exit(1)
-	}
-	if conf.AuthN.Method == "" {
-		fmt.Fprintf(os.Stderr, "error: authentication method is not configured. Set [authn] method in config file.\n")
+	// validate required endpoint
+	if endpoint == "" {
+		fmt.Fprintf(os.Stderr, "error: --endpoint is required [ENV: READFLOW_CTL_ENDPOINT]\n")
 		os.Exit(1)
 	}
 
+	// discover auth method from /info
+	method, issuer, err := auth.DiscoverAuthMethod(endpoint)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: unable to discover auth method: %v\n", err)
+		os.Exit(1)
+	}
+
+	// validate method-specific required parameters
+	authConf := &auth.Config{
+		Method:   method,
+		Issuer:   issuer,
+		Username: username,
+		Password: password,
+		ClientID: clientID,
+	}
+	switch method {
+	case "basic":
+		if authConf.Username == "" {
+			fmt.Fprintf(os.Stderr, "error: --username is required for basic auth [ENV: READFLOW_CTL_USERNAME]\n")
+			os.Exit(1)
+		}
+		if authConf.Password == "" {
+			fmt.Fprintf(os.Stderr, "error: --password is required for basic auth [ENV: READFLOW_CTL_PASSWORD]\n")
+			os.Exit(1)
+		}
+	case "oidc":
+		if authConf.ClientID == "" {
+			fmt.Fprintf(os.Stderr, "error: --client-id is required for OIDC auth [ENV: READFLOW_CTL_CLIENT_ID]\n")
+			os.Exit(1)
+		}
+	}
+
 	// create authenticated HTTP client
-	httpClient, err := auth.NewHTTPClient(conf)
+	httpClient, err := auth.NewHTTPClient(authConf)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 
 	// create GraphQL client
-	client := graphql.NewClient(conf.API.Endpoint, httpClient)
+	client := graphql.NewClient(endpoint, httpClient)
 
-	if err := command.Exec(args[idx+1:], client, conf); err != nil {
+	if err := command.Exec(args[idx+1:], client); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
