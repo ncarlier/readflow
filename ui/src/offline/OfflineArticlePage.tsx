@@ -5,15 +5,16 @@ import { Link } from 'react-router-dom'
 import { ArticleContent, ArticleHeader, ArticleContextMenu } from '../articles/components'
 import { Article } from '../articles/models'
 import { ButtonIcon, Center, ErrorPanel, Loader, Panel } from '../components'
-import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
+import { useOfflineArticles } from '../contexts'
 import { matchResponse } from '../helpers'
 import { Page } from '../layout'
 
-type AllProps = RouteComponentProps<{ id: string }> & OfflineProps
+type AllProps = RouteComponentProps<{ id: string }>
 
-const Actions = () => <ButtonIcon as={Link} to="/offline" icon="arrow_back" title="back to the list" />
+const Actions = () => <ButtonIcon as={Link} to='/offline' icon='arrow_back' title='back to the list' />
 
-const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle }: AllProps) => {
+const OfflineArticlePage = ({ match }: AllProps) => {
+  const { offlineArticles, fetchOfflineArticle } = useOfflineArticles()
   const { id } = match.params
 
   const { selected: data, error, loading } = offlineArticles
@@ -41,15 +42,15 @@ const OfflineArticlePage = ({ match, offlineArticles, fetchOfflineArticle }: All
           </>
         )
       }
-      return <ErrorPanel title="Not found">Article #{id} not found.</ErrorPanel>
+      return <ErrorPanel title='Not found'>Article #{id} not found.</ErrorPanel>
     },
   })
 
   return (
-    <Page title="Offline articles" subtitle={data && data.title} actions={<Actions />}>
+    <Page title='Offline articles' subtitle={data && data.title} actions={<Actions />}>
       <Panel style={{ flex: '1 1 auto' }}>{render(loading, data, error)}</Panel>
     </Page>
   )
 }
 
-export default connectOffline(OfflineArticlePage)
+export default OfflineArticlePage

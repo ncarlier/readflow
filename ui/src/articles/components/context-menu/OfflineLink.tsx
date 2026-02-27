@@ -2,8 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { useModal } from 'react-modal-hook'
 
 import { ConfirmDialog, Kbd, LinkIcon, Loader, Overlay } from '../../../components'
-import { connectOffline, OfflineProps } from '../../../containers/OfflineContainer'
-import { useMessage } from '../../../contexts'
+import { useMessage, useOfflineArticles } from '../../../contexts'
 import { Article } from '../../models'
 import { useAPI } from '../../../hooks'
 import { fetchAPI } from '../../../helpers'
@@ -13,16 +12,18 @@ interface Props {
   keyboard?: boolean
 }
 
-type AllProps = Props & OfflineProps
+type AllProps = Props
 
-const blobToDataURL = async (blob: Blob): Promise<string> => new Promise((resolve) => {
-  const reader = new FileReader()
-  reader.onloadend = () => resolve(reader.result as string)
-  reader.readAsDataURL(blob)
-})
+const blobToDataURL = async (blob: Blob): Promise<string> =>
+  new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result as string)
+    reader.readAsDataURL(blob)
+  })
 
 export const OfflineLink = (props: AllProps) => {
-  const { article, keyboard = false, saveOfflineArticle, removeOfflineArticle, offlineArticles } = props
+  const { article, keyboard = false } = props
+  const { saveOfflineArticle, removeOfflineArticle, offlineArticles } = useOfflineArticles()
   const fetchArticleContent = useAPI(`/articles/${article.id}`, { method: 'GET' })
   const { showMessage, showErrorMessage } = useMessage()
   const [loading, setLoading] = useState(false)
@@ -57,7 +58,7 @@ export const OfflineLink = (props: AllProps) => {
     } finally {
       setLoading(false)
     }
-  }, [article, fetchArticleContent, saveOfflineArticle, showMessage])
+  }, [article, fetchArticleContent, saveOfflineArticle, showMessage, showErrorMessage])
 
   const deleteArticleOffline = useCallback(async () => {
     try {
@@ -71,7 +72,7 @@ export const OfflineLink = (props: AllProps) => {
   const [showDeleteConfirmModal, hideDeleteConfirmModal] = useModal(() => (
     <ConfirmDialog
       title={article.title}
-      confirmLabel="Delete"
+      confirmLabel='Delete'
       onConfirm={() => deleteArticleOffline()}
       onCancel={hideDeleteConfirmModal}
     >
@@ -81,18 +82,18 @@ export const OfflineLink = (props: AllProps) => {
 
   if (article.isOffline) {
     return (
-      <LinkIcon title="Delete" onClick={showDeleteConfirmModal} icon="delete">
+      <LinkIcon title='Delete' onClick={showDeleteConfirmModal} icon='delete'>
         <span>Delete offline</span>
-        {keyboard && <Kbd keys="d" onKeypress={showDeleteConfirmModal} />}
+        {keyboard && <Kbd keys='d' onKeypress={showDeleteConfirmModal} />}
       </LinkIcon>
     )
   }
 
   return (
     <>
-      <LinkIcon title="Put offline" onClick={putArticleOffline} icon="signal_wifi_off">
+      <LinkIcon title='Put offline' onClick={putArticleOffline} icon='signal_wifi_off'>
         <span>Put offline</span>
-        {keyboard && <Kbd keys="o" onKeypress={putArticleOffline} />}
+        {keyboard && <Kbd keys='o' onKeypress={putArticleOffline} />}
       </LinkIcon>
       <Overlay visible={loading || offlineArticles.loading}>
         <Loader center />
@@ -101,4 +102,4 @@ export const OfflineLink = (props: AllProps) => {
   )
 }
 
-export default connectOffline(OfflineLink)
+export default OfflineLink

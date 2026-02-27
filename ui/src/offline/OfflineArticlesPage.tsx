@@ -3,7 +3,7 @@ import { useLocation } from 'react-router'
 
 import { ArticleList, ArticlesPageMenu, NoArticleBg } from '../articles/components'
 import { GetArticlesRequest, GetArticlesResponse } from '../articles/models'
-import { connectOffline, OfflineProps } from '../containers/OfflineContainer'
+import { useOfflineArticles } from '../contexts'
 import { LocalConfiguration, SortOrder, useLocalConfiguration } from '../contexts/LocalConfigurationContext'
 import { Center, ErrorPanel, Loader, Panel } from '../components'
 import { getURLParam, matchState } from '../helpers'
@@ -29,7 +29,8 @@ const buildQueryFromLocation = (qs: string, localConfiguration: LocalConfigurati
   }
 }
 
-const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: OfflineProps) => {
+const OfflineArticlesPage = () => {
+  const { offlineArticles, fetchOfflineArticles } = useOfflineArticles()
   const { localConfiguration } = useLocalConfiguration()
   const location = useLocation()
   const [req, setReq] = useState<GetArticlesRequest>(buildQueryFromLocation(location.search, localConfiguration))
@@ -68,7 +69,7 @@ const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: OfflineP
       return (
         <ArticleList
           articles={d.articles.entries}
-          empty={<NoArticleBg name="offline" title="if Internet does not exist, there is nothing here either" />}
+          empty={<NoArticleBg name='offline' title='if Internet does not exist, there is nothing here either' />}
           hasMore={d.articles.hasNext}
           refetch={refetch}
           fetchMoreArticles={fetchMoreArticles}
@@ -82,10 +83,10 @@ const OfflineArticlesPage = ({ offlineArticles, fetchOfflineArticles }: OfflineP
   const title = `${nb} offline article${nb > 0 ? 's' : ''}`
 
   return (
-    <Page title={title} actions={<ArticlesPageMenu refresh={refetch} variant="offline" req={req} />}>
+    <Page title={title} actions={<ArticlesPageMenu refresh={refetch} variant='offline' req={req} />}>
       {render(loading, data, error)}
     </Page>
   )
 }
 
-export default connectOffline(OfflineArticlesPage)
+export default OfflineArticlesPage
