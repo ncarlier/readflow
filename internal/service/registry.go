@@ -76,6 +76,9 @@ func Configure(conf config.Config, database db.DB) error {
 			Endpoint: conf.Scraping.ForwardProxy.Endpoint,
 			Hosts:    conf.Scraping.ForwardProxy.Hosts,
 		},
+		Browser: &scraper.BrowserConfiguration{
+			Endpoint: conf.Scraping.Browser.Endpoint,
+		},
 	})
 	hid, err := hashid.NewHashIDHandler(conf.Hash.SecretSalt.Value)
 	if err != nil {

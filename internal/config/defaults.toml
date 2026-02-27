@@ -131,6 +131,17 @@ endpoint = "${READFLOW_SCRAPING_FORWARD_PROXY_ENDPOINT}"
 # The use of a wildcard character ("*") means that ALL URLs will be proxied.
 # Example: [ "medium.com", "washingtonpost.com" ]
 hosts = [ "medium.com" ]
+## External browser used to render JavaScript-heavy pages via the Chrome
+## DevTools Protocol (CDP). When configured, the browser is tried first for
+## every text/html URL; on failure the scraper automatically falls back to
+## plain HTTP fetching.
+## Compatible implementations:
+##   - Lightpanda  https://lightpanda.io  (docker.io/lightpanda/browser:nightly)
+##   - Chrome/Chromium started with --remote-debugging-port=9222
+[scraping.browser]
+## CDP WebSocket endpoint of a running browser instance, disabled if empty.
+## Example: "ws://127.0.0.1:9222"
+endpoint = "${READFLOW_SCRAPING_BROWSER_ENDPOINT}"
 
 [avatar]
 ## Avatar local or remote service provider

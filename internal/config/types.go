@@ -108,12 +108,22 @@ type ScrapingForwardProxyConfig struct {
 	Hosts    []string
 }
 
+// ScrapingBrowserConfig for CDP browser configuration
+type ScrapingBrowserConfig struct {
+	// Endpoint is the CDP WebSocket URL of a running browser instance.
+	// Supported implementations: Chrome/Chromium (--remote-debugging-port),
+	// Lightpanda (lightpanda/browser).
+	// Disabled when empty.
+	Endpoint string `toml:"endpoint"`
+}
+
 // ScrapingConfig for scraping configuration section
 type ScrapingConfig struct {
 	UserAgent    string                     `toml:"user_agent"`
 	Timeout      types.Duration             `toml:"timeout"`
 	BlockList    string                     `toml:"block_list"`
 	ForwardProxy ScrapingForwardProxyConfig `toml:"forward_proxy"`
+	Browser      ScrapingBrowserConfig      `toml:"browser"`
 }
 
 // AvatarConfig for avatar configuration section

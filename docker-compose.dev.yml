@@ -30,3 +30,14 @@ services:
     image: docker.io/gotenberg/gotenberg:7
     ports:
       - "${GOTENBERG:-3001}:3000"
+  #######################################
+  # Lightpanda: Headless browser (CDP)
+  # Enables browser-based scraping for JavaScript-heavy pages.
+  # To activate, uncomment this service and set:
+  #   READFLOW_SCRAPING_BROWSER_ENDPOINT=ws://lightpanda:9222
+  # in your environment or configuration file.
+  #######################################
+  lightpanda:
+    image: docker.io/lightpanda/browser:nightly
+    ports:
+      - "${LIGHTPANDA_PORT:-9222}:9222"

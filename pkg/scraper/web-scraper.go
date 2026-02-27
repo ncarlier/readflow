@@ -8,22 +8,30 @@ import (
 	"strings"
 
 	"github.com/ncarlier/readflow/pkg/defaults"
+	"github.com/ncarlier/readflow/pkg/logger"
 	"github.com/ncarlier/readflow/pkg/utils"
 	"golang.org/x/net/html/charset"
 )
 
 type WebScraper struct {
-	httpClient   *http.Client
-	userAgent    string
-	forwardProxy *ForwardProxyConfiguration
+	httpClient     *http.Client
+	userAgent      string
+	forwardProxy   *ForwardProxyConfiguration
+	browserFetcher *BrowserFetcher
 }
 
 // NewWebScraper create an internal web scrapping service
 func NewWebScraper(conf *WebScraperConfiguration) *WebScraper {
+	var bf *BrowserFetcher
+	if conf.Browser != nil && conf.Browser.Endpoint != "" {
+		bf = newBrowserFetcher(conf.Browser)
+		logger.Info().Str("endpoint", conf.Browser.Endpoint).Msg("browser-based scraping enabled")
+	}
 	return &WebScraper{
-		httpClient:   utils.If(conf.HttpClient == nil, defaults.HTTPClient, conf.HttpClient),
-		userAgent:    utils.If(conf.UserAgent == "", defaults.UserAgent, conf.UserAgent),
-		forwardProxy: conf.ForwardProxy,
+		httpClient:     utils.If(conf.HttpClient == nil, defaults.HTTPClient, conf.HttpClient),
+		userAgent:      utils.If(conf.UserAgent == "", defaults.UserAgent, conf.UserAgent),
+		forwardProxy:   conf.ForwardProxy,
+		browserFetcher: bf,
 	}
 }
 
@@ -50,7 +58,17 @@ func (ws WebScraper) Scrap(ctx context.Context, rawurl string) (*WebPage, error)
 		return nil, fmt.Errorf("invalid content-type: %s", contentType)
 	}
 
-	// Get URL content
+	// Try browser rendering if configured
+	if ws.browserFetcher != nil {
+		html, err := ws.browserFetcher.GetHTML(ctx, rawurl)
+		if err != nil {
+			logger.Warn().Err(err).Str("url", rawurl).Msg("browser fetch failed, falling back to HTTP scraper")
+		} else {
+			return ReadWebPage(strings.NewReader(html), pageURL)
+		}
+	}
+
+	// Get URL content via plain HTTP
 	res, err := ws.get(ctx, pageURL)
 	if err != nil {
 		return nil, err
