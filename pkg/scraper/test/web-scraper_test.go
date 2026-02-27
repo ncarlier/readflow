@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 	"time"
 
@@ -46,6 +47,12 @@ func TestWebScrapingTimeout(t *testing.T) {
 }
 
 func TestMediumWebScraping(t *testing.T) {
+	// skip this test if executed on Github Actions
+	// This is due Medium extra FW rules that are not supported by the scraper
+	if _, ok := os.LookupEnv("GITHUB_ACTIONS"); ok {
+		t.SkipNow()
+	}
+
 	ctx := context.TODO()
 	page, err := scraper.NewWebScraper(&scraper.WebScraperConfiguration{}).Scrap(ctx, "https://blog.medium.com/state-of-medium-c54d1706a9b4")
 	assert.Nil(t, err)
