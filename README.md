@@ -68,6 +68,65 @@ You can access Web UI on http://localhost:8080
 
 ![Screenshot](screenshot.png)
 
+## CTL
+
+`readflow-ctl` is a command-line client for interacting with the readflow GraphQL API from the terminal.
+
+```bash
+go install -v github.com/ncarlier/readflow/ctl@latest
+```
+
+It supports managing articles, categories, incoming and outgoing webhooks, and more. Authentication is handled via Basic Auth or OIDC Device Code Flow (RFC 8628).
+
+```bash
+# List articles
+readflow-ctl --endpoint http://localhost:8080 articles list
+
+# Export configuration
+export READFLOW_CTL_ENDPOINT=https://api.readflow.app
+export READFLOW_CTL_CLIENT_ID=YOUR_CLIENT_ID
+
+# Get a specific article
+readflow-ctl articles get 42
+
+# List categories
+readflow-ctl categories list
+```
+
+See the [ctl/README.md](./ctl/README.md) for full configuration and authentication details.
+
+## MCP
+
+`readflow-ctl` includes an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that exposes readflow data to AI assistants and LLM tools.
+
+```bash
+readflow-ctl mcp
+```
+
+The MCP server communicates over stdio and provides read-only access through:
+
+- **Tools**: `list_articles`, `get_article`, `list_categories`, `get_category`
+- **Resources**: `readflow://categories`, `readflow://articles/{id}`, `readflow://categories/{id}`
+- **Prompts**: `summarize_article`, `suggest_categories`
+
+Example configuration for an MCP-compatible client:
+
+```json
+{
+  "mcp": {
+    "readflow": {
+      "type": "local",
+      "command": ["readflow-ctl", "mcp"],
+      "env": {
+        "READFLOW_CTL_ENDPOINT": "http://localhost:8080",
+        "READFLOW_CTL_USERNAME": "user",
+        "READFLOW_CTL_PASSWORD": "secret"
+      }
+    }
+  }
+}
+```
+
 ## Documentation
 
 The documentation can be found here: https://docs.readflow.app
