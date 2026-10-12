@@ -43,7 +43,7 @@ RUN make
 #########################################
 # Distribution stage
 #########################################
-FROM gcr.io/distroless/base-debian11:nonroot
+FROM gcr.io/distroless/base-debian13:nonroot
 
 # Repository location
 ARG REPOSITORY=github.com/ncarlier
