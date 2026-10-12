@@ -16,7 +16,7 @@ import (
 
 var testDB db.DB
 
-const defaultUsername = "test"
+const defaultUsername = "servicetest"
 
 const defaultDBConnString = "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable"
 
