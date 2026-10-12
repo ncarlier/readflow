@@ -62,6 +62,10 @@ func TestGetIncomingWebhooksByUserID(t *testing.T) {
 	defer teardownTestCase(t)
 
 	uid := *testUser.ID
+	alias := "My test incoming webhook"
+	script := "return false;"
+
+	assertIncomingWebhookExists(t, uid, alias, script)
 
 	webhooks, err := testDB.GetIncomingWebhooksByUser(uid)
 	assert.Nil(t, err)

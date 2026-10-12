@@ -13,7 +13,7 @@ import (
 
 var testDB db.DB
 
-const defaultUsername = "dbtest"
+const defaultUsername = "dbtest-"
 
 const defaultDBConnString = "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable"
 
@@ -44,12 +44,12 @@ func setupTestCase(t *testing.T) func(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to setup database: %v", err)
 	}
-	testUser = assertUserExists(t, defaultUsername)
+	testUser = assertUserExists(t, defaultUsername+t.Name())
 	return func(t *testing.T) {
 		t.Log("teardown test case")
 		defer testDB.Close()
-		// err := testDB.DeleteUser(*testUser)
-		// assert.Nil(t, err, "error should be nil")
+		err := testDB.DeleteUser(*testUser)
+		assert.Nil(t, err, "error should be nil")
 	}
 }
 

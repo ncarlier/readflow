@@ -116,7 +116,21 @@ func TestDeleteAllReadArticles(t *testing.T) {
 	defer teardownTestCase(t)
 
 	uid := *testUser.ID
+
+	// Create article test case
+	builder := model.NewArticleCreateFormBuilder()
+	form := builder.Random().Build()
+	article := assertNewArticle(t, uid, *form)
+	
+	// Update article
 	status := "read"
+	update := model.ArticleUpdateForm{
+		ID:     article.ID,
+		Status: &status,
+	}
+	_, err := testDB.UpdateArticleForUser(uid, update)
+	assert.Nil(t, err)
+
 	req := model.ArticlesPageRequest{
 		Status: &status,
 	}

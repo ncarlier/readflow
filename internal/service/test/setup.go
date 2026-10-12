@@ -16,7 +16,7 @@ import (
 
 var testDB db.DB
 
-const defaultUsername = "servicetest"
+const defaultUsername = "servicetest-"
 
 const defaultDBConnString = "postgres://postgres:testpwd@localhost/readflow_test?sslmode=disable"
 
@@ -58,7 +58,7 @@ func SetupTestCase(t *testing.T) func(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unable to setup database: %v", err)
 	}
-	testUser = requireUserExists(t, defaultUsername)
+	testUser = requireUserExists(t, defaultUsername+t.Name())
 	testContext = context.Background()
 	testContext = context.WithValue(testContext, global.ContextUserID, *testUser.ID)
 
