@@ -48,7 +48,7 @@ func (i *Interpreter) init() {
 	i.eval.AddFunction("sendNotification", i.buildNoArgFunction(OpSendNotification))
 	i.eval.AddFunction("setCategory", i.buildSingleArgFunction(OpSetCategory))
 	i.eval.AddFunction("setTitle", i.buildSingleArgFunction(OpSetTitle))
-	i.eval.AddFunction("setText", i.buildSingleArgFunction(OpSetTitle))
+	i.eval.AddFunction("setText", i.buildSingleArgFunction(OpSetText))
 	i.eval.AddFunction("setHTML", i.buildSingleArgFunction(OpSetHTML))
 	i.eval.AddFunction("markAsRead", i.buildNoArgFunction(OpMarkAsRead))
 	i.eval.AddFunction("markAsToRead", i.buildNoArgFunction(OpMarkAsToRead))
