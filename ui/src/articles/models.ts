@@ -81,6 +81,7 @@ export interface SendArticleToOutgoingWebhookResponse {
 export interface MarkAllArticlesAsReadRequest {
   category: number | null
   status: ArticleStatus
+  query?: string | null
 }
 
 export interface MarkAllArticlesAsReadResponse {

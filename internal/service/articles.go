@@ -59,11 +59,11 @@ func (reg *Registry) GetArticle(ctx context.Context, id uint) (*model.Article, e
 }
 
 // MarkAllArticlesAsRead set status to read for all user's articles of a specific status and category
-func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, status string, categoryID *uint) (int64, error) {
+func (reg *Registry) MarkAllArticlesAsRead(ctx context.Context, status string, categoryID *uint, query *string) (int64, error) {
 	start := time.Now()
 	uid := getCurrentUserIDFromContext(ctx)
 
-	nb, err := reg.db.MarkAllArticlesAsReadByUser(uid, status, categoryID)
+	nb, err := reg.db.MarkAllArticlesAsReadByUser(uid, status, categoryID, query)
 	if err != nil {
 		reg.logger.Info().Err(err).Uint(
 			"uid", uid,

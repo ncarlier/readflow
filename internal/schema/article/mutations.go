@@ -77,6 +77,10 @@ var markAllArticlesAsReadMutationField = &graphql.Field{
 		"category": &graphql.ArgumentConfig{
 			Type: graphql.ID,
 		},
+		"query": &graphql.ArgumentConfig{
+			Description: "filter entries by full-text search",
+			Type:        graphql.String,
+		},
 	},
 	Resolve: markAllArticlesAsReadResolver,
 }
@@ -84,11 +88,12 @@ var markAllArticlesAsReadMutationField = &graphql.Field{
 func markAllArticlesAsReadResolver(p graphql.ResolveParams) (interface{}, error) {
 	categoryID := utils.ParseGraphQLID(p.Args, "category")
 	status := utils.ParseGraphQLArgument[string](p.Args, "status")
+	query := utils.ParseGraphQLArgument[string](p.Args, "query")
 	if status == nil || *status == "read" {
 		return nil, global.InvalidParameterError("status")
 	}
 
-	_, err := service.Lookup().MarkAllArticlesAsRead(p.Context, *status, categoryID)
+	_, err := service.Lookup().MarkAllArticlesAsRead(p.Context, *status, categoryID, query)
 	if err != nil {
 		return nil, err
 	}

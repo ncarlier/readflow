@@ -16,8 +16,8 @@ You can configure the UI building process by setting environment variables:
 Example:
 
 ```bash
-$ export REACT_APP_API_ROOT=http://localhost:8080
-$ export REACT_APP_AUTHORITY=none
+export REACT_APP_API_ROOT=http://localhost:8080
+export REACT_APP_AUTHORITY=none
 ```
 
 ## Runtime configuration

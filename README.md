@@ -141,14 +141,14 @@ To be able to build the project you will need to:
 
 - Install `makefiles` external helpers:
   ```bash
-  $ git submodule init
-  $ git submodule update
+  git submodule init
+  git submodule update
   ```
 
 Then you can build the project using make:
 
 ```bash
-$ make
+make
 ```
 
 Type `make help` to see other possibilities.

@@ -73,7 +73,11 @@ export const ArticlesPageMenu = (props: Props) => {
   const markAllAsRead = useCallback(async () => {
     try {
       await markAllArticlesAsReadMutation({
-        variables: { status: req.status || 'inbox', category: req.category },
+        variables: {
+          status: req.status || 'inbox',
+          category: req.category,
+          query: req.query || undefined,
+        },
         update: updateCacheAfterMarkAllAsRead,
       })
       await refresh()
@@ -108,16 +112,21 @@ export const ArticlesPageMenu = (props: Props) => {
       push({ ...loc, search: params.toString() })
   }, [loc, setDisplayPreference, push])
 
-  const [showMarkAllAsReadDialog, hideMarkAllAsReadDialog] = useModal(() => (
-    <ConfirmDialog
-      title="Mark all as read?"
-      confirmLabel="Do it"
-      onConfirm={() => markAllAsRead().then(hideMarkAllAsReadDialog)}
-      onCancel={hideMarkAllAsReadDialog}
-    >
-      Are you sure to mark ALL articles as read?
-    </ConfirmDialog>
-  ))
+  const [showMarkAllAsReadDialog, hideMarkAllAsReadDialog] = useModal(
+    () => (
+      <ConfirmDialog
+        title="Mark all as read?"
+        confirmLabel="Do it"
+        onConfirm={() => markAllAsRead().then(hideMarkAllAsReadDialog)}
+        onCancel={hideMarkAllAsReadDialog}
+      >
+        {req.query
+          ? `Are you sure to mark all articles matching "${req.query}" as read?`
+          : 'Are you sure to mark ALL articles as read?'}
+      </ConfirmDialog>
+    ),
+    [markAllAsRead, req.query]
+  )
 
   return (
     <DropDownMenu title="Page options...">

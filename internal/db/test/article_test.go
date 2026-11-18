@@ -101,7 +101,7 @@ func TestMarkAllArticlesAsRead(t *testing.T) {
 	assert.NotNil(t, res)
 	assert.Positive(t, res.TotalCount, "total count should be a positive integer")
 
-	nb, err := testDB.MarkAllArticlesAsReadByUser(uid, "inbox", nil)
+	nb, err := testDB.MarkAllArticlesAsReadByUser(uid, "inbox", nil, nil)
 	assert.Nil(t, err)
 	assert.NotEqual(t, 0, nb, "all articles should be marked as read")
 
@@ -109,6 +109,45 @@ func TestMarkAllArticlesAsRead(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 	assert.Equal(t, uint(0), res.TotalCount)
+}
+
+func TestMarkAllArticlesAsReadWithQuery(t *testing.T) {
+	teardownTestCase := setupTestCase(t)
+	defer teardownTestCase(t)
+
+	uid := *testUser.ID
+
+	// Create articles
+	builder := model.NewArticleCreateFormBuilder()
+	create1 := builder.Random().Title("About computer science").Build()
+	assertNewArticle(t, uid, *create1)
+	create2 := builder.Random().Title("About culinary art").Build()
+	assertNewArticle(t, uid, *create2)
+
+	query := "computer"
+	nb, err := testDB.MarkAllArticlesAsReadByUser(uid, "inbox", nil, &query)
+	assert.Nil(t, err)
+	assert.Equal(t, int64(1), nb, "only matching article should be marked as read")
+
+	// Verify computer science article is read
+	readStatus := "read"
+	resRead, err := testDB.GetPaginatedArticlesByUser(uid, model.ArticlesPageRequest{
+		Status: &readStatus,
+		Query:  &query,
+	})
+	assert.Nil(t, err)
+	assert.NotNil(t, resRead)
+	assert.Equal(t, uint(1), resRead.TotalCount)
+
+	// Verify culinary art article is still in inbox
+	inboxStatus := "inbox"
+	resInbox, err := testDB.GetPaginatedArticlesByUser(uid, model.ArticlesPageRequest{
+		Status: &inboxStatus,
+	})
+	assert.Nil(t, err)
+	assert.NotNil(t, resInbox)
+	assert.Equal(t, uint(1), resInbox.TotalCount)
+	assert.Equal(t, "About culinary art", resInbox.Entries[0].Title)
 }
 
 func TestDeleteAllReadArticles(t *testing.T) {

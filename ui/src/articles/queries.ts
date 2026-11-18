@@ -153,8 +153,8 @@ export const SendArticleToOutgoingWebhook = gql`
 `
 
 export const MarkAllArticlesAsRead = gql`
-  mutation markAllArticlesAsRead($status: status!, $category: ID) {
-    markAllArticlesAsRead(status: $status, category: $category) {
+  mutation markAllArticlesAsRead($status: status!, $category: ID, $query: String) {
+    markAllArticlesAsRead(status: $status, category: $category, query: $query) {
       _inbox
       entries {
         id

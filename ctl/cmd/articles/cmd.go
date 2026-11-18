@@ -271,6 +271,7 @@ func (c *articlesCmd) markAllRead(args []string, client *graphql.Client) error {
 	fs := flag.NewFlagSet("articles mark-all-read", flag.ExitOnError)
 	status := fs.String("status", "inbox", "Status to mark as read (inbox, to_read)")
 	category := fs.Int("category", 0, "Category ID")
+	query := fs.String("query", "", "Full-text search query")
 	if err := fs.Parse(args); err != nil {
 		return err
 	}
@@ -281,9 +282,12 @@ func (c *articlesCmd) markAllRead(args []string, client *graphql.Client) error {
 	if *category > 0 {
 		vars["category"] = *category
 	}
+	if *query != "" {
+		vars["query"] = *query
+	}
 
-	q := `mutation markAllArticlesAsRead($status: status, $category: ID) {
-		markAllArticlesAsRead(status: $status, category: $category) {
+	q := `mutation markAllArticlesAsRead($status: status, $category: ID, $query: String) {
+		markAllArticlesAsRead(status: $status, category: $category, query: $query) {
 			_inbox
 			_to_read
 			_starred
